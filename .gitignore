@@ -1,0 +1,2 @@
+# Ignore submodule directory (tracked via gitlink only)
+/common/
