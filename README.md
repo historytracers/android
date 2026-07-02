@@ -1,2 +1,3 @@
 # android
-This is the History Tracers software codebase and its contents for running on Android.
+
+History Tracers is a public, open-source educational project that teaches interdisciplinary content through Android applications.
