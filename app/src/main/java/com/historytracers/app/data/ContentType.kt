@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.data
 
 enum class ContentType(val value: String) {
