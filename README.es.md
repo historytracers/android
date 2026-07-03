@@ -1,3 +1,33 @@
 # android
 
 History Tracers es un proyecto educativo público y de código abierto que enseña contenido interdisciplinario a través de aplicaciones Android.
+
+## Requisitos previos
+
+- Java Development Kit (JDK) 17 o superior
+- Android SDK (compileSdk 34, minSdk 26)
+- Android SDK build tools
+
+## Compilación
+
+Genere el wrapper de Gradle (si no existe):
+
+```
+gradle wrapper
+```
+
+Luego compile con:
+
+```
+./gradlew assembleDebug
+```
+
+O abra el proyecto en Android Studio y sincronice Gradle.
+
+## Estructura del proyecto
+
+| Ruta | Descripción |
+|---|---|
+| `app/` | Módulo principal de la aplicación Android (Jetpack Compose, Material 3) |
+| `common/` | Definiciones de tipos de datos compartidos (submódulo Git) |
+| `common/src/android/` | Biblioteca Android con todas las clases Java mapeadas a JSON (Gson) |
