@@ -31,9 +31,35 @@ echo "=== Platform: $PLATFORM ==="
 
 # --- JDK detection (need 17+) ---
 find_jdk() {
-    if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/javac" ]; then
-        return 0
+    # Strategy 1: JAVA_HOME already set correctly
+    if [ -n "$JAVA_HOME" ]; then
+        local jh
+        jh="$(cygpath -u "$JAVA_HOME" 2>/dev/null || echo "$JAVA_HOME")"
+        if [ -x "$jh/bin/javac" ]; then
+            export JAVA_HOME="$jh"
+            return 0
+        fi
     fi
+
+    # Strategy 2: Scan well-known base directories for any JDK
+    for base in \
+        "/c/Program Files/Java" \
+        "/c/Program Files/Eclipse Adoptium" \
+        "/c/Program Files/Amazon Corretto" \
+        "/usr/lib/jvm" \
+        "/usr/local/opt" \
+        "/mingw64/lib/jvm"; do
+        if [ -d "$base" ]; then
+            for jdk in "$base"/*/; do
+                if [ -d "$jdk" ] && [ -x "${jdk}bin/javac" ]; then
+                    export JAVA_HOME="${jdk%/}"
+                    return 0
+                fi
+            done
+        fi
+    done
+
+    # Strategy 3: Hardcoded specific paths
     for cand in \
         "/usr/lib/jvm/java-17-openjdk" \
         "/usr/lib/jvm/java-17" \
@@ -41,27 +67,42 @@ find_jdk() {
         "/usr/lib/jvm/java-21" \
         "/usr/lib/jvm/default-java" \
         "/usr/local/opt/openjdk@17" \
-        "/usr/local/opt/openjdk@21" \
-        "/c/Program Files/Java/jdk-17" \
-        "/c/Program Files/Java/jdk-21" \
-        "/c/Program Files/Eclipse Adoptium/jdk-17"* \
-        "/c/Program Files/Eclipse Adoptium/jdk-21"* \
-        "/mingw64/lib/jvm/openjdk"* \
-        "/mingw64/lib/jvm/msopenjdk"* \
-        "/usr/lib/jvm/openjdk"* \
-        "/usr/lib/jvm/msopenjdk"*; do
-        for jdk in $cand; do
-            if [ -x "$jdk/bin/javac" ]; then
-                export JAVA_HOME="$jdk"
+        "/usr/local/opt/openjdk@21"; do
+        if [ -x "$cand/bin/javac" ]; then
+            export JAVA_HOME="$cand"
+            return 0
+        fi
+    done
+
+    # Strategy 4: JDK on PATH (via java -> javac parent dir)
+    if command -v java &> /dev/null; then
+        local java_exe
+        java_exe="$(command -v java)"
+        if command -v readlink &> /dev/null; then
+            java_exe="$(readlink -f "$java_exe" 2>/dev/null || echo "$java_exe")"
+        fi
+        local jdk_path
+        jdk_path="$(cd "$(dirname "$java_exe")/.." && pwd -P 2>/dev/null || true)"
+        if [ -n "$jdk_path" ] && [ -x "$jdk_path/bin/javac" ]; then
+            local ver
+            ver=$("$jdk_path/bin/java" -version 2>&1 | awk -F[\".] '/version/{print $2}')
+            if [ -n "$ver" ] && [ "$ver" -ge 17 ] 2>/dev/null; then
+                export JAVA_HOME="$jdk_path"
                 return 0
             fi
-        done
-    done
+        fi
+    fi
+
     return 1
 }
 
 if ! find_jdk; then
     echo "ERROR: JDK 17+ not found. Set JAVA_HOME or install a JDK."
+    echo ""
+    echo "Example:"
+    echo "  export JAVA_HOME=\"/c/Program Files/Java/jdk-26.0.1\""
+    echo ""
+    echo "To locate your JDK, run: ls -d '/c/Program Files/Java/jdk-'*"
     exit 1
 fi
 echo "=== JDK found: $JAVA_HOME ==="
