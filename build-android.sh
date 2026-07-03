@@ -109,45 +109,79 @@ echo "=== JDK found: $JAVA_HOME ==="
 
 # --- Android SDK detection ---
 find_android_sdk() {
-    if [ -n "$ANDROID_HOME" ] && [ -d "$(cygpath -u "$ANDROID_HOME" 2>/dev/null || echo "$ANDROID_HOME")" ]; then
-        return 0
-    fi
-    if [ -n "$ANDROID_SDK_ROOT" ] && [ -d "$(cygpath -u "$ANDROID_SDK_ROOT" 2>/dev/null || echo "$ANDROID_SDK_ROOT")" ]; then
-        export ANDROID_HOME="$ANDROID_SDK_ROOT"
-        return 0
-    fi
-    case "$PLATFORM" in
-        linux)
-            for cand in "$HOME/Android/Sdk" "/usr/lib/android-sdk" "/opt/android-sdk"; do
+    # Strategy 1: ANDROID_HOME / ANDROID_SDK_ROOT already set
+    for var in ANDROID_HOME ANDROID_SDK_ROOT; do
+        if [ -n "${!var}" ]; then
+            local sdk
+            sdk="$(cygpath -u "${!var}" 2>/dev/null || echo "${!var}")"
+            if [ -d "$sdk" ]; then
+                export ANDROID_HOME="$sdk"
+                return 0
+            fi
+        fi
+    done
+
+    # Strategy 2: Check exact known SDK paths directly
+    for sdk in \
+        "/c/Program Files/Android/Sdk" \
+        "/c/Users/$USER/AppData/Local/Android/Sdk" \
+        "/c/Users/$USER/AppData/Local/Android/sdk" \
+        "$HOME/Android/Sdk"; do
+        if [ -d "$sdk" ]; then
+            export ANDROID_HOME="$sdk"
+            return 0
+        fi
+    done
+
+    # Strategy 3: Scan base directories for any SDK
+    for base in \
+        "/c/Program Files/Android" \
+        "/c/Users/$USER/AppData/Local/Android" \
+        "$HOME/Android" \
+        "/usr/lib/android-sdk" \
+        "/opt/android-sdk" \
+        "/usr/local/opt/android-sdk"; do
+        if [ -d "$base" ]; then
+            for cand in "$base"/*/; do
+                for marker in "platforms" "platform-tools" "build-tools" "cmdline-tools" "tools"; do
+                    if [ -d "${cand}${marker}" ]; then
+                        export ANDROID_HOME="${cand%/}"
+                        return 0
+                    fi
+                done
+            done
+        fi
+    done
+
+    # Strategy 4: Android Studio might bundle SDK inside its dir
+    for studio in \
+        "/c/Program Files/Android/Android Studio"* \
+        "/c/Program Files/Android Studio"* \
+        "$HOME/AppData/Local/Android/android-studio"*; do
+        if [ -d "$studio" ]; then
+            for sub in "sdk" "Sdk" "SDK"; do
+                local cand="${studio}/${sub}"
                 if [ -d "$cand" ]; then
-                    export ANDROID_HOME="$cand"
-                    return 0
+                    for marker in "platforms" "platform-tools" "build-tools" "cmdline-tools" "tools"; do
+                        if [ -d "${cand}/${marker}" ]; then
+                            export ANDROID_HOME="$cand"
+                            return 0
+                        fi
+                    done
                 fi
             done
-            ;;
-        darwin)
-            for cand in "$HOME/Library/Android/sdk" "/usr/local/opt/android-sdk"; do
-                if [ -d "$cand" ]; then
-                    export ANDROID_HOME="$cand"
-                    return 0
-                fi
-            done
-            ;;
-        msys2)
-            WINUSER="${USER:-${USERNAME:-$(whoami 2>/dev/null || echo "$USER")}}"
-            for cand in "/c/Users/$WINUSER/AppData/Local/Android/Sdk" "/c/Program Files/Android/Sdk" "/c/Android/Sdk"; do
-                if [ -d "$cand" ]; then
-                    export ANDROID_HOME="$cand"
-                    return 0
-                fi
-            done
-            ;;
-    esac
+        fi
+    done
+
     return 1
 }
 
 if ! find_android_sdk; then
     echo "ERROR: Android SDK not found. Set ANDROID_HOME or install the SDK."
+    echo ""
+    echo "  export ANDROID_HOME=\"/c/Users/$USER/AppData/Local/Android/Sdk\""
+    echo ""
+    ls -d "/c/Program Files/Android"/*/ "/c/Users/$USER/AppData/Local/Android"/*/ "$HOME/Android"/*/ 2>/dev/null || echo "(no candidates found in searched locations)"
     exit 1
 fi
 echo "=== Android SDK found: $ANDROID_HOME ==="
