@@ -10,16 +10,16 @@ History Tracers is a public, open-source educational project that teaches interd
 
 ## Building
 
-Generate the Gradle wrapper (if not present):
+Use the cross-platform build script (requires JDK 17+ and Android SDK):
 
-```
-gradle wrapper
+```sh
+./build-android.sh      # Linux, macOS, Git Bash / MSYS2
 ```
 
-Then build with:
+On Windows (PowerShell):
 
-```
-./gradlew assembleDebug
+```powershell
+.\build-android.ps1
 ```
 
 Or open the project in Android Studio and sync Gradle.

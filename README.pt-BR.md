@@ -10,16 +10,16 @@ O History Tracers é um projeto educacional público e de código aberto que ens
 
 ## Compilação
 
-Gere o wrapper do Gradle (se não existir):
+Use o script de compilação multiplataforma (requer JDK 17+ e Android SDK):
 
-```
-gradle wrapper
+```sh
+./build-android.sh      # Linux, macOS, Git Bash / MSYS2
 ```
 
-Depois compile com:
+No Windows (PowerShell):
 
-```
-./gradlew assembleDebug
+```powershell
+.\build-android.ps1
 ```
 
 Ou abra o projeto no Android Studio e sincronize o Gradle.
