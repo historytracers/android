@@ -24,6 +24,26 @@ En Windows (PowerShell):
 
 O abra el proyecto en Android Studio y sincronice Gradle.
 
+## Prueba de la compilación
+
+Después de una compilación exitosa, el APK se genera en:
+
+```sh
+app/build/outputs/apk/debug/app-debug.apk
+```
+
+Instálelo en un dispositivo o emulador conectado:
+
+```sh
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+El AAR de la biblioteca común se genera en:
+
+```sh
+common/src/android/build/outputs/aar/common-debug.aar
+```
+
 ## Estructura del proyecto
 
 | Ruta | Descripción |
