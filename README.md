@@ -24,6 +24,26 @@ On Windows (PowerShell):
 
 Or open the project in Android Studio and sync Gradle.
 
+## Testing the build
+
+After a successful build, the APK is produced at:
+
+```sh
+app/build/outputs/apk/debug/app-debug.apk
+```
+
+Install it on a connected device or emulator:
+
+```sh
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+The common library AAR is produced at:
+
+```sh
+common/src/android/build/outputs/aar/common-debug.aar
+```
+
 ## Project structure
 
 | Path | Description |
