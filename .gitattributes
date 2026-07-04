@@ -1,2 +1,5 @@
-# Enforce LF (Linux) line endings for all files
+# Enforce LF line endings for all files
 * text=auto eol=lf
+
+# Batch files keep CRLF (Windows)
+*.bat text eol=crlf
