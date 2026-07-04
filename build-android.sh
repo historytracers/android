@@ -189,8 +189,16 @@ echo "=== Android SDK found: $ANDROID_HOME ==="
 # --- Check for Gradle wrapper ---
 if [ ! -f "$SCRIPT_DIR/gradle/wrapper/gradle-wrapper.jar" ]; then
     echo "=== Generating Gradle wrapper... ==="
+    GRADLE_CMD=""
     if command -v gradle &> /dev/null; then
-        gradle wrapper --project-dir "$SCRIPT_DIR"
+        GRADLE_CMD="gradle"
+    elif [ -f "/c/gradle/bin/gradle" ]; then
+        GRADLE_CMD="/c/gradle/bin/gradle"
+    elif [ -f "/c/Users/$USER/gradle/bin/gradle" ]; then
+        GRADLE_CMD="/c/Users/$USER/gradle/bin/gradle"
+    fi
+    if [ -n "$GRADLE_CMD" ]; then
+        "$GRADLE_CMD" wrapper --gradle-version 9.4.1 --project-dir "$SCRIPT_DIR"
     else
         echo "ERROR: Gradle not installed and no wrapper JAR found."
         echo "Run 'gradle wrapper' manually or open the project in Android Studio."

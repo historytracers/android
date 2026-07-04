@@ -1,2 +1,36 @@
 # Ignore submodule directory (tracked via gitlink only)
 /common/
+
+# Gradle build cache
+.gradle/
+
+# Build output directories
+build/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Android local configuration
+local.properties
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Binary artifacts
+*.apk
+*.ap_
+*.aab
+*.aar
+*.dex
+*.class
+*.jar
+*.bin
+*.flat
+*.kotlin_module
+*.pack
+*.idx
+*.lock
+*.probe

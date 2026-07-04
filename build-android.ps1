@@ -76,9 +76,17 @@ Write-Output "=== Android SDK found: $env:ANDROID_HOME ==="
 $wrapperJar = "$ScriptDir\gradle\wrapper\gradle-wrapper.jar"
 if (-not (Test-Path $wrapperJar)) {
     Write-Output "=== Generating Gradle wrapper... ==="
+    $gradlePath = $null
     $gradleCmd = Get-Command gradle -ErrorAction SilentlyContinue
     if ($gradleCmd) {
-        & gradle wrapper --project-dir "$ScriptDir"
+        $gradlePath = "gradle"
+    } elseif (Test-Path "C:\gradle\bin\gradle.bat") {
+        $gradlePath = "C:\gradle\bin\gradle.bat"
+    } elseif (Test-Path "$env:USERPROFILE\gradle\bin\gradle.bat") {
+        $gradlePath = "$env:USERPROFILE\gradle\bin\gradle.bat"
+    }
+    if ($gradlePath) {
+        & $gradlePath wrapper --gradle-version 9.4.1 --project-dir "$ScriptDir"
         if (-not $?) { exit 1 }
     } else {
         Write-Error "Gradle not installed and no wrapper JAR found."
