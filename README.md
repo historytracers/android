@@ -35,7 +35,13 @@ app/build/outputs/apk/debug/app-debug.apk
 Install it on a connected device or emulator:
 
 ```sh
-adb install app/build/outputs/apk/debug/app-debug.apk
+./install-apk.sh      # Linux, macOS, Git Bash / MSYS2
+```
+
+On Windows (PowerShell):
+
+```powershell
+.\install-apk.ps1
 ```
 
 The common library AAR is produced at:
