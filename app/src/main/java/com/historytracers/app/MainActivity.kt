@@ -5,8 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.*
 import com.historytracers.app.navigation.AppNavigation
+import com.historytracers.app.ui.screens.SplashScreen
 import com.historytracers.app.ui.theme.HistoryTracersTheme
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +17,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HistoryTracersTheme {
-                AppNavigation()
+                var showSplash by remember { mutableStateOf(true) }
+
+                if (showSplash) {
+                    LaunchedEffect(Unit) {
+                        delay(2000L)
+                        showSplash = false
+                    }
+                    SplashScreen()
+                } else {
+                    AppNavigation()
+                }
             }
         }
     }
