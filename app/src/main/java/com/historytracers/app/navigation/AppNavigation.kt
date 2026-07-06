@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.navigation
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -8,15 +9,16 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.historytracers.app.MainActivity
 import com.historytracers.app.ui.screens.ContentScreen
 import com.historytracers.app.ui.screens.IndexScreen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +33,13 @@ fun AppNavigation() {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
+                Spacer(Modifier.padding(top = 24.dp))
+                Text(
+                    text = "History Tracers",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Divider()
                 NavigationDrawerItem(
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     label = { Text("Home") },
@@ -39,6 +48,7 @@ fun AppNavigation() {
                         navController.navigate(Screen.Index.route) {
                             popUpTo(Screen.Index.route) { inclusive = true }
                         }
+                        scope.launch { drawerState.close() }
                     }
                 )
             }
@@ -49,7 +59,9 @@ fun AppNavigation() {
                 TopAppBar(
                     title = { Text("History Tracers") },
                     navigationIcon = {
-                        IconButton(onClick = { /* TODO: open drawer */ }) {
+                        IconButton(onClick = {
+                            scope.launch { drawerState.open() }
+                        }) {
                             Icon(Icons.Default.Menu, contentDescription = "Menu")
                         }
                     }
@@ -73,7 +85,15 @@ fun AppNavigation() {
                     arguments = listOf(navArgument("fileName") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val fileName = backStackEntry.arguments?.getString("fileName") ?: return@composable
-                    ContentScreen(fileName = fileName)
+                    ContentScreen(
+                        fileName = fileName,
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateHome = {
+                            navController.navigate(Screen.Index.route) {
+                                popUpTo(Screen.Index.route) { inclusive = true }
+                            }
+                        }
+                    )
                 }
             }
         }
