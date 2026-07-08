@@ -1,72 +1,57 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.historytracers.app.data.ContentRepository
-import com.historytracers.app.data.ContentResult
-import com.historytracers.common.ClassIdx
+import com.historytracers.app.ui.LocalUiStrings
 
 @Composable
-fun IndexScreen(onContentClick: (String) -> Unit) {
-    val context = LocalContext.current
-    val repo = remember { ContentRepository(context) }
-    var index by remember { mutableStateOf<ClassIdx?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+fun IndexScreen(language: String) {
+    val s = LocalUiStrings.current
 
-    LaunchedEffect(Unit) {
-        when (val result = repo.loadAndParse("en-US/index")) {
-            is ContentResult.IndexClass -> index = result.data
-            is ContentResult.Error -> error = result.message
-            else -> error = "Unexpected content type"
-        }
-    }
-
-    error?.let {
-        Text("Error: $it", modifier = Modifier.padding(16.dp))
-        return
-    }
-
-    index?.let { idx ->
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            item {
-                idx.header?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            FilledIconButton(
+                onClick = { },
+                modifier = Modifier.size(120.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Icon(
+                    Icons.Default.Psychology,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
 
-            idx.content?.forEach { content ->
-                item {
-                    Text(
-                        text = content.id ?: "",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                    )
-                }
+            Spacer(Modifier.height(24.dp))
 
-                content.value?.let { values ->
-                    items(values) { value ->
-                        ListItem(
-                            headlineContent = { Text(value.name ?: value.id ?: "") },
-                            supportingContent = value.desc?.let { { Text(it) } },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onContentClick(value.id ?: return@clickable) }
-                        )
-                    }
-                }
-            }
+            Text(
+                text = s.iDontKnow,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
         }
     }
 }
