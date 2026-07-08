@@ -96,14 +96,9 @@ fun AppNavigation() {
                     startDestination = Screen.Index.route,
                     modifier = Modifier.padding(padding)
                 ) {
-                    composable(Screen.Index.route) {
-                        IndexScreen(
-                            language = language,
-                            onContentClick = { fileName ->
-                                navController.navigate(Screen.Content.createRoute(fileName))
-                            }
-                        )
-                    }
+                composable(Screen.Index.route) {
+                    IndexScreen(language = language)
+                }
                     composable(
                         route = Screen.Content.route,
                         arguments = listOf(navArgument("fileName") { type = NavType.StringType })

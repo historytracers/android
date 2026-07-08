@@ -32,6 +32,7 @@ data class UiStrings(
     val birth: String,
     val death: String,
     val unknown: String,
+    val iDontKnow: String,
 )
 
 val EnStrings = UiStrings(
@@ -63,6 +64,7 @@ val EnStrings = UiStrings(
     birth = "Birth",
     death = "Death",
     unknown = "?",
+    iDontKnow = "I only know, I do not know...",
 )
 
 val PtStrings = UiStrings(
@@ -94,6 +96,7 @@ val PtStrings = UiStrings(
     birth = "Nascimento",
     death = "Morte",
     unknown = "?",
+    iDontKnow = "S\u00f3 sei que nada sei...",
 )
 
 val EsStrings = UiStrings(
@@ -125,7 +128,8 @@ val EsStrings = UiStrings(
     birth = "Nacimiento",
     death = "Muerte",
     unknown = "?",
-)
+    iDontKnow = "Solo s\u00e9 que no s\u00e9 nada...",
+) 
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
 
