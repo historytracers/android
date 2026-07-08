@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
+import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.UiStrings
 import com.historytracers.app.ui.components.DateUtils
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.common.*
@@ -24,40 +26,47 @@ import com.historytracers.common.*
 @Composable
 fun ContentScreen(
     fileName: String,
+    language: String,
     onNavigateBack: () -> Unit,
     onNavigateHome: () -> Unit
 ) {
+    val s = LocalUiStrings.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     var result by remember { mutableStateOf<ContentResult?>(null) }
 
-    LaunchedEffect(fileName) {
-        result = repo.loadAndParse("en-US/$fileName")
+    LaunchedEffect(fileName, language) {
+        result = repo.loadAndParse("$language/$fileName")
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        NavigationBar(onBack = onNavigateBack, onHome = onNavigateHome)
+        NavigationBar(
+            onBack = onNavigateBack,
+            onHome = onNavigateHome,
+            backLabel = s.back,
+            homeLabel = s.home
+        )
 
         when (val res = result) {
             null -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
             is ContentResult.Error -> Text(
-                "Error: ${res.message}",
+                "${s.error}: ${res.message}",
                 modifier = Modifier.padding(16.dp)
             )
-            is ContentResult.ClassContent -> ClassScreen(res.data, repo)
-            is ContentResult.AtlasContent -> AtlasScreen(res.data, repo)
-            is ContentResult.FamilyTree -> FamilyTreeScreen(res.data, repo)
-            is ContentResult.SMGame -> SMGameScreen(res.data, repo)
-            is ContentResult.IndexClass -> IndexContentScreen(res.data, repo)
-            else -> Text("Unsupported content type", modifier = Modifier.padding(16.dp))
+            is ContentResult.ClassContent -> ClassScreen(res.data, repo, s)
+            is ContentResult.AtlasContent -> AtlasScreen(res.data, repo, s)
+            is ContentResult.FamilyTree -> FamilyTreeScreen(res.data, repo, s)
+            is ContentResult.SMGame -> SMGameScreen(res.data, repo, s)
+            is ContentResult.IndexClass -> IndexContentScreen(res.data, repo, s)
+            else -> Text("${s.error}: unsupported content type", modifier = Modifier.padding(16.dp))
         }
     }
 }
 
 @Composable
-private fun NavigationBar(onBack: () -> Unit, onHome: () -> Unit) {
+private fun NavigationBar(onBack: () -> Unit, onHome: () -> Unit, backLabel: String, homeLabel: String) {
     Surface(
         tonalElevation = 3.dp,
         modifier = Modifier.fillMaxWidth()
@@ -69,17 +78,17 @@ private fun NavigationBar(onBack: () -> Unit, onHome: () -> Unit) {
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel)
             }
             IconButton(onClick = onHome) {
-                Icon(Icons.Default.Home, contentDescription = "Home")
+                Icon(Icons.Default.Home, contentDescription = homeLabel)
             }
         }
     }
 }
 
 @Composable
-private fun ClassScreen(data: ClassTemplateFile, repo: ContentRepository) {
+private fun ClassScreen(data: ClassTemplateFile, repo: ContentRepository, s: UiStrings) {
     LaunchedEffect(data.sources) { repo.loadSources(data.sources) }
 
     Column(
@@ -104,12 +113,12 @@ private fun ClassScreen(data: ClassTemplateFile, repo: ContentRepository) {
         data.exercises?.let { exercises ->
             Spacer(Modifier.height(16.dp))
             Text(
-                "Exercises",
+                s.exercises,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
             exercises.forEach { exercise ->
-                ExerciseCard(exercise)
+                ExerciseCard(exercise, s)
                 Spacer(Modifier.height(8.dp))
             }
         }
@@ -117,7 +126,7 @@ private fun ClassScreen(data: ClassTemplateFile, repo: ContentRepository) {
 }
 
 @Composable
-private fun ExerciseCard(exercise: HTExercise) {
+private fun ExerciseCard(exercise: HTExercise, s: UiStrings) {
     var answered by remember { mutableStateOf(false) }
     var isCorrect by remember { mutableStateOf(false) }
 
@@ -146,7 +155,7 @@ private fun ExerciseCard(exercise: HTExercise) {
                             containerColor = MaterialTheme.colorScheme.primary
                         )
                     ) {
-                        Text("Yes")
+                        Text(s.yes)
                     }
                     OutlinedButton(
                         onClick = {
@@ -154,12 +163,12 @@ private fun ExerciseCard(exercise: HTExercise) {
                             answered = true
                         }
                     ) {
-                        Text("No")
+                        Text(s.no)
                     }
                 }
             } else {
                 Text(
-                    text = if (isCorrect) "Correct!" else "Incorrect",
+                    text = if (isCorrect) s.correct else s.incorrect,
                     color = if (isCorrect) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge,
@@ -176,7 +185,7 @@ private fun ExerciseCard(exercise: HTExercise) {
                         isCorrect = false
                     }
                 ) {
-                    Text("Retry")
+                    Text(s.retry)
                 }
             }
         }
@@ -184,7 +193,7 @@ private fun ExerciseCard(exercise: HTExercise) {
 }
 
 @Composable
-private fun AtlasScreen(data: AtlasTemplateFile, repo: ContentRepository) {
+private fun AtlasScreen(data: AtlasTemplateFile, repo: ContentRepository, s: UiStrings) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -202,7 +211,7 @@ private fun AtlasScreen(data: AtlasTemplateFile, repo: ContentRepository) {
 }
 
 @Composable
-private fun FamilyTreeScreen(data: Family, repo: ContentRepository) {
+private fun FamilyTreeScreen(data: Family, repo: ContentRepository, s: UiStrings) {
     LaunchedEffect(data.sources) { repo.loadSources(data.sources) }
 
     Column(
@@ -219,14 +228,14 @@ private fun FamilyTreeScreen(data: Family, repo: ContentRepository) {
 
         data.families?.forEach { family ->
             Spacer(Modifier.height(16.dp))
-            FamilySection(family, repo)
+            FamilySection(family, repo, s)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FamilySection(family: FamilyBody, repo: ContentRepository) {
+private fun FamilySection(family: FamilyBody, repo: ContentRepository, s: UiStrings) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -246,7 +255,7 @@ private fun FamilySection(family: FamilyBody, repo: ContentRepository) {
                 }
                 family.people?.forEach { person ->
                     Spacer(Modifier.height(8.dp))
-                    PersonSection(person, repo)
+                    PersonSection(person, repo, s)
                 }
             }
         }
@@ -255,7 +264,7 @@ private fun FamilySection(family: FamilyBody, repo: ContentRepository) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PersonSection(person: FamilyPerson, repo: ContentRepository) {
+private fun PersonSection(person: FamilyPerson, repo: ContentRepository, s: UiStrings) {
     var showDetails by remember { mutableStateOf(false) }
 
     OutlinedCard(
@@ -286,14 +295,14 @@ private fun PersonSection(person: FamilyPerson, repo: ContentRepository) {
                 person.birth?.forEach { event ->
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "Birth: ${event.date?.let { DateUtils.formatDate(it) } ?: "?"}",
+                        text = "${s.birth}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.unknown}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
                 person.death?.forEach { event ->
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "Death: ${event.date?.let { DateUtils.formatDate(it) } ?: "?"}",
+                        text = "${s.death}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.unknown}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -303,7 +312,7 @@ private fun PersonSection(person: FamilyPerson, repo: ContentRepository) {
 }
 
 @Composable
-private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
+private fun SMGameScreen(data: SMGameFile, repo: ContentRepository, s: UiStrings) {
     val contentList = data.content ?: emptyList()
     val contentMap = remember(contentList) { contentList.associateBy { it.id } }
     val levelMap = remember(data) {
@@ -330,13 +339,13 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Score: $score",
+                    text = "${s.score}: $score",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = if (contentList.size > 0 && currentNodeId != null) {
-                        "Step ${contentList.indexOfFirst { it.id == currentNodeId } + 1}/${contentList.size}"
+                        "${s.step} ${contentList.indexOfFirst { it.id == currentNodeId } + 1}/${contentList.size}"
                     } else "",
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -350,7 +359,8 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
                     selectedLevelId = levelId
                     val level = levelMap[levelId]
                     currentNodeId = level?.loadID ?: level?.id ?: contentList.firstOrNull()?.id
-                }
+                },
+                s = s
             )
         } else {
             Column(
@@ -373,7 +383,8 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
                             onCorrect = {
                                 score += node.score
                                 answeredNodes = answeredNodes + node.id
-                            }
+                            },
+                            s = s
                         )
                     }
                 }
@@ -394,7 +405,7 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
                             onClick = { currentNodeId = prevId },
                             modifier = Modifier.weight(1f).padding(end = 4.dp)
                         ) {
-                            Text("Previous")
+                            Text(s.previous)
                         }
                     }
                     currentNode?.jumpTo?.let { jumpId ->
@@ -402,7 +413,7 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
                             onClick = { currentNodeId = jumpId },
                             modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                         ) {
-                            Text("Jump")
+                            Text(s.jump)
                         }
                     }
                     currentNode?.next?.let { nextId ->
@@ -410,7 +421,7 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
                             onClick = { currentNodeId = nextId },
                             modifier = Modifier.weight(1f).padding(start = 4.dp)
                         ) {
-                            Text("Next")
+                            Text(s.next)
                         }
                     }
                 }
@@ -422,7 +433,8 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository) {
 @Composable
 private fun LevelSelectionScreen(
     levels: List<SMGameLevel>,
-    onSelectLevel: (String) -> Unit
+    onSelectLevel: (String) -> Unit,
+    s: UiStrings
 ) {
     Column(
         modifier = Modifier
@@ -432,7 +444,7 @@ private fun LevelSelectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Select Level",
+            text = s.selectLevel,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
@@ -463,7 +475,8 @@ private fun AnswerSection(
     answer: Any?,
     nodeId: String,
     scoreValue: Int,
-    onCorrect: () -> Unit
+    onCorrect: () -> Unit,
+    s: UiStrings
 ) {
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
@@ -488,7 +501,7 @@ private fun AnswerSection(
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
-                text = "Answer (+$scoreValue pts)",
+                text = "${s.answer} (+$scoreValue pts)",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -519,8 +532,8 @@ private fun AnswerSection(
             } else {
                 val isCorrect = selectedAnswer == correctAnswer
                 Text(
-                    text = if (isCorrect) "Correct! +$scoreValue pts"
-                    else "Incorrect. Answer: $correctAnswer",
+                    text = if (isCorrect) "${s.correct} +$scoreValue pts"
+                    else "${s.incorrect}. ${s.answer}: $correctAnswer",
                     color = if (isCorrect) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge,
@@ -531,7 +544,7 @@ private fun AnswerSection(
                     selectedAnswer = null
                     hasSubmitted = false
                 }) {
-                    Text("Try Again")
+                    Text(s.tryAgain)
                 }
             }
         }
@@ -539,7 +552,7 @@ private fun AnswerSection(
 }
 
 @Composable
-private fun IndexContentScreen(data: ClassIdx, repo: ContentRepository) {
+private fun IndexContentScreen(data: ClassIdx, repo: ContentRepository, s: UiStrings) {
     Column(
         modifier = Modifier
             .fillMaxSize()

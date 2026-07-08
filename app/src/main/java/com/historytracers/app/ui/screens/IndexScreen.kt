@@ -18,28 +18,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
+import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.common.ClassContent
 import com.historytracers.common.ClassContentValue
 import com.historytracers.common.ClassIdx
 
 @Composable
-fun IndexScreen(onContentClick: (String) -> Unit) {
+fun IndexScreen(language: String, onContentClick: (String) -> Unit) {
+    val s = LocalUiStrings.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     var index by remember { mutableStateOf<ClassIdx?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
-        when (val result = repo.loadAndParse("en-US/index")) {
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/index")) {
             is ContentResult.IndexClass -> index = result.data
             is ContentResult.Error -> error = result.message
-            else -> error = "Unexpected content type"
+            else -> error = "${s.error}: unexpected content type"
         }
     }
 
     error?.let {
-        Text("Error: $it", modifier = Modifier.padding(16.dp))
+        Text("${s.error}: $it", modifier = Modifier.padding(16.dp))
         return
     }
 
@@ -72,7 +74,8 @@ fun IndexScreen(onContentClick: (String) -> Unit) {
                     selectedCategory = selectedCategory,
                     onSelectCategory = { category ->
                         selectedCategory = if (selectedCategory == category) null else category
-                    }
+                    },
+                    allLabel = s.all
                 )
             }
 
@@ -92,7 +95,8 @@ fun IndexScreen(onContentClick: (String) -> Unit) {
                         values.forEach { value ->
                             ContentCard(
                                 value = value,
-                                onClick = { onContentClick(value.id ?: return@ContentCard) }
+                                onClick = { onContentClick(value.id ?: return@ContentCard) },
+                                openLabel = s.open
                             )
                             Spacer(Modifier.height(4.dp))
                         }
@@ -108,7 +112,8 @@ fun IndexScreen(onContentClick: (String) -> Unit) {
 private fun CategoryFilterBar(
     categories: List<String>,
     selectedCategory: String?,
-    onSelectCategory: (String) -> Unit
+    onSelectCategory: (String) -> Unit,
+    allLabel: String
 ) {
     Surface(
         tonalElevation = 1.dp,
@@ -124,7 +129,7 @@ private fun CategoryFilterBar(
             FilterChip(
                 selected = selectedCategory == null,
                 onClick = { onSelectCategory("") },
-                label = { Text("All") }
+                label = { Text(allLabel) }
             )
             categories.forEach { category ->
                 FilterChip(
@@ -139,7 +144,7 @@ private fun CategoryFilterBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ContentCard(value: ClassContentValue, onClick: () -> Unit) {
+private fun ContentCard(value: ClassContentValue, onClick: () -> Unit, openLabel: String) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -169,7 +174,7 @@ private fun ContentCard(value: ClassContentValue, onClick: () -> Unit) {
             }
             Icon(
                 Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "Open",
+                contentDescription = openLabel,
                 tint = MaterialTheme.colorScheme.primary
             )
         }

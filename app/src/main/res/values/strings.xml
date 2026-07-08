@@ -1,4 +1,28 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <resources>
     <string name="app_name">History Tracers</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="menu">Menu</string>
+    <string name="language">Language</string>
+    <string name="break_time">Break Time</string>
+    <string name="break_time_desc">Default break duration between study sessions</string>
+    <string name="minutes">minutes</string>
+    <string name="back">Back</string>
+    <string name="open">Open</string>
+    <string name="error">Error</string>
+    <string name="exercises">Exercises</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="correct">Correct!</string>
+    <string name="incorrect">Incorrect</string>
+    <string name="retry">Retry</string>
+    <string name="score">Score</string>
+    <string name="step">Step</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="jump">Jump</string>
+    <string name="select_level">Select Level</string>
+    <string name="all">All</string>
+    <string name="try_again">Try Again</string>
 </resources>
