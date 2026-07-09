@@ -22,6 +22,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.uiStringsForLanguage
 import com.historytracers.app.ui.screens.ContentScreen
+import com.historytracers.app.ui.screens.FirstStepsScreen
 import com.historytracers.app.ui.screens.IndexScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import kotlinx.coroutines.launch
@@ -96,9 +97,14 @@ fun AppNavigation() {
                     startDestination = Screen.Index.route,
                     modifier = Modifier.padding(padding)
                 ) {
-                composable(Screen.Index.route) {
-                    IndexScreen(language = language)
-                }
+composable(Screen.Index.route) {
+                        IndexScreen(
+                            onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.FirstSteps.route) {
+                        FirstStepsScreen()
+                    }
                     composable(
                         route = Screen.Content.route,
                         arguments = listOf(navArgument("fileName") { type = NavType.StringType })

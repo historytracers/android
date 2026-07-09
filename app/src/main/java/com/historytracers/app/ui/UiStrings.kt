@@ -32,11 +32,12 @@ data class UiStrings(
     val birth: String,
     val death: String,
     val unknown: String,
+    val firstSteps: String,
     val iDontKnow: String,
 )
 
 val EnStrings = UiStrings(
-    home = "Home",
+    home = "Knowledge",
     settings = "Settings",
     menu = "Menu",
     back = "Back",
@@ -64,11 +65,12 @@ val EnStrings = UiStrings(
     birth = "Birth",
     death = "Death",
     unknown = "?",
+    firstSteps = "First Steps",
     iDontKnow = "I only know, I do not know...",
 )
 
 val PtStrings = UiStrings(
-    home = "Principal",
+    home = "Conhecimento",
     settings = "Op\u00e7\u00f5es",
     menu = "Menu",
     back = "Voltar",
@@ -96,11 +98,12 @@ val PtStrings = UiStrings(
     birth = "Nascimento",
     death = "Morte",
     unknown = "?",
+    firstSteps = "Primeiros Passos",
     iDontKnow = "S\u00f3 sei que nada sei...",
 )
 
 val EsStrings = UiStrings(
-    home = "Principal",
+    home = "Conocimiento",
     settings = "Opciones",
     menu = "Men\u00fa",
     back = "Atr\u00e1s",
@@ -128,6 +131,7 @@ val EsStrings = UiStrings(
     birth = "Nacimiento",
     death = "Muerte",
     unknown = "?",
+    firstSteps = "Primeros Pasos",
     iDontKnow = "Solo s\u00e9 que no s\u00e9 nada...",
 ) 
 

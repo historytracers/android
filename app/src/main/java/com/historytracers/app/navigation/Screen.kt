@@ -7,5 +7,6 @@ sealed class Screen(val route: String) {
         fun createRoute(fileName: String) = "content/$fileName"
     }
     data object Sources : Screen("sources")
+    data object FirstSteps : Screen("first_steps")
     data object Settings : Screen("settings")
 }
