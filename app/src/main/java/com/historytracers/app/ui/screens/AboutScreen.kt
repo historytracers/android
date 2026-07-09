@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,8 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,7 +53,6 @@ private val socialLinks = listOf(
 @Composable
 fun AboutScreen() {
     val s = LocalUiStrings.current
-    val uriHandler = LocalUriHandler.current
 
     Column(
         modifier = Modifier
@@ -83,10 +89,7 @@ fun AboutScreen() {
             horizontalArrangement = Arrangement.Center
         ) {
             socialLinks.forEach { link ->
-                SocialIconButton(
-                    link = link,
-                    onClick = { uriHandler.openUri(link.url) }
-                )
+                SocialIconButton(link = link)
             }
         }
 
@@ -95,25 +98,68 @@ fun AboutScreen() {
 }
 
 @Composable
-private fun SocialIconButton(
-    link: SocialLink,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .padding(2.dp)
-            .clip(CircleShape)
-            .background(link.color)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        val painter: Painter = painterResource(id = link.drawableRes)
-        Icon(
-            painter = painter,
-            contentDescription = null,
-            modifier = Modifier.size(22.dp),
-            tint = Color.White
-        )
+private fun SocialIconButton(link: SocialLink) {
+    val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    var showMenu by remember { mutableStateOf(false) }
+
+    Box {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .padding(2.dp)
+                .clip(CircleShape)
+                .background(link.color)
+                .clickable { showMenu = true },
+            contentAlignment = Alignment.Center
+        ) {
+            val painter: Painter = painterResource(id = link.drawableRes)
+            Icon(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier.size(22.dp),
+                tint = Color.White
+            )
+        }
+
+        DropdownMenu(
+            expanded = showMenu,
+            onDismissRequest = { showMenu = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(s.copyUrl) },
+                onClick = {
+                    showMenu = false
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("URL", link.url))
+                    Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(s.goToUrl) },
+                onClick = {
+                    showMenu = false
+                    uriHandler.openUri(link.url)
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(s.openApp) },
+                onClick = {
+                    showMenu = false
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link.url)).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                addFlags(Intent.FLAG_ACTIVITY_REQUIRE_NON_BROWSER)
+                            }
+                        }
+                        context.startActivity(intent)
+                    } catch (_: ActivityNotFoundException) {
+                        Toast.makeText(context, "App not installed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        }
     }
 }
