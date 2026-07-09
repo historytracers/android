@@ -18,6 +18,7 @@ class UserPreferences(private val context: Context) {
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val BREAK_TIME_KEY = intPreferencesKey("break_time")
         private val LAST_ROUTE_KEY = stringPreferencesKey("last_route")
+        private val SCORE_KEY = intPreferencesKey("score")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -47,6 +48,16 @@ class UserPreferences(private val context: Context) {
     suspend fun setLastRoute(route: String) {
         context.dataStore.edit { preferences ->
             preferences[LAST_ROUTE_KEY] = route
+        }
+    }
+
+    val score: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[SCORE_KEY] ?: 0
+    }
+
+    suspend fun setScore(score: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[SCORE_KEY] = score
         }
     }
 }

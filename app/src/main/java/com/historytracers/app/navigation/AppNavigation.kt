@@ -38,14 +38,22 @@ fun AppNavigation() {
     val scope = rememberCoroutineScope()
     val simpleRoutes = setOf("index", "first_steps", "settings")
     var startDest by remember { mutableStateOf<String?>(null) }
+    var savedScore by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(Unit) {
         preferences.lastRoute.first().let { saved ->
             startDest = if (saved in simpleRoutes) saved else "index"
         }
+        savedScore = preferences.score.first()
     }
 
-    if (startDest == null) return
+    if (startDest == null || savedScore == null) return
+
+    var counter by remember { mutableStateOf(savedScore!!) }
+
+    LaunchedEffect(counter) {
+        preferences.setScore(counter)
+    }
 
     val uiStrings = uiStringsForLanguage(language)
 
@@ -55,8 +63,6 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-    var counter by remember { mutableStateOf(0) }
 
     LaunchedEffect(currentRoute) {
         val route = currentRoute
