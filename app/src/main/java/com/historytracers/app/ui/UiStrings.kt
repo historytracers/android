@@ -34,6 +34,8 @@ data class UiStrings(
     val unknown: String,
     val firstSteps: String,
     val iDontKnow: String,
+    val aboutUs: String,
+    val aboutDescription: String,
 )
 
 val EnStrings = UiStrings(
@@ -67,6 +69,8 @@ val EnStrings = UiStrings(
     unknown = "?",
     firstSteps = "First Steps",
     iDontKnow = "I only know, I do not know...",
+    aboutUs = "About us",
+    aboutDescription = "History Tracers is an open source project created to help people understand content instead of only exercising memorization.\n\nJoin our social network and share with us what subject you would like to have in all History Tracers apps.",
 )
 
 val PtStrings = UiStrings(
@@ -100,6 +104,8 @@ val PtStrings = UiStrings(
     unknown = "?",
     firstSteps = "Primeiros Passos",
     iDontKnow = "S\u00f3 sei que nada sei...",
+    aboutUs = "Sobre n\u00f3s",
+    aboutDescription = "History Tracers \u00e9 um projeto de c\u00f3digo aberto criado para ajudar as pessoas a compreender o conte\u00fado, em vez de apenas exercitar a memoriza\u00e7\u00e3o.\n\nJunte-se \u00e0 nossa rede social e compartilhe conosco qual assunto voc\u00ea gostaria de ter em todos os aplicativos History Tracers.",
 )
 
 val EsStrings = UiStrings(
@@ -133,6 +139,8 @@ val EsStrings = UiStrings(
     unknown = "?",
     firstSteps = "Primeros Pasos",
     iDontKnow = "Solo s\u00e9 que no s\u00e9 nada...",
+    aboutUs = "Sobre nosotros",
+    aboutDescription = "History Tracers es un proyecto de c\u00f3digo abierto creado para ayudar a las personas a comprender el contenido, en lugar de solo ejercitar la memorizaci\u00f3n.\n\n\u00danete a nuestra red social y comparte con nosotros qu\u00e9 tema te gustar\u00eda tener en todas las aplicaciones de History Tracers.",
 ) 
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

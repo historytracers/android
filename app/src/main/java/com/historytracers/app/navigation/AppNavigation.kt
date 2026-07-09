@@ -4,6 +4,7 @@ package com.historytracers.app.navigation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Settings
@@ -21,6 +22,7 @@ import androidx.navigation.navArgument
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.uiStringsForLanguage
+import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.ContentScreen
 import com.historytracers.app.ui.screens.FirstStepsScreen
 import com.historytracers.app.ui.screens.IndexScreen
@@ -36,7 +38,7 @@ fun AppNavigation() {
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 30)
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "settings")
+    val simpleRoutes = setOf("index", "first_steps", "settings", "about")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -103,6 +105,16 @@ fun AppNavigation() {
                             scope.launch { drawerState.close() }
                         }
                     )
+                    Divider()
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Info, contentDescription = null) },
+                        label = { Text(uiStrings.aboutUs) },
+                        selected = currentRoute == Screen.About.route,
+                        onClick = {
+                            navController.navigate(Screen.About.route)
+                            scope.launch { drawerState.close() }
+                        }
+                    )
                 }
             }
         ) {
@@ -162,6 +174,9 @@ composable(Screen.Index.route) {
                                 }
                             }
                         )
+                    }
+                    composable(Screen.About.route) {
+                        AboutScreen()
                     }
                     composable(Screen.Settings.route) {
                         SettingsScreen(
