@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.navigation
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -43,6 +43,8 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    var counter by remember { mutableStateOf(0) }
 
     val simpleRoutes = setOf("index", "first_steps", "settings")
     val startDestination = if (lastRoute in simpleRoutes) lastRoute else "index"
@@ -99,6 +101,20 @@ fun AppNavigation() {
                             }) {
                                 Icon(Icons.Default.Menu, contentDescription = uiStrings.menu)
                             }
+                        },
+                        actions = {
+                            Text(
+                                text = counter.toString(),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(Modifier.padding(end = 4.dp))
+                            Icon(
+                                Icons.Default.Psychology,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.padding(end = 12.dp))
                         }
                     )
                 }
