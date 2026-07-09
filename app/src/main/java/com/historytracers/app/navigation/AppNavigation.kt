@@ -25,6 +25,7 @@ import com.historytracers.app.ui.screens.ContentScreen
 import com.historytracers.app.ui.screens.FirstStepsScreen
 import com.historytracers.app.ui.screens.IndexScreen
 import com.historytracers.app.ui.screens.SettingsScreen
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,10 +35,21 @@ fun AppNavigation() {
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 30)
-    val lastRoute by preferences.lastRoute.collectAsState(initial = "index")
     val scope = rememberCoroutineScope()
+    val simpleRoutes = setOf("index", "first_steps", "settings")
+    var startDest by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        preferences.lastRoute.first().let { saved ->
+            startDest = if (saved in simpleRoutes) saved else "index"
+        }
+    }
+
+    if (startDest == null) return
 
     val uiStrings = uiStringsForLanguage(language)
+
+    val startDestination = startDest!!
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -46,13 +58,10 @@ fun AppNavigation() {
 
     var counter by remember { mutableStateOf(0) }
 
-    val simpleRoutes = setOf("index", "first_steps", "settings")
-    val startDestination = if (lastRoute in simpleRoutes) lastRoute else "index"
-
     LaunchedEffect(currentRoute) {
         val route = currentRoute
         if (route != null && route in simpleRoutes) {
-            scope.launch { preferences.setLastRoute(route) }
+            preferences.setLastRoute(route)
         }
     }
 
