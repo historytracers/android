@@ -34,6 +34,7 @@ fun AppNavigation() {
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 30)
+    val lastRoute by preferences.lastRoute.collectAsState(initial = "index")
     val scope = rememberCoroutineScope()
 
     val uiStrings = uiStringsForLanguage(language)
@@ -42,6 +43,16 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val simpleRoutes = setOf("index", "first_steps", "settings")
+    val startDestination = if (lastRoute in simpleRoutes) lastRoute else "index"
+
+    LaunchedEffect(currentRoute) {
+        val route = currentRoute
+        if (route != null && route in simpleRoutes) {
+            scope.launch { preferences.setLastRoute(route) }
+        }
+    }
 
     CompositionLocalProvider(LocalUiStrings provides uiStrings) {
         ModalNavigationDrawer(
@@ -94,7 +105,7 @@ fun AppNavigation() {
             ) { padding ->
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Index.route,
+                    startDestination = startDestination,
                     modifier = Modifier.padding(padding)
                 ) {
 composable(Screen.Index.route) {

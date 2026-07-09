@@ -17,6 +17,7 @@ class UserPreferences(private val context: Context) {
     companion object {
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val BREAK_TIME_KEY = intPreferencesKey("break_time")
+        private val LAST_ROUTE_KEY = stringPreferencesKey("last_route")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -36,6 +37,16 @@ class UserPreferences(private val context: Context) {
     suspend fun setBreakTime(minutes: Int) {
         context.dataStore.edit { preferences ->
             preferences[BREAK_TIME_KEY] = minutes
+        }
+    }
+
+    val lastRoute: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[LAST_ROUTE_KEY] ?: "index"
+    }
+
+    suspend fun setLastRoute(route: String) {
+        context.dataStore.edit { preferences ->
+            preferences[LAST_ROUTE_KEY] = route
         }
     }
 }
