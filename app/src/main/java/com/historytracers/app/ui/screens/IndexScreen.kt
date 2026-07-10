@@ -2,9 +2,10 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,7 +16,11 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
 
 @Composable
-fun IndexScreen(language: String) {
+fun IndexScreen(
+    onNavigateToFirstSteps: () -> Unit = {},
+    onNavigateToWorkout: () -> Unit = {},
+    onNavigateToAbacus: () -> Unit = {}
+) {
     val s = LocalUiStrings.current
 
     Box(
@@ -26,32 +31,64 @@ fun IndexScreen(language: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            FilledIconButton(
-                onClick = { },
-                modifier = Modifier.size(120.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+            FilledTonalButton(
+                onClick = onNavigateToFirstSteps,
+                modifier = Modifier.padding(horizontal = 32.dp)
             ) {
                 Icon(
-                    Icons.Default.Psychology,
+                    Icons.AutoMirrored.Filled.DirectionsWalk,
                     contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = s.firstSteps,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
 
-            Text(
-                text = s.iDontKnow,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            FilledTonalButton(
+                onClick = onNavigateToWorkout,
                 modifier = Modifier.padding(horizontal = 32.dp)
-            )
+            ) {
+                Icon(
+                    Icons.Default.FitnessCenter,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = s.workout,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            FilledTonalButton(
+                onClick = onNavigateToAbacus,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            ) {
+                Icon(
+                    Icons.Default.Calculate,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = s.abacus,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
+
