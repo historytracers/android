@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -39,6 +40,13 @@ fun ContentScreen(
 
     LaunchedEffect(fileName, language) {
         result = repo.loadAndParse("$language/$fileName")
+    }
+
+    LaunchedEffect(result) {
+        if (result != null) {
+            val prefs = UserPreferences(context)
+            prefs.recordLessonCompletion()
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

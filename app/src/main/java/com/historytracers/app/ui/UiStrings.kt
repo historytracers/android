@@ -53,6 +53,8 @@ data class UiStrings(
     val isItFreeDonateCall: String,
     val isItFreeFollowPrefix: String,
     val isItFreeFollowSuffix: String,
+    val streak: String,
+    val days: String,
 )
 
 val EnStrings = UiStrings(
@@ -105,6 +107,8 @@ val EnStrings = UiStrings(
     isItFreeDonateCall = "To support us, you can use one of our donation channels:",
     isItFreeFollowPrefix = "If you cannot, you do not need to feel bad, go to section below and follow us:",
     isItFreeFollowSuffix = "",
+    streak = "Streak",
+    days = "days",
 )
 
 val PtStrings = UiStrings(
@@ -157,6 +161,8 @@ val PtStrings = UiStrings(
     isItFreeDonateCall = "Para nos apoiar, use um de nossos canais de doa\u00e7\u00e3o:",
     isItFreeFollowPrefix = "Se n\u00e3o puder, n\u00e3o precisa se sentir mal, v\u00e1 at\u00e9 a se\u00e7\u00e3o abaixo e siga-nos:",
     isItFreeFollowSuffix = "",
+    streak = "Sequ\u00eancia",
+    days = "dias",
 )
 
 val EsStrings = UiStrings(
@@ -209,6 +215,8 @@ val EsStrings = UiStrings(
     isItFreeDonateCall = "Para apoyarnos, usa uno de nuestros canales de donaci\u00f3n:",
     isItFreeFollowPrefix = "Si no puedes, no te sientas mal, ve a la secci\u00f3n de abajo y s\u00edguenos:",
     isItFreeFollowSuffix = "",
+    streak = "Racha",
+    days = "d\u00edas",
 ) 
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

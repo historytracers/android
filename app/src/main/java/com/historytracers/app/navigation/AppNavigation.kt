@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Settings
@@ -31,6 +32,7 @@ import com.historytracers.app.ui.screens.IsItFreeScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
+import com.historytracers.app.ui.screens.StreakScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -42,7 +44,7 @@ fun AppNavigation() {
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 30)
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "settings", "about", "is_it_free")
+    val simpleRoutes = setOf("index", "first_steps", "settings", "about", "is_it_free", "streak")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -60,6 +62,9 @@ fun AppNavigation() {
     LaunchedEffect(counter) {
         preferences.setScore(counter)
     }
+
+    val streakCount by preferences.streakCount.collectAsState(initial = 0)
+    val completedDates by preferences.completedDates.collectAsState(initial = emptySet())
 
     val uiStrings = uiStringsForLanguage(language)
 
@@ -106,6 +111,15 @@ fun AppNavigation() {
                         selected = currentRoute == Screen.Settings.route,
                         onClick = {
                             navController.navigate(Screen.Settings.route)
+                            scope.launch { drawerState.close() }
+                        }
+                    )
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.LocalFireDepartment, contentDescription = null) },
+                        label = { Text(uiStrings.streak) },
+                        selected = currentRoute == Screen.Streak.route,
+                        onClick = {
+                            navController.navigate(Screen.Streak.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -214,6 +228,13 @@ composable(Screen.Index.route) {
                             onBreakTimeChanged = { minutes ->
                                 scope.launch { preferences.setBreakTime(minutes) }
                             },
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable(Screen.Streak.route) {
+                        StreakScreen(
+                            streakCount = streakCount,
+                            completedDates = completedDates,
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }
