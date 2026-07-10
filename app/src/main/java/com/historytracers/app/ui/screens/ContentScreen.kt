@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.UiStrings
 import com.historytracers.app.ui.components.DateUtils
 import com.historytracers.app.ui.components.TextRenderer
@@ -152,7 +154,7 @@ private fun ExerciseCard(exercise: HTExercise, s: UiStrings) {
                             answered = true
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
+                            containerColor = ButtonYellow
                         )
                     ) {
                         Text(s.yes)
@@ -522,7 +524,7 @@ private fun AnswerSection(
                             .padding(vertical = 2.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (selectedAnswer == option.lowercase())
-                                MaterialTheme.colorScheme.primary
+                                ButtonYellow
                             else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {

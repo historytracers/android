@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun AbacusScreen() {
@@ -31,14 +33,14 @@ fun AbacusScreen() {
                 modifier = Modifier.size(120.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = ButtonYellow
                 )
             ) {
                 Icon(
                     Icons.Default.Calculate,
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = OnButtonYellow
                 )
             }
 

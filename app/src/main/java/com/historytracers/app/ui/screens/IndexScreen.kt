@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun IndexScreen(
@@ -33,7 +35,11 @@ fun IndexScreen(
         ) {
             FilledTonalButton(
                 onClick = onNavigateToFirstSteps,
-                modifier = Modifier.padding(horizontal = 32.dp)
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.DirectionsWalk,
@@ -53,7 +59,11 @@ fun IndexScreen(
 
             FilledTonalButton(
                 onClick = onNavigateToWorkout,
-                modifier = Modifier.padding(horizontal = 32.dp)
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
             ) {
                 Icon(
                     Icons.Default.FitnessCenter,
@@ -73,7 +83,11 @@ fun IndexScreen(
 
             FilledTonalButton(
                 onClick = onNavigateToAbacus,
-                modifier = Modifier.padding(horizontal = 32.dp)
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
             ) {
                 Icon(
                     Icons.Default.Calculate,
