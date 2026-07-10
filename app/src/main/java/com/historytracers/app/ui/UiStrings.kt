@@ -39,6 +39,12 @@ data class UiStrings(
     val copyUrl: String,
     val goToUrl: String,
     val openApp: String,
+    val close: String,
+    val isItFree: String,
+    val isItFreeContent: String,
+    val isItFreeDonateCall: String,
+    val isItFreeFollowPrefix: String,
+    val isItFreeFollowSuffix: String,
 )
 
 val EnStrings = UiStrings(
@@ -77,6 +83,12 @@ val EnStrings = UiStrings(
     copyUrl = "Copy URL",
     goToUrl = "Go to URL",
     openApp = "Open App",
+    close = "Close",
+    isItFree = "Is it free?",
+    isItFreeContent = "This project is not only free, but we also share the code with you, allowing you to learn how to create it as well.\n\nBut the fact that it is free does not mean it has no costs for us. We have expenses to maintain it, and it can grow faster when you contribute with ideas and, if possible, with financial support.",
+    isItFreeDonateCall = "To support us, you can use one of our donation channels:",
+    isItFreeFollowPrefix = "If you cannot, you do not need to feel bad, go to section below and follow us:",
+    isItFreeFollowSuffix = "",
 )
 
 val PtStrings = UiStrings(
@@ -115,6 +127,12 @@ val PtStrings = UiStrings(
     copyUrl = "Copiar URL",
     goToUrl = "Ir para URL",
     openApp = "Abrir App",
+    close = "Fechar",
+    isItFree = "\u00c9 gratuito?",
+    isItFreeContent = "Este projeto n\u00e3o \u00e9 apenas gratuito, mas tamb\u00e9m compartilhamos o c\u00f3digo com voc\u00ea, permitindo que aprenda a cri\u00e1-lo tamb\u00e9m.\n\nMas o fato de ser gratuito n\u00e3o significa que n\u00e3o tenha custos para n\u00f3s. Temos despesas para mant\u00ea-lo, e ele pode crescer mais r\u00e1pido quando voc\u00ea contribui com ideias e, se poss\u00edvel, com apoio financeiro.",
+    isItFreeDonateCall = "Para nos apoiar, use um de nossos canais de doa\u00e7\u00e3o:",
+    isItFreeFollowPrefix = "Se n\u00e3o puder, n\u00e3o precisa se sentir mal, v\u00e1 at\u00e9 a se\u00e7\u00e3o abaixo e siga-nos:",
+    isItFreeFollowSuffix = "",
 )
 
 val EsStrings = UiStrings(
@@ -153,6 +171,12 @@ val EsStrings = UiStrings(
     copyUrl = "Copiar URL",
     goToUrl = "Ir a URL",
     openApp = "Abrir App",
+    close = "Cerrar",
+    isItFree = "\u00bfEs gratuito?",
+    isItFreeContent = "Este proyecto no solo es gratuito, sino que tambi\u00e9n compartimos el c\u00f3digo contigo, permiti\u00e9ndote aprender a crearlo tambi\u00e9n.\n\nPero el hecho de que sea gratuito no significa que no tenga costos para nosotros. Tenemos gastos para mantenerlo, y puede crecer m\u00e1s r\u00e1pido cuando contribuyes con ideas y, si es posible, con apoyo financiero.",
+    isItFreeDonateCall = "Para apoyarnos, usa uno de nuestros canales de donaci\u00f3n:",
+    isItFreeFollowPrefix = "Si no puedes, no te sientas mal, ve a la secci\u00f3n de abajo y s\u00edguenos:",
+    isItFreeFollowSuffix = "",
 ) 
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

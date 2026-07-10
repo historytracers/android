@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.ContentScreen
 import com.historytracers.app.ui.screens.FirstStepsScreen
 import com.historytracers.app.ui.screens.IndexScreen
+import com.historytracers.app.ui.screens.IsItFreeScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -38,7 +40,7 @@ fun AppNavigation() {
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 30)
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "settings", "about")
+    val simpleRoutes = setOf("index", "first_steps", "settings", "about", "is_it_free")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -107,6 +109,15 @@ fun AppNavigation() {
                     )
                     Divider()
                     NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Star, contentDescription = null) },
+                        label = { Text(uiStrings.isItFree) },
+                        selected = currentRoute == Screen.IsItFree.route,
+                        onClick = {
+                            navController.navigate(Screen.IsItFree.route)
+                            scope.launch { drawerState.close() }
+                        }
+                    )
+                    NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Info, contentDescription = null) },
                         label = { Text(uiStrings.aboutUs) },
                         selected = currentRoute == Screen.About.route,
@@ -173,6 +184,11 @@ composable(Screen.Index.route) {
                                     popUpTo(Screen.Index.route) { inclusive = true }
                                 }
                             }
+                        )
+                    }
+                    composable(Screen.IsItFree.route) {
+                        IsItFreeScreen(
+                            onNavigateToAbout = { navController.navigate(Screen.About.route) }
                         )
                     }
                     composable(Screen.About.route) {
