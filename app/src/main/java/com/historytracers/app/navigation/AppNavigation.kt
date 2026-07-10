@@ -30,6 +30,7 @@ import com.historytracers.app.ui.screens.IndexScreen
 import com.historytracers.app.ui.screens.IsItFreeScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
+import com.historytracers.app.ui.screens.AbacusScreen
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -166,7 +167,8 @@ fun AppNavigation() {
 composable(Screen.Index.route) {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
-                            onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } }
+                            onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } },
+                            onNavigateToAbacus = { navController.navigate(Screen.Abacus.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.FirstSteps.route) {
@@ -174,6 +176,9 @@ composable(Screen.Index.route) {
                     }
                     composable(Screen.Workout.route) {
                         WorkoutScreen()
+                    }
+                    composable(Screen.Abacus.route) {
+                        AbacusScreen()
                     }
                     composable(
                         route = Screen.Content.route,

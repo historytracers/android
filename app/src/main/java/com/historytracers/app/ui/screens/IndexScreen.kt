@@ -4,6 +4,7 @@ package com.historytracers.app.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,7 +18,8 @@ import com.historytracers.app.ui.LocalUiStrings
 @Composable
 fun IndexScreen(
     onNavigateToFirstSteps: () -> Unit = {},
-    onNavigateToWorkout: () -> Unit = {}
+    onNavigateToWorkout: () -> Unit = {},
+    onNavigateToAbacus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -62,6 +64,26 @@ fun IndexScreen(
                 Spacer(Modifier.width(12.dp))
                 Text(
                     text = s.workout,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            FilledTonalButton(
+                onClick = onNavigateToAbacus,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            ) {
+                Icon(
+                    Icons.Default.Calculate,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = s.abacus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
