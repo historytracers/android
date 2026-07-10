@@ -29,7 +29,7 @@ fun WorkoutScreen() {
         ) {
             FilledIconButton(
                 onClick = { },
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier.size(96.dp),
                 shape = androidx.compose.foundation.shape.CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = ButtonYellow
@@ -38,7 +38,7 @@ fun WorkoutScreen() {
                 Icon(
                     Icons.Default.FitnessCenter,
                     contentDescription = null,
-                    modifier = Modifier.size(64.dp),
+                    modifier = Modifier.size(52.dp),
                     tint = OnButtonYellow
                 )
             }
