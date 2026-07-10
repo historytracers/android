@@ -55,6 +55,9 @@ data class UiStrings(
     val isItFreeFollowSuffix: String,
     val streak: String,
     val days: String,
+    val breakReminderTitle: String,
+    val breakMessage: String,
+    val imBack: String,
 )
 
 val EnStrings = UiStrings(
@@ -109,6 +112,9 @@ val EnStrings = UiStrings(
     isItFreeFollowSuffix = "",
     streak = "Streak",
     days = "days",
+    breakReminderTitle = "Break Reminder",
+    breakMessage = "You are doing an awesome work! But remember, relax is also part of the learning process. We suggest you to stop few minutes to drink water, go to the bathroom, talk with families, friends and relatives. Eat something before to proceed. When you return, click on \"I'm back!\" button to ensure you will receive another break reminder in few minutes.",
+    imBack = "I'm back!",
 )
 
 val PtStrings = UiStrings(
@@ -163,6 +169,9 @@ val PtStrings = UiStrings(
     isItFreeFollowSuffix = "",
     streak = "Sequ\u00eancia",
     days = "dias",
+    breakReminderTitle = "Lembrete de Pausa",
+    breakMessage = "Voc\u00ea est\u00e1 fazendo um trabalho incr\u00edvel! Mas lembre-se, relaxar tamb\u00e9m faz parte do processo de aprendizagem. Sugerimos que voc\u00ea pare alguns minutos para beber \u00e1gua, ir ao banheiro, conversar com familiares, amigos e parentes. Coma algo antes de continuar. Quando voltar, clique no bot\u00e3o \"Voltei!\" para garantir que receber\u00e1 outro lembrete de pausa em alguns minutos.",
+    imBack = "Voltei!",
 )
 
 val EsStrings = UiStrings(
@@ -217,6 +226,9 @@ val EsStrings = UiStrings(
     isItFreeFollowSuffix = "",
     streak = "Racha",
     days = "d\u00edas",
+    breakReminderTitle = "Recordatorio de Descanso",
+    breakMessage = "\u00a1Est\u00e1s haciendo un trabajo incre\u00edble! Pero recuerda, relajarse tambi\u00e9n es parte del proceso de aprendizaje. Te sugerimos que te detengas unos minutos para beber agua, ir al ba\u00f1o, hablar con familiares, amigos y parientes. Come algo antes de continuar. Cuando regreses, haz clic en el bot\u00f3n \"\u00a1Volv\u00ed!\" para asegurarte de recibir otro recordatorio de descanso en unos minutos.",
+    imBack = "\u00a1Volv\u00ed!",
 ) 
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -23,6 +24,7 @@ class UserPreferences(private val context: Context) {
         private val STREAK_COUNT_KEY = intPreferencesKey("streak_count")
         private val LAST_COMPLETED_DATE_KEY = stringPreferencesKey("last_completed_date")
         private val COMPLETED_DATES_KEY = stringSetPreferencesKey("completed_dates")
+        private val BREAK_START_TIME_KEY = longPreferencesKey("break_start_time")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -42,6 +44,16 @@ class UserPreferences(private val context: Context) {
     suspend fun setBreakTime(minutes: Int) {
         context.dataStore.edit { preferences ->
             preferences[BREAK_TIME_KEY] = minutes
+        }
+    }
+
+    val breakStartTime: Flow<Long> = context.dataStore.data.map { preferences ->
+        preferences[BREAK_START_TIME_KEY] ?: 0L
+    }
+
+    suspend fun setBreakStartTime(time: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[BREAK_START_TIME_KEY] = time
         }
     }
 

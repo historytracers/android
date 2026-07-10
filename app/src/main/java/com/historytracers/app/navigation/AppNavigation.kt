@@ -33,6 +33,7 @@ import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
 import com.historytracers.app.ui.screens.StreakScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -61,6 +62,26 @@ fun AppNavigation() {
 
     LaunchedEffect(counter) {
         preferences.setScore(counter)
+    }
+
+    val breakStartTime by preferences.breakStartTime.collectAsState(initial = 0L)
+    var showBreakDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(breakStartTime) {
+        if (breakStartTime == 0L) {
+            preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
+        }
+    }
+
+    LaunchedEffect(breakStartTime, breakTime) {
+        if (breakStartTime == 0L) return@LaunchedEffect
+        while (true) {
+            delay(1000)
+            if ((System.currentTimeMillis() / 1000L) - breakStartTime >= breakTime * 60L) {
+                showBreakDialog = true
+                break
+            }
+        }
     }
 
     val streakCount by preferences.streakCount.collectAsState(initial = 0)
@@ -241,5 +262,23 @@ composable(Screen.Index.route) {
                 }
             }
         }
+    }
+
+    if (showBreakDialog) {
+        AlertDialog(
+            onDismissRequest = { },
+            title = { Text(uiStrings.breakReminderTitle) },
+            text = { Text(uiStrings.breakMessage) },
+            confirmButton = {
+                TextButton(onClick = {
+                    scope.launch {
+                        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
+                        showBreakDialog = false
+                    }
+                }) {
+                    Text(uiStrings.imBack)
+                }
+            }
+        )
     }
 }
