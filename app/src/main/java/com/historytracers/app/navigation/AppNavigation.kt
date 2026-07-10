@@ -42,7 +42,7 @@ fun AppNavigation() {
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
-    val breakTime by preferences.breakTime.collectAsState(initial = 30)
+    val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val scope = rememberCoroutineScope()
     val simpleRoutes = setOf("index", "first_steps", "settings", "about", "is_it_free", "streak")
     var startDest by remember { mutableStateOf<String?>(null) }

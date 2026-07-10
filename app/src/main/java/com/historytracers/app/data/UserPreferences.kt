@@ -30,7 +30,7 @@ class UserPreferences(private val context: Context) {
     }
 
     val breakTime: Flow<Int> = context.dataStore.data.map { preferences ->
-        preferences[BREAK_TIME_KEY] ?: 30
+        preferences[BREAK_TIME_KEY] ?: 15
     }
 
     suspend fun setLanguage(language: String) {
