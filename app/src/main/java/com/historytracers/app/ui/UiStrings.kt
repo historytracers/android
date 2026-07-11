@@ -65,6 +65,7 @@ data class UiStrings(
     val history: String,
     val writingToSoroban: String,
     val writingToSuanpan: String,
+    val largeNumbers: String,
 )
 
 val EnStrings = UiStrings(
@@ -129,6 +130,7 @@ val EnStrings = UiStrings(
     history = "History",
     writingToSoroban = "Writing to Soroban",
     writingToSuanpan = "Writing to Suanpan",
+    largeNumbers = "Writing large numbers",
 )
 
 val PtStrings = UiStrings(
@@ -187,12 +189,13 @@ val PtStrings = UiStrings(
     breakMessage = "Voc\u00ea est\u00e1 fazendo um trabalho incr\u00edvel! Mas lembre-se, relaxar tamb\u00e9m faz parte do processo de aprendizagem. Sugerimos que voc\u00ea pare alguns minutos para beber \u00e1gua, ir ao banheiro, conversar com familiares, amigos e parentes. Coma algo antes de continuar. Quando voltar, clique no bot\u00e3o \"Voltei!\" para garantir que receber\u00e1 outro lembrete de pausa em alguns minutos.",
     imBack = "Voltei!",
     voice = "Voz",
-    exercisingHands = "Ejercitando las manos",
-    walking = "Caminando",
-    exercisingFeetAndHands = "Ejercitando Pies y Manos",
-    history = "Historia",
-    writingToSoroban = "Escribiendo al Soroban",
-    writingToSuanpan = "Escribiendo al Suanpan",
+    exercisingHands = "Exercitando as m\u00e3os",
+    walking = "Andando",
+    exercisingFeetAndHands = "Exercitando P\u00e9s e M\u00e3os",
+    history = "Hist\u00f3ria",
+    writingToSoroban = "Escrevendo no Soroban",
+    writingToSuanpan = "Escrevendo no Suanpan",
+    largeNumbers = "Escrevendo n\u00fameros grandes",
 )
 
 val EsStrings = UiStrings(
@@ -251,12 +254,13 @@ val EsStrings = UiStrings(
     breakMessage = "\u00a1Est\u00e1s haciendo un trabajo incre\u00edble! Pero recuerda, relajarse tambi\u00e9n es parte del proceso de aprendizaje. Te sugerimos que te detengas unos minutos para beber agua, ir al ba\u00f1o, hablar con familiares, amigos y parientes. Come algo antes de continuar. Cuando regreses, haz clic en el bot\u00f3n \"\u00a1Volv\u00ed!\" para asegurarte de recibir otro recordatorio de descanso en unos minutos.",
     imBack = "\u00a1Volv\u00ed!",
     voice = "Voz",
-    exercisingHands = "Exercitando as m\u00e3os",
-    walking = "Andando",
-    exercisingFeetAndHands = "Exercitando P\u00e9s e M\u00e3os",
-    history = "Hist\u00f3ria",
-    writingToSoroban = "Escrevendo ao Soroban",
-    writingToSuanpan = "Escrevendo ao Suanpan",
+    exercisingHands = "Ejercitando las manos",
+    walking = "Caminando",
+    exercisingFeetAndHands = "Ejercitando Pies y Manos",
+    history = "Historia",
+    writingToSoroban = "Escribiendo en el Soroban",
+    writingToSuanpan = "Escribiendo en el Suanpan",
+    largeNumbers = "Escribiendo n\u00fameros grandes",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
