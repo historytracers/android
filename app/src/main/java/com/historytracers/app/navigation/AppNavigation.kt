@@ -45,7 +45,7 @@ fun AppNavigation() {
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "settings", "about", "is_it_free", "streak")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
