@@ -14,3 +14,6 @@ val Gold40 = Color(0xFFFFA000)
 
 val DarkBackground = Color(0xFF1C1B1F)
 val LightBackground = Color(0xFFFFFBFE)
+
+val ButtonYellow = Color(0xFFFFF8E0)
+val OnButtonYellow = Color(0xFF333333)

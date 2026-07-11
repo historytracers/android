@@ -36,6 +36,12 @@ data class UiStrings(
     val workout: String,
     val abacus: String,
     val iDontKnow: String,
+    val myHands: String,
+    val myBody: String,
+    val drawing: String,
+    val numbers: String,
+    val sequenceGame: String,
+    val familyPart1: String,
     val aboutUs: String,
     val aboutDescription: String,
     val copyUrl: String,
@@ -47,6 +53,11 @@ data class UiStrings(
     val isItFreeDonateCall: String,
     val isItFreeFollowPrefix: String,
     val isItFreeFollowSuffix: String,
+    val streak: String,
+    val days: String,
+    val breakReminderTitle: String,
+    val breakMessage: String,
+    val imBack: String,
 )
 
 val EnStrings = UiStrings(
@@ -81,7 +92,13 @@ val EnStrings = UiStrings(
     firstSteps = "First Steps",
     workout = "Workout",
     abacus = "Abacus (Soroban/Suanpan)",
-    iDontKnow = "I only know, I do not know...",
+    iDontKnow = "I know that I know nothing",
+    myHands = "My hands",
+    myBody = "My body",
+    drawing = "Drawing",
+    numbers = "Numbers",
+    sequenceGame = "Sequence game",
+    familyPart1 = "Family (Part 1)",
     aboutUs = "About us",
     aboutDescription = "History Tracers is an open source project created to help people understand content instead of only exercising memorization.\n\nJoin our social network and share with us what subject you would like to have in all History Tracers apps.",
     copyUrl = "Copy URL",
@@ -93,6 +110,11 @@ val EnStrings = UiStrings(
     isItFreeDonateCall = "To support us, you can use one of our donation channels:",
     isItFreeFollowPrefix = "If you cannot, you do not need to feel bad, go to section below and follow us:",
     isItFreeFollowSuffix = "",
+    streak = "Streak",
+    days = "days",
+    breakReminderTitle = "Break Reminder",
+    breakMessage = "You are doing an awesome work! But remember, relax is also part of the learning process. We suggest you to stop few minutes to drink water, go to the bathroom, talk with families, friends and relatives. Eat something before to proceed. When you return, click on \"I'm back!\" button to ensure you will receive another break reminder in few minutes.",
+    imBack = "I'm back!",
 )
 
 val PtStrings = UiStrings(
@@ -128,6 +150,12 @@ val PtStrings = UiStrings(
     workout = "Exerc\u00edcio",
     abacus = "\u00c1baco (Soroban/Suanpan)",
     iDontKnow = "S\u00f3 sei que nada sei...",
+    myHands = "Minhas m\u00e3os",
+    myBody = "Meu corpo",
+    drawing = "Desenho",
+    numbers = "N\u00fameros",
+    sequenceGame = "Jogo da sequ\u00eancia",
+    familyPart1 = "Fam\u00edlia (Parte 1)",
     aboutUs = "Sobre n\u00f3s",
     aboutDescription = "History Tracers \u00e9 um projeto de c\u00f3digo aberto criado para ajudar as pessoas a compreender o conte\u00fado, em vez de apenas exercitar a memoriza\u00e7\u00e3o.\n\nJunte-se \u00e0 nossa rede social e compartilhe conosco qual assunto voc\u00ea gostaria de ter em todos os aplicativos History Tracers.",
     copyUrl = "Copiar URL",
@@ -139,6 +167,11 @@ val PtStrings = UiStrings(
     isItFreeDonateCall = "Para nos apoiar, use um de nossos canais de doa\u00e7\u00e3o:",
     isItFreeFollowPrefix = "Se n\u00e3o puder, n\u00e3o precisa se sentir mal, v\u00e1 at\u00e9 a se\u00e7\u00e3o abaixo e siga-nos:",
     isItFreeFollowSuffix = "",
+    streak = "Sequ\u00eancia",
+    days = "dias",
+    breakReminderTitle = "Lembrete de Pausa",
+    breakMessage = "Voc\u00ea est\u00e1 fazendo um trabalho incr\u00edvel! Mas lembre-se, relaxar tamb\u00e9m faz parte do processo de aprendizagem. Sugerimos que voc\u00ea pare alguns minutos para beber \u00e1gua, ir ao banheiro, conversar com familiares, amigos e parentes. Coma algo antes de continuar. Quando voltar, clique no bot\u00e3o \"Voltei!\" para garantir que receber\u00e1 outro lembrete de pausa em alguns minutos.",
+    imBack = "Voltei!",
 )
 
 val EsStrings = UiStrings(
@@ -174,6 +207,12 @@ val EsStrings = UiStrings(
     workout = "Ejercicio",
     abacus = "\u00c1baco (Soroban/Suanpan)",
     iDontKnow = "Solo s\u00e9 que no s\u00e9 nada...",
+    myHands = "Mis manos",
+    myBody = "Mi cuerpo",
+    drawing = "Dibujo",
+    numbers = "N\u00fameros",
+    sequenceGame = "Juego de secuencia",
+    familyPart1 = "Familia (Parte 1)",
     aboutUs = "Sobre nosotros",
     aboutDescription = "History Tracers es un proyecto de c\u00f3digo abierto creado para ayudar a las personas a comprender el contenido, en lugar de solo ejercitar la memorizaci\u00f3n.\n\n\u00danete a nuestra red social y comparte con nosotros qu\u00e9 tema te gustar\u00eda tener en todas las aplicaciones de History Tracers.",
     copyUrl = "Copiar URL",
@@ -185,6 +224,11 @@ val EsStrings = UiStrings(
     isItFreeDonateCall = "Para apoyarnos, usa uno de nuestros canales de donaci\u00f3n:",
     isItFreeFollowPrefix = "Si no puedes, no te sientas mal, ve a la secci\u00f3n de abajo y s\u00edguenos:",
     isItFreeFollowSuffix = "",
+    streak = "Racha",
+    days = "d\u00edas",
+    breakReminderTitle = "Recordatorio de Descanso",
+    breakMessage = "\u00a1Est\u00e1s haciendo un trabajo incre\u00edble! Pero recuerda, relajarse tambi\u00e9n es parte del proceso de aprendizaje. Te sugerimos que te detengas unos minutos para beber agua, ir al ba\u00f1o, hablar con familiares, amigos y parientes. Come algo antes de continuar. Cuando regreses, haz clic en el bot\u00f3n \"\u00a1Volv\u00ed!\" para asegurarte de recibir otro recordatorio de descanso en unos minutos.",
+    imBack = "\u00a1Volv\u00ed!",
 ) 
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
