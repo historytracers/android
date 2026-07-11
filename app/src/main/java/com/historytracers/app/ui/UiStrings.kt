@@ -66,6 +66,7 @@ data class UiStrings(
     val writingToSoroban: String,
     val writingToSuanpan: String,
     val largeNumbers: String,
+    val evaluateOn: String,
 )
 
 val EnStrings = UiStrings(
@@ -131,6 +132,7 @@ val EnStrings = UiStrings(
     writingToSoroban = "Writing to Soroban",
     writingToSuanpan = "Writing to Suanpan",
     largeNumbers = "Writing large numbers",
+    evaluateOn = "Evaluate on:",
 )
 
 val PtStrings = UiStrings(
@@ -196,6 +198,7 @@ val PtStrings = UiStrings(
     writingToSoroban = "Escrevendo no Soroban",
     writingToSuanpan = "Escrevendo no Suanpan",
     largeNumbers = "Escrevendo n\u00fameros grandes",
+    evaluateOn = "Avaliar em:",
 )
 
 val EsStrings = UiStrings(
@@ -261,6 +264,7 @@ val EsStrings = UiStrings(
     writingToSoroban = "Escribiendo en el Soroban",
     writingToSuanpan = "Escribiendo en el Suanpan",
     largeNumbers = "Escribiendo n\u00fameros grandes",
+    evaluateOn = "Evaluar en:",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

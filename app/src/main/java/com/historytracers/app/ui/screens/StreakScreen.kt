@@ -25,7 +25,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Locale
+import com.historytracers.app.ui.UiStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,11 +33,13 @@ fun StreakScreen(
     streakCount: Int,
     completedDates: Set<String>,
     streakDays: Set<String>,
+    language: String,
     onStreakDaysChanged: (Set<String>) -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -68,15 +70,15 @@ fun StreakScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            StreakCounter(streakCount)
+            StreakCounter(streakCount, s)
 
             Spacer(Modifier.height(24.dp))
 
-            WeekDaySelector(streakDays, onStreakDaysChanged)
+            WeekDaySelector(streakDays, language, s, onStreakDaysChanged)
 
             Spacer(Modifier.height(24.dp))
 
-            CalendarHeader(currentMonth, onPreviousMonth = {
+            CalendarHeader(currentMonth, locale, onPreviousMonth = {
                 currentMonth = currentMonth.minusMonths(1)
             }, onNextMonth = {
                 currentMonth = currentMonth.plusMonths(1)
@@ -84,13 +86,13 @@ fun StreakScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            CalendarGrid(currentMonth, completedDates)
+            CalendarGrid(currentMonth, completedDates, locale)
         }
     }
 }
 
 @Composable
-private fun StreakCounter(count: Int) {
+private fun StreakCounter(count: Int, s: UiStrings) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -119,7 +121,7 @@ private fun StreakCounter(count: Int) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = if (count == 1) "day" else "days",
+                    text = s.days,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -130,15 +132,16 @@ private fun StreakCounter(count: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WeekDaySelector(selectedDays: Set<String>, onSelectedDaysChanged: (Set<String>) -> Unit) {
+private fun WeekDaySelector(selectedDays: Set<String>, language: String, s: UiStrings, onSelectedDaysChanged: (Set<String>) -> Unit) {
     val days = DayOfWeek.entries
+    val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Evaluate on:",
+            text = s.evaluateOn,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -148,7 +151,7 @@ private fun WeekDaySelector(selectedDays: Set<String>, onSelectedDaysChanged: (S
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             days.forEach { day ->
-                val dayName = day.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                val dayName = day.getDisplayName(TextStyle.SHORT, locale)
                 val isSelected = day.name in selectedDays
                 FilterChip(
                     selected = isSelected,
@@ -166,8 +169,8 @@ private fun WeekDaySelector(selectedDays: Set<String>, onSelectedDaysChanged: (S
 }
 
 @Composable
-private fun CalendarHeader(month: YearMonth, onPreviousMonth: () -> Unit, onNextMonth: () -> Unit) {
-    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, onPreviousMonth: () -> Unit, onNextMonth: () -> Unit) {
+    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", locale)
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -189,8 +192,8 @@ private fun CalendarHeader(month: YearMonth, onPreviousMonth: () -> Unit, onNext
 }
 
 @Composable
-private fun CalendarGrid(month: YearMonth, completedDates: Set<String>) {
-    val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+private fun CalendarGrid(month: YearMonth, completedDates: Set<String>, locale: java.util.Locale) {
+    val daysOfWeek = DayOfWeek.entries.map { it.getDisplayName(TextStyle.SHORT, locale) }
     val firstOfMonth = month.atDay(1)
     val firstDayOfWeek = firstOfMonth.dayOfWeek.value % 7
     val daysInMonth = month.lengthOfMonth()

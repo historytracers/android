@@ -256,6 +256,7 @@ composable(Screen.Index.route) {
                             streakCount = streakCount,
                             completedDates = completedDates,
                             streakDays = streakDays,
+                            language = language,
                             onStreakDaysChanged = { scope.launch { preferences.setStreakDays(it) } },
                             onNavigateBack = { navController.popBackStack() }
                         )
