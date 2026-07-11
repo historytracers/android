@@ -20,9 +20,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.ui.LocalUiStrings
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +32,8 @@ import java.util.Locale
 fun StreakScreen(
     streakCount: Int,
     completedDates: Set<String>,
+    streakDays: Set<String>,
+    onStreakDaysChanged: (Set<String>) -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
@@ -65,6 +69,10 @@ fun StreakScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             StreakCounter(streakCount)
+
+            Spacer(Modifier.height(24.dp))
+
+            WeekDaySelector(streakDays, onStreakDaysChanged)
 
             Spacer(Modifier.height(24.dp))
 
@@ -114,6 +122,43 @@ private fun StreakCounter(count: Int) {
                     text = if (count == 1) "day" else "days",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WeekDaySelector(selectedDays: Set<String>, onSelectedDaysChanged: (Set<String>) -> Unit) {
+    val days = DayOfWeek.entries
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Evaluate on:",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            days.forEach { day ->
+                val dayName = day.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                val isSelected = day.name in selectedDays
+                FilterChip(
+                    selected = isSelected,
+                    onClick = {
+                        onSelectedDaysChanged(
+                            if (isSelected) selectedDays - day.name
+                            else selectedDays + day.name
+                        )
+                    },
+                    label = { Text(dayName, fontSize = 11.sp) }
                 )
             }
         }

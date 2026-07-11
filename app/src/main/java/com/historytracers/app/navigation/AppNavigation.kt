@@ -84,6 +84,7 @@ fun AppNavigation() {
 
     val streakCount by preferences.streakCount.collectAsState(initial = 0)
     val completedDates by preferences.completedDates.collectAsState(initial = emptySet())
+    val streakDays by preferences.streakDays.collectAsState(initial = emptySet())
 
     val uiStrings = uiStringsForLanguage(language)
 
@@ -254,6 +255,8 @@ composable(Screen.Index.route) {
                         StreakScreen(
                             streakCount = streakCount,
                             completedDates = completedDates,
+                            streakDays = streakDays,
+                            onStreakDaysChanged = { scope.launch { preferences.setStreakDays(it) } },
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }

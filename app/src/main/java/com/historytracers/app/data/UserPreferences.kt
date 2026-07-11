@@ -24,6 +24,7 @@ class UserPreferences(private val context: Context) {
         private val STREAK_COUNT_KEY = intPreferencesKey("streak_count")
         private val LAST_COMPLETED_DATE_KEY = stringPreferencesKey("last_completed_date")
         private val COMPLETED_DATES_KEY = stringSetPreferencesKey("completed_dates")
+        private val STREAK_DAYS_KEY = stringSetPreferencesKey("streak_days")
         private val BREAK_START_TIME_KEY = longPreferencesKey("break_start_time")
     }
 
@@ -107,17 +108,23 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val streakDays: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[STREAK_DAYS_KEY] ?: emptySet()
+    }
+
+    suspend fun setStreakDays(days: Set<String>) {
+        context.dataStore.edit { preferences ->
+            preferences[STREAK_DAYS_KEY] = days
+        }
+    }
+
     suspend fun recordLessonCompletion() {
         val today = java.time.LocalDate.now().toString()
-        val yesterday = java.time.LocalDate.now().minusDays(1).toString()
         context.dataStore.edit { prefs ->
             val currentDates = prefs[COMPLETED_DATES_KEY] ?: emptySet()
             if (today in currentDates) return@edit
-            val lastDate = prefs[LAST_COMPLETED_DATE_KEY]
             val currentStreak = prefs[STREAK_COUNT_KEY] ?: 0
-            val newStreak = if (lastDate == null || lastDate == yesterday) currentStreak + 1
-            else 1
-            prefs[STREAK_COUNT_KEY] = newStreak
+            prefs[STREAK_COUNT_KEY] = currentStreak + 1
             prefs[LAST_COMPLETED_DATE_KEY] = today
             prefs[COMPLETED_DATES_KEY] = currentDates + today
         }
