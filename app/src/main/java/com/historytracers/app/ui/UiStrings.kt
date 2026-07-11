@@ -61,6 +61,7 @@ data class UiStrings(
     val voice: String,
     val exercisingHands: String,
     val walking: String,
+    val exercisingFeetAndHands: String,
 )
 
 val EnStrings = UiStrings(
@@ -121,6 +122,7 @@ val EnStrings = UiStrings(
     voice = "Voice",
     exercisingHands = "Exercising hands",
     walking = "Walking",
+    exercisingFeetAndHands = "Exercising Feet and Hands",
 )
 
 val PtStrings = UiStrings(
@@ -181,6 +183,7 @@ val PtStrings = UiStrings(
     voice = "Voz",
     exercisingHands = "Ejercitando las manos",
     walking = "Caminando",
+    exercisingFeetAndHands = "Ejercitando Pies y Manos",
 )
 
 val EsStrings = UiStrings(
@@ -241,6 +244,7 @@ val EsStrings = UiStrings(
     voice = "Voz",
     exercisingHands = "Exercitando as m\u00e3os",
     walking = "Andando",
+    exercisingFeetAndHands = "Exercitando P\u00e9s e M\u00e3os",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
