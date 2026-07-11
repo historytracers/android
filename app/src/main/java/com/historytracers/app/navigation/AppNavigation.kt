@@ -67,10 +67,8 @@ fun AppNavigation() {
     val breakStartTime by preferences.breakStartTime.collectAsState(initial = 0L)
     var showBreakDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(breakStartTime) {
-        if (breakStartTime == 0L) {
-            preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
-        }
+    LaunchedEffect(Unit) {
+        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
     }
 
     LaunchedEffect(breakStartTime, breakTime) {
