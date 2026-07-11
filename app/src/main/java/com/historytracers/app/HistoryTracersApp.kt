@@ -2,5 +2,11 @@
 package com.historytracers.app
 
 import android.app.Application
+import com.historytracers.app.notification.NotificationHelper
 
-class HistoryTracersApp : Application()
+class HistoryTracersApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        NotificationHelper.createChannel(this)
+    }
+}

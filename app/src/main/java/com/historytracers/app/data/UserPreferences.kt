@@ -4,6 +4,7 @@ package com.historytracers.app.data
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -25,6 +26,9 @@ class UserPreferences(private val context: Context) {
         private val LAST_COMPLETED_DATE_KEY = stringPreferencesKey("last_completed_date")
         private val COMPLETED_DATES_KEY = stringSetPreferencesKey("completed_dates")
         private val STREAK_DAYS_KEY = stringSetPreferencesKey("streak_days")
+        private val REMINDER_ENABLED_KEY = booleanPreferencesKey("reminder_enabled")
+        private val REMINDER_HOUR_KEY = intPreferencesKey("reminder_hour")
+        private val REMINDER_MINUTE_KEY = intPreferencesKey("reminder_minute")
         private val BREAK_START_TIME_KEY = longPreferencesKey("break_start_time")
     }
 
@@ -115,6 +119,36 @@ class UserPreferences(private val context: Context) {
     suspend fun setStreakDays(days: Set<String>) {
         context.dataStore.edit { preferences ->
             preferences[STREAK_DAYS_KEY] = days
+        }
+    }
+
+    val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[REMINDER_ENABLED_KEY] ?: true
+    }
+
+    suspend fun setReminderEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[REMINDER_ENABLED_KEY] = enabled
+        }
+    }
+
+    val reminderHour: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[REMINDER_HOUR_KEY] ?: 18
+    }
+
+    suspend fun setReminderHour(hour: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[REMINDER_HOUR_KEY] = hour
+        }
+    }
+
+    val reminderMinute: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[REMINDER_MINUTE_KEY] ?: 0
+    }
+
+    suspend fun setReminderMinute(minute: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[REMINDER_MINUTE_KEY] = minute
         }
     }
 

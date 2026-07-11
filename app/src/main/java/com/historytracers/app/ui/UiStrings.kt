@@ -67,6 +67,15 @@ data class UiStrings(
     val writingToSuanpan: String,
     val largeNumbers: String,
     val evaluateOn: String,
+    val reminder: String,
+    val reminderTime: String,
+    val reminderTitle: String,
+    val reminderMessage: String,
+    val ok: String,
+    val cancel: String,
+    val selectTime: String,
+    val previousMonth: String,
+    val nextMonth: String,
 )
 
 val EnStrings = UiStrings(
@@ -133,6 +142,15 @@ val EnStrings = UiStrings(
     writingToSuanpan = "Writing to Suanpan",
     largeNumbers = "Writing large numbers",
     evaluateOn = "Evaluate on:",
+    reminder = "Study Reminder",
+    reminderTime = "Reminder time",
+    reminderTitle = "Time to study!",
+    reminderMessage = "Don't forget to do your exercises today.",
+    ok = "OK",
+    cancel = "Cancel",
+    selectTime = "Select time",
+    previousMonth = "Previous month",
+    nextMonth = "Next month",
 )
 
 val PtStrings = UiStrings(
@@ -199,6 +217,15 @@ val PtStrings = UiStrings(
     writingToSuanpan = "Escrevendo no Suanpan",
     largeNumbers = "Escrevendo n\u00fameros grandes",
     evaluateOn = "Avaliar em:",
+    reminder = "Lembrete de Estudo",
+    reminderTime = "Hor\u00e1rio do lembrete",
+    reminderTitle = "Hora de estudar!",
+    reminderMessage = "N\u00e3o se esque\u00e7a de fazer seus exerc\u00edcios hoje.",
+    ok = "OK",
+    cancel = "Cancelar",
+    selectTime = "Selecionar hor\u00e1rio",
+    previousMonth = "M\u00eas anterior",
+    nextMonth = "Pr\u00f3ximo m\u00eas",
 )
 
 val EsStrings = UiStrings(
@@ -265,6 +292,15 @@ val EsStrings = UiStrings(
     writingToSuanpan = "Escribiendo en el Suanpan",
     largeNumbers = "Escribiendo n\u00fameros grandes",
     evaluateOn = "Evaluar en:",
+    reminder = "Recordatorio de Estudio",
+    reminderTime = "Hora del recordatorio",
+    reminderTitle = "\u00a1Hora de estudiar!",
+    reminderMessage = "No olvides hacer tus ejercicios hoy.",
+    ok = "OK",
+    cancel = "Cancelar",
+    selectTime = "Seleccionar hora",
+    previousMonth = "Mes anterior",
+    nextMonth = "Pr\u00f3ximo mes",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

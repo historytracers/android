@@ -33,6 +33,7 @@ import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
 import com.historytracers.app.ui.screens.StreakScreen
+import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -85,6 +86,9 @@ fun AppNavigation() {
     val streakCount by preferences.streakCount.collectAsState(initial = 0)
     val completedDates by preferences.completedDates.collectAsState(initial = emptySet())
     val streakDays by preferences.streakDays.collectAsState(initial = emptySet())
+    val reminderEnabled by preferences.reminderEnabled.collectAsState(initial = true)
+    val reminderHour by preferences.reminderHour.collectAsState(initial = 18)
+    val reminderMinute by preferences.reminderMinute.collectAsState(initial = 0)
 
     val uiStrings = uiStringsForLanguage(language)
 
@@ -100,6 +104,13 @@ fun AppNavigation() {
         if (route != null && route in simpleRoutes) {
             preferences.setLastRoute(route)
         }
+    }
+
+    LaunchedEffect(reminderEnabled, reminderHour, reminderMinute, language) {
+        NotificationHelper.scheduleAlarm(
+            context, reminderEnabled, reminderHour, reminderMinute,
+            uiStrings.reminderTitle, uiStrings.reminderMessage
+        )
     }
 
     CompositionLocalProvider(LocalUiStrings provides uiStrings) {
@@ -257,7 +268,17 @@ composable(Screen.Index.route) {
                             completedDates = completedDates,
                             streakDays = streakDays,
                             language = language,
+                            reminderEnabled = reminderEnabled,
+                            reminderHour = reminderHour,
+                            reminderMinute = reminderMinute,
                             onStreakDaysChanged = { scope.launch { preferences.setStreakDays(it) } },
+                            onReminderEnabledChanged = { scope.launch { preferences.setReminderEnabled(it) } },
+                            onReminderTimeChanged = { hour, minute ->
+                                scope.launch {
+                                    preferences.setReminderHour(hour)
+                                    preferences.setReminderMinute(minute)
+                                }
+                            },
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }
