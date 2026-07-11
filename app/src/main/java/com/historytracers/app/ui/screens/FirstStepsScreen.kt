@@ -287,7 +287,7 @@ fun FirstStepsScreen() {
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Natural Families (Part II)",
+                text = "Natural Families (Part 2)",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -316,7 +316,7 @@ fun FirstStepsScreen() {
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Going to infinite",
+                text = "Going to infinity",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
