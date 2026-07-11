@@ -30,6 +30,7 @@ class UserPreferences(private val context: Context) {
         private val REMINDER_HOUR_KEY = intPreferencesKey("reminder_hour")
         private val REMINDER_MINUTE_KEY = intPreferencesKey("reminder_minute")
         private val BREAK_START_TIME_KEY = longPreferencesKey("break_start_time")
+        private val SKIN_COLOR_KEY = stringPreferencesKey("skin_color")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -59,6 +60,16 @@ class UserPreferences(private val context: Context) {
     suspend fun setBreakStartTime(time: Long) {
         context.dataStore.edit { preferences ->
             preferences[BREAK_START_TIME_KEY] = time
+        }
+    }
+
+    val skinColor: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[SKIN_COLOR_KEY] ?: "#FFF8E0"
+    }
+
+    suspend fun setSkinColor(color: String) {
+        context.dataStore.edit { preferences ->
+            preferences[SKIN_COLOR_KEY] = color
         }
     }
 

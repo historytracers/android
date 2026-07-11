@@ -76,6 +76,7 @@ data class UiStrings(
     val selectTime: String,
     val previousMonth: String,
     val nextMonth: String,
+    val skinColor: String,
 )
 
 val EnStrings = UiStrings(
@@ -151,6 +152,7 @@ val EnStrings = UiStrings(
     selectTime = "Select time",
     previousMonth = "Previous month",
     nextMonth = "Next month",
+    skinColor = "Skin Color",
 )
 
 val PtStrings = UiStrings(
@@ -226,6 +228,7 @@ val PtStrings = UiStrings(
     selectTime = "Selecionar hor\u00e1rio",
     previousMonth = "M\u00eas anterior",
     nextMonth = "Pr\u00f3ximo m\u00eas",
+    skinColor = "Cor da Pele",
 )
 
 val EsStrings = UiStrings(
@@ -301,6 +304,7 @@ val EsStrings = UiStrings(
     selectTime = "Seleccionar hora",
     previousMonth = "Mes anterior",
     nextMonth = "Pr\u00f3ximo mes",
+    skinColor = "Color de Piel",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

@@ -1,15 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.theme.SkinColorPalette
+import com.historytracers.app.ui.theme.parseHexColor
 
 private val availableLanguages = listOf(
     "en-US" to "English (US)",
@@ -24,8 +34,10 @@ private val availableBreakTimes = listOf(15, 25, 30, 35, 45, 50, 60)
 fun SettingsScreen(
     currentLanguage: String,
     currentBreakTime: Int,
+    currentSkinColor: String,
     onLanguageChanged: (String) -> Unit,
     onBreakTimeChanged: (Int) -> Unit,
+    onSkinColorChanged: (String) -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
@@ -138,6 +150,39 @@ fun SettingsScreen(
                             }
                         )
                     }
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+            Divider()
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = s.skinColor,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(6),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 300.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(SkinColorPalette) { (color, hex) ->
+                    val isSelected = currentSkinColor.equals(hex, ignoreCase = true)
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(color, CircleShape)
+                            .then(
+                                if (isSelected) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                                else Modifier
+                            )
+                            .clickable { onSkinColorChanged(hex) }
+                    )
                 }
             }
         }

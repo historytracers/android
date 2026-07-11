@@ -45,6 +45,7 @@ fun AppNavigation() {
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
+    val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
     val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak")
     var startDest by remember { mutableStateOf<String?>(null) }
@@ -209,7 +210,7 @@ fun AppNavigation() {
                     startDestination = startDestination,
                     modifier = Modifier.padding(padding)
                 ) {
-composable(Screen.Index.route) {
+                    composable(Screen.Index.route) {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
                             onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } },
@@ -253,11 +254,15 @@ composable(Screen.Index.route) {
                         SettingsScreen(
                             currentLanguage = language,
                             currentBreakTime = breakTime,
+                            currentSkinColor = skinColor,
                             onLanguageChanged = { lang ->
                                 scope.launch { preferences.setLanguage(lang) }
                             },
                             onBreakTimeChanged = { minutes ->
                                 scope.launch { preferences.setBreakTime(minutes) }
+                            },
+                            onSkinColorChanged = { color ->
+                                scope.launch { preferences.setSkinColor(color) }
                             },
                             onNavigateBack = { navController.popBackStack() }
                         )
