@@ -3,8 +3,11 @@ package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -20,20 +23,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.ui.LocalUiStrings
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.time.format.TextStyle
+import com.historytracers.app.ui.UiStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StreakScreen(
     streakCount: Int,
     completedDates: Set<String>,
+    streakDays: Set<String>,
+    language: String,
+    reminderEnabled: Boolean,
+    reminderHour: Int,
+    reminderMinute: Int,
+    onStreakDaysChanged: (Set<String>) -> Unit,
+    onReminderEnabledChanged: (Boolean) -> Unit,
+    onReminderTimeChanged: (Int, Int) -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -61,14 +76,79 @@ fun StreakScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            StreakCounter(streakCount)
+            StreakCounter(streakCount, s)
 
             Spacer(Modifier.height(24.dp))
 
-            CalendarHeader(currentMonth, onPreviousMonth = {
+            WeekDaySelector(streakDays, language, s, onStreakDaysChanged)
+
+            Spacer(Modifier.height(24.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = reminderEnabled,
+                            onCheckedChange = onReminderEnabledChanged
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = s.reminder,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.clickable { onReminderEnabledChanged(!reminderEnabled) }
+                        )
+                    }
+                    if (reminderEnabled) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = s.reminderTime,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        val timeText = String.format(
+                            java.util.Locale.US, "%02d:%02d", reminderHour, reminderMinute
+                        )
+                        Text(
+                            text = timeText,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .clickable { showTimePicker = true }
+                                .padding(vertical = 4.dp)
+                        )
+                    }
+                }
+            }
+
+            if (showTimePicker) {
+                TimePickerDialog(
+                    s = s,
+                    initialHour = reminderHour,
+                    initialMinute = reminderMinute,
+                    onConfirm = { hour, minute ->
+                        onReminderTimeChanged(hour, minute)
+                        showTimePicker = false
+                    },
+                    onDismiss = { showTimePicker = false }
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            CalendarHeader(currentMonth, locale, s, onPreviousMonth = {
                 currentMonth = currentMonth.minusMonths(1)
             }, onNextMonth = {
                 currentMonth = currentMonth.plusMonths(1)
@@ -76,13 +156,46 @@ fun StreakScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            CalendarGrid(currentMonth, completedDates)
+            CalendarGrid(currentMonth, completedDates, locale)
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StreakCounter(count: Int) {
+private fun TimePickerDialog(
+    s: UiStrings,
+    initialHour: Int,
+    initialMinute: Int,
+    onConfirm: (Int, Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val state = rememberTimePickerState(
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = true
+    )
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onConfirm(state.hour, state.minute)
+            }) {
+                Text(s.ok)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(s.cancel)
+            }
+        },
+        title = { Text(s.selectTime) },
+        text = { TimePicker(state = state) }
+    )
+}
+
+@Composable
+private fun StreakCounter(count: Int, s: UiStrings) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -111,7 +224,7 @@ private fun StreakCounter(count: Int) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = if (count == 1) "day" else "days",
+                    text = s.days,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -120,9 +233,47 @@ private fun StreakCounter(count: Int) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CalendarHeader(month: YearMonth, onPreviousMonth: () -> Unit, onNextMonth: () -> Unit) {
-    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+private fun WeekDaySelector(selectedDays: Set<String>, language: String, s: UiStrings, onSelectedDaysChanged: (Set<String>) -> Unit) {
+    val days = DayOfWeek.entries
+    val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = s.evaluateOn,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            days.forEach { day ->
+                val dayName = day.getDisplayName(TextStyle.SHORT, locale)
+                val isSelected = day.name in selectedDays
+                FilterChip(
+                    selected = isSelected,
+                    onClick = {
+                        onSelectedDaysChanged(
+                            if (isSelected) selectedDays - day.name
+                            else selectedDays + day.name
+                        )
+                    },
+                    label = { Text(dayName, fontSize = 11.sp) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, s: UiStrings, onPreviousMonth: () -> Unit, onNextMonth: () -> Unit) {
+    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", locale)
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -130,7 +281,7 @@ private fun CalendarHeader(month: YearMonth, onPreviousMonth: () -> Unit, onNext
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onPreviousMonth) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous month")
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = s.previousMonth)
         }
         Text(
             text = month.format(formatter).replaceFirstChar { it.uppercase() },
@@ -138,14 +289,14 @@ private fun CalendarHeader(month: YearMonth, onPreviousMonth: () -> Unit, onNext
             fontWeight = FontWeight.Bold
         )
         IconButton(onClick = onNextMonth) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next month")
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = s.nextMonth)
         }
     }
 }
 
 @Composable
-private fun CalendarGrid(month: YearMonth, completedDates: Set<String>) {
-    val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+private fun CalendarGrid(month: YearMonth, completedDates: Set<String>, locale: java.util.Locale) {
+    val daysOfWeek = DayOfWeek.entries.map { it.getDisplayName(TextStyle.SHORT, locale) }
     val firstOfMonth = month.atDay(1)
     val firstDayOfWeek = firstOfMonth.dayOfWeek.value % 7
     val daysInMonth = month.lengthOfMonth()

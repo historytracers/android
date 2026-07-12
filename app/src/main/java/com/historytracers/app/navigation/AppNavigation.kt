@@ -32,7 +32,9 @@ import com.historytracers.app.ui.screens.IsItFreeScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
+import com.historytracers.app.ui.screens.ClapScreen
 import com.historytracers.app.ui.screens.StreakScreen
+import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -44,8 +46,9 @@ fun AppNavigation() {
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
+    val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "settings", "about", "is_it_free", "streak")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -67,10 +70,8 @@ fun AppNavigation() {
     val breakStartTime by preferences.breakStartTime.collectAsState(initial = 0L)
     var showBreakDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(breakStartTime) {
-        if (breakStartTime == 0L) {
-            preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
-        }
+    LaunchedEffect(Unit) {
+        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
     }
 
     LaunchedEffect(breakStartTime, breakTime) {
@@ -86,6 +87,10 @@ fun AppNavigation() {
 
     val streakCount by preferences.streakCount.collectAsState(initial = 0)
     val completedDates by preferences.completedDates.collectAsState(initial = emptySet())
+    val streakDays by preferences.streakDays.collectAsState(initial = emptySet())
+    val reminderEnabled by preferences.reminderEnabled.collectAsState(initial = true)
+    val reminderHour by preferences.reminderHour.collectAsState(initial = 18)
+    val reminderMinute by preferences.reminderMinute.collectAsState(initial = 0)
 
     val uiStrings = uiStringsForLanguage(language)
 
@@ -101,6 +106,13 @@ fun AppNavigation() {
         if (route != null && route in simpleRoutes) {
             preferences.setLastRoute(route)
         }
+    }
+
+    LaunchedEffect(reminderEnabled, reminderHour, reminderMinute, language) {
+        NotificationHelper.scheduleAlarm(
+            context, reminderEnabled, reminderHour, reminderMinute,
+            uiStrings.reminderTitle, uiStrings.reminderMessage
+        )
     }
 
     CompositionLocalProvider(LocalUiStrings provides uiStrings) {
@@ -199,7 +211,7 @@ fun AppNavigation() {
                     startDestination = startDestination,
                     modifier = Modifier.padding(padding)
                 ) {
-composable(Screen.Index.route) {
+                    composable(Screen.Index.route) {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
                             onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } },
@@ -210,7 +222,9 @@ composable(Screen.Index.route) {
                         FirstStepsScreen()
                     }
                     composable(Screen.Workout.route) {
-                        WorkoutScreen()
+                        WorkoutScreen(
+                            onNavigateToClap = { navController.navigate(Screen.Clap.route) }
+                        )
                     }
                     composable(Screen.Abacus.route) {
                         AbacusScreen()
@@ -243,11 +257,15 @@ composable(Screen.Index.route) {
                         SettingsScreen(
                             currentLanguage = language,
                             currentBreakTime = breakTime,
+                            currentSkinColor = skinColor,
                             onLanguageChanged = { lang ->
                                 scope.launch { preferences.setLanguage(lang) }
                             },
                             onBreakTimeChanged = { minutes ->
                                 scope.launch { preferences.setBreakTime(minutes) }
+                            },
+                            onSkinColorChanged = { color ->
+                                scope.launch { preferences.setSkinColor(color) }
                             },
                             onNavigateBack = { navController.popBackStack() }
                         )
@@ -256,6 +274,25 @@ composable(Screen.Index.route) {
                         StreakScreen(
                             streakCount = streakCount,
                             completedDates = completedDates,
+                            streakDays = streakDays,
+                            language = language,
+                            reminderEnabled = reminderEnabled,
+                            reminderHour = reminderHour,
+                            reminderMinute = reminderMinute,
+                            onStreakDaysChanged = { scope.launch { preferences.setStreakDays(it) } },
+                            onReminderEnabledChanged = { scope.launch { preferences.setReminderEnabled(it) } },
+                            onReminderTimeChanged = { hour, minute ->
+                                scope.launch {
+                                    preferences.setReminderHour(hour)
+                                    preferences.setReminderMinute(minute)
+                                }
+                            },
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable(Screen.Clap.route) {
+                        ClapScreen(
+                            skinColor = skinColor,
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }
