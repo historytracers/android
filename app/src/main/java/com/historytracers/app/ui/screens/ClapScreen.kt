@@ -78,7 +78,8 @@ fun ClapScreen(
     val handPath = remember { buildAndroidPath() }
 
     var clapCount by remember { mutableIntStateOf(5) }
-    var cycleTime by remember { mutableFloatStateOf(1200f) }
+    var sliderPos by remember { mutableFloatStateOf(1200f) }
+    fun cycleTime() = 2400f - sliderPos
     var isPlaying by remember { mutableStateOf(false) }
     var completed by remember { mutableIntStateOf(0) }
     var target by remember { mutableIntStateOf(0) }
@@ -213,15 +214,15 @@ fun ClapScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Fast", style = MaterialTheme.typography.bodySmall)
+                Text(s.speedSlow, style = MaterialTheme.typography.bodySmall)
                 Slider(
-                    value = cycleTime,
-                    onValueChange = { if (!isPlaying) cycleTime = it },
+                    value = sliderPos,
+                    onValueChange = { if (!isPlaying) sliderPos = it },
                     valueRange = 400f..2000f,
                     modifier = Modifier.width(200.dp),
                     enabled = !isPlaying
                 )
-                Text("Slow", style = MaterialTheme.typography.bodySmall)
+                Text(s.speedFast, style = MaterialTheme.typography.bodySmall)
             }
 
             Row(
@@ -240,8 +241,8 @@ fun ClapScreen(
                         completed = 0
                         target = clapCount
                         scope.launch {
-                            val animDuration = (cycleTime * 0.75f).toInt()
-                            val pauseDuration = (cycleTime * 0.25f).toInt()
+                            val animDuration = (cycleTime() * 0.75f).toInt()
+                            val pauseDuration = (cycleTime() * 0.25f).toInt()
                             for (i in 0 until clapCount) {
                                 animationProgress.snapTo(0f)
                                 animationProgress.animateTo(
