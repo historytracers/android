@@ -28,7 +28,9 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
-fun WorkoutScreen() {
+fun WorkoutScreen(
+    onNavigateToClap: () -> Unit = {}
+) {
     val s = LocalUiStrings.current
 
     Box(
@@ -85,7 +87,7 @@ fun WorkoutScreen() {
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToClap,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
