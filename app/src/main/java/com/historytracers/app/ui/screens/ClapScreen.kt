@@ -175,15 +175,14 @@ fun ClapScreen(
                     val canvasW = 600f
                     val canvasH = 600f
                     val s = minOf(size.width / canvasW, size.height / canvasH) * 1.8f
-                    val cx = size.width * 0.5f
+                    val cx = size.width * 0.5f + 70f * density
                     val cy = size.height * 0.6f
 
                     val restOff = 140f * s
-                    val centerShift = 80f * s
                     val prog = animationProgress.value
 
-                    val leftOff = -restOff + restOff * prog + centerShift
-                    val rightOff = restOff - restOff * prog + centerShift
+                    val leftOff = -restOff + restOff * prog
+                    val rightOff = restOff - restOff * prog
 
                     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                         color = handColor.hashCode()
