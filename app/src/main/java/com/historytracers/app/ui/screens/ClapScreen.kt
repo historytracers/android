@@ -4,6 +4,8 @@ package com.historytracers.app.ui.screens
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Matrix
+import android.media.AudioAttributes
+import android.media.SoundPool
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -19,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import com.historytracers.app.R
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.parseHexColor
 import androidx.compose.ui.graphics.nativeCanvas
@@ -86,6 +90,23 @@ fun ClapScreen(
     val scope = rememberCoroutineScope()
 
     val animationProgress = remember { Animatable(0f) }
+
+    val context = LocalContext.current
+    val soundPool = remember {
+        SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
+            .build()
+    }
+    val clapSoundId = remember { soundPool.load(context, R.raw.clap, 1) }
+    DisposableEffect(Unit) {
+        onDispose { soundPool.release() }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -256,6 +277,7 @@ fun ClapScreen(
                                     targetValue = 1f,
                                     animationSpec = tween(durationMillis = animDuration)
                                 )
+                                soundPool.play(clapSoundId, 1f, 1f, 1, 0, 1f)
                                 animationProgress.snapTo(1f)
                                 animationProgress.animateTo(
                                     targetValue = 0f,
