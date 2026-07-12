@@ -81,6 +81,7 @@ data class UiStrings(
     val clapReinforce: String,
     val speedSlow: String,
     val speedFast: String,
+    val clapSkinColorHint: String,
 )
 
 val EnStrings = UiStrings(
@@ -161,6 +162,7 @@ val EnStrings = UiStrings(
     clapReinforce = "To reinforce counting, we are going to do an exercise with our hands. Follow the next instructions and see how numbers are connected to us.",
     speedSlow = "Slow",
     speedFast = "Fast",
+    clapSkinColorHint = "Also, if you wish, you can change the skin color of the hands to match your own by going to Menu \u2192 Options.",
 )
 
 val PtStrings = UiStrings(
@@ -241,6 +243,7 @@ val PtStrings = UiStrings(
     clapReinforce = "Para refor\u00e7ar a contagem, vamos fazer um exerc\u00edcio com nossas m\u00e3os. Siga as pr\u00f3ximas instru\u00e7\u00f5es e veja como os n\u00fameros est\u00e3o conectados a n\u00f3s.",
     speedSlow = "Devagar",
     speedFast = "R\u00e1pido",
+    clapSkinColorHint = "Al\u00e9m disso, se desejar, voc\u00ea pode alterar a cor da pele das m\u00e3os para combinar com a sua, indo em Menu \u2192 Op\u00e7\u00f5es.",
 )
 
 val EsStrings = UiStrings(
@@ -321,6 +324,7 @@ val EsStrings = UiStrings(
     clapReinforce = "Para reforzar el conteo, vamos a hacer un ejercicio con nuestras manos. Sigue las siguientes instrucciones y observa c\u00f3mo los n\u00fameros est\u00e1n conectados con nosotros.",
     speedSlow = "Despacio",
     speedFast = "R\u00e1pido",
+    clapSkinColorHint = "Adem\u00e1s, si lo deseas, puedes cambiar el color de piel de las manos para que coincida con la tuya, yendo a Men\u00fa \u2192 Opciones.",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

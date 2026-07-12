@@ -136,13 +136,20 @@ fun ClapScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
+                    .weight(1f)
             ) {
+                Text(
+                    text = s.clapSkinColorHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(horizontal = 8.dp)
+                )
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(3f)
+                        .align(Alignment.Center)
                 ) {
                     val canvasW = 600f
                     val canvasH = 600f
