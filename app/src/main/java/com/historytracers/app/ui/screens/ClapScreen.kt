@@ -131,10 +131,10 @@ fun ClapScreen(
                         .aspectRatio(3f)
                 ) {
                     val canvasW = 600f
-                    val canvasH = 400f
-                    val s = minOf(size.width / canvasW, size.height / canvasH) * 1.2f
-                    val cx = size.width / 2f
-                    val cy = size.height / 2f
+                    val canvasH = 600f
+                    val s = minOf(size.width / canvasW, size.height / canvasH) * 1.8f
+                    val cx = size.width * 0.5f
+                    val cy = size.height * 0.6f
 
                     val restOff = 140f * s
                     val prog = animationProgress.value
@@ -157,7 +157,7 @@ fun ClapScreen(
 
                     val rightMatrix = Matrix()
                     rightMatrix.setTranslate(cx + rightOff, cy)
-                    rightMatrix.preScale(-s, s)
+                    rightMatrix.preScale(s, s)
                     val right = Path()
                     right.addPath(handPath, rightMatrix)
                     drawContext.canvas.nativeCanvas.drawPath(right, paint)
