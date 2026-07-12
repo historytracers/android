@@ -235,8 +235,7 @@ fun FeetAndHandsScreen(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -261,7 +260,7 @@ fun FeetAndHandsScreen(
                     val canvasW = 600f
                     val canvasH = 600f
                     val s = minOf(size.width / canvasW, size.height / canvasH) * 1.6f
-                    val cx = size.width * 0.5f
+                    val cx = size.width * 0.5f + 90f * density
                     val cy = size.height * 0.55f
 
                     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -272,15 +271,14 @@ fun FeetAndHandsScreen(
 
                     val footScale = s * (0.125f / 0.6f)
                     val footY = cy + 110f * s + 200f
-                    val footBaseX = cx
+                    val footBaseX = cx - 20f * density
                     val handY = cy - 240f * s
 
                     if (mode == Mode.CLAP) {
                         val restOff = 120f * s
-                        val centerShift = 60f * s
                         val prog = clapProgress.value
-                        val leftOff = -restOff + restOff * prog + centerShift
-                        val rightOff = restOff - restOff * prog + centerShift
+                        val leftOff = -restOff + restOff * prog
+                        val rightOff = restOff - restOff * prog
 
                         val leftMatrix = Matrix()
                         leftMatrix.setTranslate(cx + leftOff, handY)
@@ -297,9 +295,8 @@ fun FeetAndHandsScreen(
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
                     } else {
                         val restOff = 120f * s
-                        val centerShift = 60f * s
-                        val leftOff = -restOff + centerShift
-                        val rightOff = restOff + centerShift
+                        val leftOff = -restOff
+                        val rightOff = restOff
 
                         val leftMatrix = Matrix()
                         leftMatrix.setTranslate(cx + leftOff, handY)
@@ -458,55 +455,60 @@ fun FeetAndHandsScreen(
                 }
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(s.slowly, style = MaterialTheme.typography.bodySmall)
-                Slider(
-                    value = sliderPos,
-                    onValueChange = { if (!isPlaying) sliderPos = it },
-                    valueRange = 400f..2000f,
-                    modifier = Modifier.width(180.dp),
-                    enabled = !isPlaying
-                )
-                Text(s.fast, style = MaterialTheme.typography.bodySmall)
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
-                FilledIconButton(
-                    onClick = { if (!isPlaying && count > 1) count-- },
-                    modifier = Modifier.size(32.dp),
-                    enabled = !isPlaying && count > 1
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("-", style = MaterialTheme.typography.titleSmall)
+                    Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                    Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                    Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
                 }
-                Text(
-                    text = count.toString(),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(36.dp),
-                    textAlign = TextAlign.Center
-                )
-                FilledIconButton(
-                    onClick = { if (!isPlaying && count < 20) count++ },
-                    modifier = Modifier.size(32.dp),
-                    enabled = !isPlaying && count < 20
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("+", style = MaterialTheme.typography.titleSmall)
+                    Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                    Slider(
+                        value = sliderPos,
+                        onValueChange = { if (!isPlaying) sliderPos = it },
+                        valueRange = 400f..2000f,
+                        modifier = Modifier.width(180.dp),
+                        enabled = !isPlaying
+                    )
+                    Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
+                    FilledIconButton(
+                        onClick = { if (!isPlaying && count > 1) count-- },
+                        modifier = Modifier.size(32.dp),
+                        enabled = !isPlaying && count > 1
+                    ) {
+                        Text("-", style = MaterialTheme.typography.titleSmall)
+                    }
+                    Text(
+                        text = count.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(36.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    FilledIconButton(
+                        onClick = { if (!isPlaying && count < 20) count++ },
+                        modifier = Modifier.size(32.dp),
+                        enabled = !isPlaying && count < 20
+                    ) {
+                        Text("+", style = MaterialTheme.typography.titleSmall)
+                    }
                 }
             }
 
