@@ -103,7 +103,7 @@ fun ClapScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
-                    text = "Hands and music",
+                    text = s.exercisingHands,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -118,6 +118,18 @@ fun ClapScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = s.clapReinforce,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+
+            Text(
+                text = s.clapInstructions,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
 
             Box(
                 modifier = Modifier
