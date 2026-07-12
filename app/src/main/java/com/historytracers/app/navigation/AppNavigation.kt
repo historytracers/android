@@ -295,13 +295,27 @@ fun AppNavigation() {
                     composable(Screen.Clap.route) {
                         ClapScreen(
                             skinColor = skinColor,
-                            onNavigateBack = { navController.popBackStack() }
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Workout.route, false)) {
+                                    navController.navigate(Screen.Workout.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.FeetAndHands.route) {
                         FeetAndHandsScreen(
                             skinColor = skinColor,
-                            onNavigateBack = { navController.popBackStack() }
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Workout.route, false)) {
+                                    navController.navigate(Screen.Workout.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                 }

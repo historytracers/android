@@ -120,9 +120,7 @@ fun ClapScreen(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-                    if (!isPlaying) onNavigateBack()
-                }) {
+                IconButton(onClick = { onNavigateBack() }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
