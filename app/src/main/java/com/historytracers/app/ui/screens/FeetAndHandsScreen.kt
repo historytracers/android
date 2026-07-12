@@ -380,7 +380,7 @@ fun FeetAndHandsScreen(
                     }
 
                     val footScale = s * (0.125f / 0.6f)
-                    val footY = cy + 110f * s
+                    val footY = cy + 110f * s + 200f
                     val footBaseX = cx
                     val handY = cy - 240f * s
 
