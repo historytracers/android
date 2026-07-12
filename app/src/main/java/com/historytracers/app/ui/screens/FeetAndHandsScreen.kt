@@ -204,6 +204,8 @@ fun FeetAndHandsScreen(
             .build()
     }
     val clapSoundId = remember { soundPool.load(context, R.raw.clap, 1) }
+    val stepSoundId = remember { soundPool.load(context, R.raw.step, 1) }
+    val jumpSoundId = remember { soundPool.load(context, R.raw.jump, 1) }
     DisposableEffect(Unit) {
         onDispose { soundPool.release() }
     }
@@ -310,6 +312,7 @@ fun FeetAndHandsScreen(
                                 stepIsLeft = i % 2 == 0
                                 footZoomProgress.snapTo(0f)
                                 footZoomProgress.animateTo(1f, tween(dur))
+                                soundPool.play(stepSoundId, 1f, 1f, 1, 0, 1f)
                                 stepsCompleted++
                                 if (i < count - 1) delay((dur * 0.2f).toLong())
                             }
@@ -341,6 +344,7 @@ fun FeetAndHandsScreen(
                             for (i in 0 until count) {
                                 footZoomProgress.snapTo(0f)
                                 footZoomProgress.animateTo(1f, tween(dur))
+                                soundPool.play(jumpSoundId, 1f, 1f, 1, 0, 1f)
                                 footZoomProgress.snapTo(1f)
                                 footZoomProgress.animateTo(0f, tween(dur))
                                 jumpsCompleted++
