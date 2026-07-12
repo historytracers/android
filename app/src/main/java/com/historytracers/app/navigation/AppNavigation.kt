@@ -3,6 +3,7 @@ package com.historytracers.app.navigation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalFireDepartment
@@ -174,6 +175,15 @@ fun AppNavigation() {
                         onClick = {
                             navController.navigate(Screen.About.route)
                             scope.launch { drawerState.close() }
+                        }
+                    )
+                    Divider()
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                        label = { Text(uiStrings.close) },
+                        selected = false,
+                        onClick = {
+                            (context as? android.app.Activity)?.finish()
                         }
                     )
                 }
