@@ -33,6 +33,7 @@ import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
 import com.historytracers.app.ui.screens.ClapScreen
+import com.historytracers.app.ui.screens.FeetAndHandsScreen
 import com.historytracers.app.ui.screens.StreakScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
@@ -48,7 +49,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -223,7 +224,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.Workout.route) {
                         WorkoutScreen(
-                            onNavigateToClap = { navController.navigate(Screen.Clap.route) }
+                            onNavigateToClap = { navController.navigate(Screen.Clap.route) },
+                            onNavigateToFeetAndHands = { navController.navigate(Screen.FeetAndHands.route) }
                         )
                     }
                     composable(Screen.Abacus.route) {
@@ -292,6 +294,12 @@ fun AppNavigation() {
                     }
                     composable(Screen.Clap.route) {
                         ClapScreen(
+                            skinColor = skinColor,
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable(Screen.FeetAndHands.route) {
+                        FeetAndHandsScreen(
                             skinColor = skinColor,
                             onNavigateBack = { navController.popBackStack() }
                         )

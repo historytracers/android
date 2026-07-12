@@ -82,6 +82,15 @@ data class UiStrings(
     val speedSlow: String,
     val speedFast: String,
     val clapSkinColorHint: String,
+    val clap: String,
+    val steps: String,
+    val jumps: String,
+    val numberOfClapsStepsJumps: String,
+    val clapCounter: String,
+    val stepsCounter: String,
+    val jumpsCounter: String,
+    val slowly: String,
+    val fast: String,
 )
 
 val EnStrings = UiStrings(
@@ -163,6 +172,15 @@ val EnStrings = UiStrings(
     speedSlow = "Slow",
     speedFast = "Fast",
     clapSkinColorHint = "Also, if you wish, you can change the skin color of the hands to match your own by going to Menu \u2192 Options.",
+    clap = "Clap",
+    steps = "Steps",
+    jumps = "Jumps",
+    numberOfClapsStepsJumps = "Number of claps, steps, or jumps:",
+    clapCounter = "Claps:",
+    stepsCounter = "Steps:",
+    jumpsCounter = "Jumps:",
+    slowly = "Slowly",
+    fast = "Fast",
 )
 
 val PtStrings = UiStrings(
@@ -244,6 +262,15 @@ val PtStrings = UiStrings(
     speedSlow = "Devagar",
     speedFast = "R\u00e1pido",
     clapSkinColorHint = "Al\u00e9m disso, se desejar, voc\u00ea pode alterar a cor da pele das m\u00e3os para combinar com a sua, indo em Menu \u2192 Op\u00e7\u00f5es.",
+    clap = "Palmas",
+    steps = "Passos",
+    jumps = "Pulos",
+    numberOfClapsStepsJumps = "N\u00famero de palmas, passos ou pulos:",
+    clapCounter = "Palmas:",
+    stepsCounter = "Passos:",
+    jumpsCounter = "Pulos:",
+    slowly = "Devagar",
+    fast = "R\u00e1pido",
 )
 
 val EsStrings = UiStrings(
@@ -325,6 +352,15 @@ val EsStrings = UiStrings(
     speedSlow = "Despacio",
     speedFast = "R\u00e1pido",
     clapSkinColorHint = "Adem\u00e1s, si lo deseas, puedes cambiar el color de piel de las manos para que coincida con la tuya, yendo a Men\u00fa \u2192 Opciones.",
+    clap = "Aplausos",
+    steps = "Pasos",
+    jumps = "Saltos",
+    numberOfClapsStepsJumps = "N\u00famero de aplausos, pasos o saltos:",
+    clapCounter = "Aplausos:",
+    stepsCounter = "Pasos:",
+    jumpsCounter = "Saltos:",
+    slowly = "Despacio",
+    fast = "R\u00e1pido",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
