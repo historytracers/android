@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.parseHexColor
@@ -183,32 +184,28 @@ fun ClapScreen(
             ) {
                 Text("Number of claps:", style = MaterialTheme.typography.bodyLarge)
 
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { if (!isPlaying) expanded = it }
+                FilledIconButton(
+                    onClick = { if (!isPlaying && clapCount > 1) clapCount-- },
+                    modifier = Modifier.size(40.dp),
+                    enabled = !isPlaying && clapCount > 1
                 ) {
-                    OutlinedTextField(
-                        value = clapCount.toString(),
-                        onValueChange = {},
-                        readOnly = true,
-                        modifier = Modifier.width(80.dp).menuAnchor(),
-                        singleLine = true
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        (0..8).forEach { n ->
-                            DropdownMenuItem(
-                                text = { Text(n.toString()) },
-                                onClick = {
-                                    clapCount = n
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
+                    Text("-", style = MaterialTheme.typography.titleMedium)
+                }
+
+                Text(
+                    text = clapCount.toString(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.width(48.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+                FilledIconButton(
+                    onClick = { if (!isPlaying && clapCount < 9) clapCount++ },
+                    modifier = Modifier.size(40.dp),
+                    enabled = !isPlaying && clapCount < 9
+                ) {
+                    Text("+", style = MaterialTheme.typography.titleMedium)
                 }
             }
 
