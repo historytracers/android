@@ -204,7 +204,7 @@ fun ClapScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Slow", style = MaterialTheme.typography.bodySmall)
+                Text("Fast", style = MaterialTheme.typography.bodySmall)
                 Slider(
                     value = cycleTime,
                     onValueChange = { if (!isPlaying) cycleTime = it },
@@ -212,7 +212,7 @@ fun ClapScreen(
                     modifier = Modifier.width(200.dp),
                     enabled = !isPlaying
                 )
-                Text("Fast", style = MaterialTheme.typography.bodySmall)
+                Text("Slow", style = MaterialTheme.typography.bodySmall)
             }
 
             Row(
