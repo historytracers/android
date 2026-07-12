@@ -231,46 +231,161 @@ fun FeetAndHandsScreen(
             }
         }
 
-        Column(
+        Text(
+            text = s.feetAndHandsReinforce,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        )
+
+        Text(
+            text = s.feetAndHandsInstructions,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        )
+
+        Text(
+            text = s.feetAndHandsSkinColorHint,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Text(
-                    text = s.clapSkinColorHint,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(horizontal = 4.dp)
-                )
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2.2f)
-                        .align(Alignment.Center)
-                ) {
-                    val canvasW = 600f
-                    val canvasH = 600f
-                    val s = minOf(size.width / canvasW, size.height / canvasH) * 1.6f
-                    val cx = size.width * 0.5f + 90f * density
-                    val cy = size.height * 0.55f
-
-                    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = handColor.hashCode()
-                        style = Paint.Style.FILL
-                        strokeJoin = Paint.Join.ROUND
+            FilledIconButton(
+                onClick = {
+                    if (!isPlaying) {
+                        mode = Mode.CLAP
+                        scope.launch {
+                            if (count < 1) return@launch
+                            isPlaying = true
+                            clapCompleted = 0
+                            val dur = (cycleTime() * 0.75f).toInt()
+                            val pauseDur = (cycleTime() * 0.25f).toInt()
+                            for (i in 0 until count) {
+                                clapProgress.snapTo(0f)
+                                clapProgress.animateTo(1f, tween(dur))
+                                soundPool.play(clapSoundId, 1f, 1f, 1, 0, 1f)
+                                clapProgress.snapTo(1f)
+                                clapProgress.animateTo(0f, tween(dur))
+                                clapCompleted++
+                                if (i < count - 1) delay(pauseDur.toLong())
+                            }
+                            isPlaying = false
+                        }
                     }
+                },
+                modifier = Modifier.size(56.dp),
+                shape = CircleShape,
+                enabled = !isPlaying || mode == Mode.CLAP
+            ) {
+                Icon(
+                    Icons.Default.PanTool,
+                    contentDescription = s.clap,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
 
-                    val footScale = s * (0.125f / 0.6f)
-                    val footY = cy + 110f * s + 200f
-                    val footBaseX = cx - 20f * density
-                    val handY = cy - 240f * s
+            FilledIconButton(
+                onClick = {
+                    if (!isPlaying) {
+                        mode = Mode.STEPS
+                        scope.launch {
+                            if (count < 1) return@launch
+                            isPlaying = true
+                            stepsCompleted = 0
+                            val dur = (cycleTime() * 0.4f).toInt()
+                            for (i in 0 until count) {
+                                stepIsLeft = i % 2 == 0
+                                footZoomProgress.snapTo(0f)
+                                footZoomProgress.animateTo(1f, tween(dur))
+                                stepsCompleted++
+                                if (i < count - 1) delay((dur * 0.2f).toLong())
+                            }
+                            isPlaying = false
+                        }
+                    }
+                },
+                modifier = Modifier.size(56.dp),
+                shape = CircleShape,
+                enabled = !isPlaying || mode == Mode.STEPS
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.DirectionsRun,
+                    contentDescription = s.steps,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
+            FilledIconButton(
+                onClick = {
+                    if (!isPlaying) {
+                        mode = Mode.JUMPS
+                        scope.launch {
+                            if (count < 1) return@launch
+                            isPlaying = true
+                            jumpsCompleted = 0
+                            val dur = (cycleTime() * 0.5f).toInt()
+                            for (i in 0 until count) {
+                                footZoomProgress.snapTo(0f)
+                                footZoomProgress.animateTo(1f, tween(dur))
+                                footZoomProgress.snapTo(1f)
+                                footZoomProgress.animateTo(0f, tween(dur))
+                                jumpsCompleted++
+                                if (i < count - 1) delay((dur * 0.3f).toInt().toLong())
+                            }
+                            isPlaying = false
+                        }
+                    }
+                },
+                modifier = Modifier.size(56.dp),
+                shape = CircleShape,
+                enabled = !isPlaying || mode == Mode.JUMPS
+            ) {
+                Icon(
+                    Icons.Default.Accessibility,
+                    contentDescription = s.jumps,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                val s = minOf(size.width / 600f, size.height / 600f)
+                val cx = size.width * 0.5f + 90f * density
+                val cy = size.height * 0.5f
+
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = handColor.hashCode()
+                    style = Paint.Style.FILL
+                    strokeJoin = Paint.Join.ROUND
+                }
+
+                val footScale = s * (0.125f / 0.6f)
+                val footY = cy + 60f * s + 30f * density
+                val footBaseX = cx - 20f * density
+                val handY = cy - 200f * s - 140f * density
 
                     if (mode == Mode.CLAP) {
                         val restOff = 120f * s
@@ -352,113 +467,6 @@ fun FeetAndHandsScreen(
                     drawFoot(-45f * s, mirrorX = true, leftZoom, leftYOff)
                     drawFoot(45f * s, mirrorX = false, rightZoom, rightYOff)
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 150.dp)
-                ) {
-                    FilledIconButton(
-                        onClick = {
-                            if (!isPlaying) {
-                                mode = Mode.CLAP
-                                scope.launch {
-                                    if (count < 1) return@launch
-                                    isPlaying = true
-                                    clapCompleted = 0
-                                    val dur = (cycleTime() * 0.75f).toInt()
-                                    val pauseDur = (cycleTime() * 0.25f).toInt()
-                                    for (i in 0 until count) {
-                                        clapProgress.snapTo(0f)
-                                        clapProgress.animateTo(1f, tween(dur))
-                                        soundPool.play(clapSoundId, 1f, 1f, 1, 0, 1f)
-                                        clapProgress.snapTo(1f)
-                                        clapProgress.animateTo(0f, tween(dur))
-                                        clapCompleted++
-                                        if (i < count - 1) delay(pauseDur.toLong())
-                                    }
-                                    isPlaying = false
-                                }
-                            }
-                        },
-                        modifier = Modifier.size(56.dp),
-                        shape = CircleShape,
-                        enabled = !isPlaying || mode == Mode.CLAP
-                    ) {
-                        Icon(
-                            Icons.Default.PanTool,
-                            contentDescription = s.clap,
-                            modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-
-                    FilledIconButton(
-                        onClick = {
-                            if (!isPlaying) {
-                                mode = Mode.STEPS
-                                scope.launch {
-                                    if (count < 1) return@launch
-                                    isPlaying = true
-                                    stepsCompleted = 0
-                                    val dur = (cycleTime() * 0.4f).toInt()
-                                    for (i in 0 until count) {
-                                        stepIsLeft = i % 2 == 0
-                                        footZoomProgress.snapTo(0f)
-                                        footZoomProgress.animateTo(1f, tween(dur))
-                                        stepsCompleted++
-                                        if (i < count - 1) delay((dur * 0.2f).toLong())
-                                    }
-                                    isPlaying = false
-                                }
-                            }
-                        },
-                        modifier = Modifier.size(56.dp),
-                        shape = CircleShape,
-                        enabled = !isPlaying || mode == Mode.STEPS
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.DirectionsRun,
-                            contentDescription = s.steps,
-                            modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-
-                    FilledIconButton(
-                        onClick = {
-                            if (!isPlaying) {
-                                mode = Mode.JUMPS
-                                scope.launch {
-                                    if (count < 1) return@launch
-                                    isPlaying = true
-                                    jumpsCompleted = 0
-                                    val dur = (cycleTime() * 0.5f).toInt()
-                                    for (i in 0 until count) {
-                                        footZoomProgress.snapTo(0f)
-                                        footZoomProgress.animateTo(1f, tween(dur))
-                                        footZoomProgress.snapTo(1f)
-                                        footZoomProgress.animateTo(0f, tween(dur))
-                                        jumpsCompleted++
-                                        if (i < count - 1) delay((dur * 0.3f).toInt().toLong())
-                                    }
-                                    isPlaying = false
-                                }
-                            }
-                        },
-                        modifier = Modifier.size(56.dp),
-                        shape = CircleShape,
-                        enabled = !isPlaying || mode == Mode.JUMPS
-                    ) {
-                        Icon(
-                            Icons.Default.Accessibility,
-                            contentDescription = s.jumps,
-                            modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
             }
 
             Column(
@@ -521,4 +529,3 @@ fun FeetAndHandsScreen(
             Spacer(Modifier.height(8.dp))
         }
     }
-}
