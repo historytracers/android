@@ -142,15 +142,26 @@ private val footToePaths: List<String> by lazy {
     )
 }
 
-private fun buildFootPath(scale: Float = 0.1f, flipY: Boolean = true): Path {
+private data class Bounds(var minX: Float, var minY: Float, var maxX: Float, var maxY: Float)
+
+private fun buildFootPath(scale: Float = 0.1f, flipY: Boolean = true): Pair<Path, Bounds> {
     val path = Path()
+    val bounds = Bounds(Float.MAX_VALUE, Float.MAX_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
     for (svgD in footToePaths) {
         val sub = parseSvgPathToAndroidPath(svgD)
         val m = Matrix()
         m.preScale(scale, if (flipY) -scale else scale)
-        path.addPath(sub, m)
+        val transformed = Path()
+        sub.transform(m, transformed)
+                        val b = android.graphics.RectF()
+        transformed.computeBounds(b, true)
+        bounds.minX = minOf(bounds.minX, b.left)
+        bounds.minY = minOf(bounds.minY, b.top)
+        bounds.maxX = maxOf(bounds.maxX, b.right)
+        bounds.maxY = maxOf(bounds.maxY, b.bottom)
+        path.addPath(transformed)
     }
-    return path
+    return Pair(path, bounds)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,7 +173,9 @@ fun FeetAndHandsScreen(
     val s = LocalUiStrings.current
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
-    val footPath = remember { buildFootPath() }
+    val footPathResult = remember { buildFootPath() }
+    val footPath = footPathResult.first
+    val footBounds = footPathResult.second
 
     var mode by remember { mutableStateOf(Mode.CLAP) }
     var count by remember { mutableIntStateOf(5) }
@@ -366,6 +379,11 @@ fun FeetAndHandsScreen(
                         strokeJoin = Paint.Join.ROUND
                     }
 
+                    val footScale = s * (0.125f / 0.6f)
+                    val footY = cy + 110f * s
+                    val footBaseX = cx
+                    val handY = cy - 240f * s
+
                     if (mode == Mode.CLAP) {
                         val restOff = 120f * s
                         val centerShift = 60f * s
@@ -374,14 +392,14 @@ fun FeetAndHandsScreen(
                         val rightOff = restOff - restOff * prog + centerShift
 
                         val leftMatrix = Matrix()
-                        leftMatrix.setTranslate(cx + leftOff, cy)
+                        leftMatrix.setTranslate(cx + leftOff, handY)
                         leftMatrix.preScale(s, s)
                         val left = Path()
                         left.addPath(handPath, leftMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                         val rightMatrix = Matrix()
-                        rightMatrix.setTranslate(cx + rightOff, cy)
+                        rightMatrix.setTranslate(cx + rightOff, handY)
                         rightMatrix.preScale(s, s)
                         val right = Path()
                         right.addPath(handPath, rightMatrix)
@@ -393,23 +411,19 @@ fun FeetAndHandsScreen(
                         val rightOff = restOff + centerShift
 
                         val leftMatrix = Matrix()
-                        leftMatrix.setTranslate(cx + leftOff, cy)
+                        leftMatrix.setTranslate(cx + leftOff, handY)
                         leftMatrix.preScale(s, s)
                         val left = Path()
                         left.addPath(handPath, leftMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                         val rightMatrix = Matrix()
-                        rightMatrix.setTranslate(cx + rightOff, cy)
+                        rightMatrix.setTranslate(cx + rightOff, handY)
                         rightMatrix.preScale(s, s)
                         val right = Path()
                         right.addPath(handPath, rightMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
                     }
-
-                    val footScale = s * 0.028f
-                    val footY = cy + 110f * s
-                    val footBaseX = cx
 
                     val zoom = if (mode == Mode.JUMPS && isPlaying) {
                         val p = footZoomProgress.value
@@ -427,7 +441,9 @@ fun FeetAndHandsScreen(
                     fun drawFoot(xOffset: Float, mirrorX: Boolean) {
                         val m = Matrix()
                         val ms = footScale * zoom.x
-                        m.setTranslate(footBaseX + xOffset, footY - 10f * s * zoom.y)
+                        val footCx = (footBounds.minX + footBounds.maxX) / 2f
+                        val footCy = (footBounds.minY + footBounds.maxY) / 2f
+                        m.setTranslate(footBaseX + xOffset - footCx * ms, footY - footCy * ms)
                         m.preScale(if (mirrorX) -ms else ms, ms)
                         val fp = Path()
                         fp.addPath(footPath, m)
