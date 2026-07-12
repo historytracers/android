@@ -311,12 +311,12 @@ fun FeetAndHandsScreen(
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
                     }
 
-                    fun drawFoot(xOffset: Float, mirrorX: Boolean, scaleMul: Float = 1f) {
+                    fun drawFoot(xOffset: Float, mirrorX: Boolean, scaleMul: Float = 1f, yOffset: Float = 0f) {
                         val m = Matrix()
                         val ms = footScale * scaleMul
                         val footCx = (footBounds.minX + footBounds.maxX) / 2f
                         val footCy = (footBounds.minY + footBounds.maxY) / 2f
-                        m.setTranslate(footBaseX + xOffset - footCx * ms, footY - footCy * ms)
+                        m.setTranslate(footBaseX + xOffset - footCx * ms, footY + yOffset - footCy * ms)
                         m.preScale(if (mirrorX) -ms else ms, ms)
                         val fp = Path()
                         fp.addPath(footPath, m)
@@ -325,22 +325,32 @@ fun FeetAndHandsScreen(
 
                     val leftZoom: Float
                     val rightZoom: Float
+                    val leftYOff: Float
+                    val rightYOff: Float
                     if (mode == Mode.STEPS && isPlaying) {
                         val p = footZoomProgress.value
-                        val z = 1f + (if (p < 0.5f) p * 2f else (1f - (p - 0.5f) * 2f)) * 0.12f
-                        leftZoom = if (stepIsLeft) z else 1f
-                        rightZoom = if (!stepIsLeft) z else 1f
+                        val stepPhase = if (p < 0.5f) p * 2f else (1f - (p - 0.5f) * 2f)
+                        val rise = -40f * s * stepPhase
+                        val zoom = 1f + stepPhase * 0.1f
+                        leftZoom = if (stepIsLeft) zoom else 1f
+                        rightZoom = if (!stepIsLeft) zoom else 1f
+                        leftYOff = if (stepIsLeft) rise else 0f
+                        rightYOff = if (!stepIsLeft) rise else 0f
                     } else if (mode == Mode.JUMPS && isPlaying) {
                         val p = footZoomProgress.value
                         leftZoom = 1f + p * 0.08f
                         rightZoom = leftZoom
+                        leftYOff = 0f
+                        rightYOff = 0f
                     } else {
                         leftZoom = 1f
                         rightZoom = 1f
+                        leftYOff = 0f
+                        rightYOff = 0f
                     }
 
-                    drawFoot(-45f * s, mirrorX = true, leftZoom)
-                    drawFoot(45f * s, mirrorX = false, rightZoom)
+                    drawFoot(-45f * s, mirrorX = true, leftZoom, leftYOff)
+                    drawFoot(45f * s, mirrorX = false, rightZoom, rightYOff)
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -397,8 +407,6 @@ fun FeetAndHandsScreen(
                                         stepIsLeft = i % 2 == 0
                                         footZoomProgress.snapTo(0f)
                                         footZoomProgress.animateTo(1f, tween(dur))
-                                        footZoomProgress.snapTo(1f)
-                                        footZoomProgress.animateTo(0f, tween(dur))
                                         stepsCompleted++
                                         if (i < count - 1) delay((dur * 0.2f).toLong())
                                     }
