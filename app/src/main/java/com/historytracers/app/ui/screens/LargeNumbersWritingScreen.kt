@@ -309,8 +309,13 @@ fun LargeNumbersWritingScreen(
                 }
 
                 if (showCongrats.value && completedLevel > 0) {
+                    val congratsText = if (completedLevel == 8) {
+                        "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
+                    } else {
+                        "${s.levelComplete.format(completedLevel)} \uD83C\uDF89"
+                    }
                     Text(
-                        text = "${s.levelComplete.format(completedLevel)} \uD83C\uDF89",
+                        text = congratsText,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
@@ -328,7 +333,7 @@ fun LargeNumbersWritingScreen(
         completedLevel = currentLevel
         onScoreChanged(currentScore + 2)
         scope.launch { preferences.recordLessonCompletion() }
-        if (currentLevel < 8) currentLevel++
+        if (currentLevel < 8) currentLevel++ else currentLevel = 1
     }
 }
 

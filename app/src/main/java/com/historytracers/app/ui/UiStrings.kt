@@ -105,6 +105,7 @@ data class UiStrings(
     val write: String,
     val level: String,
     val levelComplete: String,
+    val levelCompleteMax: String,
 )
 
 val EnStrings = UiStrings(
@@ -209,6 +210,7 @@ val EnStrings = UiStrings(
     write = "Write",
     level = "Level",
     levelComplete = "Congratulations, you finished level %d/8!",
+    levelCompleteMax = "Congratulations, excellent work!",
 )
 
 val PtStrings = UiStrings(
@@ -313,6 +315,7 @@ val PtStrings = UiStrings(
     write = "Escreva",
     level = "Nível",
     levelComplete = "Parabéns, você finalizou o nível %d/8!",
+    levelCompleteMax = "Parabéns, excelente trabalho!",
 )
 
 val EsStrings = UiStrings(
@@ -417,6 +420,7 @@ val EsStrings = UiStrings(
     write = "Escriba",
     level = "Nivel",
     levelComplete = "¡Felicitaciones, terminaste el nivel %d/8!",
+    levelCompleteMax = "¡Felicitaciones, excelente trabajo!",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
