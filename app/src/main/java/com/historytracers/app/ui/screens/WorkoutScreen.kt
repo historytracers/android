@@ -29,7 +29,9 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun WorkoutScreen(
-    onNavigateToClap: () -> Unit = {}
+    onNavigateToClap: () -> Unit = {},
+    onNavigateToFeetAndHands: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -145,7 +147,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToFeetAndHands,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -174,7 +176,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToCongratulation,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

@@ -4,6 +4,8 @@ package com.historytracers.app.ui.screens
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Matrix
+import android.media.AudioAttributes
+import android.media.SoundPool
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -19,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import com.historytracers.app.R
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.parseHexColor
 import androidx.compose.ui.graphics.nativeCanvas
@@ -87,6 +91,23 @@ fun ClapScreen(
 
     val animationProgress = remember { Animatable(0f) }
 
+    val context = LocalContext.current
+    val soundPool = remember {
+        SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
+            .build()
+    }
+    val clapSoundId = remember { soundPool.load(context, R.raw.clap, 1) }
+    DisposableEffect(Unit) {
+        onDispose { soundPool.release() }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
             tonalElevation = 3.dp,
@@ -99,9 +120,7 @@ fun ClapScreen(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-                    if (!isPlaying) onNavigateBack()
-                }) {
+                IconButton(onClick = { onNavigateBack() }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
@@ -136,26 +155,32 @@ fun ClapScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
+                    .weight(1f)
             ) {
+                Text(
+                    text = s.clapSkinColorHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(horizontal = 8.dp)
+                )
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(3f)
+                        .align(Alignment.Center)
                 ) {
                     val canvasW = 600f
                     val canvasH = 600f
                     val s = minOf(size.width / canvasW, size.height / canvasH) * 1.8f
-                    val cx = size.width * 0.5f
+                    val cx = size.width * 0.5f + 70f * density
                     val cy = size.height * 0.6f
 
                     val restOff = 140f * s
-                    val centerShift = 80f * s
                     val prog = animationProgress.value
 
-                    val leftOff = -restOff + restOff * prog + centerShift
-                    val rightOff = restOff - restOff * prog + centerShift
+                    val leftOff = -restOff + restOff * prog
+                    val rightOff = restOff - restOff * prog
 
                     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                         color = handColor.hashCode()
@@ -249,6 +274,7 @@ fun ClapScreen(
                                     targetValue = 1f,
                                     animationSpec = tween(durationMillis = animDuration)
                                 )
+                                soundPool.play(clapSoundId, 1f, 1f, 1, 0, 1f)
                                 animationProgress.snapTo(1f)
                                 animationProgress.animateTo(
                                     targetValue = 0f,

@@ -3,6 +3,7 @@ package com.historytracers.app.navigation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalFireDepartment
@@ -33,6 +34,8 @@ import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
 import com.historytracers.app.ui.screens.ClapScreen
+import com.historytracers.app.ui.screens.CongratulationScreen
+import com.historytracers.app.ui.screens.FeetAndHandsScreen
 import com.historytracers.app.ui.screens.StreakScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
@@ -48,7 +51,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -175,6 +178,15 @@ fun AppNavigation() {
                             scope.launch { drawerState.close() }
                         }
                     )
+                    Divider()
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                        label = { Text(uiStrings.close) },
+                        selected = false,
+                        onClick = {
+                            (context as? android.app.Activity)?.finish()
+                        }
+                    )
                 }
             }
         ) {
@@ -219,15 +231,21 @@ fun AppNavigation() {
                         )
                     }
                     composable(Screen.FirstSteps.route) {
-                        FirstStepsScreen()
+                        FirstStepsScreen(
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
+                        )
                     }
                     composable(Screen.Workout.route) {
                         WorkoutScreen(
-                            onNavigateToClap = { navController.navigate(Screen.Clap.route) }
+                            onNavigateToClap = { navController.navigate(Screen.Clap.route) },
+                            onNavigateToFeetAndHands = { navController.navigate(Screen.FeetAndHands.route) },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
                         )
                     }
                     composable(Screen.Abacus.route) {
-                        AbacusScreen()
+                        AbacusScreen(
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
+                        )
                     }
                     composable(
                         route = Screen.Content.route,
@@ -293,6 +311,31 @@ fun AppNavigation() {
                     composable(Screen.Clap.route) {
                         ClapScreen(
                             skinColor = skinColor,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Workout.route, false)) {
+                                    navController.navigate(Screen.Workout.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.FeetAndHands.route) {
+                        FeetAndHandsScreen(
+                            skinColor = skinColor,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Workout.route, false)) {
+                                    navController.navigate(Screen.Workout.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.Congratulation.route) {
+                        CongratulationScreen(
                             onNavigateBack = { navController.popBackStack() }
                         )
                     }
