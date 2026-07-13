@@ -21,7 +21,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun AbacusScreen(
-    onNavigateToCongratulation: () -> Unit = {}
+    onNavigateToCongratulation: () -> Unit = {},
+    onNavigateToSorobanWriting: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -64,7 +65,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToSorobanWriting,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
