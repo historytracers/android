@@ -18,8 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.historytracers.app.data.UserPreferences
+import kotlinx.coroutines.launch
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -55,6 +58,9 @@ fun SorobanWritingScreen(
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
     val currentValue = SorobanValue(state.value)
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -317,6 +323,7 @@ fun SorobanWritingScreen(
     if (currentValue == targetValue.value.toLong() && !showCongrats.value) {
         showCongrats.value = true
         onScoreChanged(currentScore + 2)
+        scope.launch { preferences.recordLessonCompletion() }
     }
 }
 
