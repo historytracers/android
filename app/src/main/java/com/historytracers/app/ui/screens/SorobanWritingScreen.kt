@@ -74,14 +74,7 @@ fun SorobanWritingScreen(
                 Text(
                     text = s.writingToSoroban,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.weight(1f).padding(start = 8.dp)
-                )
-                Text(
-                    text = "★ $currentScore",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(end = 16.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
