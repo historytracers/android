@@ -245,6 +245,14 @@ fun AppNavigation() {
                     }
                     composable(Screen.Abacus.route) {
                         AbacusScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) }
                         )

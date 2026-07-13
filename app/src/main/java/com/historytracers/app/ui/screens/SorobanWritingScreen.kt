@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -48,10 +50,29 @@ fun SorobanWritingScreen(
     val s = LocalUiStrings.current
     val state = remember { mutableStateOf(List(COLUMNS) { ColumnState() }) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                }
+                Text(
+                    text = s.writingToSoroban,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -59,17 +80,6 @@ fun SorobanWritingScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(Modifier.height(16.dp))
-
-            Text(
-                text = s.writingToSoroban,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
             Spacer(Modifier.height(12.dp))
 
             Canvas(
@@ -232,40 +242,21 @@ fun SorobanWritingScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            FilledIconButton(
+                onClick = {
+                    state.value = List(COLUMNS) { ColumnState() }
+                },
+                modifier = Modifier.size(64.dp),
+                shape = RoundedCornerShape(50),
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
             ) {
-                FilledIconButton(
-                    onClick = {
-                        state.value = List(COLUMNS) { ColumnState() }
-                    },
-                    modifier = Modifier.size(64.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = "\u27F3",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = OnButtonYellow
-                    )
-                }
-
-                FilledIconButton(
-                    onClick = onNavigateBack,
-                    modifier = Modifier.size(64.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = s.back,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = OnButtonYellow
-                    )
-                }
+                Text(
+                    text = "\u27F3",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = OnButtonYellow
+                )
             }
 
             Spacer(Modifier.height(24.dp))
