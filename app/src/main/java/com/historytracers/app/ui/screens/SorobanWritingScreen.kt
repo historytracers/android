@@ -46,11 +46,15 @@ private fun SorobanValue(state: List<ColumnState>): Long {
 
 @Composable
 fun SorobanWritingScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val state = remember { mutableStateOf(List(COLUMNS) { ColumnState() }) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
+    val showCongrats = remember { mutableStateOf(false) }
+    val currentValue = SorobanValue(state.value)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -70,7 +74,14 @@ fun SorobanWritingScreen(
                 Text(
                     text = s.writingToSoroban,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.weight(1f).padding(start = 8.dp)
+                )
+                Text(
+                    text = "★ $currentScore",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 16.dp)
                 )
             }
         }
@@ -242,7 +253,6 @@ fun SorobanWritingScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            val currentValue = SorobanValue(state.value)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -308,6 +318,43 @@ fun SorobanWritingScreen(
             Spacer(Modifier.height(24.dp))
             }
         }
+    }
+
+    if (currentValue == targetValue.value.toLong() && !showCongrats.value) {
+        showCongrats.value = true
+    }
+
+    if (showCongrats.value) {
+        AlertDialog(
+            onDismissRequest = { },
+            title = {
+                Text(
+                    text = s.congratulationTitle,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = "\uD83D\uDE0A",
+                    style = MaterialTheme.typography.displayLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onScoreChanged(currentScore + 2)
+                        state.value = List(COLUMNS) { ColumnState() }
+                        targetValue.value = Random.nextInt(1, 10)
+                        showCongrats.value = false
+                    }
+                ) {
+                    Text(s.close, style = MaterialTheme.typography.titleMedium)
+                }
+            }
+        )
     }
 }
 
