@@ -26,6 +26,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 private const val COLUMNS = 9
 private const val UPPER_MAX = 1
@@ -49,6 +50,7 @@ fun SorobanWritingScreen(
 ) {
     val s = LocalUiStrings.current
     val state = remember { mutableStateOf(List(COLUMNS) { ColumnState() }) }
+    val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -241,18 +243,36 @@ fun SorobanWritingScreen(
             Spacer(Modifier.height(16.dp))
 
             val currentValue = SorobanValue(state.value)
-            Surface(
-                shape = RoundedCornerShape(40.dp),
-                color = Color(0xFF2E241F),
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 24.dp)
             ) {
-                Text(
-                    text = "${s.value}: $currentValue",
-                    color = Color(0xFFF2ECD8),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                )
+                Surface(
+                    shape = RoundedCornerShape(40.dp),
+                    color = Color(0xFF2E241F),
+                ) {
+                    Text(
+                        text = "${s.value}: $currentValue",
+                        color = Color(0xFFF2ECD8),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
+                }
+
+                Surface(
+                    shape = RoundedCornerShape(40.dp),
+                    color = Color(0xFFFFF9E6),
+                ) {
+                    Text(
+                        text = "${s.write}: ${targetValue.value}",
+                        color = Color(0xFF2E241F),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
+                }
             }
 
             Spacer(Modifier.height(24.dp))
@@ -260,6 +280,7 @@ fun SorobanWritingScreen(
             FilledIconButton(
                 onClick = {
                     state.value = List(COLUMNS) { ColumnState() }
+                    targetValue.value = Random.nextInt(1, 10)
                 },
                 modifier = Modifier.size(96.dp),
                 shape = RoundedCornerShape(50),
