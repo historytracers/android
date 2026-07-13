@@ -106,7 +106,7 @@ fun SorobanWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Column(
-                modifier = Modifier.offset(y = (-40).dp),
+                modifier = Modifier.offset(y = (-60).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Canvas(
@@ -304,16 +304,6 @@ fun SorobanWritingScreen(
                     color = OnButtonYellow
                 )
             }
-
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = s.resetDesc,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
 
             Spacer(Modifier.height(24.dp))
             }
