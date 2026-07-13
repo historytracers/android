@@ -96,6 +96,9 @@ data class UiStrings(
     val fast: String,
     val congratulationTitle: String,
     val congratulationMessage: String,
+    val value: String,
+    val reset: String,
+    val resetDesc: String,
 )
 
 val EnStrings = UiStrings(
@@ -191,6 +194,9 @@ val EnStrings = UiStrings(
     fast = "Fast",
     congratulationTitle = "Congratulations!",
     congratulationMessage = "Congratulations on reaching this level! The previous classes are not locked, and you will not receive fewer points for studying them again. Every person has their own time to learn, and we respect that.\n\nWe are going to give you 10 points for reaching this level for the first time by completing everything before.\n\nEnjoy your own way of learning and your life, respecting yourself!",
+    value = "Value",
+    reset = "Reset",
+    resetDesc = "Clears all beads back to zero",
 )
 
 val PtStrings = UiStrings(
@@ -286,6 +292,9 @@ val PtStrings = UiStrings(
     fast = "R\u00e1pido",
     congratulationTitle = "Parab\u00e9ns!",
     congratulationMessage = "Parab\u00e9ns por alcan\u00e7ar este n\u00edvel! As aulas anteriores n\u00e3o est\u00e3o bloqueadas e voc\u00ea n\u00e3o receber\u00e1 menos pontos por estud\u00e1-las novamente. Cada pessoa tem seu pr\u00f3prio tempo para aprender, e n\u00f3s respeitamos isso.\n\nVamos dar a voc\u00ea 10 pontos por alcan\u00e7ar este n\u00edvel pela primeira vez, fazendo tudo o que veio antes.\n\nAproveite seu pr\u00f3prio jeito de aprender e sua vida, respeitando a si mesmo!",
+    value = "Valor",
+    reset = "Reiniciar",
+    resetDesc = "Limpa todas as contas, voltando ao zero",
 )
 
 val EsStrings = UiStrings(
@@ -381,6 +390,9 @@ val EsStrings = UiStrings(
     fast = "R\u00e1pido",
     congratulationTitle = "\u00a1Felicitaciones!",
     congratulationMessage = "\u00a1Felicitaciones por alcanzar este nivel! Las clases anteriores no est\u00e1n bloqueadas y no recibir\u00e1s menos puntos por estudiarlas de nuevo. Cada persona tiene su propio tiempo para aprender, y respetamos eso.\n\nTe vamos a dar 10 puntos por alcanzar este nivel por primera vez, habiendo hecho todo lo anterior.\n\n\u00a1Disfruta tu propia forma de aprender y tu vida, respet\u00e1ndote a ti mismo!",
+    value = "Valor",
+    reset = "Reiniciar",
+    resetDesc = "Limpia todas las cuentas, volviendo a cero",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

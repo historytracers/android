@@ -232,7 +232,7 @@ fun SorobanWritingScreen(
                 modifier = Modifier.padding(horizontal = 24.dp)
             ) {
                 Text(
-                    text = "Value: $currentValue",
+                    text = "${s.value}: $currentValue",
                     color = Color(0xFFF2ECD8),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
@@ -246,18 +246,28 @@ fun SorobanWritingScreen(
                 onClick = {
                     state.value = List(COLUMNS) { ColumnState() }
                 },
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(96.dp),
                 shape = RoundedCornerShape(50),
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = ButtonYellow
                 )
             ) {
                 Text(
-                    text = "\u27F3",
-                    style = MaterialTheme.typography.titleLarge,
+                    text = s.reset,
+                    style = MaterialTheme.typography.titleMedium,
                     color = OnButtonYellow
                 )
             }
+
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = s.resetDesc,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
 
             Spacer(Modifier.height(24.dp))
         }
