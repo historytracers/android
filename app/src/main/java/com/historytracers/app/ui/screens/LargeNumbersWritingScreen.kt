@@ -53,6 +53,12 @@ private fun LnValue(state: List<LnColumnState>): Long {
     return result
 }
 
+private fun getLevelRange(level: Int): LongRange {
+    var start = 1L
+    repeat(level) { start *= 10L }
+    return start..(start * 10L - 1L)
+}
+
 @Composable
 fun LargeNumbersWritingScreen(
     onNavigateBack: () -> Unit = {},
@@ -60,9 +66,11 @@ fun LargeNumbersWritingScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    var currentLevel by remember { mutableStateOf(1) }
     val state = remember { mutableStateOf(List(COLUMNS) { LnColumnState() }) }
-    val targetValue = remember { mutableStateOf(Random.nextLong(1L, 100_000_000L)) }
+    val targetValue = remember { mutableStateOf(getLevelRange(1).random()) }
     val showCongrats = remember { mutableStateOf(false) }
+    var completedLevel by remember { mutableStateOf(0) }
     val currentValue = LnValue(state.value)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -117,6 +125,14 @@ fun LargeNumbersWritingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var isSoroban by remember { mutableStateOf(true) }
+
+                Text(
+                    text = "${s.level}: $currentLevel/8",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -275,8 +291,9 @@ fun LargeNumbersWritingScreen(
                 FilledIconButton(
                     onClick = {
                         state.value = List(COLUMNS) { LnColumnState() }
-                        targetValue.value = Random.nextLong(1L, 100_000_000L)
+                        targetValue.value = getLevelRange(currentLevel).random()
                         showCongrats.value = false
+                        completedLevel = 0
                     },
                     modifier = Modifier.size(96.dp),
                     shape = RoundedCornerShape(50),
@@ -291,9 +308,9 @@ fun LargeNumbersWritingScreen(
                     )
                 }
 
-                if (showCongrats.value) {
+                if (showCongrats.value && completedLevel > 0) {
                     Text(
-                        text = "${s.congratulationTitle} \uD83C\uDF89",
+                        text = "${s.levelComplete.format(completedLevel)} \uD83C\uDF89",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
@@ -308,8 +325,10 @@ fun LargeNumbersWritingScreen(
 
     if (currentValue == targetValue.value && !showCongrats.value) {
         showCongrats.value = true
+        completedLevel = currentLevel
         onScoreChanged(currentScore + 2)
         scope.launch { preferences.recordLessonCompletion() }
+        if (currentLevel < 8) currentLevel++
     }
 }
 
