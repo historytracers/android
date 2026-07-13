@@ -96,7 +96,7 @@ fun SuanpanWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.sorobanWritingInstruction,
+                text = s.suanpanWritingInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)

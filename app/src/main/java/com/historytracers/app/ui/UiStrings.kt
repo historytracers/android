@@ -100,6 +100,8 @@ data class UiStrings(
     val reset: String,
     val resetDesc: String,
     val sorobanWritingInstruction: String,
+    val suanpanWritingInstruction: String,
+    val largeNumbersWritingInstruction: String,
     val write: String,
 )
 
@@ -200,6 +202,8 @@ val EnStrings = UiStrings(
     reset = "Reset",
     resetDesc = "Clears all beads back to zero",
     sorobanWritingInstruction = "This is the first in a series of texts that teach how to use the Soroban (算盤). In this text, we will focus on the representation of numbers between 0 and 9; in future texts, we will learn how to use it more broadly. For now, we will only work with the first column from the right.\n\nThe marker on top (red) has value 5, while the marker below (blue) has value 1. Set the values as requested in the yellow box near the 'Value' box.",
+    suanpanWritingInstruction = "This is the first in a series of texts that teach how to use the Suanpan (算盤). In this text, we will focus on the representation of numbers between 0 and 9; in future texts, we will learn how to use it more broadly. For now, we will only work with the first column from the right.\n\nThe markers on top (red) have value 5 each, while the markers below (blue) have value 1 each. Set the values as requested in the yellow box near the 'Value' box.",
+    largeNumbersWritingInstruction = "Practice representing large numbers (1 to 99,999,999) on both the Soroban (算盤) and Suanpan (算盤) simultaneously. Both abacuses share the same values. Use the 9 columns to represent units, tens, hundreds, and so on. Set the requested value shown in the yellow box using either abacus.",
     write = "Write",
 )
 
@@ -300,6 +304,8 @@ val PtStrings = UiStrings(
     reset = "Reiniciar",
     resetDesc = "Limpa todas as contas, voltando ao zero",
     sorobanWritingInstruction = "Este é o primeiro de uma série de textos que ensinam como usar o Soroban (算盤). Neste texto, vamos nos concentrar na representação dos números entre 0 e 9; em textos futuros, aprenderemos a usá-lo de forma mais ampla. Por enquanto, vamos trabalhar apenas com a primeira coluna da direita.\n\nO marcador superior (vermelho) tem valor 5, enquanto o marcador inferior (azul) tem valor 1. Defina os valores conforme solicitado na caixa amarela perto da caixa \"Valor\".",
+    suanpanWritingInstruction = "Este é o primeiro de uma série de textos que ensinam como usar o Suanpan (算盤). Neste texto, vamos nos concentrar na representação dos números entre 0 e 9; em textos futuros, aprenderemos a usá-lo de forma mais ampla. Por enquanto, vamos trabalhar apenas com a primeira coluna da direita.\n\nOs marcadores superiores (vermelho) têm valor 5 cada, enquanto os marcadores inferiores (azul) têm valor 1 cada. Defina os valores conforme solicitado na caixa amarela perto da caixa \"Valor\".",
+    largeNumbersWritingInstruction = "Pratique a representação de números grandes (1 a 99.999.999) no Soroban (算盤) e no Suanpan (算盤) simultaneamente. Ambos os ábacos compartilham os mesmos valores. Use as 9 colunas para representar unidades, dezenas, centenas e assim por diante. Defina o valor solicitado na caixa amarela usando qualquer um dos ábacos.",
     write = "Escreva",
 )
 
@@ -400,6 +406,8 @@ val EsStrings = UiStrings(
     reset = "Reiniciar",
     resetDesc = "Limpia todas las cuentas, volviendo a cero",
     sorobanWritingInstruction = "Este es el primero de una serie de textos que enseñan cómo usar el Soroban (算盤). En este texto, nos centraremos en la representación de números entre 0 y 9; en textos futuros, aprenderemos a usarlo de forma más amplia. Por ahora, solo trabajaremos con la primera columna de la derecha.\n\nEl marcador superior (rojo) tiene valor 5, mientras que el marcador inferior (azul) tiene valor 1. Establezca los valores según lo solicitado en el cuadro amarillo cerca del cuadro \"Valor\".",
+    suanpanWritingInstruction = "Este es el primero de una serie de textos que enseñan cómo usar el Suanpan (算盤). En este texto, nos centraremos en la representación de números entre 0 y 9; en textos futuros, aprenderemos a usarlo de forma más amplia. Por ahora, solo trabajaremos con la primera columna de la derecha.\n\nLos marcadores superiores (rojo) tienen valor 5 cada uno, mientras que los marcadores inferiores (azul) tienen valor 1 cada uno. Establezca los valores según lo solicitado en el cuadro amarillo cerca del cuadro \"Valor\".",
+    largeNumbersWritingInstruction = "Practique la representación de números grandes (1 a 99.999.999) en el Soroban (算盤) y en el Suanpan (算盤) simultáneamente. Ambos ábacos comparten los mismos valores. Use las 9 columnas para representar unidades, decenas, centenas y así sucesivamente. Establezca el valor solicitado en el cuadro amarillo usando cualquiera de los ábacos.",
     write = "Escriba",
 )
 
