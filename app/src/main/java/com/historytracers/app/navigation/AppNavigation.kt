@@ -38,6 +38,7 @@ import com.historytracers.app.ui.screens.CongratulationScreen
 import com.historytracers.app.ui.screens.FeetAndHandsScreen
 import com.historytracers.app.ui.screens.StreakScreen
 import com.historytracers.app.ui.screens.SorobanWritingScreen
+import com.historytracers.app.ui.screens.SuanpanWritingScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -254,11 +255,26 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
-                            onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) }
+                            onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) },
+                            onNavigateToSuanpanWriting = { navController.navigate(Screen.SuanpanWriting.route) }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
                         SorobanWritingScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SuanpanWriting.route) {
+                        SuanpanWritingScreen(
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Abacus.route, false)) {
                                     navController.navigate(Screen.Abacus.route) {
