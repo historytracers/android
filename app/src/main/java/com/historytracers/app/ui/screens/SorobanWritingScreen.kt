@@ -291,6 +291,7 @@ fun SorobanWritingScreen(
                 onClick = {
                     state.value = List(COLUMNS) { ColumnState() }
                     targetValue.value = Random.nextInt(1, 10)
+                    showCongrats.value = false
                 },
                 modifier = Modifier.size(96.dp),
                 shape = RoundedCornerShape(50),
@@ -305,6 +306,16 @@ fun SorobanWritingScreen(
                 )
             }
 
+            if (showCongrats.value) {
+                Text(
+                    text = "${s.congratulationTitle} \uD83C\uDF89",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
             }
         }
@@ -312,39 +323,7 @@ fun SorobanWritingScreen(
 
     if (currentValue == targetValue.value.toLong() && !showCongrats.value) {
         showCongrats.value = true
-    }
-
-    if (showCongrats.value) {
-        AlertDialog(
-            onDismissRequest = { },
-            title = {
-                Text(
-                    text = s.congratulationTitle,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
-                Text(
-                    text = "\uD83D\uDE0A",
-                    style = MaterialTheme.typography.displayLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onScoreChanged(currentScore + 2)
-                        state.value = List(COLUMNS) { ColumnState() }
-                        targetValue.value = Random.nextInt(1, 10)
-                        showCongrats.value = false
-                    }
-                ) {
-                    Text(s.close, style = MaterialTheme.typography.titleMedium)
-                }
-            }
-        )
+        onScoreChanged(currentScore + 2)
     }
 }
 
