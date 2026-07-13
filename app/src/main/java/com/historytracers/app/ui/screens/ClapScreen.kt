@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.historytracers.app.R
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.parseHexColor
 import androidx.compose.ui.graphics.nativeCanvas
@@ -92,6 +93,7 @@ fun ClapScreen(
     val animationProgress = remember { Animatable(0f) }
 
     val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
     val soundPool = remember {
         SoundPool.Builder()
             .setMaxStreams(1)
@@ -265,6 +267,7 @@ fun ClapScreen(
                         isPlaying = true
                         completed = 0
                         target = clapCount
+                        scope.launch { preferences.recordLessonCompletion() }
                         scope.launch {
                             val animDuration = (cycleTime() * 0.75f).toInt()
                             val pauseDuration = (cycleTime() * 0.25f).toInt()
