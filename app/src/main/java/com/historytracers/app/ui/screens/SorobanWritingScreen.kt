@@ -123,7 +123,7 @@ fun SorobanWritingScreen(
                             val colW = usableWidth / COLUMNS
                             val startX = margin + colW / 2f
                             val beamY = ch / 2f
-                            val bR = minOf(colW * 0.38f, 14f / 400f * ch, 14f / 860f * cw)
+                            val bR = minOf(colW * 0.38f, 10f / 400f * ch, 10f / 860f * cw)
                             val dtt = beamY - 28f / 400f * ch
                             val dtb = beamY + 28f / 400f * ch
                             val x = offset.x
@@ -143,8 +143,8 @@ fun SorobanWritingScreen(
                             var handled = false
 
                             for (bi in 0 until UPPER_MAX) {
-                                val activeY = dtt - 6f / 400f * ch - bi * 14f / 400f * ch
-                                val inactiveY = dtt - 38f / 400f * ch - bi * 11.2f / 400f * ch
+                                val activeY = dtt - 6f / 400f * ch - bi * 22f / 400f * ch
+                                val inactiveY = dtt - 38f / 400f * ch - bi * 22f / 400f * ch
                                 val beadY = if (bi < (if (state.value[colHit].upper) 1 else 0)) activeY else inactiveY
                                 if (sqrt((x - cx) * (x - cx) + (y - beadY) * (y - beadY)) < bR + 8f / 400f * ch && y < dtt - 2f / 400f * ch) {
                                     val cur = if (state.value[colHit].upper) 1 else 0
@@ -159,7 +159,7 @@ fun SorobanWritingScreen(
 
                             if (!handled) {
                                 for (bi in 0 until LOWER_MAX) {
-                                    val activeY = dtb + 8f / 400f * ch + bi * 14f / 400f * ch
+                                    val activeY = dtb + 8f / 400f * ch + bi * 22f / 400f * ch
                                     val inactiveY = activeY + 28f / 400f * ch
                                     val beadY = if (bi < state.value[colHit].lower) activeY else inactiveY
                                     if (sqrt((x - cx) * (x - cx) + (y - beadY) * (y - beadY)) < bR + 8f / 400f * ch && y > dtb + 2f / 400f * ch) {
@@ -182,7 +182,7 @@ fun SorobanWritingScreen(
                 val colWidth = usableWidth / COLUMNS
                 val startX = margin + colWidth / 2f
                 val beamY = canvasHeight / 2f
-                val ballRadius = minOf(colWidth * 0.38f, 14f / 400f * canvasHeight, 14f / 860f * canvasWidth)
+                val ballRadius = minOf(colWidth * 0.38f, 10f / 400f * canvasHeight, 10f / 860f * canvasWidth)
                 val decimalTrackTop = beamY - 28f / 400f * canvasHeight
                 val decimalTrackBottom = beamY + 28f / 400f * canvasHeight
 
@@ -345,8 +345,8 @@ private fun DrawScope.drawColumn(
     )
 
     for (i in 0 until UPPER_MAX) {
-        val activeY = decimalTrackTop - 6f / 400f * canvasHeight - i * 14f / 400f * canvasHeight
-        val inactiveY = decimalTrackTop - 38f / 400f * canvasHeight - i * 11.2f / 400f * canvasHeight
+        val activeY = decimalTrackTop - 6f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
+        val inactiveY = decimalTrackTop - 38f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
         val beadActive = i < (if (upperActive) 1 else 0)
         val by = if (beadActive) activeY else inactiveY
 
@@ -357,7 +357,7 @@ private fun DrawScope.drawColumn(
     }
 
     for (i in 0 until LOWER_MAX) {
-        val activeY = decimalTrackBottom + 8f / 400f * canvasHeight + i * 14f / 400f * canvasHeight
+        val activeY = decimalTrackBottom + 8f / 400f * canvasHeight + i * 22f / 400f * canvasHeight
         val inactiveY = activeY + 28f / 400f * canvasHeight
         val beadActive = i < lowerCount
         val by = if (beadActive) activeY else inactiveY
