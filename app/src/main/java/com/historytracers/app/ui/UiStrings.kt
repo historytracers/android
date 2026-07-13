@@ -99,6 +99,7 @@ data class UiStrings(
     val value: String,
     val reset: String,
     val resetDesc: String,
+    val sorobanWritingInstruction: String,
 )
 
 val EnStrings = UiStrings(
@@ -197,6 +198,7 @@ val EnStrings = UiStrings(
     value = "Value",
     reset = "Reset",
     resetDesc = "Clears all beads back to zero",
+    sorobanWritingInstruction = "This is the first in a series of texts that teach how to use the Soroban (算盤). In this text, we will focus on the representation of numbers between 0 and 9; in future texts, we will learn how to use it more broadly. For now, we will only work with the first column from the right.\n\nThe marker on top (red) has value 5, while the marker below (blue) has value 1. Set the values as requested in the yellow box near the 'Value' box.",
 )
 
 val PtStrings = UiStrings(
@@ -295,6 +297,7 @@ val PtStrings = UiStrings(
     value = "Valor",
     reset = "Reiniciar",
     resetDesc = "Limpa todas as contas, voltando ao zero",
+    sorobanWritingInstruction = "Este é o primeiro de uma série de textos que ensinam como usar o Soroban (算盤). Neste texto, vamos nos concentrar na representação dos números entre 0 e 9; em textos futuros, aprenderemos a usá-lo de forma mais ampla. Por enquanto, vamos trabalhar apenas com a primeira coluna da direita.\n\nO marcador superior (vermelho) tem valor 5, enquanto o marcador inferior (azul) tem valor 1. Defina os valores conforme solicitado na caixa amarela perto da caixa \"Valor\".",
 )
 
 val EsStrings = UiStrings(
@@ -393,6 +396,7 @@ val EsStrings = UiStrings(
     value = "Valor",
     reset = "Reiniciar",
     resetDesc = "Limpia todas las cuentas, volviendo a cero",
+    sorobanWritingInstruction = "Este es el primero de una serie de textos que enseñan cómo usar el Soroban (算盤). En este texto, nos centraremos en la representación de números entre 0 y 9; en textos futuros, aprenderemos a usarlo de forma más amplia. Por ahora, solo trabajaremos con la primera columna de la derecha.\n\nEl marcador superior (rojo) tiene valor 5, mientras que el marcador inferior (azul) tiene valor 1. Establezca los valores según lo solicitado en el cuadro amarillo cerca del cuadro \"Valor\".",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

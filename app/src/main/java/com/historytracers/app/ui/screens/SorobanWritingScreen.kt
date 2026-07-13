@@ -77,17 +77,31 @@ fun SorobanWritingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(top = 200.dp),
+                .padding(top = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(Modifier.height(12.dp))
 
-            Canvas(
+            Text(
+                text = s.sorobanWritingInstruction,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Column(
+                modifier = Modifier.offset(y = (-40).dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
                     .aspectRatio(860f / 400f)
+                    .offset(y = (-20).dp)
                     .pointerInput(Unit) {
                         detectTapGestures { offset ->
                             val cw = size.width.toFloat()
@@ -237,7 +251,7 @@ fun SorobanWritingScreen(
                     color = Color(0xFFF2ECD8),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                 )
             }
 
@@ -271,6 +285,7 @@ fun SorobanWritingScreen(
             )
 
             Spacer(Modifier.height(24.dp))
+            }
         }
     }
 }
