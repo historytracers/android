@@ -221,7 +221,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Next level",
+                text = s.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

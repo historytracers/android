@@ -210,7 +210,7 @@ fun ClapScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Number of claps:", style = MaterialTheme.typography.bodyLarge)
+                Text(s.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
 
                 FilledIconButton(
                     onClick = { if (!isPlaying && clapCount > 1) clapCount-- },

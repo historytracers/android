@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.UiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -59,15 +60,37 @@ private data class Exercise(val a: Long, val b: Long) {
 
 private data class StepInfo(val instruction: String, val targetValue: Long)
 
-private sealed class Level(val name: String, val maxDigits: Int) {
-    data object Units : Level("Units", 1)
-    data object Tens : Level("Tens", 2)
-    data object Hundreds : Level("Hundreds", 3)
-    data object Thousands : Level("Thousands", 4)
-    data object TenThousands : Level("Ten Thousands", 5)
-    data object HundredThousands : Level("Hundred Thousands", 6)
-    data object Millions : Level("Millions", 7)
-    data object TenMillions : Level("Ten Millions", 8)
+private sealed class Level(val maxDigits: Int) {
+    data object Units : Level(1)
+    data object Tens : Level(2)
+    data object Hundreds : Level(3)
+    data object Thousands : Level(4)
+    data object TenThousands : Level(5)
+    data object HundredThousands : Level(6)
+    data object Millions : Level(7)
+    data object TenMillions : Level(8)
+}
+
+private fun levelName(level: Level, s: UiStrings): String = when (level) {
+    Level.Units -> s.levelUnits
+    Level.Tens -> s.levelTens
+    Level.Hundreds -> s.levelHundreds
+    Level.Thousands -> s.levelThousands
+    Level.TenThousands -> s.levelTenThousands
+    Level.HundredThousands -> s.levelHundredThousands
+    Level.Millions -> s.levelMillions
+    Level.TenMillions -> s.levelTenMillions
+}
+
+private fun placeNames(level: Level, s: UiStrings): List<String> = when (level) {
+    Level.Units -> listOf(s.placeUnits)
+    Level.Tens -> listOf(s.placeUnits, s.placeTens)
+    Level.Hundreds -> listOf(s.placeUnits, s.placeTens, s.placeHundreds)
+    Level.Thousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands)
+    Level.TenThousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands)
+    Level.HundredThousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands)
+    Level.Millions -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands, s.placeMillions)
+    Level.TenMillions -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions)
 }
 
 private val levels = listOf(
@@ -90,7 +113,7 @@ private fun generateNumbers(level: Level): Exercise {
     return Exercise(Random.nextLong(min, max + 1), Random.nextLong(min, max + 1))
 }
 
-private fun buildSteps(exercise: Exercise, level: Level): List<StepInfo> {
+private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<StepInfo> {
     val steps = mutableListOf<StepInfo>()
     val multiplier = when (level) {
         Level.Units -> listOf(1L)
@@ -102,19 +125,10 @@ private fun buildSteps(exercise: Exercise, level: Level): List<StepInfo> {
         Level.Millions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L)
         Level.TenMillions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L)
     }
-    val placeNames = when (level) {
-        Level.Units -> listOf("units")
-        Level.Tens -> listOf("units", "tens")
-        Level.Hundreds -> listOf("units", "tens", "hundreds")
-        Level.Thousands -> listOf("units", "tens", "hundreds", "thousands")
-        Level.TenThousands -> listOf("units", "tens", "hundreds", "thousands", "ten thousands")
-        Level.HundredThousands -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands")
-        Level.Millions -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions")
-        Level.TenMillions -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions", "ten millions")
-    }
-    val placeDescription = placeNames.reversed().joinToString(", ")
+    val pn = placeNames(level, s)
+    val placeDescription = pn.reversed().joinToString(", ")
 
-    steps.add(StepInfo("Step 1: Write the first number ${exercise.a} in the abacus column(s) ($placeDescription).", exercise.a))
+    steps.add(StepInfo(s.stepWriteFirst.format(exercise.a, placeDescription), exercise.a))
 
     var currentValue = exercise.a
 
@@ -127,17 +141,17 @@ private fun buildSteps(exercise: Exercise, level: Level): List<StepInfo> {
 
         if (total < 10) {
             currentValue += digitB * multiplier[p]
-            steps.add(StepInfo("Add to the ${placeNames[p]}: Add $digitB to the ${placeNames[p]} column. After this addition, the abacus should show ${currentValue}.", currentValue))
+            steps.add(StepInfo(s.stepAddTo.format(pn[p], digitB, pn[p], currentValue), currentValue))
         } else {
             val complement = 10 - digitB
             val newValue = currentValue + (multiplier[p] * 10) - (complement * multiplier[p])
-            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else "next"
-            steps.add(StepInfo("Carrying 1: Adding $digitB to ${placeNames[p]} gives $digitA + $digitB = $total. Remove the complement $complement from the ${placeNames[p]} column. Add 1 to the $nextPlace column. After these movements, the abacus should show $newValue.", newValue))
+            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.placeNext
+            steps.add(StepInfo(s.stepCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue), newValue))
             currentValue = newValue
         }
     }
 
-    steps.add(StepInfo("Final: ${exercise.a} + ${exercise.b} = ${exercise.expected}. The abacus should show this sum!", exercise.expected))
+    steps.add(StepInfo(s.stepFinal.format(exercise.a, exercise.b, exercise.expected), exercise.expected))
     return steps
 }
 
@@ -153,7 +167,8 @@ fun PracticingAdditionScreen(
     val state = remember { mutableStateOf(List(COLUMNS) { PaColumnState() }) }
     var currentLevelIdx by remember { mutableIntStateOf(0) }
     var exercise by remember { mutableStateOf(generateNumbers(levels[0])) }
-    var steps by remember { mutableStateOf(buildSteps(exercise, levels[0])) }
+    var steps by remember { mutableStateOf(buildSteps(exercise, levels[0], s)) }
+    var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
@@ -172,10 +187,11 @@ fun PracticingAdditionScreen(
     fun resetExercise() {
         state.value = List(COLUMNS) { PaColumnState() }
         exercise = generateNumbers(levels[currentLevelIdx])
-        steps = buildSteps(exercise, levels[currentLevelIdx])
+        steps = buildSteps(exercise, levels[currentLevelIdx], s)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
+        isFeedbackPositive = false
         exerciseStarted = false
         finalCongratsShown = false
         showFinalCongratsMessage = false
@@ -192,15 +208,17 @@ fun PracticingAdditionScreen(
                 if (currentStepIdx == steps.size - 1) {
                     if (!finalCongratsShown) {
                         finalCongratsShown = true
-                        feedbackMessage = "PERFECT! ${exercise.a} + ${exercise.b} = ${exercise.expected} \uD83C\uDF89"
+                        feedbackMessage = s.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
+                        isFeedbackPositive = true
                     }
                 } else {
-                    feedbackMessage = "Correct! Click 'Next step' to continue."
+                    feedbackMessage = s.feedbackCorrect
+                    isFeedbackPositive = true
                 }
             }
         } else {
             stepCompleted = false
-            if (feedbackMessage.isNotEmpty() && !feedbackMessage.contains("PERFECT") && !feedbackMessage.contains("Correct")) {
+            if (feedbackMessage.isNotEmpty() && !isFeedbackPositive) {
                 feedbackMessage = ""
             }
         }
@@ -219,10 +237,12 @@ fun PracticingAdditionScreen(
             currentStepIdx++
             stepCompleted = false
             feedbackMessage = ""
+            isFeedbackPositive = false
         } else {
             if (currentVal == exercise.expected && !finalCongratsShown) {
                 finalCongratsShown = true
-                feedbackMessage = "CONGRATULATIONS! You calculated ${exercise.a} + ${exercise.b} = ${exercise.expected} \uD83C\uDF89"
+                feedbackMessage = s.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
+                isFeedbackPositive = true
             }
         }
     }
@@ -233,6 +253,7 @@ fun PracticingAdditionScreen(
         if (completed && !showFinalCongratsMessage) {
             showFinalCongratsMessage = true
             feedbackMessage = "${s.levelCompleteMax} \uD83C\uDF89"
+            isFeedbackPositive = true
             return
         }
         showFinalCongratsMessage = false
@@ -256,7 +277,7 @@ fun PracticingAdditionScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
-                    text = "Practicing Addition",
+                    text = s.practicingAddition,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -272,7 +293,7 @@ fun PracticingAdditionScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = "Level: ${levels[currentLevelIdx].name}",
+                text = "${s.levelPrefix}${levelName(levels[currentLevelIdx], s)}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -307,7 +328,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = "Soroban (1\u00D74)",
+                    text = s.sorobanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -327,7 +348,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = "Suanpan (2\u00D75)",
+                    text = s.suanpanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -392,7 +413,7 @@ fun PracticingAdditionScreen(
                 color = Color(0xFF2E241F),
             ) {
                 Text(
-                    text = "Value: ${PaValue(state.value)}",
+                    text = "${s.valuePrefix}${PaValue(state.value)}",
                     color = Color(0xFFF2ECD8),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -420,7 +441,7 @@ fun PracticingAdditionScreen(
 
             if (steps.isNotEmpty()) {
                 Text(
-                    text = "Step ${currentStepIdx + 1}/${steps.size}",
+                    text = "${s.stepPrefix}${currentStepIdx + 1}/${steps.size}",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -434,8 +455,7 @@ fun PracticingAdditionScreen(
                     text = feedbackMessage,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
-                    color = if (feedbackMessage.contains("PERFECT") || feedbackMessage.contains("Correct") || feedbackMessage.contains("CONGRATULATIONS"))
-                        Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                    color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                 )
@@ -459,7 +479,7 @@ fun PracticingAdditionScreen(
                         )
                     ) {
                         Text(
-                            text = "New Exercise",
+                            text = s.newExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -477,7 +497,7 @@ fun PracticingAdditionScreen(
                         )
                     ) {
                         Text(
-                            text = "Next Step",
+                            text = s.nextStep,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -495,7 +515,7 @@ fun PracticingAdditionScreen(
                         )
                     ) {
                         Text(
-                            text = "Next Level",
+                            text = s.nextLevel,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
