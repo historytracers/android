@@ -73,12 +73,8 @@ fun AppNavigation() {
         preferences.setScore(counter)
     }
 
-    val breakStartTime by preferences.breakStartTime.collectAsState(initial = 0L)
+    var breakStartTime by remember { mutableStateOf(System.currentTimeMillis() / 1000L) }
     var showBreakDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
-    }
 
     LaunchedEffect(breakStartTime, breakTime) {
         if (breakStartTime == 0L) return@LaunchedEffect
@@ -407,10 +403,8 @@ fun AppNavigation() {
             text = { Text(uiStrings.breakMessage) },
             confirmButton = {
                 TextButton(onClick = {
-                    scope.launch {
-                        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
-                        showBreakDialog = false
-                    }
+                    breakStartTime = System.currentTimeMillis() / 1000L
+                    showBreakDialog = false
                 }) {
                     Text(uiStrings.imBack)
                 }
