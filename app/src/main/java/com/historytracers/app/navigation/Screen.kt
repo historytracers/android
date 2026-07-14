@@ -17,4 +17,7 @@ sealed class Screen(val route: String) {
     data object Clap : Screen("clap")
     data object FeetAndHands : Screen("feet_and_hands")
     data object Congratulation : Screen("congratulation")
+    data object SorobanWriting : Screen("soroban_writing")
+    data object SuanpanWriting : Screen("suanpan_writing")
+    data object LargeNumbersWriting : Screen("large_numbers_writing")
 }

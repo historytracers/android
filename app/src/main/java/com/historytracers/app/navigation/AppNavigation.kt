@@ -37,6 +37,9 @@ import com.historytracers.app.ui.screens.ClapScreen
 import com.historytracers.app.ui.screens.CongratulationScreen
 import com.historytracers.app.ui.screens.FeetAndHandsScreen
 import com.historytracers.app.ui.screens.StreakScreen
+import com.historytracers.app.ui.screens.SorobanWritingScreen
+import com.historytracers.app.ui.screens.SuanpanWritingScreen
+import com.historytracers.app.ui.screens.LargeNumbersWritingScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -51,7 +54,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "soroban_writing", "suanpan_writing", "large_numbers_writing")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -244,7 +247,60 @@ fun AppNavigation() {
                     }
                     composable(Screen.Abacus.route) {
                         AbacusScreen(
-                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
+                            onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) },
+                            onNavigateToSuanpanWriting = { navController.navigate(Screen.SuanpanWriting.route) },
+                            onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) }
+                        )
+                    }
+                    composable(Screen.SorobanWriting.route) {
+                        SorobanWritingScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SuanpanWriting.route) {
+                        SuanpanWritingScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.LargeNumbersWriting.route) {
+                        LargeNumbersWritingScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(

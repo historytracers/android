@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
@@ -192,6 +193,7 @@ fun FeetAndHandsScreen(
     var stepIsLeft by remember { mutableStateOf(true) }
 
     val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
     val soundPool = remember {
         SoundPool.Builder()
             .setMaxStreams(1)
@@ -272,6 +274,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             clapCompleted = 0
+                            preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.75f).toInt()
                             val pauseDur = (cycleTime() * 0.25f).toInt()
                             for (i in 0 until count) {
@@ -307,6 +310,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             stepsCompleted = 0
+                            preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.4f).toInt()
                             for (i in 0 until count) {
                                 stepIsLeft = i % 2 == 0
@@ -340,6 +344,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             jumpsCompleted = 0
+                            preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.5f).toInt()
                             for (i in 0 until count) {
                                 footZoomProgress.snapTo(0f)
