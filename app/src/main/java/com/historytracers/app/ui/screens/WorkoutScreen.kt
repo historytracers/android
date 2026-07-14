@@ -2,11 +2,13 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Face
@@ -29,18 +31,43 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun WorkoutScreen(
+    scrollState: ScrollState = rememberScrollState(),
+    onNavigateBack: () -> Unit = {},
     onNavigateToClap: () -> Unit = {},
     onNavigateToFeetAndHands: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                }
+                Text(
+                    text = s.workout,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+            modifier = Modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -202,5 +229,6 @@ fun WorkoutScreen(
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
         }
+    }
     }
 }

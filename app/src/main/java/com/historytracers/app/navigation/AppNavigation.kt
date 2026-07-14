@@ -2,6 +2,8 @@
 package com.historytracers.app.navigation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
@@ -100,6 +102,9 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val firstStepsScrollState = rememberScrollState()
+    val workoutScrollState = rememberScrollState()
+    val abacusScrollState = rememberScrollState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -231,11 +236,29 @@ fun AppNavigation() {
                     }
                     composable(Screen.FirstSteps.route) {
                         FirstStepsScreen(
+                            scrollState = firstStepsScrollState,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
                         )
                     }
                     composable(Screen.Workout.route) {
                         WorkoutScreen(
+                            scrollState = workoutScrollState,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToClap = { navController.navigate(Screen.Clap.route) },
                             onNavigateToFeetAndHands = { navController.navigate(Screen.FeetAndHands.route) },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
@@ -243,6 +266,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.Abacus.route) {
                         AbacusScreen(
+                            scrollState = abacusScrollState,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {

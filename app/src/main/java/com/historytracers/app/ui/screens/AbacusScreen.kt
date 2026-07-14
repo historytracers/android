@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.ScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -23,6 +24,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun AbacusScreen(
+    scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
@@ -59,7 +61,7 @@ fun AbacusScreen(
             contentAlignment = Alignment.Center
         ) {
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+            modifier = Modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
