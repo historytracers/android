@@ -106,6 +106,7 @@ data class UiStrings(
     val level: String,
     val levelComplete: String,
     val levelCompleteMax: String,
+    val resetHint: String,
 )
 
 val EnStrings = UiStrings(
@@ -211,6 +212,7 @@ val EnStrings = UiStrings(
     level = "Level",
     levelComplete = "Congratulations, you finished level %d/8!",
     levelCompleteMax = "Congratulations, excellent work!",
+    resetHint = "Click Reset to try another one!",
 )
 
 val PtStrings = UiStrings(
@@ -316,6 +318,7 @@ val PtStrings = UiStrings(
     level = "Nível",
     levelComplete = "Parabéns, você finalizou o nível %d/8!",
     levelCompleteMax = "Parabéns, excelente trabalho!",
+    resetHint = "Clique em Reiniciar para tentar outro!",
 )
 
 val EsStrings = UiStrings(
@@ -421,6 +424,7 @@ val EsStrings = UiStrings(
     level = "Nivel",
     levelComplete = "¡Felicitaciones, terminaste el nivel %d/8!",
     levelCompleteMax = "¡Felicitaciones, excelente trabajo!",
+    resetHint = "¡Haga clic en Reiniciar para intentar otro!",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

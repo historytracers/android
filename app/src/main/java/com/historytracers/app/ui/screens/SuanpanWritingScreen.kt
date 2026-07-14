@@ -313,6 +313,13 @@ fun SuanpanWritingScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = s.resetHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
             }
 
             Spacer(Modifier.height(24.dp))
