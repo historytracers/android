@@ -29,7 +29,8 @@ fun AbacusScreen(
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
     onNavigateToSuanpanWriting: () -> Unit = {},
-    onNavigateToLargeNumbersWriting: () -> Unit = {}
+    onNavigateToLargeNumbersWriting: () -> Unit = {},
+    onNavigateToPracticingAddition: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -104,7 +105,7 @@ fun AbacusScreen(
             ) {
                 Text(
                     text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
                 )
@@ -133,7 +134,7 @@ fun AbacusScreen(
             ) {
                 Text(
                     text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
                 )
@@ -220,7 +221,7 @@ fun AbacusScreen(
             ) {
                 Text(
                     text = "0 + 1",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
                 )
@@ -249,7 +250,7 @@ fun AbacusScreen(
             ) {
                 Text(
                     text = "8... + 9...",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
                 )
@@ -269,7 +270,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToPracticingAddition,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -278,7 +279,7 @@ fun AbacusScreen(
             ) {
                 Text(
                     text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
                 )
