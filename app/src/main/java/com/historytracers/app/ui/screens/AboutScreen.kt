@@ -156,7 +156,7 @@ private fun SocialIconButton(link: SocialLink) {
                         }
                         context.startActivity(intent)
                     } catch (_: ActivityNotFoundException) {
-                        Toast.makeText(context, "App not installed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.appNotInstalled, Toast.LENGTH_SHORT).show()
                     }
                 }
             )

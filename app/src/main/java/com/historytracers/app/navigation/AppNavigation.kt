@@ -2,6 +2,7 @@
 package com.historytracers.app.navigation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -40,6 +42,7 @@ import com.historytracers.app.ui.screens.StreakScreen
 import com.historytracers.app.ui.screens.SorobanWritingScreen
 import com.historytracers.app.ui.screens.SuanpanWritingScreen
 import com.historytracers.app.ui.screens.LargeNumbersWritingScreen
+import com.historytracers.app.ui.screens.PracticingAdditionScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -54,7 +57,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "soroban_writing", "suanpan_writing", "large_numbers_writing")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -73,12 +76,8 @@ fun AppNavigation() {
         preferences.setScore(counter)
     }
 
-    val breakStartTime by preferences.breakStartTime.collectAsState(initial = 0L)
+    var breakStartTime by remember { mutableStateOf(System.currentTimeMillis() / 1000L) }
     var showBreakDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
-    }
 
     LaunchedEffect(breakStartTime, breakTime) {
         if (breakStartTime == 0L) return@LaunchedEffect
@@ -104,6 +103,38 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    val savedFirstStepsScroll by preferences.firstStepsScroll.collectAsState(initial = 0)
+    val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
+    val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
+
+    val firstStepsScrollState = remember { ScrollState(0) }
+    val workoutScrollState = remember { ScrollState(0) }
+    val abacusScrollState = remember { ScrollState(0) }
+
+    LaunchedEffect(savedFirstStepsScroll) {
+        if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
+    }
+    LaunchedEffect(savedWorkoutScroll) {
+        if (savedWorkoutScroll > 0) workoutScrollState.scrollTo(savedWorkoutScroll)
+    }
+    LaunchedEffect(savedAbacusScroll) {
+        if (savedAbacusScroll > 0) abacusScrollState.scrollTo(savedAbacusScroll)
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { firstStepsScrollState.value }
+            .collect { preferences.setFirstStepsScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { workoutScrollState.value }
+            .collect { preferences.setWorkoutScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { abacusScrollState.value }
+            .collect { preferences.setAbacusScroll(it) }
+    }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -235,11 +266,29 @@ fun AppNavigation() {
                     }
                     composable(Screen.FirstSteps.route) {
                         FirstStepsScreen(
+                            scrollState = firstStepsScrollState,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
                         )
                     }
                     composable(Screen.Workout.route) {
                         WorkoutScreen(
+                            scrollState = workoutScrollState,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToClap = { navController.navigate(Screen.Clap.route) },
                             onNavigateToFeetAndHands = { navController.navigate(Screen.FeetAndHands.route) },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
@@ -247,6 +296,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.Abacus.route) {
                         AbacusScreen(
+                            scrollState = abacusScrollState,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -258,7 +308,8 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) },
                             onNavigateToSuanpanWriting = { navController.navigate(Screen.SuanpanWriting.route) },
-                            onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) }
+                            onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) },
+                            onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAddition.route) }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
@@ -390,6 +441,18 @@ fun AppNavigation() {
                             }
                         )
                     }
+                    composable(Screen.PracticingAddition.route) {
+                        PracticingAdditionScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
                     composable(Screen.Congratulation.route) {
                         CongratulationScreen(
                             onNavigateBack = { navController.popBackStack() }
@@ -407,10 +470,8 @@ fun AppNavigation() {
             text = { Text(uiStrings.breakMessage) },
             confirmButton = {
                 TextButton(onClick = {
-                    scope.launch {
-                        preferences.setBreakStartTime(System.currentTimeMillis() / 1000L)
-                        showBreakDialog = false
-                    }
+                    breakStartTime = System.currentTimeMillis() / 1000L
+                    showBreakDialog = false
                 }) {
                     Text(uiStrings.imBack)
                 }

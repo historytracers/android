@@ -31,6 +31,9 @@ class UserPreferences(private val context: Context) {
         private val REMINDER_MINUTE_KEY = intPreferencesKey("reminder_minute")
         private val BREAK_START_TIME_KEY = longPreferencesKey("break_start_time")
         private val SKIN_COLOR_KEY = stringPreferencesKey("skin_color")
+        private val FIRST_STEPS_SCROLL_KEY = intPreferencesKey("first_steps_scroll")
+        private val WORKOUT_SCROLL_KEY = intPreferencesKey("workout_scroll")
+        private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -160,6 +163,36 @@ class UserPreferences(private val context: Context) {
     suspend fun setReminderMinute(minute: Int) {
         context.dataStore.edit { preferences ->
             preferences[REMINDER_MINUTE_KEY] = minute
+        }
+    }
+
+    val firstStepsScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[FIRST_STEPS_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setFirstStepsScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[FIRST_STEPS_SCROLL_KEY] = value
+        }
+    }
+
+    val workoutScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[WORKOUT_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setWorkoutScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[WORKOUT_SCROLL_KEY] = value
+        }
+    }
+
+    val abacusScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[ABACUS_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setAbacusScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[ABACUS_SCROLL_KEY] = value
         }
     }
 

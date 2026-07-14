@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Handshake
@@ -26,16 +28,41 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 
 @Composable
 fun FirstStepsScreen(
+    scrollState: ScrollState = rememberScrollState(),
+    onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                }
+                Text(
+                    text = s.firstSteps,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+            modifier = Modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -261,7 +288,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Building",
+                text = s.building,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -290,7 +317,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Natural Families (Part 2)",
+                text = s.naturalFamiliesPart2,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -319,7 +346,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Going to infinity",
+                text = s.goingToInfinity,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -348,7 +375,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Next level",
+                text = s.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -356,5 +383,6 @@ fun FirstStepsScreen(
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
         }
+    }
     }
 }

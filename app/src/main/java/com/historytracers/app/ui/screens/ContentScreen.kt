@@ -70,7 +70,7 @@ fun ContentScreen(
             is ContentResult.FamilyTree -> FamilyTreeScreen(res.data, repo, s)
             is ContentResult.SMGame -> SMGameScreen(res.data, repo, s)
             is ContentResult.IndexClass -> IndexContentScreen(res.data, repo, s)
-            else -> Text("${s.error}: unsupported content type", modifier = Modifier.padding(16.dp))
+            else -> Text("${s.error}: ${s.unsupportedContentType}", modifier = Modifier.padding(16.dp))
         }
     }
 }

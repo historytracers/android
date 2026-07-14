@@ -155,7 +155,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = "Soroban (1\u00D74)",
+                        text = s.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -175,7 +175,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = "Suanpan (2\u00D75)",
+                        text = s.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
