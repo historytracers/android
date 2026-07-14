@@ -293,6 +293,14 @@ fun PracticingAdditionScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
+                text = s.practicingAdditionInstruction,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+            )
+
+            Text(
                 text = "${s.levelPrefix}${levelName(levels[currentLevelIdx], s)}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
