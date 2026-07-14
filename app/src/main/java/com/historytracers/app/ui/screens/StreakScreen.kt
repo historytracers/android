@@ -264,7 +264,18 @@ private fun WeekDaySelector(selectedDays: Set<String>, language: String, s: UiSt
                             else selectedDays + day.name
                         )
                     },
-                    label = { Text(dayName, fontSize = 11.sp) }
+                    label = {
+                        Text(
+                            dayName,
+                            fontSize = if (isSelected) 13.sp else 11.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                    modifier = if (isSelected) Modifier.defaultMinSize(minHeight = 40.dp) else Modifier
                 )
             }
         }
