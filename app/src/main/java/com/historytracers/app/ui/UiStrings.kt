@@ -211,7 +211,7 @@ val EnStrings = UiStrings(
     write = "Write",
     level = "Level",
     levelComplete = "Congratulations, you finished level %d/8!",
-    levelCompleteMax = "Congratulations, excellent work!",
+    levelCompleteMax = "Congratulations, excellent work! You complete all levels",
     resetHint = "Click Reset to try another one!",
 )
 
@@ -317,7 +317,7 @@ val PtStrings = UiStrings(
     write = "Escreva",
     level = "Nível",
     levelComplete = "Parabéns, você finalizou o nível %d/8!",
-    levelCompleteMax = "Parabéns, excelente trabalho!",
+    levelCompleteMax = "Parabéns, excelente trabalho! Você completou todos os níveis",
     resetHint = "Clique em Reiniciar para tentar outro!",
 )
 
@@ -423,7 +423,7 @@ val EsStrings = UiStrings(
     write = "Escriba",
     level = "Nivel",
     levelComplete = "¡Felicitaciones, terminaste el nivel %d/8!",
-    levelCompleteMax = "¡Felicitaciones, excelente trabajo!",
+    levelCompleteMax = "¡Felicitaciones, excelente trabajo! Completaste todos los niveles",
     resetHint = "¡Haga clic en Reiniciar para intentar otro!",
 )
 

@@ -68,13 +68,12 @@ private sealed class Level(val name: String, val maxDigits: Int) {
     data object HundredThousands : Level("Hundred Thousands", 6)
     data object Millions : Level("Millions", 7)
     data object TenMillions : Level("Ten Millions", 8)
-    data object HundredMillions : Level("Hundred Millions", 9)
 }
 
 private val levels = listOf(
     Level.Units, Level.Tens, Level.Hundreds, Level.Thousands,
     Level.TenThousands, Level.HundredThousands, Level.Millions,
-    Level.TenMillions, Level.HundredMillions
+    Level.TenMillions
 )
 
 private fun generateNumbers(level: Level): Exercise {
@@ -87,7 +86,6 @@ private fun generateNumbers(level: Level): Exercise {
         Level.HundredThousands -> 100000L to 999999L
         Level.Millions -> 1000000L to 9999999L
         Level.TenMillions -> 10000000L to 99999999L
-        Level.HundredMillions -> 100000000L to 999999999L
     }
     return Exercise(Random.nextLong(min, max + 1), Random.nextLong(min, max + 1))
 }
@@ -103,7 +101,6 @@ private fun buildSteps(exercise: Exercise, level: Level): List<StepInfo> {
         Level.HundredThousands -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L)
         Level.Millions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L)
         Level.TenMillions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L)
-        Level.HundredMillions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     }
     val placeNames = when (level) {
         Level.Units -> listOf("units")
@@ -114,7 +111,6 @@ private fun buildSteps(exercise: Exercise, level: Level): List<StepInfo> {
         Level.HundredThousands -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands")
         Level.Millions -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions")
         Level.TenMillions -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions", "ten millions")
-        Level.HundredMillions -> listOf("units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions", "ten millions", "hundred millions")
     }
     val placeDescription = placeNames.reversed().joinToString(", ")
 
@@ -163,6 +159,7 @@ fun PracticingAdditionScreen(
     var feedbackMessage by remember { mutableStateOf("") }
     var exerciseStarted by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
+    var showFinalCongratsMessage by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
 
@@ -181,6 +178,7 @@ fun PracticingAdditionScreen(
         feedbackMessage = ""
         exerciseStarted = false
         finalCongratsShown = false
+        showFinalCongratsMessage = false
     }
 
     fun checkStep() {
@@ -230,6 +228,14 @@ fun PracticingAdditionScreen(
     }
 
     fun toggleLevel() {
+        val wasLastLevel = currentLevelIdx == levels.size - 1
+        val completed = wasLastLevel && finalCongratsShown
+        if (completed && !showFinalCongratsMessage) {
+            showFinalCongratsMessage = true
+            feedbackMessage = "${s.levelCompleteMax} \uD83C\uDF89"
+            return
+        }
+        showFinalCongratsMessage = false
         currentLevelIdx = (currentLevelIdx + 1) % levels.size
         resetExercise()
     }
