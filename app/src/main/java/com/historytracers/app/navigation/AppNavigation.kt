@@ -3,7 +3,6 @@ package com.historytracers.app.navigation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -102,9 +102,38 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val firstStepsScrollState = rememberScrollState()
-    val workoutScrollState = rememberScrollState()
-    val abacusScrollState = rememberScrollState()
+
+    val savedFirstStepsScroll by preferences.firstStepsScroll.collectAsState(initial = 0)
+    val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
+    val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
+
+    val firstStepsScrollState = remember { ScrollState(0) }
+    val workoutScrollState = remember { ScrollState(0) }
+    val abacusScrollState = remember { ScrollState(0) }
+
+    LaunchedEffect(savedFirstStepsScroll) {
+        if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
+    }
+    LaunchedEffect(savedWorkoutScroll) {
+        if (savedWorkoutScroll > 0) workoutScrollState.scrollTo(savedWorkoutScroll)
+    }
+    LaunchedEffect(savedAbacusScroll) {
+        if (savedAbacusScroll > 0) abacusScrollState.scrollTo(savedAbacusScroll)
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { firstStepsScrollState.value }
+            .collect { preferences.setFirstStepsScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { workoutScrollState.value }
+            .collect { preferences.setWorkoutScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { abacusScrollState.value }
+            .collect { preferences.setAbacusScroll(it) }
+    }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
