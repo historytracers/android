@@ -194,7 +194,7 @@ fun PracticingAdditionScreen(
                 if (currentStepIdx == steps.size - 1) {
                     if (!finalCongratsShown) {
                         finalCongratsShown = true
-                        feedbackMessage = "PERFECT! ${exercise.a} + ${exercise.b} = ${exercise.expected}"
+                        feedbackMessage = "PERFECT! ${exercise.a} + ${exercise.b} = ${exercise.expected} \uD83C\uDF89"
                     }
                 } else {
                     feedbackMessage = "Correct! Click 'Next step' to continue."
@@ -224,7 +224,7 @@ fun PracticingAdditionScreen(
         } else {
             if (currentVal == exercise.expected && !finalCongratsShown) {
                 finalCongratsShown = true
-                feedbackMessage = "CONGRATULATIONS! You calculated ${exercise.a} + ${exercise.b} = ${exercise.expected}"
+                feedbackMessage = "CONGRATULATIONS! You calculated ${exercise.a} + ${exercise.b} = ${exercise.expected} \uD83C\uDF89"
             }
         }
     }
