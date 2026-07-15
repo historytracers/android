@@ -31,7 +31,8 @@ fun AbacusScreen(
     onNavigateToSuanpanWriting: () -> Unit = {},
     onNavigateToLargeNumbersWriting: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
-    onNavigateToMultiplicationTable: () -> Unit = {}
+    onNavigateToMultiplicationTable: () -> Unit = {},
+    onNavigateToMultiplyingWithAbacus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -377,6 +378,35 @@ fun AbacusScreen(
 
             Text(
                 text = s.abacusInRereading,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToMultiplyingWithAbacus,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Text(
+                    text = s.multiplyingWithAbacus,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.multiplyingWithAbacusDescription,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
