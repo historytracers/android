@@ -30,7 +30,8 @@ fun AbacusScreen(
     onNavigateToSorobanWriting: () -> Unit = {},
     onNavigateToSuanpanWriting: () -> Unit = {},
     onNavigateToLargeNumbersWriting: () -> Unit = {},
-    onNavigateToPracticingAddition: () -> Unit = {}
+    onNavigateToPracticingAddition: () -> Unit = {},
+    onNavigateToMultiplicationTable: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -328,7 +329,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToMultiplicationTable,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

@@ -21,4 +21,5 @@ sealed class Screen(val route: String) {
     data object SuanpanWriting : Screen("suanpan_writing")
     data object LargeNumbersWriting : Screen("large_numbers_writing")
     data object PracticingAddition : Screen("practicing_addition")
+    data object MultiplicationTable : Screen("multiplication_table")
 }
