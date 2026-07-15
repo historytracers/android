@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
@@ -64,7 +65,9 @@ private fun setAbacusValue(state: MutableState<List<MtColumnState>>, value: Long
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiplicationTableScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     var isSoroban by remember { mutableStateOf(true) }
@@ -103,6 +106,7 @@ fun MultiplicationTableScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            onScoreChanged(currentScore + 2)
         }
     }
 
@@ -148,6 +152,14 @@ fun MultiplicationTableScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = s.multiplicationTableDescription,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+            )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
