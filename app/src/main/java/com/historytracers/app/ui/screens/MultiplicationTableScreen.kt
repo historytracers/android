@@ -134,7 +134,7 @@ fun MultiplicationTableScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
-                    text = "Multiplication Table",
+                    text = s.multiplicationTable,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -254,7 +254,7 @@ fun MultiplicationTableScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text("Number:", style = MaterialTheme.typography.titleSmall,
+                Text(s.number, style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold)
                 var expanded by remember { mutableStateOf(false) }
                 Box {
@@ -337,7 +337,7 @@ fun MultiplicationTableScreen(
                         )
                     ) {
                         Text(
-                            if (isAutoPlaying) "Stop" else "Auto",
+                            if (isAutoPlaying) s.stop else s.auto,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -362,7 +362,7 @@ fun MultiplicationTableScreen(
 
                 if (isComplete) {
                     Text(
-                        text = "Complete! \uD83C\uDF89",
+                        text = s.complete,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2E7D32)

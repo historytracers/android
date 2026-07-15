@@ -149,6 +149,16 @@ data class UiStrings(
     val stepPrefix: String,
     val newExercise: String,
     val nextStep: String,
+    val multiplicationTable: String,
+    val number: String,
+    val auto: String,
+    val stop: String,
+    val complete: String,
+    val patreon: String,
+    val paypal: String,
+    val langEnUs: String,
+    val langPtBr: String,
+    val langEsEs: String,
 )
 
 val EnStrings = UiStrings(
@@ -297,6 +307,16 @@ val EnStrings = UiStrings(
     stepPrefix = "Step ",
     newExercise = "New Exercise",
     nextStep = "Next Step",
+    multiplicationTable = "Multiplication Table",
+    number = "Number:",
+    auto = "Auto",
+    stop = "Stop",
+    complete = "Complete!",
+    patreon = "Patreon",
+    paypal = "PayPal",
+    langEnUs = "English (US)",
+    langPtBr = "Portugu\u00eas (BR)",
+    langEsEs = "Espa\u00f1ol (ES)",
 )
 
 val PtStrings = UiStrings(
@@ -445,6 +465,16 @@ val PtStrings = UiStrings(
     stepPrefix = "Passo ",
     newExercise = "Novo Exerc\u00edcio",
     nextStep = "Pr\u00f3ximo Passo",
+    multiplicationTable = "Tabela de Multiplica\u00e7\u00e3o",
+    number = "N\u00famero:",
+    auto = "Autom\u00e1tico",
+    stop = "Parar",
+    complete = "Completo!",
+    patreon = "Patreon",
+    paypal = "PayPal",
+    langEnUs = "Ingl\u00eas (EUA)",
+    langPtBr = "Portugu\u00eas (BR)",
+    langEsEs = "Espanhol (ES)",
 )
 
 val EsStrings = UiStrings(
@@ -593,6 +623,16 @@ val EsStrings = UiStrings(
     stepPrefix = "Paso ",
     newExercise = "Nuevo Ejercicio",
     nextStep = "Siguiente Paso",
+    multiplicationTable = "Tabla de Multiplicar",
+    number = "N\u00famero:",
+    auto = "Autom\u00e1tico",
+    stop = "Parar",
+    complete = "\u00a1Completo!",
+    patreon = "Patreon",
+    paypal = "PayPal",
+    langEnUs = "Ingl\u00e9s (EE. UU.)",
+    langPtBr = "Portugu\u00e9s (BR)",
+    langEsEs = "Espa\u00f1ol (ES)",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
