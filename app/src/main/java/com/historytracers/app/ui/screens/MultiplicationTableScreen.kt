@@ -18,9 +18,11 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 
 private const val COLUMNS = 9
@@ -73,6 +75,9 @@ fun MultiplicationTableScreen(
     var selectedNumber by remember { mutableIntStateOf(1) }
     var currentStep by remember { mutableIntStateOf(0) }
     var isAutoPlaying by remember { mutableStateOf(false) }
+    var finalCongratsShown by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
 
     val currentResult = selectedNumber.toLong() * currentStep.toLong()
     val equationText = if (currentStep > 0) "$currentStep \u00D7 $selectedNumber = $currentResult" else ""
@@ -80,6 +85,7 @@ fun MultiplicationTableScreen(
     fun reset() {
         currentStep = 0
         isAutoPlaying = false
+        finalCongratsShown = false
         setAbacusValue(state, 0L)
     }
 
@@ -88,6 +94,15 @@ fun MultiplicationTableScreen(
             currentStep++
             val result = selectedNumber.toLong() * currentStep.toLong()
             setAbacusValue(state, result)
+            if (currentStep >= MAX_STEPS) {
+                finalCongratsShown = true
+            }
+        }
+    }
+
+    LaunchedEffect(finalCongratsShown) {
+        if (finalCongratsShown) {
+            preferences.recordLessonCompletion()
         }
     }
 
