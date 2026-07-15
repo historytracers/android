@@ -134,7 +134,9 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiplyingWithAbacusScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     var isSoroban by remember { mutableStateOf(true) }
@@ -190,6 +192,7 @@ fun MultiplyingWithAbacusScreen(
                 if (currentStepIdx == steps.size - 1) {
                     if (!finalCongratsShown) {
                         finalCongratsShown = true
+                        onScoreChanged(currentScore + 2)
                         feedbackMessage = s.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                         isFeedbackPositive = true
                     }
@@ -223,6 +226,7 @@ fun MultiplyingWithAbacusScreen(
         } else {
             if (currentVal == exercise.expected && !finalCongratsShown) {
                 finalCongratsShown = true
+                onScoreChanged(currentScore + 2)
                 feedbackMessage = s.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
                 isFeedbackPositive = true
             }
