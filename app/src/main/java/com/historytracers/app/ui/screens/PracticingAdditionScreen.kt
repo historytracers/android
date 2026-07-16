@@ -229,10 +229,6 @@ fun PracticingAdditionScreen(
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
         if (currentVal != currentStepTarget) return
 
-        if (!exerciseStarted && currentStepIdx == 0) {
-            exerciseStarted = true
-        }
-
         if (currentStepIdx + 1 < steps.size) {
             currentStepIdx++
             stepCompleted = false
@@ -376,6 +372,7 @@ fun PracticingAdditionScreen(
                                 offset.x, offset.y, cw, ch, state,
                                 COLUMNS, upperMax, lowerMax
                             )
+                            if (!exerciseStarted) exerciseStarted = true
                             checkStep()
                         }
                     }
@@ -432,7 +429,7 @@ fun PracticingAdditionScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            if (steps.isNotEmpty() && currentStepIdx < steps.size) {
+            if (steps.isNotEmpty() && currentStepIdx < steps.size && !showFinalCongratsMessage) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,

@@ -341,10 +341,6 @@ fun MultiplyingWithoutLimitsScreen(
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
         if (currentVal != currentStepTarget) return
 
-        if (!exerciseStarted && currentStepIdx == 0) {
-            exerciseStarted = true
-        }
-
         if (currentStepIdx + 1 < steps.size) {
             currentStepIdx++
             stepCompleted = false
@@ -496,6 +492,7 @@ fun MultiplyingWithoutLimitsScreen(
                                 offset.x, offset.y, cw, ch, state,
                                 COLUMNS, upperMax, lowerMax
                             )
+                            if (!exerciseStarted) exerciseStarted = true
                             checkStep()
                         }
                     }
