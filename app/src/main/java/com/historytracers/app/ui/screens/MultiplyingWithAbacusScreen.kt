@@ -277,7 +277,7 @@ fun MultiplyingWithAbacusScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
-                    text = s.multiplyingWithAbacus,
+                    text = s.multiplyingWithAbacusDescription,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -367,8 +367,9 @@ fun MultiplyingWithAbacusScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
                     .aspectRatio(860f / 400f)
-                    .pointerInput(upperMax, lowerMax) {
+                    .pointerInput(upperMax, lowerMax, stepCompleted) {
                         detectTapGestures { offset ->
+                            if (stepCompleted) return@detectTapGestures
                             val cw = size.width.toFloat()
                             val ch = size.height.toFloat()
                             handleMwAbacusTap(
@@ -431,7 +432,7 @@ fun MultiplyingWithAbacusScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            if (steps.isNotEmpty() && currentStepIdx < steps.size) {
+            if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,

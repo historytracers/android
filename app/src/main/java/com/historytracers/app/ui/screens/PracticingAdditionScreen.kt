@@ -367,8 +367,9 @@ fun PracticingAdditionScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
                     .aspectRatio(860f / 400f)
-                    .pointerInput(upperMax, lowerMax) {
+                    .pointerInput(upperMax, lowerMax, stepCompleted) {
                         detectTapGestures { offset ->
+                            if (stepCompleted) return@detectTapGestures
                             val cw = size.width.toFloat()
                             val ch = size.height.toFloat()
                             handlePaAbacusTap(
