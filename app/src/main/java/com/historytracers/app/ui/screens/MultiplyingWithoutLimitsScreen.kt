@@ -261,6 +261,22 @@ fun MultiplyingWithoutLimitsScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
 
+    LaunchedEffect(Unit) {
+        currentDigitLevel = MIN_DIGIT_LEVEL
+        state.value = List(COLUMNS) { MwlColumnState() }
+        exercise = generateMwlExercise(currentDigitLevel)
+        steps = buildMwlSteps(exercise, s)
+        currentStepIdx = 0
+        stepCompleted = false
+        feedbackMessage = ""
+        isFeedbackPositive = false
+        exerciseStarted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+        storedDisplay = ""
+        showResetButton = false
+    }
+
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()

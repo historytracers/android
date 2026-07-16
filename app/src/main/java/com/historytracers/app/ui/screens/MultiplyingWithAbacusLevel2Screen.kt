@@ -176,6 +176,20 @@ fun MultiplyingWithAbacusLevel2Screen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
 
+    LaunchedEffect(Unit) {
+        currentDigitLevel = MIN_DIGIT_LEVEL
+        state.value = List(COLUMNS) { Mw2ColumnState() }
+        exercise = generateMw2Exercise(currentDigitLevel)
+        steps = buildMw2Steps(exercise, s)
+        currentStepIdx = 0
+        stepCompleted = false
+        feedbackMessage = ""
+        isFeedbackPositive = false
+        exerciseStarted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+    }
+
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()

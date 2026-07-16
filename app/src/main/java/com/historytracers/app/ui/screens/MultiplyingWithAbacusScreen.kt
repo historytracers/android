@@ -162,6 +162,20 @@ fun MultiplyingWithAbacusScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
 
+    LaunchedEffect(Unit) {
+        currentMultiplier = MIN_MULTIPLIER
+        state.value = List(COLUMNS) { MwColumnState() }
+        exercise = generateMwExercise(currentMultiplier)
+        steps = buildMwSteps(exercise, s)
+        currentStepIdx = 0
+        stepCompleted = false
+        feedbackMessage = ""
+        isFeedbackPositive = false
+        exerciseStarted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+    }
+
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
