@@ -157,7 +157,9 @@ private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<Ste
 
 @Composable
 fun PracticingAdditionScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     var isSoroban by remember { mutableStateOf(true) }
@@ -181,6 +183,7 @@ fun PracticingAdditionScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            onScoreChanged(currentScore + 2)
         }
     }
 
