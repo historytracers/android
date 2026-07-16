@@ -145,7 +145,7 @@ fun LargeNumbersWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Column(
-                modifier = Modifier.offset(y = (-60).dp),
+                modifier = Modifier.offset(y = (-90).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var isSoroban by remember { mutableStateOf(true) }
@@ -312,7 +312,7 @@ fun LargeNumbersWritingScreen(
                     }
                 }
 
-                if (showCongrats.value && completedLevel > 0) {
+                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
                     val congratsText = if (completedLevel == 8) {
                         "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
                     } else {
@@ -326,16 +326,17 @@ fun LargeNumbersWritingScreen(
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
                     Spacer(Modifier.height(8.dp))
-                    if (feedbackMessage.isNotEmpty()) {
-                        Text(
-                            text = feedbackMessage,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
-                            modifier = Modifier.padding(horizontal = 32.dp)
-                        )
-                        Spacer(Modifier.height(8.dp))
-                    }
+                }
+
+                if (feedbackMessage.isNotEmpty()) {
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -394,23 +395,24 @@ fun LargeNumbersWritingScreen(
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
+                }
 
-                    if (!hasInteracted || stepCompleted) {
-                        FilledTonalButton(
-                            onClick = { advanceLevel() },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(
-                                text = s.nextLevel,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
+                if (!hasInteracted || stepCompleted) {
+                    Spacer(Modifier.height(8.dp))
+                    FilledTonalButton(
+                        onClick = { advanceLevel() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.nextLevel,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
                     }
                 }
 
