@@ -31,22 +31,23 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
 
-
 private const val COLUMNS = 9
 private const val SOROBAN_UPPER = 1
 private const val SOROBAN_LOWER = 4
 private const val SUANPAN_UPPER = 2
 private const val SUANPAN_LOWER = 5
+private const val MIN_MULTIPLIER = 1
+private const val MAX_MULTIPLIER = 9
 
-private data class PaColumnState(val upper: Int = 0, val lower: Int = 0) {
+private data class MwColumnState(val upper: Int = 0, val lower: Int = 0) {
     val value: Int get() = (upper * 5 + lower).coerceIn(0, 9)
-    fun normalize(): PaColumnState {
+    fun normalize(): MwColumnState {
         val d = (upper * 5 + lower).coerceIn(0, 9)
-        return PaColumnState(upper = d / 5, lower = d % 5)
+        return MwColumnState(upper = d / 5, lower = d % 5)
     }
 }
 
-private fun PaValue(state: List<PaColumnState>): Long {
+private fun MwValue(state: List<MwColumnState>): Long {
     var result = 0L
     for (col in state) {
         result = result * 10 + col.value
@@ -54,129 +55,126 @@ private fun PaValue(state: List<PaColumnState>): Long {
     return result
 }
 
-private data class Exercise(val a: Long, val b: Long) {
-    val expected: Long get() = a + b
+private data class MwExercise(val a: Int, val b: Int) {
+    val expected: Long get() = (a * b).toLong()
 }
 
-private data class StepInfo(val instruction: String, val targetValue: Long)
+private data class MwStepInfo(val instruction: String, val targetValue: Long)
 
-private sealed class Level(val maxDigits: Int) {
-    data object Units : Level(1)
-    data object Tens : Level(2)
-    data object Hundreds : Level(3)
-    data object Thousands : Level(4)
-    data object TenThousands : Level(5)
-    data object HundredThousands : Level(6)
-    data object Millions : Level(7)
-    data object TenMillions : Level(8)
+private fun generateMwExercise(multiplier: Int): MwExercise {
+    val a = Random.nextInt(10, 100)
+    return MwExercise(a, multiplier)
 }
 
-private fun levelName(level: Level, s: UiStrings): String = when (level) {
-    Level.Units -> s.levelUnits
-    Level.Tens -> s.levelTens
-    Level.Hundreds -> s.levelHundreds
-    Level.Thousands -> s.levelThousands
-    Level.TenThousands -> s.levelTenThousands
-    Level.HundredThousands -> s.levelHundredThousands
-    Level.Millions -> s.levelMillions
-    Level.TenMillions -> s.levelTenMillions
-}
+private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
+    val steps = mutableListOf<MwStepInfo>()
 
-private fun placeNames(level: Level, s: UiStrings): List<String> = when (level) {
-    Level.Units -> listOf(s.placeUnits)
-    Level.Tens -> listOf(s.placeUnits, s.placeTens)
-    Level.Hundreds -> listOf(s.placeUnits, s.placeTens, s.placeHundreds)
-    Level.Thousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands)
-    Level.TenThousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands)
-    Level.HundredThousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands)
-    Level.Millions -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands, s.placeMillions)
-    Level.TenMillions -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions)
-}
+    val a = exercise.a
+    val b = exercise.b
+    val tensDigit = a / 10
+    val unitsDigit = a % 10
+    val tensMult = tensDigit * 10
+    val tensProduct = tensMult * b
+    val unitsProduct = unitsDigit * b
+    val total = a * b
 
-private val levels = listOf(
-    Level.Units, Level.Tens, Level.Hundreds, Level.Thousands,
-    Level.TenThousands, Level.HundredThousands, Level.Millions,
-    Level.TenMillions
-)
+    val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
+    val placeNames = listOf(
+        s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands,
+        s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions
+    )
 
-private fun generateNumbers(level: Level): Exercise {
-    val (min, max) = when (level) {
-        Level.Units -> 0L to 9L
-        Level.Tens -> 1L to 99L
-        Level.Hundreds -> 100L to 999L
-        Level.Thousands -> 1000L to 9999L
-        Level.TenThousands -> 10000L to 99999L
-        Level.HundredThousands -> 100000L to 999999L
-        Level.Millions -> 1000000L to 9999999L
-        Level.TenMillions -> 10000000L to 99999999L
-    }
-    return Exercise(Random.nextLong(min, max + 1), Random.nextLong(min, max + 1))
-}
+    steps.add(MwStepInfo(
+        s.mwStepWriteFirst.format(tensDigit, b, tensMult, b, tensProduct, tensProduct),
+        tensProduct.toLong()
+    ))
 
-private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<StepInfo> {
-    val steps = mutableListOf<StepInfo>()
-    val multiplier = when (level) {
-        Level.Units -> listOf(1L)
-        Level.Tens -> listOf(1L, 10L)
-        Level.Hundreds -> listOf(1L, 10L, 100L)
-        Level.Thousands -> listOf(1L, 10L, 100L, 1000L)
-        Level.TenThousands -> listOf(1L, 10L, 100L, 1000L, 10000L)
-        Level.HundredThousands -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L)
-        Level.Millions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L)
-        Level.TenMillions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L)
-    }
-    val pn = placeNames(level, s)
-    val placeDescription = pn.reversed().joinToString(", ")
+    var currentValue = tensProduct
+    val maxDigits = maxOf(
+        tensProduct.toString().length,
+        unitsProduct.toString().length,
+        total.toString().length
+    )
+    var firstAddStep = true
 
-    steps.add(StepInfo(s.stepWriteFirst.format(exercise.a, placeDescription), exercise.a))
-
-    var currentValue = exercise.a
-
-    for (p in 0 until level.maxDigits) {
-        val digitB = ((exercise.b / multiplier[p]) % 10).toInt()
+    for (p in 0 until maxDigits) {
+        val digitB = (unitsProduct / multipliers[p].toInt()) % 10
         if (digitB == 0) continue
 
-        val digitA = ((currentValue / multiplier[p]) % 10).toInt()
-        val total = digitA + digitB
+        var prefix = ""
+        if (firstAddStep) {
+            prefix = s.mwUnitsProductHeader.format(unitsDigit, b, unitsProduct)
+            firstAddStep = false
+        }
 
-        if (total < 10) {
-            currentValue += digitB * multiplier[p]
-            steps.add(StepInfo(s.stepAddTo.format(pn[p], digitB, pn[p], currentValue), currentValue))
+        val digitA = (currentValue / multipliers[p].toInt()) % 10
+        val totalDigit = digitA + digitB
+
+        if (totalDigit < 10) {
+            currentValue += digitB * multipliers[p].toInt()
+            steps.add(MwStepInfo(
+                prefix + s.mwStepAdd.format(digitB, placeNames[p], currentValue),
+                currentValue.toLong()
+            ))
         } else {
             val complement = 10 - digitB
-            val newValue = currentValue + (multiplier[p] * 10) - (complement * multiplier[p])
-            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.placeNext
-            steps.add(StepInfo(s.stepCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue), newValue))
+            val newValue = currentValue + (multipliers[p].toInt() * 10) - (complement * multipliers[p].toInt())
+            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.placeNext
+            steps.add(MwStepInfo(
+                prefix + s.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
+                newValue.toLong()
+            ))
             currentValue = newValue
         }
     }
 
-    steps.add(StepInfo(s.stepFinal.format(exercise.a, exercise.b, exercise.expected), exercise.expected))
+    steps.add(MwStepInfo(
+        s.mwStepFinal.format(a, b, total),
+        total.toLong()
+    ))
+
     return steps
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PracticingAdditionScreen(
-    onNavigateBack: () -> Unit = {}
+fun MultiplyingWithAbacusScreen(
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     var isSoroban by remember { mutableStateOf(true) }
     val upperMax = if (isSoroban) SOROBAN_UPPER else SUANPAN_UPPER
     val lowerMax = if (isSoroban) SOROBAN_LOWER else SUANPAN_LOWER
 
-    val state = remember { mutableStateOf(List(COLUMNS) { PaColumnState() }) }
-    var currentLevelIdx by remember { mutableIntStateOf(0) }
-    var exercise by remember { mutableStateOf(generateNumbers(levels[0])) }
-    var steps by remember { mutableStateOf(buildSteps(exercise, levels[0], s)) }
+    val state = remember { mutableStateOf(List(COLUMNS) { MwColumnState() }) }
+    var currentMultiplier by remember { mutableIntStateOf(MIN_MULTIPLIER) }
+    var exercise by remember { mutableStateOf(generateMwExercise(currentMultiplier)) }
+    var steps by remember { mutableStateOf(buildMwSteps(exercise, s)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
     var exerciseStarted by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
-    var showFinalCongratsMessage by remember { mutableStateOf(false) }
+    var showLastLevelMessage by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+
+    LaunchedEffect(Unit) {
+        currentMultiplier = MIN_MULTIPLIER
+        state.value = List(COLUMNS) { MwColumnState() }
+        exercise = generateMwExercise(currentMultiplier)
+        steps = buildMwSteps(exercise, s)
+        currentStepIdx = 0
+        stepCompleted = false
+        feedbackMessage = ""
+        isFeedbackPositive = false
+        exerciseStarted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+    }
 
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
@@ -185,21 +183,21 @@ fun PracticingAdditionScreen(
     }
 
     fun resetExercise() {
-        state.value = List(COLUMNS) { PaColumnState() }
-        exercise = generateNumbers(levels[currentLevelIdx])
-        steps = buildSteps(exercise, levels[currentLevelIdx], s)
+        state.value = List(COLUMNS) { MwColumnState() }
+        exercise = generateMwExercise(currentMultiplier)
+        steps = buildMwSteps(exercise, s)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
         isFeedbackPositive = false
         exerciseStarted = false
         finalCongratsShown = false
-        showFinalCongratsMessage = false
+        showLastLevelMessage = false
     }
 
     fun checkStep() {
         if (currentStepIdx >= steps.size) return
-        val currentVal = PaValue(state.value)
+        val currentVal = MwValue(state.value)
         val step = steps[currentStepIdx]
 
         if (currentVal == step.targetValue) {
@@ -208,11 +206,12 @@ fun PracticingAdditionScreen(
                 if (currentStepIdx == steps.size - 1) {
                     if (!finalCongratsShown) {
                         finalCongratsShown = true
-                        feedbackMessage = s.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
+                        onScoreChanged(currentScore + 2)
+                        feedbackMessage = s.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                         isFeedbackPositive = true
                     }
                 } else {
-                    feedbackMessage = s.feedbackCorrect
+                    feedbackMessage = s.mwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -225,7 +224,7 @@ fun PracticingAdditionScreen(
     }
 
     fun advanceStep() {
-        val currentVal = PaValue(state.value)
+        val currentVal = MwValue(state.value)
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
         if (currentVal != currentStepTarget) return
 
@@ -237,23 +236,24 @@ fun PracticingAdditionScreen(
         } else {
             if (currentVal == exercise.expected && !finalCongratsShown) {
                 finalCongratsShown = true
-                feedbackMessage = s.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
+                onScoreChanged(currentScore + 2)
+                feedbackMessage = s.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
                 isFeedbackPositive = true
             }
         }
     }
 
     fun toggleLevel() {
-        val wasLastLevel = currentLevelIdx == levels.size - 1
+        val wasLastLevel = currentMultiplier == MAX_MULTIPLIER
         val completed = wasLastLevel && finalCongratsShown
-        if (completed && !showFinalCongratsMessage) {
-            showFinalCongratsMessage = true
-            feedbackMessage = "${s.levelCompleteMax} \uD83C\uDF89"
+        if (completed && !showLastLevelMessage) {
+            showLastLevelMessage = true
+            feedbackMessage = s.mwLastLevelMessage.format(currentMultiplier)
             isFeedbackPositive = true
             return
         }
-        showFinalCongratsMessage = false
-        currentLevelIdx = (currentLevelIdx + 1) % levels.size
+        showLastLevelMessage = false
+        currentMultiplier = if (currentMultiplier >= MAX_MULTIPLIER) MIN_MULTIPLIER else currentMultiplier + 1
         resetExercise()
     }
 
@@ -273,7 +273,7 @@ fun PracticingAdditionScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                 }
                 Text(
-                    text = s.practicingAddition,
+                    text = s.multiplyingWithAbacusDescription,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -286,10 +286,10 @@ fun PracticingAdditionScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
 
             Text(
-                text = s.practicingAdditionInstruction,
+                text = s.multiplyingWithAbacusInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -297,7 +297,7 @@ fun PracticingAdditionScreen(
             )
 
             Text(
-                text = "${s.levelPrefix}${levelName(levels[currentLevelIdx], s)}",
+                text = "\u00D7 $currentMultiplier",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -305,7 +305,7 @@ fun PracticingAdditionScreen(
             )
 
             Text(
-                text = "${exercise.a} + ${exercise.b} = ?",
+                text = "${exercise.a} \u00D7 ${exercise.b} = ?",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -368,7 +368,7 @@ fun PracticingAdditionScreen(
                             if (stepCompleted) return@detectTapGestures
                             val cw = size.width.toFloat()
                             val ch = size.height.toFloat()
-                            handlePaAbacusTap(
+                            handleMwAbacusTap(
                                 offset.x, offset.y, cw, ch, state,
                                 COLUMNS, upperMax, lowerMax
                             )
@@ -377,8 +377,8 @@ fun PracticingAdditionScreen(
                         }
                     }
             ) {
-                drawPaAbacusBackground(size)
-                drawPaAbacusFrame(size)
+                drawMwAbacusBackground(size)
+                drawMwAbacusFrame(size)
                 val margin = 28f / 860f * size.width
                 val usableWidth = size.width - 2f * margin
                 val colWidth = usableWidth / COLUMNS
@@ -392,12 +392,12 @@ fun PracticingAdditionScreen(
                 val dtt = beamY - 28f / 400f * size.height
                 val dtb = beamY + 28f / 400f * size.height
                 for (col in 0 until COLUMNS) {
-                    drawPaAbacusRod(
+                    drawMwAbacusRod(
                         cx = startX + col * colWidth,
                         canvasWidth = size.width,
                         canvasHeight = size.height
                     )
-                    drawPaColumnBeads(
+                    drawMwColumnBeads(
                         cx = startX + col * colWidth,
                         canvasWidth = size.width,
                         canvasHeight = size.height,
@@ -419,7 +419,7 @@ fun PracticingAdditionScreen(
                 color = Color(0xFF2E241F),
             ) {
                 Text(
-                    text = "${s.valuePrefix}${PaValue(state.value)}",
+                    text = "${s.valuePrefix}${MwValue(state.value)}",
                     color = Color(0xFFF2ECD8),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -429,14 +429,14 @@ fun PracticingAdditionScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            if (steps.isNotEmpty() && currentStepIdx < steps.size && !showFinalCongratsMessage) {
+            if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = steps[currentStepIdx].instruction,
+                        text = "${s.mwStepPrefix}${steps[currentStepIdx].instruction}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(12.dp)
                     )
@@ -447,7 +447,7 @@ fun PracticingAdditionScreen(
 
             if (steps.isNotEmpty()) {
                 Text(
-                    text = "${s.stepPrefix}${currentStepIdx + 1}/${steps.size}",
+                    text = s.mwStepStatus.format(currentStepIdx + 1, steps.size),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -540,10 +540,10 @@ fun PracticingAdditionScreen(
     }
 }
 
-private fun handlePaAbacusTap(
+private fun handleMwAbacusTap(
     x: Float, y: Float,
     cw: Float, ch: Float,
-    state: MutableState<List<PaColumnState>>,
+    state: MutableState<List<MwColumnState>>,
     columns: Int,
     upperMax: Int,
     lowerMax: Int
@@ -603,7 +603,7 @@ private fun handlePaAbacusTap(
     }
 }
 
-private fun DrawScope.drawPaAbacusBackground(size: androidx.compose.ui.geometry.Size) {
+private fun DrawScope.drawMwAbacusBackground(size: androidx.compose.ui.geometry.Size) {
     drawRect(color = Color(0xFFFEF5E0), size = size)
     val beamY = size.height / 2f
     val decimalTrackTop = beamY - 28f / 400f * size.height
@@ -660,7 +660,7 @@ private fun DrawScope.drawPaAbacusBackground(size: androidx.compose.ui.geometry.
     )
 }
 
-private fun DrawScope.drawPaAbacusFrame(size: androidx.compose.ui.geometry.Size) {
+private fun DrawScope.drawMwAbacusFrame(size: androidx.compose.ui.geometry.Size) {
     drawRect(
         color = Color(0xFFF9EEC7),
         topLeft = Offset(5f / 860f * size.width, 5f / 400f * size.height),
@@ -681,7 +681,7 @@ private fun DrawScope.drawPaAbacusFrame(size: androidx.compose.ui.geometry.Size)
     )
 }
 
-private fun DrawScope.drawPaAbacusRod(cx: Float, canvasWidth: Float, canvasHeight: Float) {
+private fun DrawScope.drawMwAbacusRod(cx: Float, canvasWidth: Float, canvasHeight: Float) {
     drawLine(
         color = Color(0xFFB08054),
         start = Offset(cx, 8f / 860f * canvasWidth),
@@ -690,7 +690,7 @@ private fun DrawScope.drawPaAbacusRod(cx: Float, canvasWidth: Float, canvasHeigh
     )
 }
 
-private fun DrawScope.drawPaColumnBeads(
+private fun DrawScope.drawMwColumnBeads(
     cx: Float,
     canvasWidth: Float,
     canvasHeight: Float,

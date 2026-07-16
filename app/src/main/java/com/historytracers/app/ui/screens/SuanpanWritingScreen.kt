@@ -286,28 +286,29 @@ fun SuanpanWritingScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            FilledIconButton(
+            FilledTonalButton(
                 onClick = {
                     state.value = List(COLUMNS) { SuanpanColumnState() }
                     targetValue.value = Random.nextInt(1, 10)
                     showCongrats.value = false
                 },
-                modifier = Modifier.size(96.dp),
-                shape = RoundedCornerShape(50),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
                 )
             ) {
                 Text(
-                    text = s.reset,
+                    text = s.newExercise,
                     style = MaterialTheme.typography.titleMedium,
-                    color = OnButtonYellow
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
 
-            if (showCongrats.value) {
-                Text(
-                    text = "${s.congratulationTitle} \uD83C\uDF89",
+        if (showCongrats.value) {
+            Text(
+                text = "${s.congratulationTitle} \uD83C\uDF89",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,

@@ -72,9 +72,33 @@ fun LargeNumbersWritingScreen(
     val showCongrats = remember { mutableStateOf(false) }
     var completedLevel by remember { mutableStateOf(0) }
     val currentValue = LnValue(state.value)
+    var stepCompleted by remember { mutableStateOf(false) }
+    var feedbackMessage by remember { mutableStateOf("") }
+    var isFeedbackPositive by remember { mutableStateOf(false) }
+    var showLastLevelMessage by remember { mutableStateOf(false) }
+    var hasInteracted by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+
+    fun advanceLevel() {
+        if (currentLevel == 8 && !showLastLevelMessage) {
+            showLastLevelMessage = true
+            feedbackMessage = s.mw2LastLevelMessage
+            isFeedbackPositive = true
+            return
+        }
+        showLastLevelMessage = false
+        currentLevel = if (currentLevel >= 8) 1 else currentLevel + 1
+        state.value = List(COLUMNS) { LnColumnState() }
+        targetValue.value = getLevelRange(currentLevel).random()
+        showCongrats.value = false
+        completedLevel = 0
+        stepCompleted = false
+        feedbackMessage = ""
+        isFeedbackPositive = false
+        hasInteracted = false
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -121,7 +145,7 @@ fun LargeNumbersWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Column(
-                modifier = Modifier.offset(y = (-60).dp),
+                modifier = Modifier.offset(y = (-90).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var isSoroban by remember { mutableStateOf(true) }
@@ -190,8 +214,10 @@ fun LargeNumbersWritingScreen(
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 400f)
                         .offset(y = (-20).dp)
-                        .pointerInput(upperMax, lowerMax) {
+                        .pointerInput(upperMax, lowerMax, stepCompleted) {
                             detectTapGestures { offset ->
+                                if (stepCompleted) return@detectTapGestures
+                                hasInteracted = true
                                 val cw = size.width.toFloat()
                                 val ch = size.height.toFloat()
                                 handleAbacusTap(
@@ -286,29 +312,7 @@ fun LargeNumbersWritingScreen(
                     }
                 }
 
-                Spacer(Modifier.height(24.dp))
-
-                FilledIconButton(
-                    onClick = {
-                        state.value = List(COLUMNS) { LnColumnState() }
-                        targetValue.value = getLevelRange(currentLevel).random()
-                        showCongrats.value = false
-                        completedLevel = 0
-                    },
-                    modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = s.reset,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = OnButtonYellow
-                    )
-                }
-
-                if (showCongrats.value && completedLevel > 0) {
+                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
                     val congratsText = if (completedLevel == 8) {
                         "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
                     } else {
@@ -322,12 +326,94 @@ fun LargeNumbersWritingScreen(
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
                     Spacer(Modifier.height(8.dp))
+                }
+
+                if (feedbackMessage.isNotEmpty()) {
                     Text(
-                        text = s.resetHint,
+                        text = feedbackMessage,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilledTonalButton(
+                        onClick = {
+                            state.value = List(COLUMNS) { LnColumnState() }
+                            showCongrats.value = false
+                            completedLevel = 0
+                            stepCompleted = false
+                            feedbackMessage = ""
+                            isFeedbackPositive = false
+                            showLastLevelMessage = false
+                            hasInteracted = false
+                        },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.reset,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick = {
+                            state.value = List(COLUMNS) { LnColumnState() }
+                            targetValue.value = getLevelRange(currentLevel).random()
+                            showCongrats.value = false
+                            completedLevel = 0
+                            stepCompleted = false
+                            feedbackMessage = ""
+                            isFeedbackPositive = false
+                            showLastLevelMessage = false
+                            hasInteracted = false
+                        },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.newExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                }
+
+                if (!hasInteracted || stepCompleted) {
+                    Spacer(Modifier.height(8.dp))
+                    FilledTonalButton(
+                        onClick = { advanceLevel() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.nextLevel,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(24.dp))
@@ -340,7 +426,9 @@ fun LargeNumbersWritingScreen(
         completedLevel = currentLevel
         onScoreChanged(currentScore + 2)
         scope.launch { preferences.recordLessonCompletion() }
-        if (currentLevel < 8) currentLevel++ else currentLevel = 1
+        stepCompleted = true
+        feedbackMessage = s.feedbackCorrect
+        isFeedbackPositive = true
     }
 }
 

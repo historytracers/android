@@ -49,7 +49,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Button(onClick = {
             uriHandler.openUri("https://www.patreon.com/bePatron?u=104667333")
         }) {
-            Text("Patreon")
+            Text(s.patreon)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -57,7 +57,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Button(onClick = {
             uriHandler.openUri("https://www.paypal.com/donate/?hosted_button_id=F9SD36K5M3BW6")
         }) {
-            Text("PayPal")
+            Text(s.paypal)
         }
 
         Spacer(Modifier.height(24.dp))

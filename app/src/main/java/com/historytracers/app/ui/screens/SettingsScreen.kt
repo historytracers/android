@@ -18,13 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.UiStrings
 import com.historytracers.app.ui.theme.SkinColorPalette
 import com.historytracers.app.ui.theme.parseHexColor
 
-private val availableLanguages = listOf(
-    "en-US" to "English (US)",
-    "pt-BR" to "Portugu\u00eas (BR)",
-    "es-ES" to "Espa\u00f1ol (ES)"
+private fun availableLanguages(s: UiStrings) = listOf(
+    "en-US" to s.langEnUs,
+    "pt-BR" to s.langPtBr,
+    "es-ES" to s.langEsEs
 )
 
 private val availableBreakTimes = listOf(15, 25, 30, 35, 45, 50, 60)
@@ -44,7 +45,7 @@ fun SettingsScreen(
     var languageExpanded by remember { mutableStateOf(false) }
     var breakTimeExpanded by remember { mutableStateOf(false) }
 
-    val selectedLangLabel = availableLanguages.firstOrNull { it.first == currentLanguage }?.second
+    val selectedLangLabel = availableLanguages(s).firstOrNull { it.first == currentLanguage }?.second
         ?: currentLanguage
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -98,7 +99,7 @@ fun SettingsScreen(
                     expanded = languageExpanded,
                     onDismissRequest = { languageExpanded = false }
                 ) {
-                    availableLanguages.forEach { (code, label) ->
+                    availableLanguages(s).forEach { (code, label) ->
                         DropdownMenuItem(
                             text = { Text(label) },
                             onClick = {
