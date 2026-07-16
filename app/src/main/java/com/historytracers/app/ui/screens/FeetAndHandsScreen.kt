@@ -169,7 +169,9 @@ private fun buildFootPath(scale: Float = 0.1f, flipY: Boolean = true): Pair<Path
 @Composable
 fun FeetAndHandsScreen(
     skinColor: String = "#FFF8E0",
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
@@ -287,6 +289,7 @@ fun FeetAndHandsScreen(
                                 if (i < count - 1) delay(pauseDur.toLong())
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
                         }
                     }
                 },
@@ -321,6 +324,7 @@ fun FeetAndHandsScreen(
                                 if (i < count - 1) delay((dur * 0.2f).toLong())
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
                         }
                     }
                 },
@@ -356,6 +360,7 @@ fun FeetAndHandsScreen(
                                 if (i < count - 1) delay((dur * 0.3f).toInt().toLong())
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
                         }
                     }
                 },
