@@ -142,7 +142,6 @@ fun ClapScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(Modifier.height(8.dp))
 
             Text(
                 text = s.clapReinforce,
@@ -156,23 +155,17 @@ fun ClapScreen(
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Text(
-                    text = s.clapSkinColorHint,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(horizontal = 8.dp)
-                )
-                Canvas(
+            Text(
+                text = s.clapSkinColorHint,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+
+            Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(3f)
-                        .align(Alignment.Center)
+                        .offset(y = (-50).dp)
                 ) {
                     val canvasW = 600f
                     val canvasH = 600f
@@ -206,7 +199,8 @@ fun ClapScreen(
                     right.addPath(handPath, rightMatrix)
                     drawContext.canvas.nativeCanvas.drawPath(right, paint)
                 }
-            }
+
+            Spacer(Modifier.height(20.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -313,7 +307,6 @@ fun ClapScreen(
                 )
             }
 
-            Spacer(Modifier.height(16.dp))
         }
     }
 }
