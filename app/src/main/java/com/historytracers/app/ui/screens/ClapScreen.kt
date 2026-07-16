@@ -26,6 +26,7 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.parseHexColor
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -90,6 +91,7 @@ fun ClapScreen(
     var isPlaying by remember { mutableStateOf(false) }
     var completed by remember { mutableIntStateOf(0) }
     var target by remember { mutableIntStateOf(0) }
+    var showCompletionMessage by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     val animationProgress = remember { Animatable(0f) }
@@ -263,6 +265,7 @@ fun ClapScreen(
                         isPlaying = true
                         completed = 0
                         target = clapCount
+                        showCompletionMessage = false
                         scope.launch { preferences.recordLessonCompletion() }
                         scope.launch {
                             val animDuration = (cycleTime() * 0.75f).toInt()
@@ -286,6 +289,7 @@ fun ClapScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     },
                     modifier = Modifier.size(64.dp),
@@ -304,6 +308,17 @@ fun ClapScreen(
                     text = "$completed / $target",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold
+                )
+            }
+
+            if (showCompletionMessage) {
+                Text(
+                    text = s.clapCompletionMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2E7D32),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                 )
             }
 

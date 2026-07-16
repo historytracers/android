@@ -189,6 +189,7 @@ data class UiStrings(
     val langEnUs: String,
     val langPtBr: String,
     val langEsEs: String,
+    val clapCompletionMessage: String,
 )
 
 val EnStrings = UiStrings(
@@ -280,6 +281,7 @@ val EnStrings = UiStrings(
     clapCounter = "Claps:",
     stepsCounter = "Steps:",
     jumpsCounter = "Jumps:",
+    clapCompletionMessage = "Great job! You finished the exercise. Change the number of claps and train again!",
     slowly = "Slowly",
     fast = "Fast",
     congratulationTitle = "Congratulations!",
@@ -468,6 +470,7 @@ val PtStrings = UiStrings(
     clapCounter = "Palmas:",
     stepsCounter = "Passos:",
     jumpsCounter = "Pulos:",
+    clapCompletionMessage = "\u00d3timo trabalho! Voc\u00ea terminou o exerc\u00edcio. Mude o n\u00famero de palmas e treine novamente!",
     slowly = "Devagar",
     fast = "R\u00e1pido",
     congratulationTitle = "Parab\u00e9ns!",
@@ -656,6 +659,7 @@ val EsStrings = UiStrings(
     clapCounter = "Aplausos:",
     stepsCounter = "Pasos:",
     jumpsCounter = "Saltos:",
+    clapCompletionMessage = "\u00a1Gran trabajo! Terminaste el ejercicio. \u00a1Cambia el n\u00famero de aplausos y entrena de nuevo!",
     slowly = "Despacio",
     fast = "R\u00e1pido",
     congratulationTitle = "\u00a1Felicitaciones!",
