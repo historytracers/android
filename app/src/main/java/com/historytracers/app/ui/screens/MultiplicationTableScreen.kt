@@ -314,48 +314,55 @@ fun MultiplicationTableScreen(
             val isRunning = currentStep > 0 && currentStep < MAX_STEPS
             val isComplete = currentStep >= MAX_STEPS
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(bottom = 12.dp)
             ) {
-                if (!isRunning || isComplete) {
-                    FilledTonalButton(
-                        onClick = { reset() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Text(s.reset, style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (!isRunning || isComplete) {
+                        FilledTonalButton(
+                            onClick = { reset() },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(s.reset, style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
+                        }
+                    }
+
+                    if (!isComplete) {
+                        FilledTonalButton(
+                            onClick = {
+                                if (isAutoPlaying) {
+                                    isAutoPlaying = false
+                                } else {
+                                    isAutoPlaying = true
+                                }
+                            },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(
+                                if (isAutoPlaying) s.stop else s.auto,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                     }
                 }
 
                 if (!isComplete) {
-                    FilledTonalButton(
-                        onClick = {
-                            if (isAutoPlaying) {
-                                isAutoPlaying = false
-                            } else {
-                                isAutoPlaying = true
-                            }
-                        },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Text(
-                            if (isAutoPlaying) s.stop else s.auto,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-
                     FilledTonalButton(
                         onClick = {
                             isAutoPlaying = false
