@@ -75,7 +75,9 @@ private fun buildAndroidPath(): Path {
 @Composable
 fun ClapScreen(
     skinColor: String = "#FFF8E0",
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
@@ -289,6 +291,7 @@ fun ClapScreen(
                                 }
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
                         }
                     },
                     modifier = Modifier.size(64.dp),
