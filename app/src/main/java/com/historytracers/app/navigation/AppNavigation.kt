@@ -45,6 +45,7 @@ import com.historytracers.app.ui.screens.LargeNumbersWritingScreen
 import com.historytracers.app.ui.screens.PracticingAdditionScreen
 import com.historytracers.app.ui.screens.MultiplicationTableScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusScreen
+import com.historytracers.app.ui.screens.MultiplyingWithAbacusLevel2Screen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -59,7 +60,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -313,7 +314,8 @@ fun AppNavigation() {
                             onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) },
                             onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAddition.route) },
                             onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTable.route) },
-                            onNavigateToMultiplyingWithAbacus = { navController.navigate(Screen.MultiplyingWithAbacus.route) }
+                            onNavigateToMultiplyingWithAbacus = { navController.navigate(Screen.MultiplyingWithAbacus.route) },
+                            onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
@@ -473,6 +475,20 @@ fun AppNavigation() {
                     }
                     composable(Screen.MultiplyingWithAbacus.route) {
                         MultiplyingWithAbacusScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplyingWithAbacusLevel2.route) {
+                        MultiplyingWithAbacusLevel2Screen(
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Abacus.route, false)) {
                                     navController.navigate(Screen.Abacus.route) {

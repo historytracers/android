@@ -23,4 +23,5 @@ sealed class Screen(val route: String) {
     data object PracticingAddition : Screen("practicing_addition")
     data object MultiplicationTable : Screen("multiplication_table")
     data object MultiplyingWithAbacus : Screen("multiplying_with_abacus")
+    data object MultiplyingWithAbacusLevel2 : Screen("multiplying_with_abacus_level2")
 }

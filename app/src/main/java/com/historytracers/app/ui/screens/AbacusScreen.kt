@@ -32,7 +32,8 @@ fun AbacusScreen(
     onNavigateToLargeNumbersWriting: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToMultiplicationTable: () -> Unit = {},
-    onNavigateToMultiplyingWithAbacus: () -> Unit = {}
+    onNavigateToMultiplyingWithAbacus: () -> Unit = {},
+    onNavigateToMultiplyingWithAbacusLevel2: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -407,6 +408,35 @@ fun AbacusScreen(
 
             Text(
                 text = s.multiplyingWithAbacusDescription,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToMultiplyingWithAbacusLevel2,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "98... \u00D7 9",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.mw2Title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
