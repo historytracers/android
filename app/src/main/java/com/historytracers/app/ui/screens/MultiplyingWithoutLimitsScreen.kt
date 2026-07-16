@@ -67,6 +67,14 @@ private fun getLevelRange(level: Int): Pair<Int, Int> {
     return Pair(power, 2 * power - 1)
 }
 
+private fun generateMwlExercise(level: Int): MwlExercise {
+    val (minA, maxA) = getLevelRange(level)
+    val a = Random.nextInt(minA, maxA + 1)
+    val tensDigit = Random.nextInt(1, 10)
+    val onesDigit = Random.nextInt(1, 10)
+    return MwlExercise(a, tensDigit, onesDigit)
+}
+
 private fun buildMwlSingleDigitSteps(
     a: Int, digit: Int, s: com.historytracers.app.ui.UiStrings
 ): Pair<List<MwlStepInfo>, Long> {
@@ -239,7 +247,7 @@ fun MultiplyingWithoutLimitsScreen(
 
     val state = remember { mutableStateOf(List(COLUMNS) { MwlColumnState() }) }
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
-    var exercise by remember { mutableStateOf(MwlExercise(12, 2, 5)) }
+    var exercise by remember { mutableStateOf(generateMwlExercise(currentDigitLevel)) }
     var steps by remember { mutableStateOf(buildMwlSteps(exercise, s)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
@@ -249,6 +257,7 @@ fun MultiplyingWithoutLimitsScreen(
     var finalCongratsShown by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
     var storedDisplay by remember { mutableStateOf("") }
+    var showResetButton by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
 
@@ -258,17 +267,9 @@ fun MultiplyingWithoutLimitsScreen(
         }
     }
 
-    fun generateExercise(level: Int): MwlExercise {
-        val (minA, maxA) = getLevelRange(level)
-        val a = Random.nextInt(minA, maxA + 1)
-        val tensDigit = Random.nextInt(1, 10)
-        val onesDigit = Random.nextInt(1, 10)
-        return MwlExercise(a, tensDigit, onesDigit)
-    }
-
     fun resetExercise() {
         state.value = List(COLUMNS) { MwlColumnState() }
-        exercise = generateExercise(currentDigitLevel)
+        exercise = generateMwlExercise(currentDigitLevel)
         steps = buildMwlSteps(exercise, s)
         currentStepIdx = 0
         stepCompleted = false
@@ -278,6 +279,7 @@ fun MultiplyingWithoutLimitsScreen(
         finalCongratsShown = false
         showLastLevelMessage = false
         storedDisplay = ""
+        showResetButton = steps.getOrNull(0)?.instruction == s.mwlResetInstruction
     }
 
     fun checkStep() {
@@ -312,6 +314,12 @@ fun MultiplyingWithoutLimitsScreen(
         }
     }
 
+    fun resetAbacus() {
+        state.value = List(COLUMNS) { MwlColumnState() }
+        showResetButton = false
+        checkStep()
+    }
+
     fun advanceStep() {
         val currentVal = MwlValue(state.value)
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
@@ -327,6 +335,7 @@ fun MultiplyingWithoutLimitsScreen(
             feedbackMessage = ""
             isFeedbackPositive = false
             val step = steps[currentStepIdx]
+            showResetButton = step.instruction == s.mwlResetInstruction
             if (step.isStoreStep) {
                 storedDisplay = s.mwlStoreInstruction.format(
                     steps.getOrNull(currentStepIdx - 1)?.targetValue ?: 0L
@@ -552,6 +561,25 @@ fun MultiplyingWithoutLimitsScreen(
                         text = "${s.mwStepPrefix}${steps[currentStepIdx].instruction}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(12.dp)
+                    )
+                }
+            }
+
+            if (showResetButton) {
+                Spacer(Modifier.height(8.dp))
+                FilledTonalButton(
+                    onClick = { resetAbacus() },
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                ) {
+                    Text(
+                        text = "Reset to 0",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
             }

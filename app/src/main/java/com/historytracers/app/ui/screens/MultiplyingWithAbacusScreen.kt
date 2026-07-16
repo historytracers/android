@@ -61,6 +61,11 @@ private data class MwExercise(val a: Int, val b: Int) {
 
 private data class MwStepInfo(val instruction: String, val targetValue: Long)
 
+private fun generateMwExercise(multiplier: Int): MwExercise {
+    val a = Random.nextInt(10, 100)
+    return MwExercise(a, multiplier)
+}
+
 private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
     val steps = mutableListOf<MwStepInfo>()
 
@@ -145,7 +150,7 @@ fun MultiplyingWithAbacusScreen(
 
     val state = remember { mutableStateOf(List(COLUMNS) { MwColumnState() }) }
     var currentMultiplier by remember { mutableIntStateOf(MIN_MULTIPLIER) }
-    var exercise by remember { mutableStateOf(MwExercise(12, 3)) }
+    var exercise by remember { mutableStateOf(generateMwExercise(currentMultiplier)) }
     var steps by remember { mutableStateOf(buildMwSteps(exercise, s)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
@@ -163,14 +168,9 @@ fun MultiplyingWithAbacusScreen(
         }
     }
 
-    fun generateExercise(multiplier: Int): MwExercise {
-        val a = Random.nextInt(10, 100)
-        return MwExercise(a, multiplier)
-    }
-
     fun resetExercise() {
         state.value = List(COLUMNS) { MwColumnState() }
-        exercise = generateExercise(currentMultiplier)
+        exercise = generateMwExercise(currentMultiplier)
         steps = buildMwSteps(exercise, s)
         currentStepIdx = 0
         stepCompleted = false

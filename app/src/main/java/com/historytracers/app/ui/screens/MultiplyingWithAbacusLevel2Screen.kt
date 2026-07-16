@@ -66,6 +66,13 @@ private fun getLevelRange(level: Int): Pair<Int, Int> {
     return Pair(power, 2 * power - 1)
 }
 
+private fun generateMw2Exercise(level: Int): Mw2Exercise {
+    val (minA, maxA) = getLevelRange(level)
+    val a = Random.nextInt(minA, maxA + 1)
+    val b = Random.nextInt(1, 10)
+    return Mw2Exercise(a, b)
+}
+
 private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.UiStrings): List<Mw2StepInfo> {
     val steps = mutableListOf<Mw2StepInfo>()
     val a = exercise.a
@@ -157,7 +164,7 @@ fun MultiplyingWithAbacusLevel2Screen(
 
     val state = remember { mutableStateOf(List(COLUMNS) { Mw2ColumnState() }) }
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
-    var exercise by remember { mutableStateOf(Mw2Exercise(1, 2)) }
+    var exercise by remember { mutableStateOf(generateMw2Exercise(currentDigitLevel)) }
     var steps by remember { mutableStateOf(buildMw2Steps(exercise, s)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
@@ -175,16 +182,9 @@ fun MultiplyingWithAbacusLevel2Screen(
         }
     }
 
-    fun generateExercise(level: Int): Mw2Exercise {
-        val (minA, maxA) = getLevelRange(level)
-        val a = Random.nextInt(minA, maxA + 1)
-        val b = Random.nextInt(1, 10)
-        return Mw2Exercise(a, b)
-    }
-
     fun resetExercise() {
         state.value = List(COLUMNS) { Mw2ColumnState() }
-        exercise = generateExercise(currentDigitLevel)
+        exercise = generateMw2Exercise(currentDigitLevel)
         steps = buildMw2Steps(exercise, s)
         currentStepIdx = 0
         stepCompleted = false
