@@ -76,6 +76,7 @@ fun LargeNumbersWritingScreen(
     var feedbackMessage by remember { mutableStateOf("") }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
+    var hasInteracted by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -96,6 +97,7 @@ fun LargeNumbersWritingScreen(
         stepCompleted = false
         feedbackMessage = ""
         isFeedbackPositive = false
+        hasInteracted = false
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -215,6 +217,7 @@ fun LargeNumbersWritingScreen(
                         .pointerInput(upperMax, lowerMax, stepCompleted) {
                             detectTapGestures { offset ->
                                 if (stepCompleted) return@detectTapGestures
+                                hasInteracted = true
                                 val cw = size.width.toFloat()
                                 val ch = size.height.toFloat()
                                 handleAbacusTap(
@@ -350,6 +353,7 @@ fun LargeNumbersWritingScreen(
                             feedbackMessage = ""
                             isFeedbackPositive = false
                             showLastLevelMessage = false
+                            hasInteracted = false
                         },
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(
@@ -375,6 +379,7 @@ fun LargeNumbersWritingScreen(
                             feedbackMessage = ""
                             isFeedbackPositive = false
                             showLastLevelMessage = false
+                            hasInteracted = false
                         },
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(
@@ -390,7 +395,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
 
-                    if (stepCompleted) {
+                    if (!hasInteracted || stepCompleted) {
                         FilledTonalButton(
                             onClick = { advanceLevel() },
                             shape = RoundedCornerShape(24.dp),
