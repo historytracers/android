@@ -169,7 +169,9 @@ private fun buildFootPath(scale: Float = 0.1f, flipY: Boolean = true): Pair<Path
 @Composable
 fun FeetAndHandsScreen(
     skinColor: String = "#FFF8E0",
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
@@ -186,6 +188,7 @@ fun FeetAndHandsScreen(
     var clapCompleted by remember { mutableIntStateOf(0) }
     var stepsCompleted by remember { mutableIntStateOf(0) }
     var jumpsCompleted by remember { mutableIntStateOf(0) }
+    var showCompletionMessage by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val clapProgress = remember { Animatable(0f) }
@@ -212,10 +215,11 @@ fun FeetAndHandsScreen(
         onDispose { soundPool.release() }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
@@ -274,6 +278,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             clapCompleted = 0
+                            showCompletionMessage = false
                             preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.75f).toInt()
                             val pauseDur = (cycleTime() * 0.25f).toInt()
@@ -287,6 +292,8 @@ fun FeetAndHandsScreen(
                                 if (i < count - 1) delay(pauseDur.toLong())
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     }
                 },
@@ -310,6 +317,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             stepsCompleted = 0
+                            showCompletionMessage = false
                             preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.4f).toInt()
                             for (i in 0 until count) {
@@ -321,6 +329,8 @@ fun FeetAndHandsScreen(
                                 if (i < count - 1) delay((dur * 0.2f).toLong())
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     }
                 },
@@ -344,6 +354,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             jumpsCompleted = 0
+                            showCompletionMessage = false
                             preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.5f).toInt()
                             for (i in 0 until count) {
@@ -356,6 +367,8 @@ fun FeetAndHandsScreen(
                                 if (i < count - 1) delay((dur * 0.3f).toInt().toLong())
                             }
                             isPlaying = false
+                            onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     }
                 },
@@ -391,10 +404,10 @@ fun FeetAndHandsScreen(
                     strokeJoin = Paint.Join.ROUND
                 }
 
-                val footScale = s * (0.125f / 0.6f)
-                val footY = cy + 60f * s + 30f * density
+                val footScale = s * (0.125f / 0.6f) * 0.7f
+                val footY = cy + 60f * s + 30f * density - 70f * density
                 val footBaseX = cx - 20f * density
-                val handY = cy - 200f * s - 140f * density
+                val handY = cy - 200f * s - 140f * density + 10f * density
 
                     if (mode == Mode.CLAP) {
                         val restOff = 120f * s
@@ -404,14 +417,14 @@ fun FeetAndHandsScreen(
 
                         val leftMatrix = Matrix()
                         leftMatrix.setTranslate(cx + leftOff, handY)
-                        leftMatrix.preScale(s, s)
+                        leftMatrix.preScale(s * 0.7f, s * 0.7f)
                         val left = Path()
                         left.addPath(handPath, leftMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                         val rightMatrix = Matrix()
                         rightMatrix.setTranslate(cx + rightOff, handY)
-                        rightMatrix.preScale(s, s)
+                        rightMatrix.preScale(s * 0.7f, s * 0.7f)
                         val right = Path()
                         right.addPath(handPath, rightMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
@@ -422,14 +435,14 @@ fun FeetAndHandsScreen(
 
                         val leftMatrix = Matrix()
                         leftMatrix.setTranslate(cx + leftOff, handY)
-                        leftMatrix.preScale(s, s)
+                        leftMatrix.preScale(s * 0.7f, s * 0.7f)
                         val left = Path()
                         left.addPath(handPath, leftMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                         val rightMatrix = Matrix()
                         rightMatrix.setTranslate(cx + rightOff, handY)
-                        rightMatrix.preScale(s, s)
+                        rightMatrix.preScale(s * 0.7f, s * 0.7f)
                         val right = Path()
                         right.addPath(handPath, rightMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
@@ -479,62 +492,81 @@ fun FeetAndHandsScreen(
             }
 
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.offset(y = (-90).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                        Slider(
+                            value = sliderPos,
+                            onValueChange = { if (!isPlaying) sliderPos = it },
+                            valueRange = 400f..2000f,
+                            modifier = Modifier.width(180.dp),
+                            enabled = !isPlaying
+                        )
+                        Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
+                        FilledIconButton(
+                            onClick = { if (!isPlaying && count > 1) count-- },
+                            modifier = Modifier.size(32.dp),
+                            enabled = !isPlaying && count > 1
+                        ) {
+                            Text("-", style = MaterialTheme.typography.titleSmall)
+                        }
+                        Text(
+                            text = count.toString(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.width(36.dp),
+                            textAlign = TextAlign.Center
+                        )
+                        FilledIconButton(
+                            onClick = { if (!isPlaying && count < 20) count++ },
+                            modifier = Modifier.size(32.dp),
+                            enabled = !isPlaying && count < 20
+                        ) {
+                            Text("+", style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
                 }
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(s.slowly, style = MaterialTheme.typography.bodySmall)
-                    Slider(
-                        value = sliderPos,
-                        onValueChange = { if (!isPlaying) sliderPos = it },
-                        valueRange = 400f..2000f,
-                        modifier = Modifier.width(180.dp),
-                        enabled = !isPlaying
-                    )
-                    Text(s.fast, style = MaterialTheme.typography.bodySmall)
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
-                    FilledIconButton(
-                        onClick = { if (!isPlaying && count > 1) count-- },
-                        modifier = Modifier.size(32.dp),
-                        enabled = !isPlaying && count > 1
-                    ) {
-                        Text("-", style = MaterialTheme.typography.titleSmall)
-                    }
-                    Text(
-                        text = count.toString(),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(36.dp),
-                        textAlign = TextAlign.Center
-                    )
-                    FilledIconButton(
-                        onClick = { if (!isPlaying && count < 20) count++ },
-                        modifier = Modifier.size(32.dp),
-                        enabled = !isPlaying && count < 20
-                    ) {
-                        Text("+", style = MaterialTheme.typography.titleSmall)
-                    }
-                }
+                Spacer(Modifier.height(8.dp))
             }
+        }
 
-            Spacer(Modifier.height(8.dp))
+        if (showCompletionMessage) {
+            Text(
+                text = s.clapCompletionMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 50.dp)
+            )
         }
     }
+}

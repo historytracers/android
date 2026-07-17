@@ -37,6 +37,7 @@ import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
 import com.historytracers.app.ui.screens.ClapScreen
 import com.historytracers.app.ui.screens.CongratulationScreen
+import com.historytracers.app.ui.screens.ExercisingAdditionScreen
 import com.historytracers.app.ui.screens.FeetAndHandsScreen
 import com.historytracers.app.ui.screens.StreakScreen
 import com.historytracers.app.ui.screens.SorobanWritingScreen
@@ -61,7 +62,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -222,7 +223,7 @@ fun AppNavigation() {
                         label = { Text(uiStrings.close) },
                         selected = false,
                         onClick = {
-                            (context as? android.app.Activity)?.finish()
+                            (context as? android.app.Activity)?.finishAndRemoveTask()
                         }
                     )
                 }
@@ -295,7 +296,8 @@ fun AppNavigation() {
                             },
                             onNavigateToClap = { navController.navigate(Screen.Clap.route) },
                             onNavigateToFeetAndHands = { navController.navigate(Screen.FeetAndHands.route) },
-                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
+                            onNavigateToExercisingAddition = { navController.navigate(Screen.ExercisingAddition.route) }
                         )
                     }
                     composable(Screen.Abacus.route) {
@@ -433,7 +435,9 @@ fun AppNavigation() {
                                         launchSingleTop = true
                                     }
                                 }
-                            }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.FeetAndHands.route) {
@@ -446,7 +450,24 @@ fun AppNavigation() {
                                         launchSingleTop = true
                                     }
                                 }
-                            }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.ExercisingAddition.route) {
+                        ExercisingAdditionScreen(
+                            skinColor = skinColor,
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Workout.route, false)) {
+                                    navController.navigate(Screen.Workout.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.PracticingAddition.route) {

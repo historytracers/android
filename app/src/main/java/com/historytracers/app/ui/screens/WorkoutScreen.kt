@@ -35,7 +35,8 @@ fun WorkoutScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToClap: () -> Unit = {},
     onNavigateToFeetAndHands: () -> Unit = {},
-    onNavigateToCongratulation: () -> Unit = {}
+    onNavigateToCongratulation: () -> Unit = {},
+    onNavigateToExercisingAddition: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -222,6 +223,64 @@ fun WorkoutScreen(
 
             Text(
                 text = s.nextLevel,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            FilledIconButton(
+                onClick = { },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Text(
+                    text = s.whoWalkFirstButton,
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.whoWalkFirst,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToExercisingAddition,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_person_arms_up),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Black
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.exercisingAddition,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
