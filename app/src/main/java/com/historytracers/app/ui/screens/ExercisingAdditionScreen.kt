@@ -10,7 +10,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -549,31 +551,37 @@ fun ExercisingAdditionScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FilledIconButton(
+                    FilledTonalButton(
                         onClick = { newProblem() },
-                        modifier = Modifier.size(48.dp),
-                        shape = CircleShape,
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        ),
                         enabled = !isPlaying
                     ) {
-                        Icon(
-                            Icons.Default.Refresh,
-                            contentDescription = null,
-                            modifier = Modifier.size(28.dp),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        Text(
+                            text = s.newExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
 
-                    FilledIconButton(
+                    FilledTonalButton(
                         onClick = { startExercise() },
-                        modifier = Modifier.size(64.dp),
-                        shape = CircleShape,
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        ),
                         enabled = !isPlaying
                     ) {
-                        Icon(
-                            Icons.Default.PlayArrow,
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        Text(
+                            text = s.doExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
                 }
@@ -582,7 +590,7 @@ fun ExercisingAdditionScreen(
 
         if (phase == ExercisePhase.DONE && !isPlaying) {
             Text(
-                text = s.clapCompletionMessage,
+                text = s.exercisingAdditionCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
