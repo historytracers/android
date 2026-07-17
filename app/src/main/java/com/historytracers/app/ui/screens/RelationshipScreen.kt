@@ -322,7 +322,7 @@ fun RelationshipScreen(
         val reps = problem.topValue
         val choose: Int
         if (firstGroupOne) {
-            choose = Random.nextInt(1, 4)
+            choose = Random.nextInt(1, 3)
             firstGroupOne = false
         } else {
             choose = Random.nextInt(3, 5)
@@ -340,7 +340,7 @@ fun RelationshipScreen(
         val reps = problem.topValue
         val choose: Int
         if (firstGroupTwo) {
-            choose = Random.nextInt(1, 4)
+            choose = Random.nextInt(1, 3)
             firstGroupTwo = false
         } else {
             choose = Random.nextInt(3, 5)
@@ -366,12 +366,10 @@ fun RelationshipScreen(
     }
 
     suspend fun executeMult() {
-        if (selectedTable == 1) {
-            executeOneMult()
-        } else if (selectedTable == 2) {
-            executeTwoMult()
-        } else {
-            executeThreeMult()
+        when (problem.bottomValue) {
+            1 -> executeOneMult()
+            2 -> executeTwoMult()
+            else -> executeThreeMult()
         }
     }
 
@@ -595,18 +593,21 @@ fun RelationshipScreen(
                 Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
 
                 var expanded by remember { mutableStateOf(false) }
-                Box {
-                    TextButton(
-                        onClick = { if (!isPlaying) expanded = true },
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { if (!isPlaying) expanded = !expanded }
+                ) {
+                    OutlinedTextField(
+                        value = if (selectedTable == -1) s.randomly else "${selectedTable}",
+                        onValueChange = {},
+                        readOnly = true,
                         enabled = !isPlaying,
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
-                    ) {
-                        Text(
-                            text = if (selectedTable == -1) s.randomly else "${selectedTable}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    DropdownMenu(
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                        singleLine = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor().width(120.dp)
+                    )
+                    ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
