@@ -344,67 +344,67 @@ fun ExercisingAdditionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (problem.nextValue != 0) {
-                    Row(Modifier.width(144.dp)) {
-                        Spacer(Modifier.width(56.dp))
+                    Row(Modifier.width(104.dp)) {
+                        Spacer(Modifier.width(36.dp))
                         Text(
                             text = "${problem.nextValue}",
                             style = MaterialTheme.typography.headlineLarge,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.width(40.dp),
+                            modifier = Modifier.width(32.dp),
                             textAlign = TextAlign.Center
                         )
-                        Spacer(Modifier.width(48.dp))
+                        Spacer(Modifier.width(36.dp))
                     }
                 }
-                Row(Modifier.width(144.dp)) {
-                    Spacer(Modifier.width(56.dp))
-                    Spacer(Modifier.width(40.dp))
+                Row(Modifier.width(104.dp)) {
+                    Spacer(Modifier.width(36.dp))
+                    Spacer(Modifier.width(32.dp))
                     Text(
                         text = "${problem.topValue}",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(48.dp),
+                        modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.Center
                     )
                 }
-                Row(Modifier.width(144.dp)) {
+                Row(Modifier.width(104.dp)) {
                     Text(
                         text = "+ ",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(56.dp),
+                        modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.End
                     )
-                    Spacer(Modifier.width(40.dp))
+                    Spacer(Modifier.width(32.dp))
                     Text(
                         text = "${problem.bottomValue}",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(48.dp),
+                        modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.Center
                     )
                 }
-                Box(Modifier.width(144.dp).padding(start = 56.dp)) {
+                Box(Modifier.width(104.dp).padding(start = 36.dp)) {
                     Divider()
                 }
-                Row(Modifier.width(144.dp)) {
-                    Spacer(Modifier.width(56.dp))
+                Row(Modifier.width(104.dp)) {
+                    Spacer(Modifier.width(36.dp))
                     if (problem.result > 9) {
                         Text(
                             text = "${problem.result / 10}",
                             style = MaterialTheme.typography.headlineLarge,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.width(40.dp),
+                            modifier = Modifier.width(32.dp),
                             textAlign = TextAlign.Center
                         )
                     } else {
-                        Spacer(Modifier.width(40.dp))
+                        Spacer(Modifier.width(32.dp))
                     }
                     Text(
                         text = "${problem.result % 10}",
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(48.dp),
+                        modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.Center
                     )
                 }
