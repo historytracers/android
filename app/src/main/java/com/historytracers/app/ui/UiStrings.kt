@@ -197,6 +197,7 @@ data class UiStrings(
     val clapCompletionMessage: String,
     val exercisingAdditionCompletionMessage: String,
     val relationship: String,
+    val randomly: String,
 )
 
 val EnStrings = UiStrings(
@@ -393,6 +394,7 @@ val EnStrings = UiStrings(
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
     relationship = "Relationship",
+    randomly = "Randomly",
 )
 
 val PtStrings = UiStrings(
@@ -589,6 +591,7 @@ val PtStrings = UiStrings(
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espanhol (ES)",
     relationship = "Relacionamento",
+    randomly = "Aleatório",
 )
 
 val EsStrings = UiStrings(
@@ -785,6 +788,7 @@ val EsStrings = UiStrings(
     langPtBr = "Portugu\u00e9s (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
     relationship = "Relaci\u00f3n",
+    randomly = "Aleatorio",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

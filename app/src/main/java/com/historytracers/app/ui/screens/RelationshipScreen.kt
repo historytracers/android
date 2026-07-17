@@ -592,6 +592,48 @@ fun RelationshipScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
+
+                var expanded by remember { mutableStateOf(false) }
+                Box {
+                    TextButton(
+                        onClick = { if (!isPlaying) expanded = true },
+                        enabled = !isPlaying,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                    ) {
+                        Text(
+                            text = if (selectedTable == -1) s.randomly else "${selectedTable}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(s.randomly) },
+                            onClick = { selectedTable = -1; expanded = false; newMultiplication() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("1") },
+                            onClick = { selectedTable = 1; expanded = false; newMultiplication() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("2") },
+                            onClick = { selectedTable = 2; expanded = false; newMultiplication() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("3") },
+                            onClick = { selectedTable = 3; expanded = false; newMultiplication() }
+                        )
+                    }
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text(s.slowly, style = MaterialTheme.typography.bodySmall)
                 Slider(
                     value = sliderPos,
@@ -601,15 +643,6 @@ fun RelationshipScreen(
                     enabled = !isPlaying
                 )
                 Text(s.fast, style = MaterialTheme.typography.bodySmall)
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text("${s.clapCounter} $clapCompleted", style = MaterialTheme.typography.bodySmall)
-                Text("${s.stepsCounter} $stepsCompleted", style = MaterialTheme.typography.bodySmall)
-                Text("${s.jumpsCounter} $jumpsCompleted", style = MaterialTheme.typography.bodySmall)
             }
 
             Row(
