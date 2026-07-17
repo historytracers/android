@@ -270,6 +270,8 @@ fun ExercisingAdditionScreen(
                 if (i < problem.bottomValue - 1) delay(clapPause.toLong())
             }
 
+            handsDown = false
+
             phase = ExercisePhase.STEP_RESULT
 
             for (i in 0 until result) {
@@ -305,6 +307,7 @@ fun ExercisingAdditionScreen(
         stepsCompleted = 0
         jumpsCompleted = 0
         handsDown = false
+        scope.launch { clapProgress.snapTo(0f) }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
