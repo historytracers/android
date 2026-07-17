@@ -196,6 +196,7 @@ data class UiStrings(
     val langEsEs: String,
     val clapCompletionMessage: String,
     val exercisingAdditionCompletionMessage: String,
+    val relationship: String,
 )
 
 val EnStrings = UiStrings(
@@ -391,6 +392,7 @@ val EnStrings = UiStrings(
     langEnUs = "English (US)",
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
+    relationship = "Relationship",
 )
 
 val PtStrings = UiStrings(
@@ -586,6 +588,7 @@ val PtStrings = UiStrings(
     langEnUs = "Ingl\u00eas (EUA)",
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espanhol (ES)",
+    relationship = "Relacionamento",
 )
 
 val EsStrings = UiStrings(
@@ -781,6 +784,7 @@ val EsStrings = UiStrings(
     langEnUs = "Ingl\u00e9s (EE. UU.)",
     langPtBr = "Portugu\u00e9s (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
+    relationship = "Relaci\u00f3n",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
