@@ -388,7 +388,7 @@ fun ExercisingAdditionScreen(
                     )
                 }
                 Box(Modifier.width(104.dp).padding(start = 36.dp)) {
-                    Divider()
+                    Divider(thickness = 4.dp)
                 }
                 Row(Modifier.width(104.dp)) {
                     Spacer(Modifier.width(36.dp))
