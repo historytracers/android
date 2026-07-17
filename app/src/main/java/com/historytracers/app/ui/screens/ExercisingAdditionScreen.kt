@@ -437,7 +437,7 @@ fun ExercisingAdditionScreen(
                     val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density
 
                     val restOff = 120f * s
-                    val handDownOff = 58f * s * 0.7f
+                    val handDownOff = 58f * s * 0.7f + 20f * density
                     val prog = clapProgress.value
 
                     val leftOff: Float
