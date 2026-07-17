@@ -188,6 +188,7 @@ fun FeetAndHandsScreen(
     var clapCompleted by remember { mutableIntStateOf(0) }
     var stepsCompleted by remember { mutableIntStateOf(0) }
     var jumpsCompleted by remember { mutableIntStateOf(0) }
+    var showCompletionMessage by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val clapProgress = remember { Animatable(0f) }
@@ -214,10 +215,11 @@ fun FeetAndHandsScreen(
         onDispose { soundPool.release() }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
@@ -276,6 +278,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             clapCompleted = 0
+                            showCompletionMessage = false
                             preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.75f).toInt()
                             val pauseDur = (cycleTime() * 0.25f).toInt()
@@ -290,6 +293,7 @@ fun FeetAndHandsScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     }
                 },
@@ -313,6 +317,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             stepsCompleted = 0
+                            showCompletionMessage = false
                             preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.4f).toInt()
                             for (i in 0 until count) {
@@ -325,6 +330,7 @@ fun FeetAndHandsScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     }
                 },
@@ -348,6 +354,7 @@ fun FeetAndHandsScreen(
                             if (count < 1) return@launch
                             isPlaying = true
                             jumpsCompleted = 0
+                            showCompletionMessage = false
                             preferences.recordLessonCompletion()
                             val dur = (cycleTime() * 0.5f).toInt()
                             for (i in 0 until count) {
@@ -361,6 +368,7 @@ fun FeetAndHandsScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            showCompletionMessage = true
                         }
                     }
                 },
@@ -547,4 +555,18 @@ fun FeetAndHandsScreen(
                 Spacer(Modifier.height(8.dp))
             }
         }
+
+        if (showCompletionMessage) {
+            Text(
+                text = s.clapCompletionMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 50.dp)
+            )
+        }
     }
+}

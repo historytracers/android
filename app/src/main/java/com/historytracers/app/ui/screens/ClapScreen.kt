@@ -114,214 +114,217 @@ fun ClapScreen(
         onDispose { soundPool.release() }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = { onNavigateBack() }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { onNavigateBack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    }
+                    Text(
+                        text = s.exercisingHands,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
                 Text(
-                    text = s.exercisingHands,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    text = s.clapReinforce,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
+
+                Text(
+                    text = s.clapInstructions,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+
+                Text(
+                    text = s.clapSkinColorHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+
+                Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(3f)
+                            .offset(y = (-50).dp)
+                    ) {
+                        val canvasW = 600f
+                        val canvasH = 600f
+                        val s = minOf(size.width / canvasW, size.height / canvasH) * 1.8f
+                        val cx = size.width * 0.5f + 70f * density
+                        val cy = size.height * 0.6f
+
+                        val restOff = 140f * s
+                        val prog = animationProgress.value
+
+                        val leftOff = -restOff + restOff * prog
+                        val rightOff = restOff - restOff * prog
+
+                        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = handColor.hashCode()
+                            style = Paint.Style.FILL
+                            strokeJoin = Paint.Join.ROUND
+                        }
+
+                        val leftMatrix = Matrix()
+                        leftMatrix.setTranslate(cx + leftOff, cy)
+                        leftMatrix.preScale(s, s)
+                        val left = Path()
+                        left.addPath(handPath, leftMatrix)
+                        drawContext.canvas.nativeCanvas.drawPath(left, paint)
+
+                        val rightMatrix = Matrix()
+                        rightMatrix.setTranslate(cx + rightOff, cy)
+                        rightMatrix.preScale(s, s)
+                        val right = Path()
+                        right.addPath(handPath, rightMatrix)
+                        drawContext.canvas.nativeCanvas.drawPath(right, paint)
+                    }
+
+                Spacer(Modifier.height(20.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(s.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
+
+                    FilledIconButton(
+                        onClick = { if (!isPlaying && clapCount > 1) clapCount-- },
+                        modifier = Modifier.size(40.dp),
+                        enabled = !isPlaying && clapCount > 1
+                    ) {
+                        Text("-", style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    Text(
+                        text = clapCount.toString(),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(48.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+
+                    FilledIconButton(
+                        onClick = { if (!isPlaying && clapCount < 9) clapCount++ },
+                        modifier = Modifier.size(40.dp),
+                        enabled = !isPlaying && clapCount < 9
+                    ) {
+                        Text("+", style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(s.speedSlow, style = MaterialTheme.typography.bodySmall)
+                    Slider(
+                        value = sliderPos,
+                        onValueChange = { if (!isPlaying) sliderPos = it },
+                        valueRange = 400f..2000f,
+                        modifier = Modifier.width(200.dp),
+                        enabled = !isPlaying
+                    )
+                    Text(s.speedFast, style = MaterialTheme.typography.bodySmall)
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    FilledIconButton(
+                        onClick = {
+                            if (isPlaying) return@FilledIconButton
+                            if (clapCount < 1) {
+                                completed = 0
+                                target = 0
+                                return@FilledIconButton
+                            }
+                            isPlaying = true
+                            completed = 0
+                            target = clapCount
+                            showCompletionMessage = false
+                            scope.launch { preferences.recordLessonCompletion() }
+                            scope.launch {
+                                val animDuration = (cycleTime() * 0.75f).toInt()
+                                val pauseDuration = (cycleTime() * 0.25f).toInt()
+                                for (i in 0 until clapCount) {
+                                    animationProgress.snapTo(0f)
+                                    animationProgress.animateTo(
+                                        targetValue = 1f,
+                                        animationSpec = tween(durationMillis = animDuration)
+                                    )
+                                    soundPool.play(clapSoundId, 1f, 1f, 1, 0, 1f)
+                                    animationProgress.snapTo(1f)
+                                    animationProgress.animateTo(
+                                        targetValue = 0f,
+                                        animationSpec = tween(durationMillis = animDuration)
+                                    )
+                                    completed++
+                                    if (i < clapCount - 1) {
+                                        delay(pauseDuration.toLong())
+                                    }
+                                }
+                                isPlaying = false
+                                onScoreChanged(currentScore + 2)
+                                showCompletionMessage = true
+                            }
+                        },
+                        modifier = Modifier.size(64.dp),
+                        shape = CircleShape,
+                        enabled = !isPlaying
+                    ) {
+                        Icon(
+                            Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+
+                    Text(
+                        text = "$completed / $target",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
+        if (showCompletionMessage) {
             Text(
-                text = s.clapReinforce,
+                text = s.clapCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp)
             )
-
-            Text(
-                text = s.clapInstructions,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Text(
-                text = s.clapSkinColorHint,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(3f)
-                        .offset(y = (-50).dp)
-                ) {
-                    val canvasW = 600f
-                    val canvasH = 600f
-                    val s = minOf(size.width / canvasW, size.height / canvasH) * 1.8f
-                    val cx = size.width * 0.5f + 70f * density
-                    val cy = size.height * 0.6f
-
-                    val restOff = 140f * s
-                    val prog = animationProgress.value
-
-                    val leftOff = -restOff + restOff * prog
-                    val rightOff = restOff - restOff * prog
-
-                    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = handColor.hashCode()
-                        style = Paint.Style.FILL
-                        strokeJoin = Paint.Join.ROUND
-                    }
-
-                    val leftMatrix = Matrix()
-                    leftMatrix.setTranslate(cx + leftOff, cy)
-                    leftMatrix.preScale(s, s)
-                    val left = Path()
-                    left.addPath(handPath, leftMatrix)
-                    drawContext.canvas.nativeCanvas.drawPath(left, paint)
-
-                    val rightMatrix = Matrix()
-                    rightMatrix.setTranslate(cx + rightOff, cy)
-                    rightMatrix.preScale(s, s)
-                    val right = Path()
-                    right.addPath(handPath, rightMatrix)
-                    drawContext.canvas.nativeCanvas.drawPath(right, paint)
-                }
-
-            Spacer(Modifier.height(20.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(s.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
-
-                FilledIconButton(
-                    onClick = { if (!isPlaying && clapCount > 1) clapCount-- },
-                    modifier = Modifier.size(40.dp),
-                    enabled = !isPlaying && clapCount > 1
-                ) {
-                    Text("-", style = MaterialTheme.typography.titleMedium)
-                }
-
-                Text(
-                    text = clapCount.toString(),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(48.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
-
-                FilledIconButton(
-                    onClick = { if (!isPlaying && clapCount < 9) clapCount++ },
-                    modifier = Modifier.size(40.dp),
-                    enabled = !isPlaying && clapCount < 9
-                ) {
-                    Text("+", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(s.speedSlow, style = MaterialTheme.typography.bodySmall)
-                Slider(
-                    value = sliderPos,
-                    onValueChange = { if (!isPlaying) sliderPos = it },
-                    valueRange = 400f..2000f,
-                    modifier = Modifier.width(200.dp),
-                    enabled = !isPlaying
-                )
-                Text(s.speedFast, style = MaterialTheme.typography.bodySmall)
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                FilledIconButton(
-                    onClick = {
-                        if (isPlaying) return@FilledIconButton
-                        if (clapCount < 1) {
-                            completed = 0
-                            target = 0
-                            return@FilledIconButton
-                        }
-                        isPlaying = true
-                        completed = 0
-                        target = clapCount
-                        showCompletionMessage = false
-                        scope.launch { preferences.recordLessonCompletion() }
-                        scope.launch {
-                            val animDuration = (cycleTime() * 0.75f).toInt()
-                            val pauseDuration = (cycleTime() * 0.25f).toInt()
-                            for (i in 0 until clapCount) {
-                                animationProgress.snapTo(0f)
-                                animationProgress.animateTo(
-                                    targetValue = 1f,
-                                    animationSpec = tween(durationMillis = animDuration)
-                                )
-                                soundPool.play(clapSoundId, 1f, 1f, 1, 0, 1f)
-                                animationProgress.snapTo(1f)
-                                animationProgress.animateTo(
-                                    targetValue = 0f,
-                                    animationSpec = tween(durationMillis = animDuration)
-                                )
-                                completed++
-                                if (i < clapCount - 1) {
-                                    delay(pauseDuration.toLong())
-                                }
-                            }
-                            isPlaying = false
-                            onScoreChanged(currentScore + 2)
-                            showCompletionMessage = true
-                        }
-                    },
-                    modifier = Modifier.size(64.dp),
-                    shape = CircleShape,
-                    enabled = !isPlaying
-                ) {
-                    Icon(
-                        Icons.Default.PlayArrow,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-
-                Text(
-                    text = "$completed / $target",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            if (showCompletionMessage) {
-                Text(
-                    text = s.clapCompletionMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E7D32),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                )
-            }
-
         }
     }
 }
