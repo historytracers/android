@@ -396,7 +396,7 @@ fun FeetAndHandsScreen(
                     strokeJoin = Paint.Join.ROUND
                 }
 
-                val footScale = s * (0.125f / 0.6f)
+                val footScale = s * (0.125f / 0.6f) * 0.7f
                 val footY = cy + 60f * s + 30f * density
                 val footBaseX = cx - 20f * density
                 val handY = cy - 200f * s - 140f * density
@@ -409,14 +409,14 @@ fun FeetAndHandsScreen(
 
                         val leftMatrix = Matrix()
                         leftMatrix.setTranslate(cx + leftOff, handY)
-                        leftMatrix.preScale(s, s)
+                        leftMatrix.preScale(s * 0.7f, s * 0.7f)
                         val left = Path()
                         left.addPath(handPath, leftMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                         val rightMatrix = Matrix()
                         rightMatrix.setTranslate(cx + rightOff, handY)
-                        rightMatrix.preScale(s, s)
+                        rightMatrix.preScale(s * 0.7f, s * 0.7f)
                         val right = Path()
                         right.addPath(handPath, rightMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
@@ -427,14 +427,14 @@ fun FeetAndHandsScreen(
 
                         val leftMatrix = Matrix()
                         leftMatrix.setTranslate(cx + leftOff, handY)
-                        leftMatrix.preScale(s, s)
+                        leftMatrix.preScale(s * 0.7f, s * 0.7f)
                         val left = Path()
                         left.addPath(handPath, leftMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                         val rightMatrix = Matrix()
                         rightMatrix.setTranslate(cx + rightOff, handY)
-                        rightMatrix.preScale(s, s)
+                        rightMatrix.preScale(s * 0.7f, s * 0.7f)
                         val right = Path()
                         right.addPath(handPath, rightMatrix)
                         drawContext.canvas.nativeCanvas.drawPath(right, paint)
