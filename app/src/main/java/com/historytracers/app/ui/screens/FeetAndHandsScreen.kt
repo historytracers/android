@@ -397,9 +397,9 @@ fun FeetAndHandsScreen(
                 }
 
                 val footScale = s * (0.125f / 0.6f) * 0.7f
-                val footY = cy + 60f * s + 30f * density
+                val footY = cy + 60f * s + 30f * density - 70f * density
                 val footBaseX = cx - 20f * density
-                val handY = cy - 200f * s - 140f * density
+                val handY = cy - 200f * s - 140f * density + 10f * density
 
                     if (mode == Mode.CLAP) {
                         val restOff = 120f * s
@@ -484,62 +484,67 @@ fun FeetAndHandsScreen(
             }
 
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.offset(y = (-90).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                        Slider(
+                            value = sliderPos,
+                            onValueChange = { if (!isPlaying) sliderPos = it },
+                            valueRange = 400f..2000f,
+                            modifier = Modifier.width(180.dp),
+                            enabled = !isPlaying
+                        )
+                        Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
+                        FilledIconButton(
+                            onClick = { if (!isPlaying && count > 1) count-- },
+                            modifier = Modifier.size(32.dp),
+                            enabled = !isPlaying && count > 1
+                        ) {
+                            Text("-", style = MaterialTheme.typography.titleSmall)
+                        }
+                        Text(
+                            text = count.toString(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.width(36.dp),
+                            textAlign = TextAlign.Center
+                        )
+                        FilledIconButton(
+                            onClick = { if (!isPlaying && count < 20) count++ },
+                            modifier = Modifier.size(32.dp),
+                            enabled = !isPlaying && count < 20
+                        ) {
+                            Text("+", style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
                 }
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(s.slowly, style = MaterialTheme.typography.bodySmall)
-                    Slider(
-                        value = sliderPos,
-                        onValueChange = { if (!isPlaying) sliderPos = it },
-                        valueRange = 400f..2000f,
-                        modifier = Modifier.width(180.dp),
-                        enabled = !isPlaying
-                    )
-                    Text(s.fast, style = MaterialTheme.typography.bodySmall)
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
-                    FilledIconButton(
-                        onClick = { if (!isPlaying && count > 1) count-- },
-                        modifier = Modifier.size(32.dp),
-                        enabled = !isPlaying && count > 1
-                    ) {
-                        Text("-", style = MaterialTheme.typography.titleSmall)
-                    }
-                    Text(
-                        text = count.toString(),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(36.dp),
-                        textAlign = TextAlign.Center
-                    )
-                    FilledIconButton(
-                        onClick = { if (!isPlaying && count < 20) count++ },
-                        modifier = Modifier.size(32.dp),
-                        enabled = !isPlaying && count < 20
-                    ) {
-                        Text("+", style = MaterialTheme.typography.titleSmall)
-                    }
-                }
+                Spacer(Modifier.height(8.dp))
             }
-
-            Spacer(Modifier.height(8.dp))
         }
     }
