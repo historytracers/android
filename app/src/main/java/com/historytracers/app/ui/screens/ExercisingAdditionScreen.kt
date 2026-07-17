@@ -339,15 +339,17 @@ fun ExercisingAdditionScreen(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             )
 
-            Text(
-                text = "${problem.nextValue}",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
-            )
+            if (problem.nextValue != 0) {
+                Text(
+                    text = "${problem.nextValue}",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                )
+            }
 
             Text(
                 text = "${problem.topValue}",
