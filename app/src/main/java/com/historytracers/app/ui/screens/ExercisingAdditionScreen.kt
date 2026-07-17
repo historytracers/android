@@ -524,7 +524,7 @@ fun ExercisingAdditionScreen(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = Modifier.offset(y = -50.dp).padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
