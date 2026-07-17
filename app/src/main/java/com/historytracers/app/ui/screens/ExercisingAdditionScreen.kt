@@ -205,6 +205,7 @@ fun ExercisingAdditionScreen(
     var sliderPos by remember { mutableFloatStateOf(1200f) }
     var stepIsLeft by remember { mutableStateOf(true) }
     var handsDown by remember { mutableStateOf(false) }
+    val additionTextStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = MaterialTheme.typography.headlineLarge.fontSize * 0.7f)
 
     fun cycleTime() = 2400f - sliderPos
 
@@ -351,8 +352,7 @@ fun ExercisingAdditionScreen(
                         Spacer(Modifier.width(36.dp))
                         Text(
                             text = "${problem.nextValue}",
-                            style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.Bold,
+                            style = additionTextStyle,
                             modifier = Modifier.width(32.dp),
                             textAlign = TextAlign.Center
                         )
@@ -364,8 +364,7 @@ fun ExercisingAdditionScreen(
                     Spacer(Modifier.width(32.dp))
                     Text(
                         text = "${problem.topValue}",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = additionTextStyle,
                         modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.Center
                     )
@@ -373,16 +372,14 @@ fun ExercisingAdditionScreen(
                 Row(Modifier.width(104.dp)) {
                     Text(
                         text = "+ ",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = additionTextStyle,
                         modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.End
                     )
                     Spacer(Modifier.width(32.dp))
                     Text(
                         text = "${problem.bottomValue}",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = additionTextStyle,
                         modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.Center
                     )
@@ -395,8 +392,7 @@ fun ExercisingAdditionScreen(
                     if (problem.result > 9) {
                         Text(
                             text = "${problem.result / 10}",
-                            style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.Bold,
+                            style = additionTextStyle,
                             modifier = Modifier.width(32.dp),
                             textAlign = TextAlign.Center
                         )
@@ -405,8 +401,7 @@ fun ExercisingAdditionScreen(
                     }
                     Text(
                         text = "${problem.result % 10}",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = additionTextStyle,
                         modifier = Modifier.width(36.dp),
                         textAlign = TextAlign.Center
                     )
