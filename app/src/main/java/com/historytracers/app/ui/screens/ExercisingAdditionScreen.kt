@@ -432,9 +432,9 @@ fun ExercisingAdditionScreen(
                     }
 
                     val footScale = s * (0.125f / 0.6f) * 0.7f
-                    val footY = cy + 60f * s + 30f * density - 70f * density
+                    val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density
                     val footBaseX = cx - 20f * density
-                    val handY = cy - 200f * s - 140f * density + 10f * density
+                    val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density
 
                     val restOff = 120f * s
                     val handDownOff = 58f * s * 0.7f
