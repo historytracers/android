@@ -223,7 +223,7 @@ fun AppNavigation() {
                         label = { Text(uiStrings.close) },
                         selected = false,
                         onClick = {
-                            (context as? android.app.Activity)?.finish()
+                            (context as? android.app.Activity)?.finishAndRemoveTask()
                         }
                     )
                 }
