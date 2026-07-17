@@ -339,52 +339,76 @@ fun ExercisingAdditionScreen(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             )
 
-            if (problem.nextValue != 0) {
-                Text(
-                    text = "${problem.nextValue}",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                )
-            }
-
-            Text(
-                text = "${problem.topValue}",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "+ ",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "${problem.bottomValue}",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                if (problem.nextValue != 0) {
+                    Row(Modifier.width(144.dp)) {
+                        Spacer(Modifier.width(56.dp))
+                        Text(
+                            text = "${problem.nextValue}",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.width(40.dp),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.width(48.dp))
+                    }
+                }
+                Row(Modifier.width(144.dp)) {
+                    Spacer(Modifier.width(56.dp))
+                    Spacer(Modifier.width(40.dp))
+                    Text(
+                        text = "${problem.topValue}",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(48.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Row(Modifier.width(144.dp)) {
+                    Text(
+                        text = "+ ",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(56.dp),
+                        textAlign = TextAlign.End
+                    )
+                    Spacer(Modifier.width(40.dp))
+                    Text(
+                        text = "${problem.bottomValue}",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(48.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Box(Modifier.width(144.dp).padding(start = 56.dp)) {
+                    Divider()
+                }
+                Row(Modifier.width(144.dp)) {
+                    Spacer(Modifier.width(56.dp))
+                    if (problem.result > 9) {
+                        Text(
+                            text = "${problem.result / 10}",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.width(40.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Spacer(Modifier.width(40.dp))
+                    }
+                    Text(
+                        text = "${problem.result % 10}",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(48.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-
-            Divider(modifier = Modifier.padding(horizontal = 80.dp))
-
-            Text(
-                text = "${problem.result}",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
 
             Box(
                 modifier = Modifier
