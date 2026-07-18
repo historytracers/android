@@ -38,7 +38,8 @@ fun WorkoutScreen(
     onNavigateToFeetAndHands: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToExercisingAddition: () -> Unit = {},
-    onNavigateToRelationship: () -> Unit = {}
+    onNavigateToRelationship: () -> Unit = {},
+    onNavigateToExercisingMultiplicationL2: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -409,7 +410,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = {},
+                onClick = onNavigateToExercisingMultiplicationL2,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
