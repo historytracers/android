@@ -196,7 +196,7 @@ fun ExercisingMultiplicationL2Screen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = s.exercisingMultiplicationL2,
+                text = s.exercisingMultiplicationL2Description,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
             )
