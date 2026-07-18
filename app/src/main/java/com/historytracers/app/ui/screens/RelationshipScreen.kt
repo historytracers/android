@@ -267,8 +267,8 @@ fun RelationshipScreen(
     }
 
     suspend fun animateHandHorizontalLeft(repetitions: Int) {
-        val duration = (cycleTime() * 0.35f).toInt()
-        val pause = (duration * 0.2f).toInt()
+        val duration = (cycleTime() * 0.5f).toInt()
+        val pause = (duration * 0.3f).toInt()
         handHorizontalIsLeft = true
         for (i in 0 until repetitions) {
             handHorizontalProgress.snapTo(0f)
@@ -280,8 +280,8 @@ fun RelationshipScreen(
     }
 
     suspend fun animateHandHorizontalRight(repetitions: Int) {
-        val duration = (cycleTime() * 0.35f).toInt()
-        val pause = (duration * 0.2f).toInt()
+        val duration = (cycleTime() * 0.5f).toInt()
+        val pause = (duration * 0.3f).toInt()
         handHorizontalIsLeft = false
         for (i in 0 until repetitions) {
             handHorizontalProgress.snapTo(0f)
@@ -305,8 +305,8 @@ fun RelationshipScreen(
     }
 
     suspend fun animateIsolatedStepLeft(repetitions: Int, showCounter: Boolean) {
-        val duration = (cycleTime() * 0.4f).toInt()
-        val pause = (duration * 0.4f).toInt()
+        val duration = (cycleTime() * 0.75f).toInt()
+        val pause = (cycleTime() * 0.25f).toInt()
         for (i in 0 until repetitions) {
             stepIsLeft = true
             footZoomProgress.snapTo(0f)
@@ -318,8 +318,8 @@ fun RelationshipScreen(
     }
 
     suspend fun animateIsolatedStepRight(repetitions: Int, showCounter: Boolean) {
-        val duration = (cycleTime() * 0.4f).toInt()
-        val pause = (duration * 0.4f).toInt()
+        val duration = (cycleTime() * 0.75f).toInt()
+        val pause = (cycleTime() * 0.25f).toInt()
         for (i in 0 until repetitions) {
             stepIsLeft = false
             footZoomProgress.snapTo(0f)
