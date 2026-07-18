@@ -189,15 +189,13 @@ fun RelationshipScreen(
     var jumpsCompleted by remember { mutableIntStateOf(0) }
     var sliderPos by remember { mutableFloatStateOf(1100f) }
     var stepIsLeft by remember { mutableStateOf(true) }
-    var handsAreDown by remember { mutableStateOf(false) }
     var firstGroupTwo by remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
     val clapProgress = remember { Animatable(0f) }
     val footZoomProgress = remember { Animatable(0f) }
-    val waveProgress = remember { Animatable(0f) }
-    val isolatedHandProgress = remember { Animatable(0f) }
-    var isolatedHandIsLeft by remember { mutableStateOf(true) }
+    val handHorizontalProgress = remember { Animatable(0f) }
+    var handHorizontalIsLeft by remember { mutableStateOf(true) }
 
     val clapCycleTime = 2400f - sliderPos
 
@@ -210,13 +208,11 @@ fun RelationshipScreen(
         clapCompleted = 0
         stepsCompleted = 0
         jumpsCompleted = 0
-        handsAreDown = false
         firstGroupTwo = true
         scope.launch {
             clapProgress.snapTo(0f)
             footZoomProgress.snapTo(0f)
-            waveProgress.snapTo(0f)
-            isolatedHandProgress.snapTo(0f)
+            handHorizontalProgress.snapTo(0f)
         }
     }
 
@@ -256,39 +252,27 @@ fun RelationshipScreen(
         }
     }
 
-    suspend fun animateWave(repetitions: Int) {
-        val duration = (cycleTime() * 0.45f).toInt()
-        val pause = (duration * 0.25f).toInt()
-        for (i in 0 until repetitions) {
-            waveProgress.snapTo(0f)
-            waveProgress.animateTo(1f, tween(duration))
-            waveProgress.snapTo(0f)
-            clapCompleted++
-            if (i < repetitions - 1) delay(pause.toLong())
-        }
-    }
-
-    suspend fun animateIsolatedHandLeft(repetitions: Int) {
+    suspend fun animateHandHorizontalLeft(repetitions: Int) {
         val duration = (cycleTime() * 0.35f).toInt()
         val pause = (duration * 0.2f).toInt()
-        isolatedHandIsLeft = true
+        handHorizontalIsLeft = true
         for (i in 0 until repetitions) {
-            isolatedHandProgress.snapTo(0f)
-            isolatedHandProgress.animateTo(1f, tween(duration))
-            isolatedHandProgress.snapTo(0f)
+            handHorizontalProgress.snapTo(0f)
+            handHorizontalProgress.animateTo(1f, tween(duration))
+            handHorizontalProgress.snapTo(0f)
             clapCompleted++
             if (i < repetitions - 1) delay(pause.toLong())
         }
     }
 
-    suspend fun animateIsolatedHandRight(repetitions: Int) {
+    suspend fun animateHandHorizontalRight(repetitions: Int) {
         val duration = (cycleTime() * 0.35f).toInt()
-        val pause = (duration * 0.4f).toInt()
-        isolatedHandIsLeft = false
+        val pause = (duration * 0.2f).toInt()
+        handHorizontalIsLeft = false
         for (i in 0 until repetitions) {
-            isolatedHandProgress.snapTo(0f)
-            isolatedHandProgress.animateTo(1f, tween(duration))
-            isolatedHandProgress.snapTo(0f)
+            handHorizontalProgress.snapTo(0f)
+            handHorizontalProgress.animateTo(1f, tween(duration))
+            handHorizontalProgress.snapTo(0f)
             clapCompleted++
             if (i < repetitions - 1) delay(pause.toLong())
         }
@@ -323,27 +307,21 @@ fun RelationshipScreen(
     suspend fun executeOneMult() {
         val reps = problem.topValue
         when (Random.nextInt(4)) {
-            0 -> animateIsolatedHandLeft(reps)
-            1 -> animateIsolatedHandRight(reps)
-            2 -> animateIsolatedStepLeft(reps, true)
-            else -> animateIsolatedStepRight(reps, true)
+            0 -> animateIsolatedStepLeft(reps, true)
+            1 -> animateIsolatedStepRight(reps, true)
+            2 -> animateHandHorizontalLeft(reps)
+            else -> animateHandHorizontalRight(reps)
         }
     }
 
     suspend fun executeTwoMult() {
         val reps = problem.topValue
-        val choose: Int
         if (firstGroupTwo) {
-            choose = Random.nextInt(1, 3)
+            animateClap(reps)
             firstGroupTwo = false
         } else {
-            choose = Random.nextInt(3, 5)
+            animateJump(reps)
             firstGroupTwo = true
-        }
-        when (choose) {
-            1 -> animateClap(reps)
-            2 -> animateJump(reps)
-            else -> animateWave(reps)
         }
     }
 
@@ -361,11 +339,11 @@ fun RelationshipScreen(
                 }
                 2 -> {
                     launch { animateJump(reps) }
-                    launch { animateIsolatedHandLeft(reps) }
+                    launch { animateIsolatedStepLeft(reps, true) }
                 }
                 else -> {
                     launch { animateJump(reps) }
-                    launch { animateIsolatedHandRight(reps) }
+                    launch { animateIsolatedStepRight(reps, true) }
                 }
             }
         }
@@ -387,7 +365,6 @@ fun RelationshipScreen(
             clapCompleted = 0
             stepsCompleted = 0
             jumpsCompleted = 0
-            handsAreDown = false
 
             executeMult()
 
@@ -489,54 +466,33 @@ fun RelationshipScreen(
                 val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density
 
                 val restOff = 120f * s
-                val handDownOff = 58f * s * 0.7f + 20f * density
                 val prog = clapProgress.value
-                val waveProg = waveProgress.value
-                val isolatedProg = isolatedHandProgress.value
+                val handHorizProg = handHorizontalProgress.value
 
                 val leftOff: Float
                 val rightOff: Float
-                val leftYOffHand: Float
-                val rightYOffHand: Float
 
-                if (handsAreDown) {
+                if (prog > 0f) {
                     leftOff = -restOff + restOff * prog
                     rightOff = restOff - restOff * prog
-                    leftYOffHand = handDownOff
-                    rightYOffHand = handDownOff
-                } else if (waveProg > 0f) {
-                    val waveOffset = 38f * s * waveProg
-                    leftOff = -restOff - waveOffset
-                    rightOff = restOff + waveOffset
-                    leftYOffHand = 0f
-                    rightYOffHand = 0f
-                } else if (isolatedProg > 0f) {
-                    val raiseOffset = 80f * s * isolatedProg
-                    leftOff = -restOff
-                    rightOff = restOff
-                    leftYOffHand = if (isolatedHandIsLeft) -raiseOffset else 0f
-                    rightYOffHand = if (!isolatedHandIsLeft) -raiseOffset else 0f
-                } else if (prog > 0f) {
-                    leftOff = -restOff + restOff * prog
-                    rightOff = restOff - restOff * prog
-                    leftYOffHand = 0f
-                    rightYOffHand = 0f
+                } else if (handHorizProg > 0f) {
+                    val horizOff = restOff * handHorizProg
+                    leftOff = if (handHorizontalIsLeft) -restOff - horizOff else -restOff
+                    rightOff = if (!handHorizontalIsLeft) restOff + horizOff else restOff
                 } else {
                     leftOff = -restOff
                     rightOff = restOff
-                    leftYOffHand = 0f
-                    rightYOffHand = 0f
                 }
 
                 val leftMatrix = Matrix()
-                leftMatrix.setTranslate(cx + leftOff, handY + leftYOffHand)
+                leftMatrix.setTranslate(cx + leftOff, handY)
                 leftMatrix.preScale(s * 0.7f, s * 0.7f)
                 val left = Path()
                 left.addPath(handPath, leftMatrix)
                 drawContext.canvas.nativeCanvas.drawPath(left, paint)
 
                 val rightMatrix = Matrix()
-                rightMatrix.setTranslate(cx + rightOff, handY + rightYOffHand)
+                rightMatrix.setTranslate(cx + rightOff, handY)
                 rightMatrix.preScale(s * 0.7f, s * 0.7f)
                 val right = Path()
                 right.addPath(handPath, rightMatrix)
