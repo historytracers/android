@@ -106,6 +106,7 @@ fun MultiplicationTableScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("multiplication_table")
             onScoreChanged(currentScore + 2)
         }
     }

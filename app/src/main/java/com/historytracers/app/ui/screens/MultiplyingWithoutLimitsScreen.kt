@@ -280,6 +280,7 @@ fun MultiplyingWithoutLimitsScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("multiplying_without_limits")
         }
     }
 

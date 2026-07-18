@@ -27,6 +27,7 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
@@ -102,7 +103,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("i_dont_know")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -134,7 +135,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("my_hands")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -166,7 +167,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("my_body")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -198,7 +199,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("drawing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -230,7 +231,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("numbers")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -262,7 +263,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("sequence_game")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -294,7 +295,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("family_part1")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -326,7 +327,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("building")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -358,7 +359,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("natural_families_part2")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -390,7 +391,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("going_to_infinity")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(

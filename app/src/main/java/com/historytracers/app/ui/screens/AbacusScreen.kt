@@ -23,6 +23,7 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
@@ -120,7 +121,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("history")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -149,7 +150,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("soroban_writing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -178,7 +179,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("suanpan_writing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -207,7 +208,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("large_numbers_writing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -272,7 +273,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("adding_two_numbers")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -304,7 +305,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("adding_large_numbers")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -333,7 +334,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -395,7 +396,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplication_table")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -427,7 +428,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("abacus_in_rereading")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -456,7 +457,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplying_with_abacus")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -485,7 +486,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplying_with_abacus_l2")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -514,7 +515,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplying_without_limits")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(

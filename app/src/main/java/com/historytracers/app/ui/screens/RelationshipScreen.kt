@@ -405,6 +405,8 @@ fun RelationshipScreen(
             isPlaying = false
             isDone = true
             onScoreChanged(currentScore + 2)
+            preferences.markWorkoutSectionCompleted("relationship")
+            preferences.markWorkoutSectionCompleted("exercising_multiplication")
             preferences.recordLessonCompletion()
         }
     }

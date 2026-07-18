@@ -31,6 +31,7 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
@@ -111,11 +112,13 @@ fun WorkoutScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    scope.launch { preferences.markWorkoutSectionCompleted("voice") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("voice")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Box(
@@ -159,7 +162,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_hands")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -184,11 +187,13 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    scope.launch { preferences.markWorkoutSectionCompleted("walking") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("walking")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -217,7 +222,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_feet_and_hands")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -275,11 +280,13 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    scope.launch { preferences.markWorkoutSectionCompleted("who_walk_first") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("who_walk_first")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -308,7 +315,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_addition")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -370,7 +377,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("relationship")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -399,7 +406,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_multiplication")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -457,7 +464,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_multiplication_l2")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Box(

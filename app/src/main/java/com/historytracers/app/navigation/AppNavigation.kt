@@ -447,10 +447,7 @@ fun AppNavigation() {
                                 }
                             },
                             currentScore = counter,
-                            onScoreChanged = { newScore ->
-                                counter = newScore
-                                scope.launch { preferences.markWorkoutSectionCompleted("exercising_hands") }
-                            }
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.FeetAndHands.route) {
@@ -465,10 +462,7 @@ fun AppNavigation() {
                                 }
                             },
                             currentScore = counter,
-                            onScoreChanged = { newScore ->
-                                counter = newScore
-                                scope.launch { preferences.markWorkoutSectionCompleted("exercising_feet_and_hands") }
-                            }
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.ExercisingAddition.route) {
@@ -483,10 +477,7 @@ fun AppNavigation() {
                                 }
                             },
                             currentScore = counter,
-                            onScoreChanged = { newScore ->
-                                counter = newScore
-                                scope.launch { preferences.markWorkoutSectionCompleted("exercising_addition") }
-                            }
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.Relationship.route) {
@@ -500,13 +491,7 @@ fun AppNavigation() {
                                 }
                             },
                             currentScore = counter,
-                            onScoreChanged = { newScore ->
-                                counter = newScore
-                                scope.launch {
-                                    preferences.markWorkoutSectionCompleted("relationship")
-                                    preferences.markWorkoutSectionCompleted("exercising_multiplication")
-                                }
-                            }
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.ExercisingMultiplicationL2.route) {
@@ -520,10 +505,7 @@ fun AppNavigation() {
                                 }
                             },
                             currentScore = counter,
-                            onScoreChanged = { newScore ->
-                                counter = newScore
-                                scope.launch { preferences.markWorkoutSectionCompleted("exercising_multiplication_l2") }
-                            }
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.PracticingAddition.route) {
