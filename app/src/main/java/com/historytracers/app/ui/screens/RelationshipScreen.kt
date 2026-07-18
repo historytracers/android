@@ -370,13 +370,13 @@ fun RelationshipScreen(
                     launch { animateClap(reps) }
                     launch { animateIsolatedStepRight(reps, true) }
                 }
-                2 -> {
+                        2 -> {
                     launch { animateJump(reps) }
-                    launch { animateIsolatedStepLeft(reps, true) }
+                    launch { animateHandHorizontalLeft(reps) }
                 }
                 else -> {
                     launch { animateJump(reps) }
-                    launch { animateIsolatedStepRight(reps, true) }
+                    launch { animateHandHorizontalRight(reps) }
                 }
             }
         }
