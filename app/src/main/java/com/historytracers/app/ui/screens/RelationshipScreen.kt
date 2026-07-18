@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -348,19 +349,25 @@ fun RelationshipScreen(
 
     suspend fun executeThreeMult() {
         val reps = problem.topValue
-        if (Random.nextBoolean()) {
-            animateWave(reps)
+        coroutineScope {
             if (Random.nextBoolean()) {
-                animateIsolatedStepLeft(reps, true)
+                launch { animateWave(reps) }
+                launch {
+                    if (Random.nextBoolean()) {
+                        animateIsolatedStepLeft(reps, true)
+                    } else {
+                        animateIsolatedStepRight(reps, true)
+                    }
+                }
             } else {
-                animateIsolatedStepRight(reps, true)
-            }
-        } else {
-            animateSteps(reps)
-            if (Random.nextBoolean()) {
-                animateIsolatedHandLeft(reps)
-            } else {
-                animateIsolatedHandRight(reps)
+                launch { animateSteps(reps) }
+                launch {
+                    if (Random.nextBoolean()) {
+                        animateIsolatedHandLeft(reps)
+                    } else {
+                        animateIsolatedHandRight(reps)
+                    }
+                }
             }
         }
     }
