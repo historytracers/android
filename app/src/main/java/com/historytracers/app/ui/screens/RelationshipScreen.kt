@@ -19,7 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -189,6 +191,7 @@ fun RelationshipScreen(
     var jumpsCompleted by remember { mutableIntStateOf(0) }
     var sliderPos by remember { mutableFloatStateOf(1100f) }
     var stepIsLeft by remember { mutableStateOf(true) }
+    var jumpActive by remember { mutableStateOf(false) }
     var lastOneChoice by remember { mutableIntStateOf(-1) }
     var lastTwoChoice by remember { mutableIntStateOf(-1) }
     var lastThreeChoice by remember { mutableIntStateOf(-1) }
@@ -198,6 +201,10 @@ fun RelationshipScreen(
     val footZoomProgress = remember { Animatable(0f) }
     val handHorizontalProgress = remember { Animatable(0f) }
     var handHorizontalIsLeft by remember { mutableStateOf(true) }
+    val handSpreadProgress = remember { Animatable(0f) }
+
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
 
     val clapCycleTime = 2400f - sliderPos
 
@@ -217,6 +224,7 @@ fun RelationshipScreen(
             clapProgress.snapTo(0f)
             footZoomProgress.snapTo(0f)
             handHorizontalProgress.snapTo(0f)
+            handSpreadProgress.snapTo(0f)
         }
     }
 
@@ -247,6 +255,7 @@ fun RelationshipScreen(
     suspend fun animateJump(repetitions: Int) {
         val duration = (cycleTime() * 0.5f).toInt()
         val pause = (duration * 0.3f).toInt()
+        jumpActive = true
         for (i in 0 until repetitions) {
             footZoomProgress.snapTo(0f)
             footZoomProgress.animateTo(1f, tween(duration))
@@ -254,6 +263,7 @@ fun RelationshipScreen(
             jumpsCompleted++
             if (i < repetitions - 1) delay(pause.toLong())
         }
+        jumpActive = false
     }
 
     suspend fun animateHandHorizontalLeft(repetitions: Int) {
@@ -277,6 +287,18 @@ fun RelationshipScreen(
             handHorizontalProgress.snapTo(0f)
             handHorizontalProgress.animateTo(1f, tween(duration))
             handHorizontalProgress.snapTo(0f)
+            clapCompleted++
+            if (i < repetitions - 1) delay(pause.toLong())
+        }
+    }
+
+    suspend fun animateHandSpread(repetitions: Int) {
+        val duration = (cycleTime() * 0.45f).toInt()
+        val pause = (duration * 0.2f).toInt()
+        for (i in 0 until repetitions) {
+            handSpreadProgress.snapTo(0f)
+            handSpreadProgress.animateTo(1f, tween(duration))
+            handSpreadProgress.snapTo(0f)
             clapCompleted++
             if (i < repetitions - 1) delay(pause.toLong())
         }
@@ -323,12 +345,13 @@ fun RelationshipScreen(
 
     suspend fun executeTwoMult() {
         val reps = problem.topValue
-        val options = (0..1).filter { it != lastTwoChoice }
+        val options = (0..2).filter { it != lastTwoChoice }
         val choice = options[Random.nextInt(options.size)]
         lastTwoChoice = choice
         when (choice) {
             0 -> animateClap(reps)
-            else -> animateJump(reps)
+            1 -> animateJump(reps)
+            else -> animateHandSpread(reps)
         }
     }
 
@@ -381,6 +404,7 @@ fun RelationshipScreen(
             isPlaying = false
             isDone = true
             onScoreChanged(currentScore + 2)
+            preferences.recordLessonCompletion()
         }
     }
 
@@ -478,6 +502,7 @@ fun RelationshipScreen(
                 val restOff = 120f * s
                 val prog = clapProgress.value
                 val handHorizProg = handHorizontalProgress.value
+                val handSpreadProg = handSpreadProgress.value
 
                 val leftOff: Float
                 val rightOff: Float
@@ -485,6 +510,10 @@ fun RelationshipScreen(
                 if (prog > 0f) {
                     leftOff = -restOff + restOff * prog
                     rightOff = restOff - restOff * prog
+                } else if (handSpreadProg > 0f) {
+                    val spreadOff = restOff * handSpreadProg
+                    leftOff = -restOff - spreadOff
+                    rightOff = restOff + spreadOff
                 } else if (handHorizProg > 0f) {
                     val horizOff = restOff * handHorizProg
                     leftOff = if (handHorizontalIsLeft) -restOff - horizOff else -restOff
@@ -531,8 +560,7 @@ fun RelationshipScreen(
                 val zoom = 1f + stepPhase * 0.1f
 
                 if (isPlaying && p > 0f) {
-                    val isJump = stepsCompleted == 0 && jumpsCompleted > 0
-                    if (isJump) {
+                    if (jumpActive) {
                         leftZoom = 1f + p * 0.08f
                         rightZoom = leftZoom
                         leftYOff = 0f
