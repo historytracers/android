@@ -189,7 +189,9 @@ fun RelationshipScreen(
     var jumpsCompleted by remember { mutableIntStateOf(0) }
     var sliderPos by remember { mutableFloatStateOf(1100f) }
     var stepIsLeft by remember { mutableStateOf(true) }
-    var firstGroupTwo by remember { mutableStateOf(true) }
+    var lastOneChoice by remember { mutableIntStateOf(-1) }
+    var lastTwoChoice by remember { mutableIntStateOf(-1) }
+    var lastThreeChoice by remember { mutableIntStateOf(-1) }
 
     val scope = rememberCoroutineScope()
     val clapProgress = remember { Animatable(0f) }
@@ -208,7 +210,9 @@ fun RelationshipScreen(
         clapCompleted = 0
         stepsCompleted = 0
         jumpsCompleted = 0
-        firstGroupTwo = true
+        lastOneChoice = -1
+        lastTwoChoice = -1
+        lastThreeChoice = -1
         scope.launch {
             clapProgress.snapTo(0f)
             footZoomProgress.snapTo(0f)
@@ -306,7 +310,10 @@ fun RelationshipScreen(
 
     suspend fun executeOneMult() {
         val reps = problem.topValue
-        when (Random.nextInt(4)) {
+        val options = (0..3).filter { it != lastOneChoice }
+        val choice = options[Random.nextInt(options.size)]
+        lastOneChoice = choice
+        when (choice) {
             0 -> animateIsolatedStepLeft(reps, true)
             1 -> animateIsolatedStepRight(reps, true)
             2 -> animateHandHorizontalLeft(reps)
@@ -316,19 +323,22 @@ fun RelationshipScreen(
 
     suspend fun executeTwoMult() {
         val reps = problem.topValue
-        if (firstGroupTwo) {
-            animateClap(reps)
-            firstGroupTwo = false
-        } else {
-            animateJump(reps)
-            firstGroupTwo = true
+        val options = (0..1).filter { it != lastTwoChoice }
+        val choice = options[Random.nextInt(options.size)]
+        lastTwoChoice = choice
+        when (choice) {
+            0 -> animateClap(reps)
+            else -> animateJump(reps)
         }
     }
 
     suspend fun executeThreeMult() {
         val reps = problem.topValue
+        val options = (0..3).filter { it != lastThreeChoice }
+        val choice = options[Random.nextInt(options.size)]
+        lastThreeChoice = choice
         coroutineScope {
-            when (Random.nextInt(4)) {
+            when (choice) {
                 0 -> {
                     launch { animateClap(reps) }
                     launch { animateIsolatedStepLeft(reps, true) }
