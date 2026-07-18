@@ -198,6 +198,8 @@ data class UiStrings(
     val clapCompletionMessage: String,
     val exercisingAdditionCompletionMessage: String,
     val relationship: String,
+    val exercisingMultiplication: String,
+    val thinking: String,
     val randomly: String,
 )
 
@@ -396,6 +398,8 @@ val EnStrings = UiStrings(
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
     relationship = "Relationship",
+    exercisingMultiplication = "Exercising Multiplication",
+    thinking = "Thinking",
     randomly = "Randomly",
 )
 
@@ -594,6 +598,8 @@ val PtStrings = UiStrings(
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espanhol (ES)",
     relationship = "Relacionamento",
+    exercisingMultiplication = "Exercitando Multiplicação",
+    thinking = "Pensando",
     randomly = "Aleatório",
 )
 
@@ -792,6 +798,8 @@ val EsStrings = UiStrings(
     langPtBr = "Portugu\u00e9s (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
     relationship = "Relaci\u00f3n",
+    exercisingMultiplication = "Ejercitando Multiplicaci\u00f3n",
+    thinking = "Pensando",
     randomly = "Aleatorio",
 )
 
