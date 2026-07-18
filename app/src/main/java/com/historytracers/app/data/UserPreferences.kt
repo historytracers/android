@@ -37,6 +37,7 @@ class UserPreferences(private val context: Context) {
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
+        private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -254,6 +255,16 @@ class UserPreferences(private val context: Context) {
             prefs[STREAK_COUNT_KEY] = if (missedSelectedDay) 1 else currentStreak + 1
             prefs[LAST_COMPLETED_DATE_KEY] = todayStr
             prefs[COMPLETED_DATES_KEY] = currentDates + todayStr
+        }
+    }
+
+    val claimedLevels: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
+    }
+
+    suspend fun markLevelClaimed(levelId: String) {
+        context.dataStore.edit { preferences ->
+            preferences[CLAIMED_LEVELS_KEY] = (preferences[CLAIMED_LEVELS_KEY] ?: emptySet()) + levelId
         }
     }
 }

@@ -29,6 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AbacusScreen(
     scrollState: ScrollState = rememberScrollState(),
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
@@ -68,6 +70,14 @@ fun AbacusScreen(
         group1Controller.syncFromPersisted(completedSections)
         group2Controller.syncFromPersisted(completedSections)
         group3Controller.syncFromPersisted(completedSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed(levelId) }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -222,7 +232,10 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("abacus_group1")
+                    onNavigateToCongratulation()
+                },
                 enabled = group1Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -345,7 +358,10 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("abacus_group2")
+                    onNavigateToCongratulation()
+                },
                 enabled = group2Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -523,7 +539,10 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("abacus_group3")
+                    onNavigateToCongratulation()
+                },
                 enabled = group3Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

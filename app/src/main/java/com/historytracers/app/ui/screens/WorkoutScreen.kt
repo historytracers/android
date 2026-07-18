@@ -32,10 +32,13 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutScreen(
     scrollState: ScrollState = rememberScrollState(),
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToClap: () -> Unit = {},
     onNavigateToFeetAndHands: () -> Unit = {},
@@ -48,6 +51,7 @@ fun WorkoutScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedWorkoutSections.collectAsState(initial = emptySet())
+    val scope = rememberCoroutineScope()
 
     val group1Controller = remember {
         LevelGroupController(
@@ -64,6 +68,14 @@ fun WorkoutScreen(
     LaunchedEffect(completedSections) {
         group1Controller.syncFromPersisted(completedSections)
         group2Controller.syncFromPersisted(completedSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed(levelId) }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -230,7 +242,10 @@ fun WorkoutScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("workout_group1")
+                    onNavigateToCongratulation()
+                },
                 enabled = group1Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -318,7 +333,10 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("workout_group2")
+                    onNavigateToCongratulation()
+                },
                 enabled = group2Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

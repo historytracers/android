@@ -33,6 +33,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun FirstStepsScreen(
     scrollState: ScrollState = rememberScrollState(),
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -50,6 +52,14 @@ fun FirstStepsScreen(
     }
     LaunchedEffect(completedSections) {
         controller.syncFromPersisted(completedSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimFirstStepsLevel() {
+        if ("first_steps" in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed("first_steps") }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -405,7 +415,10 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimFirstStepsLevel()
+                    onNavigateToCongratulation()
+                },
                 enabled = controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

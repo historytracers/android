@@ -274,6 +274,8 @@ fun AppNavigation() {
                     composable(Screen.FirstSteps.route) {
                         FirstStepsScreen(
                             scrollState = firstStepsScrollState,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -288,6 +290,8 @@ fun AppNavigation() {
                     composable(Screen.Workout.route) {
                         WorkoutScreen(
                             scrollState = workoutScrollState,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -307,6 +311,8 @@ fun AppNavigation() {
                     composable(Screen.Abacus.route) {
                         AbacusScreen(
                             scrollState = abacusScrollState,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
