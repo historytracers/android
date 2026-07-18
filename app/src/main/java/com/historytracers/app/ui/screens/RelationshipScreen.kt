@@ -492,7 +492,7 @@ fun RelationshipScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 val s = minOf(size.width / 600f, size.height / 600f)
-                val cx = size.width * 0.5f + 90f * density
+                val cx = size.width * 0.5f + 90f * density - 20f * density
                 val cy = size.height * 0.5f
 
                 val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
