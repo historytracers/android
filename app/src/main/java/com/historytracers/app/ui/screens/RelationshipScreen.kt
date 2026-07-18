@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -440,24 +441,24 @@ fun RelationshipScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(Modifier.width(44.dp))
+                Box(Modifier.width(35.dp))
                 Text(
                     text = "${problem.topValue}",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.width(44.dp),
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
+                    modifier = Modifier.width(35.dp),
                     textAlign = TextAlign.Center
                 )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(Modifier.width(44.dp), contentAlignment = Alignment.Center) {
-                    Text("×", style = MaterialTheme.typography.headlineLarge)
+                Box(Modifier.width(35.dp), contentAlignment = Alignment.Center) {
+                    Text("×", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp))
                 }
                 Text(
                     text = "${problem.bottomValue}",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.width(44.dp),
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
+                    modifier = Modifier.width(35.dp),
                     textAlign = TextAlign.Center
                 )
             }
@@ -465,12 +466,12 @@ fun RelationshipScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(Modifier.width(44.dp))
+                Box(Modifier.width(35.dp))
                 Text(
                     text = "${problem.result}",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(44.dp),
+                    modifier = Modifier.width(35.dp),
                     textAlign = TextAlign.Center
                 )
             }
