@@ -16,7 +16,7 @@ val DarkBackground = Color(0xFF1C1B1F)
 val LightBackground = Color(0xFFFFFBFE)
 
 val ButtonYellow = Color(0xFFFFF8E0)
-val ButtonYellowDark = Color(0xFFD4C490)
+val ButtonYellowDark = Color(0xFFFFD700)
 val OnButtonYellow = Color(0xFF333333)
 
 val SkinColorPalette = listOf(
