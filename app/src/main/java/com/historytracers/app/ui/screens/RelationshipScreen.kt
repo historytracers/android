@@ -350,23 +350,22 @@ fun RelationshipScreen(
     suspend fun executeThreeMult() {
         val reps = problem.topValue
         coroutineScope {
-            if (Random.nextBoolean()) {
-                launch { animateWave(reps) }
-                launch {
-                    if (Random.nextBoolean()) {
-                        animateIsolatedStepLeft(reps, true)
-                    } else {
-                        animateIsolatedStepRight(reps, true)
-                    }
+            when (Random.nextInt(4)) {
+                0 -> {
+                    launch { animateClap(reps) }
+                    launch { animateIsolatedStepLeft(reps, true) }
                 }
-            } else {
-                launch { animateSteps(reps) }
-                launch {
-                    if (Random.nextBoolean()) {
-                        animateIsolatedHandLeft(reps)
-                    } else {
-                        animateIsolatedHandRight(reps)
-                    }
+                1 -> {
+                    launch { animateClap(reps) }
+                    launch { animateIsolatedStepRight(reps, true) }
+                }
+                2 -> {
+                    launch { animateJump(reps) }
+                    launch { animateIsolatedHandLeft(reps) }
+                }
+                else -> {
+                    launch { animateJump(reps) }
+                    launch { animateIsolatedHandRight(reps) }
                 }
             }
         }
@@ -569,8 +568,8 @@ fun RelationshipScreen(
                 val zoom = 1f + stepPhase * 0.1f
 
                 if (isPlaying && p > 0f) {
-                    val isJump = stepsCompleted == 0 && jumpsCompleted > 0 && selectedTable == 2
-                    if (isJump || selectedTable == 2) {
+                    val isJump = stepsCompleted == 0 && jumpsCompleted > 0
+                    if (isJump) {
                         leftZoom = 1f + p * 0.08f
                         rightZoom = leftZoom
                         leftYOff = 0f
