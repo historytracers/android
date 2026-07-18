@@ -11,3 +11,12 @@
 - Never hardcode user-facing strings in composables. Always use `s.` from `LocalUiStrings.current` (the `UiStrings` data class).
 - When adding new UI text, add a new field to `UiStrings` in `app/src/main/java/com/historytracers/app/ui/UiStrings.kt` and provide translations for all three locales: English (`EnStrings`), Portuguese (`PtStrings`), and Spanish (`EsStrings`).
 - Brand names that are identical across languages (e.g., "Patreon", "PayPal") still need entries in `UiStrings` for consistency — use the same name in all three locales.
+
+## Level Group Controllers
+
+- Every Principal screen (hub screen listing exercises before "Next Level" buttons) must use `LevelGroupController` to gate the "Next Level" flag buttons.
+- Create one `LevelGroupController` per level group (the items before each "Next Level" button).
+- Add the corresponding section completion key (`workout_sections`, `first_steps_sections`, `abacus_sections`) to `UserPreferences.kt` with a `stringSetPreferencesKey`.
+- Add a `Flow<Set<String>>` getter and a `suspend fun mark[Screen]SectionCompleted(section: String)` setter in `UserPreferences.kt`.
+- In the hub screen: collect the flow, create controllers via `remember { LevelGroupController(sectionIds, completedSections) }`, sync via `LaunchedEffect(completedSections)`, and add `enabled = controller.allCompleted` to the flag button.
+- Each section's `onClick` must call `controller.markCompleted(id)` and `scope.launch { preferences.mark[Screen]SectionCompleted(id) }`.

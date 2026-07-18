@@ -21,11 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -42,6 +45,26 @@ fun WorkoutScreen(
     onNavigateToExercisingMultiplicationL2: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedWorkoutSections.collectAsState(initial = emptySet())
+
+    val group1Controller = remember {
+        LevelGroupController(
+            listOf("voice", "exercising_hands", "walking", "exercising_feet_and_hands"),
+            completedSections
+        )
+    }
+    val group2Controller = remember {
+        LevelGroupController(
+            listOf("who_walk_first", "exercising_addition"),
+            completedSections
+        )
+    }
+    LaunchedEffect(completedSections) {
+        group1Controller.syncFromPersisted(completedSections)
+        group2Controller.syncFromPersisted(completedSections)
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -208,6 +231,7 @@ fun WorkoutScreen(
 
             FilledIconButton(
                 onClick = onNavigateToCongratulation,
+                enabled = group1Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -295,6 +319,7 @@ fun WorkoutScreen(
 
             FilledIconButton(
                 onClick = onNavigateToCongratulation,
+                enabled = group2Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

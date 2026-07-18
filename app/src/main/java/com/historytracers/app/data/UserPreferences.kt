@@ -34,6 +34,9 @@ class UserPreferences(private val context: Context) {
         private val FIRST_STEPS_SCROLL_KEY = intPreferencesKey("first_steps_scroll")
         private val WORKOUT_SCROLL_KEY = intPreferencesKey("workout_scroll")
         private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
+        private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
+        private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
+        private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
@@ -193,6 +196,36 @@ class UserPreferences(private val context: Context) {
     suspend fun setAbacusScroll(value: Int) {
         context.dataStore.edit { preferences ->
             preferences[ABACUS_SCROLL_KEY] = value
+        }
+    }
+
+    val completedWorkoutSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[WORKOUT_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markWorkoutSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[WORKOUT_SECTIONS_KEY] = (preferences[WORKOUT_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedFirstStepsSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[FIRST_STEPS_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markFirstStepsSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[FIRST_STEPS_SECTIONS_KEY] = (preferences[FIRST_STEPS_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedAbacusSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[ABACUS_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markAbacusSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[ABACUS_SECTIONS_KEY] = (preferences[ABACUS_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 

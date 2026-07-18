@@ -13,14 +13,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
 
 @Composable
 fun AbacusScreen(
@@ -37,6 +41,34 @@ fun AbacusScreen(
     onNavigateToMultiplyingWithoutLimits: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedAbacusSections.collectAsState(initial = emptySet())
+    val scope = rememberCoroutineScope()
+
+    val group1Controller = remember {
+        LevelGroupController(
+            listOf("history", "soroban_writing", "suanpan_writing", "large_numbers_writing"),
+            completedSections
+        )
+    }
+    val group2Controller = remember {
+        LevelGroupController(
+            listOf("adding_two_numbers", "adding_large_numbers", "practicing_addition"),
+            completedSections
+        )
+    }
+    val group3Controller = remember {
+        LevelGroupController(
+            listOf("multiplication_table", "abacus_in_rereading", "multiplying_with_abacus", "multiplying_with_abacus_l2", "multiplying_without_limits"),
+            completedSections
+        )
+    }
+    LaunchedEffect(completedSections) {
+        group1Controller.syncFromPersisted(completedSections)
+        group2Controller.syncFromPersisted(completedSections)
+        group3Controller.syncFromPersisted(completedSections)
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -71,7 +103,10 @@ fun AbacusScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    group1Controller.markCompleted("history")
+                    scope.launch { preferences.markAbacusSectionCompleted("history") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -188,6 +223,7 @@ fun AbacusScreen(
 
             FilledIconButton(
                 onClick = onNavigateToCongratulation,
+                enabled = group1Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -216,7 +252,10 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    group2Controller.markCompleted("adding_two_numbers")
+                    scope.launch { preferences.markAbacusSectionCompleted("adding_two_numbers") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -245,7 +284,10 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    group2Controller.markCompleted("adding_large_numbers")
+                    scope.launch { preferences.markAbacusSectionCompleted("adding_large_numbers") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -304,6 +346,7 @@ fun AbacusScreen(
 
             FilledIconButton(
                 onClick = onNavigateToCongratulation,
+                enabled = group2Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -361,7 +404,10 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {},
+                onClick = {
+                    group3Controller.markCompleted("abacus_in_rereading")
+                    scope.launch { preferences.markAbacusSectionCompleted("abacus_in_rereading") }
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -478,6 +524,7 @@ fun AbacusScreen(
 
             FilledIconButton(
                 onClick = onNavigateToCongratulation,
+                enabled = group3Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
