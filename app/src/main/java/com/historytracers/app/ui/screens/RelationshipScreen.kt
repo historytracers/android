@@ -442,7 +442,7 @@ fun RelationshipScreen(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
             )
 
-            Spacer(Modifier.height(118.dp))
+            Spacer(Modifier.height(8.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -502,9 +502,9 @@ fun RelationshipScreen(
                 }
 
                 val footScale = s * (0.125f / 0.6f) * 0.7f
-                val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density + 20f * density
+                val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density + 20f * density - 70f * density
                 val footBaseX = cx - 20f * density
-                val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density
+                val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density - 70f * density
 
                 val restOff = 120f * s
                 val prog = clapProgress.value
