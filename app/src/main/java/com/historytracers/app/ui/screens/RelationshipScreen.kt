@@ -189,7 +189,6 @@ fun RelationshipScreen(
     var sliderPos by remember { mutableFloatStateOf(1100f) }
     var stepIsLeft by remember { mutableStateOf(true) }
     var handsAreDown by remember { mutableStateOf(false) }
-    var firstGroupOne by remember { mutableStateOf(true) }
     var firstGroupTwo by remember { mutableStateOf(true) }
     var firstGroupThree by remember { mutableStateOf(true) }
 
@@ -197,6 +196,8 @@ fun RelationshipScreen(
     val clapProgress = remember { Animatable(0f) }
     val footZoomProgress = remember { Animatable(0f) }
     val waveProgress = remember { Animatable(0f) }
+    val isolatedHandProgress = remember { Animatable(0f) }
+    var isolatedHandIsLeft by remember { mutableStateOf(true) }
 
     val clapCycleTime = 2400f - sliderPos
 
@@ -210,13 +211,13 @@ fun RelationshipScreen(
         stepsCompleted = 0
         jumpsCompleted = 0
         handsAreDown = false
-        firstGroupOne = true
         firstGroupTwo = true
         firstGroupThree = true
         scope.launch {
             clapProgress.snapTo(0f)
             footZoomProgress.snapTo(0f)
             waveProgress.snapTo(0f)
+            isolatedHandProgress.snapTo(0f)
         }
     }
 
@@ -271,10 +272,11 @@ fun RelationshipScreen(
     suspend fun animateIsolatedHandLeft(repetitions: Int) {
         val duration = (cycleTime() * 0.35f).toInt()
         val pause = (duration * 0.2f).toInt()
+        isolatedHandIsLeft = true
         for (i in 0 until repetitions) {
-            clapProgress.snapTo(0f)
-            clapProgress.animateTo(1f, tween(duration))
-            clapProgress.snapTo(0f)
+            isolatedHandProgress.snapTo(0f)
+            isolatedHandProgress.animateTo(1f, tween(duration))
+            isolatedHandProgress.snapTo(0f)
             clapCompleted++
             if (i < repetitions - 1) delay(pause.toLong())
         }
@@ -283,10 +285,11 @@ fun RelationshipScreen(
     suspend fun animateIsolatedHandRight(repetitions: Int) {
         val duration = (cycleTime() * 0.35f).toInt()
         val pause = (duration * 0.4f).toInt()
+        isolatedHandIsLeft = false
         for (i in 0 until repetitions) {
-            clapProgress.snapTo(0f)
-            clapProgress.animateTo(1f, tween(duration))
-            clapProgress.snapTo(0f)
+            isolatedHandProgress.snapTo(0f)
+            isolatedHandProgress.animateTo(1f, tween(duration))
+            isolatedHandProgress.snapTo(0f)
             clapCompleted++
             if (i < repetitions - 1) delay(pause.toLong())
         }
@@ -320,18 +323,10 @@ fun RelationshipScreen(
 
     suspend fun executeOneMult() {
         val reps = problem.topValue
-        val choose: Int
-        if (firstGroupOne) {
-            choose = Random.nextInt(1, 3)
-            firstGroupOne = false
-        } else {
-            choose = Random.nextInt(3, 5)
-            firstGroupOne = true
-        }
-        when (choose) {
-            1 -> animateIsolatedHandLeft(reps)
-            2 -> animateIsolatedHandRight(reps)
-            3 -> animateIsolatedStepLeft(reps, true)
+        when (Random.nextInt(4)) {
+            0 -> animateIsolatedHandLeft(reps)
+            1 -> animateIsolatedHandRight(reps)
+            2 -> animateIsolatedStepLeft(reps, true)
             else -> animateIsolatedStepRight(reps, true)
         }
     }
@@ -489,6 +484,7 @@ fun RelationshipScreen(
                 val handDownOff = 58f * s * 0.7f + 20f * density
                 val prog = clapProgress.value
                 val waveProg = waveProgress.value
+                val isolatedProg = isolatedHandProgress.value
 
                 val leftOff: Float
                 val rightOff: Float
@@ -506,6 +502,12 @@ fun RelationshipScreen(
                     rightOff = restOff + waveOffset
                     leftYOffHand = 0f
                     rightYOffHand = 0f
+                } else if (isolatedProg > 0f) {
+                    val raiseOffset = 80f * s * isolatedProg
+                    leftOff = -restOff
+                    rightOff = restOff
+                    leftYOffHand = if (isolatedHandIsLeft) -raiseOffset else 0f
+                    rightYOffHand = if (!isolatedHandIsLeft) -raiseOffset else 0f
                 } else if (prog > 0f) {
                     leftOff = -restOff + restOff * prog
                     rightOff = restOff - restOff * prog
