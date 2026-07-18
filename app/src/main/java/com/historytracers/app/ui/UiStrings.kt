@@ -200,6 +200,7 @@ data class UiStrings(
     val relationship: String,
     val exercisingMultiplication: String,
     val thinking: String,
+    val exercisingMultiplicationL2: String,
     val randomly: String,
 )
 
@@ -400,6 +401,7 @@ val EnStrings = UiStrings(
     relationship = "Relationship",
     exercisingMultiplication = "Exercising Multiplication",
     thinking = "Thinking",
+    exercisingMultiplicationL2 = "Exercising Multiplication (L2)",
     randomly = "Randomly",
 )
 
@@ -600,6 +602,7 @@ val PtStrings = UiStrings(
     relationship = "Relacionamento",
     exercisingMultiplication = "Exercitando Multiplicação",
     thinking = "Pensando",
+    exercisingMultiplicationL2 = "Exercitando Multiplicação (L2)",
     randomly = "Aleatório",
 )
 
@@ -800,6 +803,7 @@ val EsStrings = UiStrings(
     relationship = "Relaci\u00f3n",
     exercisingMultiplication = "Ejercitando Multiplicaci\u00f3n",
     thinking = "Pensando",
+    exercisingMultiplicationL2 = "Ejercitando Multiplicaci\u00f3n (L2)",
     randomly = "Aleatorio",
 )
 
