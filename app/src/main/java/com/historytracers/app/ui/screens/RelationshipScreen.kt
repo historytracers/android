@@ -427,25 +427,22 @@ fun RelationshipScreen(
             Spacer(Modifier.height(8.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row { Spacer(Modifier.width(36.dp)) }
-                Row(verticalAlignment = Alignment.Bottom) {
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = "${problem.topValue}",
-                        style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier.width(44.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Box(Modifier.width(44.dp))
+                Text(
+                    text = "${problem.topValue}",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.width(44.dp),
+                    textAlign = TextAlign.Center
+                )
             }
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("×", style = MaterialTheme.typography.headlineLarge)
+                Box(Modifier.width(44.dp), contentAlignment = Alignment.Center) {
+                    Text("×", style = MaterialTheme.typography.headlineLarge)
+                }
                 Text(
                     text = "${problem.bottomValue}",
                     style = MaterialTheme.typography.headlineLarge,
@@ -455,14 +452,14 @@ fun RelationshipScreen(
             }
             Box(Modifier.width(120.dp)) { Divider(thickness = 4.dp) }
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row { Spacer(Modifier.width(36.dp)) }
+                Box(Modifier.width(44.dp))
                 Text(
                     text = "${problem.result}",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
+                    modifier = Modifier.width(44.dp),
                     textAlign = TextAlign.Center
                 )
             }
@@ -601,7 +598,8 @@ fun RelationshipScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.offset(y = (-20).dp)
             ) {
                 Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
 
@@ -646,7 +644,8 @@ fun RelationshipScreen(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.offset(y = (-20).dp)
             ) {
                 Text(s.slowly, style = MaterialTheme.typography.bodySmall)
                 Slider(
