@@ -436,6 +436,12 @@ fun RelationshipScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = s.relationshipReinforce,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+            )
+
             Spacer(Modifier.height(118.dp))
 
             Row(
