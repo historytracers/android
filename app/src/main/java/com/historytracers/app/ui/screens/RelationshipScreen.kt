@@ -436,7 +436,7 @@ fun RelationshipScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(118.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
