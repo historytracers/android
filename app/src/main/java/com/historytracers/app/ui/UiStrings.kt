@@ -198,6 +198,10 @@ data class UiStrings(
     val clapCompletionMessage: String,
     val exercisingAdditionCompletionMessage: String,
     val relationship: String,
+    val exercisingMultiplication: String,
+    val thinking: String,
+    val exercisingMultiplicationL2: String,
+    val exercisingMultiplicationL2Description: String,
     val randomly: String,
 )
 
@@ -396,6 +400,10 @@ val EnStrings = UiStrings(
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
     relationship = "Relationship",
+    exercisingMultiplication = "Exercising Multiplication",
+    thinking = "Thinking",
+    exercisingMultiplicationL2 = "Exercising Multiplication (L2)",
+    exercisingMultiplicationL2Description = "In this exercise, the 4 times table means both hands go up and down. The 5 times table adds a clap after the hands go up and down.\n\nThe up and down movement of both hands also shows that 4 is a multiple of 2, since the 2 movements (up and down) result in 4 total movements.\n\nSelect the multiplication table above, adjust the speed, and click \"Do Exercise\" to start. Try to do the movements with your own body as well!",
     randomly = "Randomly",
 )
 
@@ -594,6 +602,10 @@ val PtStrings = UiStrings(
     langPtBr = "Portugu\u00eas (BR)",
     langEsEs = "Espanhol (ES)",
     relationship = "Relacionamento",
+    exercisingMultiplication = "Exercitando Multiplicação",
+    thinking = "Pensando",
+    exercisingMultiplicationL2 = "Exercitando Multiplicação (L2)",
+    exercisingMultiplicationL2Description = "Neste exercício, a tabuada do 4 significa que ambas as mãos sobem e descem. A tabuada do 5 adiciona uma palma após as mãos subirem e descerem.\n\nO movimento de subir e descer de ambas as mãos também mostra que 4 é um múltiplo de 2, já que os 2 movimentos (subir e descer) resultam em 4 movimentos no total.\n\nSelecione a tabuada acima, ajuste a velocidade e clique em \"Fazer Exercício\" para começar. Tente fazer os movimentos com seu próprio corpo também!",
     randomly = "Aleatório",
 )
 
@@ -792,6 +804,10 @@ val EsStrings = UiStrings(
     langPtBr = "Portugu\u00e9s (BR)",
     langEsEs = "Espa\u00f1ol (ES)",
     relationship = "Relaci\u00f3n",
+    exercisingMultiplication = "Ejercitando Multiplicaci\u00f3n",
+    thinking = "Pensando",
+    exercisingMultiplicationL2 = "Ejercitando Multiplicaci\u00f3n (L2)",
+    exercisingMultiplicationL2Description = "En este ejercicio, la tabla del 4 significa que ambas manos suben y bajan. La tabla del 5 a\u00f1ade un aplauso despu\u00e9s de que las manos suban y bajen.\n\nEl movimiento de subir y bajar de ambas manos tambi\u00e9n muestra que 4 es un m\u00faltiplo de 2, ya que los 2 movimientos (subir y bajar) resultan en 4 movimientos en total.\n\nSelecciona la tabla arriba, ajusta la velocidad y haz clic en \"Hacer Ejercicio\" para comenzar. \u00a1Intenta hacer los movimientos con tu propio cuerpo tambi\u00e9n!",
     randomly = "Aleatorio",
 )
 

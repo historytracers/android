@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.PanTool
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,7 +38,8 @@ fun WorkoutScreen(
     onNavigateToFeetAndHands: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToExercisingAddition: () -> Unit = {},
-    onNavigateToRelationship: () -> Unit = {}
+    onNavigateToRelationship: () -> Unit = {},
+    onNavigateToExercisingMultiplicationL2: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -321,7 +323,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = onNavigateToRelationship,
+                onClick = {},
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -340,6 +342,105 @@ fun WorkoutScreen(
 
             Text(
                 text = s.relationship,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToRelationship,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_person_arms_up),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Unspecified
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.exercisingMultiplication,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            FilledIconButton(
+                onClick = {},
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Icon(
+                    Icons.Default.Psychology,
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Unspecified
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.thinking,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToExercisingMultiplicationL2,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Box(
+                    modifier = Modifier.size(52.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_person_arms_up),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                    Text(
+                        text = "2",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.exercisingMultiplicationL2,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
