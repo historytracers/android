@@ -599,7 +599,7 @@ fun RelationshipScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.offset(y = (-20).dp)
+                modifier = Modifier.offset(y = (-40).dp)
             ) {
                 Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
 
@@ -645,7 +645,7 @@ fun RelationshipScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.offset(y = (-20).dp)
+                modifier = Modifier.offset(y = (-40).dp)
             ) {
                 Text(s.slowly, style = MaterialTheme.typography.bodySmall)
                 Slider(
@@ -660,7 +660,8 @@ fun RelationshipScreen(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.offset(y = (-20).dp)
             ) {
                 FilledTonalButton(
                     onClick = { newMultiplication() },
