@@ -190,7 +190,6 @@ fun RelationshipScreen(
     var stepIsLeft by remember { mutableStateOf(true) }
     var handsAreDown by remember { mutableStateOf(false) }
     var firstGroupTwo by remember { mutableStateOf(true) }
-    var firstGroupThree by remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
     val clapProgress = remember { Animatable(0f) }
@@ -212,7 +211,6 @@ fun RelationshipScreen(
         jumpsCompleted = 0
         handsAreDown = false
         firstGroupTwo = true
-        firstGroupThree = true
         scope.launch {
             clapProgress.snapTo(0f)
             footZoomProgress.snapTo(0f)
@@ -350,13 +348,20 @@ fun RelationshipScreen(
 
     suspend fun executeThreeMult() {
         val reps = problem.topValue
-        animateWave(reps)
-        if (firstGroupThree) {
-            animateIsolatedStepLeft(reps, false)
-            firstGroupThree = false
+        if (Random.nextBoolean()) {
+            animateWave(reps)
+            if (Random.nextBoolean()) {
+                animateIsolatedStepLeft(reps, true)
+            } else {
+                animateIsolatedStepRight(reps, true)
+            }
         } else {
-            animateIsolatedStepRight(reps, false)
-            firstGroupThree = true
+            animateSteps(reps)
+            if (Random.nextBoolean()) {
+                animateIsolatedHandLeft(reps)
+            } else {
+                animateIsolatedHandRight(reps)
+            }
         }
     }
 
