@@ -260,7 +260,7 @@ fun ExercisingMultiplicationL2Screen(
                     strokeJoin = Paint.Join.ROUND
                 }
 
-                val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density - 70f * density + 30f * density
+                val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density - 70f * density + 30f * density + 30f * density + 30f * density
                 val restOff = 120f * s
                 val upDownProg = handUpDownProgress.value
                 val clapProg = clapProgress.value
