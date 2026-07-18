@@ -32,6 +32,8 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
@@ -255,7 +257,8 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("workout_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(
@@ -348,7 +351,8 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("workout_group2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(

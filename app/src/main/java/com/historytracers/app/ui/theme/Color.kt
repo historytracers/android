@@ -17,6 +17,8 @@ val LightBackground = Color(0xFFFFFBFE)
 
 val ButtonYellow = Color(0xFFFFF8E0)
 val ButtonYellowDark = Color(0xFFFFD700)
+val FlagBlueLight = Color(0xFFB9F2FF)
+val FlagBlueDark = Color(0xFF00B7EB)
 val OnButtonYellow = Color(0xFF333333)
 
 val SkinColorPalette = listOf(
