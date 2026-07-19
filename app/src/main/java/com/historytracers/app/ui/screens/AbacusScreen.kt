@@ -53,19 +53,19 @@ fun AbacusScreen(
 
     val group1Controller = remember {
         LevelGroupController(
-            listOf("history", "soroban_writing", "suanpan_writing", "large_numbers_writing"),
+            listOf("soroban_writing", "suanpan_writing", "large_numbers_writing"),
             completedSections
         )
     }
     val group2Controller = remember {
         LevelGroupController(
-            listOf("adding_two_numbers", "adding_large_numbers", "practicing_addition"),
+            listOf("practicing_addition"),
             completedSections
         )
     }
     val group3Controller = remember {
         LevelGroupController(
-            listOf("multiplication_table", "abacus_in_rereading", "multiplying_with_abacus", "multiplying_with_abacus_l2", "multiplying_without_limits"),
+            listOf("multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_l2", "multiplying_without_limits"),
             completedSections
         )
     }
@@ -116,10 +116,7 @@ fun AbacusScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = {
-                    group1Controller.markCompleted("history")
-                    scope.launch { preferences.markAbacusSectionCompleted("history") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -269,10 +266,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    group2Controller.markCompleted("adding_two_numbers")
-                    scope.launch { preferences.markAbacusSectionCompleted("adding_two_numbers") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -301,10 +295,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    group2Controller.markCompleted("adding_large_numbers")
-                    scope.launch { preferences.markAbacusSectionCompleted("adding_large_numbers") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -425,10 +416,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    group3Controller.markCompleted("abacus_in_rereading")
-                    scope.launch { preferences.markAbacusSectionCompleted("abacus_in_rereading") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

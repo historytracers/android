@@ -58,13 +58,13 @@ fun WorkoutScreen(
 
     val group1Controller = remember {
         LevelGroupController(
-            listOf("voice", "exercising_hands", "walking", "exercising_feet_and_hands"),
+            listOf("exercising_hands", "exercising_feet_and_hands"),
             completedSections
         )
     }
     val group2Controller = remember {
         LevelGroupController(
-            listOf("who_walk_first", "exercising_addition"),
+            listOf("exercising_addition"),
             completedSections
         )
     }
@@ -114,13 +114,11 @@ fun WorkoutScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = {
-                    scope.launch { preferences.markWorkoutSectionCompleted("voice") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("voice")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Box(
@@ -189,13 +187,11 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = {
-                    scope.launch { preferences.markWorkoutSectionCompleted("walking") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("walking")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Icon(
@@ -283,13 +279,11 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = {
-                    scope.launch { preferences.markWorkoutSectionCompleted("who_walk_first") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("who_walk_first")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Text(

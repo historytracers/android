@@ -98,10 +98,7 @@ fun FirstStepsScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("i_dont_know")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("i_dont_know") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -130,10 +127,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("my_hands")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("my_hands") }
-                },
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
