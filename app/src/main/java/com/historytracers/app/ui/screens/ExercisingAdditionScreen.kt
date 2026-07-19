@@ -1,18 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.media.AudioAttributes
 import android.media.SoundPool
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -22,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -207,6 +215,8 @@ fun ExercisingAdditionScreen(
     var sliderPos by remember { mutableFloatStateOf(1200f) }
     var stepIsLeft by remember { mutableStateOf(true) }
     var handsDown by remember { mutableStateOf(false) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
     val additionTextStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = MaterialTheme.typography.headlineLarge.fontSize * 0.7f)
 
     fun cycleTime() = 2400f - sliderPos
@@ -600,6 +610,72 @@ fun ExercisingAdditionScreen(
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 10.dp)
             )
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
+        ) {
+            val uriHandler = LocalUriHandler.current
+            val context = LocalContext.current
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = s.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.mainText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=48f8f1cd-5036-4140-aafc-697963fe5dfb"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=48f8f1cd-5036-4140-aafc-697963fe5dfb")
+                    }
+                )
+            }
         }
     }
 }
