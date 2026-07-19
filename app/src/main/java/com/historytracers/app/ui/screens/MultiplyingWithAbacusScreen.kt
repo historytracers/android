@@ -179,6 +179,7 @@ fun MultiplyingWithAbacusScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("multiplying_with_abacus")
         }
     }
 

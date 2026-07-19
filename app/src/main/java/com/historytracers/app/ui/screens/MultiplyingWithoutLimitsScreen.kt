@@ -280,6 +280,7 @@ fun MultiplyingWithoutLimitsScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("multiplying_without_limits")
         }
     }
 
@@ -590,7 +591,7 @@ fun MultiplyingWithoutLimitsScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset to 0",
+                        text = s.resetToZero,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 8.dp)

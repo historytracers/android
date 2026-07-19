@@ -21,18 +21,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
 
 @Composable
 fun WorkoutScreen(
     scrollState: ScrollState = rememberScrollState(),
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToClap: () -> Unit = {},
     onNavigateToFeetAndHands: () -> Unit = {},
@@ -42,6 +51,35 @@ fun WorkoutScreen(
     onNavigateToExercisingMultiplicationL2: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedWorkoutSections.collectAsState(initial = emptySet())
+    val scope = rememberCoroutineScope()
+
+    val group1Controller = remember {
+        LevelGroupController(
+            listOf("exercising_hands", "exercising_feet_and_hands"),
+            completedSections
+        )
+    }
+    val group2Controller = remember {
+        LevelGroupController(
+            listOf("exercising_addition"),
+            completedSections
+        )
+    }
+    LaunchedEffect(completedSections) {
+        group1Controller.syncFromPersisted(completedSections)
+        group2Controller.syncFromPersisted(completedSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed(levelId) }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -124,7 +162,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_hands")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -182,7 +220,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_feet_and_hands")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -207,11 +245,16 @@ fun WorkoutScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("workout_group1")
+                    onNavigateToCongratulation()
+                },
+                enabled = group1Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("workout_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(
@@ -269,7 +312,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_addition")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -294,11 +337,16 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("workout_group2")
+                    onNavigateToCongratulation()
+                },
+                enabled = group2Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("workout_group2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(
@@ -327,7 +375,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("relationship")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -356,7 +404,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_multiplication")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -414,7 +462,7 @@ fun WorkoutScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("exercising_multiplication_l2")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Box(

@@ -164,6 +164,7 @@ fun ExercisingMultiplicationL2Screen(
             isPlaying = false
             isDone = true
             onScoreChanged(currentScore + 2)
+            preferences.markWorkoutSectionCompleted("exercising_multiplication_l2")
             preferences.recordLessonCompletion()
         }
     }

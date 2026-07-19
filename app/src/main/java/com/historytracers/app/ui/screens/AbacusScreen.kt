@@ -13,18 +13,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
 
 @Composable
 fun AbacusScreen(
     scrollState: ScrollState = rememberScrollState(),
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
@@ -37,6 +46,42 @@ fun AbacusScreen(
     onNavigateToMultiplyingWithoutLimits: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedAbacusSections.collectAsState(initial = emptySet())
+    val scope = rememberCoroutineScope()
+
+    val group1Controller = remember {
+        LevelGroupController(
+            listOf("soroban_writing", "suanpan_writing", "large_numbers_writing"),
+            completedSections
+        )
+    }
+    val group2Controller = remember {
+        LevelGroupController(
+            listOf("practicing_addition"),
+            completedSections
+        )
+    }
+    val group3Controller = remember {
+        LevelGroupController(
+            listOf("multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_l2", "multiplying_without_limits"),
+            completedSections
+        )
+    }
+    LaunchedEffect(completedSections) {
+        group1Controller.syncFromPersisted(completedSections)
+        group2Controller.syncFromPersisted(completedSections)
+        group3Controller.syncFromPersisted(completedSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed(levelId) }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -75,7 +120,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("history")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(
@@ -104,7 +149,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("soroban_writing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -133,7 +178,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("suanpan_writing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -162,7 +207,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("large_numbers_writing")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -187,11 +232,16 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("abacus_group1")
+                    onNavigateToCongratulation()
+                },
+                enabled = group1Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("abacus_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(
@@ -220,7 +270,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("adding_two_numbers")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -249,7 +299,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("adding_large_numbers")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -278,7 +328,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -303,11 +353,16 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("abacus_group2")
+                    onNavigateToCongratulation()
+                },
+                enabled = group2Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("abacus_group2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(
@@ -336,7 +391,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplication_table")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -361,11 +416,11 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {},
+                onClick = { },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("abacus_in_rereading")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -394,7 +449,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplying_with_abacus")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -423,7 +478,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplying_with_abacus_l2")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -452,7 +507,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("multiplying_without_limits")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
@@ -477,11 +532,16 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = onNavigateToCongratulation,
+                onClick = {
+                    claimLevel("abacus_group3")
+                    onNavigateToCongratulation()
+                },
+                enabled = group3Controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if ("abacus_group3" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
                 )
             ) {
                 Icon(

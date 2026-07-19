@@ -290,6 +290,7 @@ fun ClapScreen(
                                 }
                                 isPlaying = false
                                 onScoreChanged(currentScore + 2)
+                                preferences.markWorkoutSectionCompleted("exercising_hands")
                                 showCompletionMessage = true
                             }
                         },

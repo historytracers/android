@@ -293,6 +293,7 @@ fun FeetAndHandsScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            preferences.markWorkoutSectionCompleted("exercising_feet_and_hands")
                             showCompletionMessage = true
                         }
                     }
@@ -330,6 +331,7 @@ fun FeetAndHandsScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            preferences.markWorkoutSectionCompleted("exercising_feet_and_hands")
                             showCompletionMessage = true
                         }
                     }
@@ -368,6 +370,7 @@ fun FeetAndHandsScreen(
                             }
                             isPlaying = false
                             onScoreChanged(currentScore + 2)
+                            preferences.markWorkoutSectionCompleted("exercising_feet_and_hands")
                             showCompletionMessage = true
                         }
                     }

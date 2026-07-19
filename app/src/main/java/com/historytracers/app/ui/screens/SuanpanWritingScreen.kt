@@ -332,6 +332,7 @@ fun SuanpanWritingScreen(
         showCongrats.value = true
         onScoreChanged(currentScore + 2)
         scope.launch { preferences.recordLessonCompletion() }
+    scope.launch { preferences.markAbacusSectionCompleted("suanpan_writing") }
     }
 }
 

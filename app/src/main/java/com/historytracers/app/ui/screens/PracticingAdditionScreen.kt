@@ -183,6 +183,7 @@ fun PracticingAdditionScreen(
     LaunchedEffect(finalCongratsShown) {
         if (finalCongratsShown) {
             preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("practicing_addition")
             onScoreChanged(currentScore + 2)
         }
     }

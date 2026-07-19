@@ -332,6 +332,7 @@ fun SorobanWritingScreen(
         showCongrats.value = true
         onScoreChanged(currentScore + 2)
         scope.launch { preferences.recordLessonCompletion() }
+    scope.launch { preferences.markAbacusSectionCompleted("soroban_writing") }
     }
 }
 

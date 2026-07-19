@@ -299,6 +299,7 @@ fun ExercisingAdditionScreen(
             phase = ExercisePhase.DONE
             isPlaying = false
             onScoreChanged(currentScore + 2)
+            preferences.markWorkoutSectionCompleted("exercising_addition")
         }
     }
 
