@@ -532,7 +532,7 @@ fun ExercisingAdditionScreen(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().offset(y = -50.dp).padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = Modifier.fillMaxWidth().offset(y = -100.dp).padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
