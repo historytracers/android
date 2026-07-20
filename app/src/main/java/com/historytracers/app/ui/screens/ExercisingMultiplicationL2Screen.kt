@@ -1,16 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +27,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.UserPreferences
@@ -102,6 +110,8 @@ fun ExercisingMultiplicationL2Screen(
     var isDone by remember { mutableStateOf(false) }
     var sliderPos by remember { mutableFloatStateOf(1100f) }
 
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val handUpDownProgress = remember { Animatable(0f) }
     val clapProgress = remember { Animatable(0f) }
@@ -172,7 +182,8 @@ fun ExercisingMultiplicationL2Screen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
         Surface(
             tonalElevation = 3.dp,
             modifier = Modifier.fillMaxWidth()
@@ -416,17 +427,83 @@ fun ExercisingMultiplicationL2Screen(
         }
     }
 
-    if (isDone && !isPlaying) {
-        Text(
-            text = s.exercisingAdditionCompletionMessage,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF2E7D32),
-            textAlign = TextAlign.Center,
+        if (isDone && !isPlaying) {
+            Text(
+                text = s.exercisingAdditionCompletionMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 10.dp)
+            )
+        }
+
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 10.dp)
-                .wrapContentHeight(Alignment.Bottom)
-        )
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
+        ) {
+            val uriHandler = LocalUriHandler.current
+            val ctx = LocalContext.current
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = s.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.mainText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=c4b96e7c-627b-46d0-820c-409a1e9f47b8"))
+                        Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=c4b96e7c-627b-46d0-820c-409a1e9f47b8")
+                    }
+                )
+            }
+        }
     }
 }
