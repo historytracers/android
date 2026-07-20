@@ -446,7 +446,9 @@ fun RelationshipScreen(
             }
 
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-10).dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -463,7 +465,7 @@ fun RelationshipScreen(
                     Box(Modifier.width(35.dp))
                     Text(
                         text = "${problem.topValue}",
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp),
                         modifier = Modifier.width(35.dp),
                         textAlign = TextAlign.Center
                     )
@@ -472,11 +474,11 @@ fun RelationshipScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(Modifier.width(35.dp), contentAlignment = Alignment.Center) {
-                        Text("×", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp))
+                        Text("×", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp))
                     }
                     Text(
                         text = "${problem.bottomValue}",
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp),
                         modifier = Modifier.width(35.dp),
                         textAlign = TextAlign.Center
                     )
@@ -488,7 +490,7 @@ fun RelationshipScreen(
                     Box(Modifier.width(35.dp))
                     Text(
                         text = "${problem.result}",
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp),
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.width(35.dp),
                         textAlign = TextAlign.Center
@@ -515,7 +517,7 @@ fun RelationshipScreen(
                     }
 
                     val footScale = s * (0.125f / 0.6f) * 0.7f
-                    val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density + 20f * density - 70f * density + 20f * density
+                    val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density + 20f * density - 70f * density + 20f * density - 10f * density
                     val footBaseX = cx - 20f * density
                     val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density - 70f * density + 20f * density + 10f * density
 
