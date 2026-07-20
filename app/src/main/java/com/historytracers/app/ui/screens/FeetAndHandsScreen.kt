@@ -615,7 +615,7 @@ fun FeetAndHandsScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.mainText) },
+                    text = { Text(s.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },

@@ -23,7 +23,7 @@
   4. The completion message overlay (if any) should use `.align(Alignment.BottomCenter)` inside the Box
   5. Add the Sources overlay Box at `Alignment.BottomStart` with `padding(bottom = 8.dp, start = 8.dp)` containing:
      - A clickable Column with `Icons.Filled.Book` (32.dp) and `s.sources` label below
-     - A first-level `DropdownMenu` showing `s.mainText` with `KeyboardArrowRight` trailing icon, sets `showMainTextSubmenu = true`
+     - A first-level `DropdownMenu` showing `s.originalText` with `KeyboardArrowRight` trailing icon, sets `showMainTextSubmenu = true`
      - A second-level `DropdownMenu` showing `s.copyUrl` and `s.goToUrl` items, each copying or opening the link
   6. Use `s.copyUrl` and `s.goToUrl` from the existing `UiStrings` (no new strings needed beyond `sources` and `mainText` if not already present)
 
