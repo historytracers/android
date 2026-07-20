@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -171,6 +172,23 @@ fun AppNavigation() {
                         modifier = Modifier.padding(16.dp)
                     )
                     Divider()
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = counter.toString(),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Icon(
+                            Icons.Default.Psychology,
+                            contentDescription = null,
+                            modifier = Modifier.size(28.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Home, contentDescription = null) },
                         label = { Text(uiStrings.home) },
@@ -242,20 +260,6 @@ fun AppNavigation() {
                                 Icon(Icons.Default.Menu, contentDescription = uiStrings.menu)
                             }
                         },
-                        actions = {
-                            Text(
-                                text = counter.toString(),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.padding(end = 4.dp))
-                            Icon(
-                                Icons.Default.Psychology,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(Modifier.padding(end = 12.dp))
-                        }
                     )
                 }
             ) { padding ->
