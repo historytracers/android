@@ -677,10 +677,10 @@ fun RelationshipScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.offset(y = (-20).dp)
-                ) {
-                    FilledTonalButton(
-                        onClick = { newMultiplication() },
+                modifier = Modifier.offset(y = (-40).dp)
+            ) {
+                FilledTonalButton(
+                    onClick = { newMultiplication() },
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = ButtonYellow,
