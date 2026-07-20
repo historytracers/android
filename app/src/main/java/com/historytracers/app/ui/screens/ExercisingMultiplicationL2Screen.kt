@@ -320,12 +320,12 @@ fun ExercisingMultiplicationL2Screen(
             }
         }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .offset(y = (-30).dp)
-                .padding(horizontal = 16.dp, vertical = 4.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-70).dp)
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
