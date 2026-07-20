@@ -436,7 +436,7 @@ fun ExercisingMultiplicationL2Screen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 10.dp)
+                    .padding(bottom = 50.dp)
             )
         }
 
