@@ -609,8 +609,8 @@ fun RelationshipScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(y = (-30).dp)
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
+.offset(y = (-50).dp)
+                .padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
