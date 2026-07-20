@@ -260,6 +260,20 @@ fun AppNavigation() {
                                 Icon(Icons.Default.Menu, contentDescription = uiStrings.menu)
                             }
                         },
+                        actions = {
+                            Text(
+                                text = streakCount.toString(),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(Modifier.padding(end = 4.dp))
+                            Icon(
+                                Icons.Default.LocalFireDepartment,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.padding(end = 12.dp))
+                        }
                     )
                 }
             ) { padding ->
