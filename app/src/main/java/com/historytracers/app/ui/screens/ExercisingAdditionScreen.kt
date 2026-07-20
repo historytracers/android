@@ -194,7 +194,7 @@ private fun generateProblem(): AdditionProblem {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExercisingAdditionScreen(
-    skinColor: String = "#FFF8E0",
+    skinColor: String = "#2E7D32",
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}

@@ -511,7 +511,7 @@ fun RelationshipScreen(
                     val cy = size.height * 0.5f
 
                     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = android.graphics.Color.parseColor("#F4C2A1")
+                        color = android.graphics.Color.parseColor("#2E7D32")
                         style = Paint.Style.FILL
                         strokeJoin = Paint.Join.ROUND
                     }
@@ -725,7 +725,7 @@ fun RelationshipScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 10.dp)
+                    .padding(bottom = 50.dp)
             )
         }
 

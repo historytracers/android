@@ -83,7 +83,7 @@ private fun buildAndroidPath(): Path {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClapScreen(
-    skinColor: String = "#FFF8E0",
+    skinColor: String = "#2E7D32",
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}

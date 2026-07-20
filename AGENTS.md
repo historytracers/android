@@ -12,6 +12,21 @@
 - When adding new UI text, add a new field to `UiStrings` in `app/src/main/java/com/historytracers/app/ui/UiStrings.kt` and provide translations for all three locales: English (`EnStrings`), Portuguese (`PtStrings`), and Spanish (`EsStrings`).
 - Brand names that are identical across languages (e.g., "Patreon", "PayPal") still need entries in `UiStrings` for consistency — use the same name in all three locales.
 
+## Sources Menu
+
+- Every exercise screen (Clap, FeetAndHands, ExercisingAddition, ExercisingMultiplication, etc.) can have a Sources menu in the bottom-left corner.
+- The Sources menu has a book icon + "Sources" label. When tapped, it shows a cascading submenu: "Main Text" (with arrow icon) → Copy URL / Go to URL.
+- To add a Sources menu to a screen:
+  1. Add these imports if not present: `ClipData`, `ClipboardManager`, `Context`, `Toast`, `clickable`, `KeyboardArrowRight`, `Book`, `LocalUriHandler`
+  2. Add state vars: `showSourcesMenu` and `showMainTextSubmenu` (both `mutableStateOf(false)`)
+  3. If the screen uses a root `Column` instead of a `Box`, wrap the entire content in `Box(modifier = Modifier.fillMaxSize())` — place the existing `Column` inside, then add overlays after it
+  4. The completion message overlay (if any) should use `.align(Alignment.BottomCenter)` inside the Box
+  5. Add the Sources overlay Box at `Alignment.BottomStart` with `padding(bottom = 8.dp, start = 8.dp)` containing:
+     - A clickable Column with `Icons.Filled.Book` (32.dp) and `s.sources` label below
+     - A first-level `DropdownMenu` showing `s.mainText` with `KeyboardArrowRight` trailing icon, sets `showMainTextSubmenu = true`
+     - A second-level `DropdownMenu` showing `s.copyUrl` and `s.goToUrl` items, each copying or opening the link
+  6. Use `s.copyUrl` and `s.goToUrl` from the existing `UiStrings` (no new strings needed beyond `sources` and `mainText` if not already present)
+
 ## Level Group Controllers
 
 - Every Principal screen (hub screen listing exercises before "Next Level" buttons) must use `LevelGroupController` to gate the "Next Level" flag buttons.

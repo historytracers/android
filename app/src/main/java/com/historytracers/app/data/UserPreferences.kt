@@ -71,7 +71,7 @@ class UserPreferences(private val context: Context) {
     }
 
     val skinColor: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[SKIN_COLOR_KEY] ?: "#FFF8E0"
+        preferences[SKIN_COLOR_KEY] ?: "#2E7D32"
     }
 
     suspend fun setSkinColor(color: String) {
