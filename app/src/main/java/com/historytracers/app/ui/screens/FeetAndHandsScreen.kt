@@ -176,7 +176,7 @@ private fun buildFootPath(scale: Float = 0.1f, flipY: Boolean = true): Pair<Path
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeetAndHandsScreen(
-    skinColor: String = "#2E7D32",
+    skinColor: String = "#A5672C",
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}

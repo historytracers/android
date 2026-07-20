@@ -26,6 +26,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -86,11 +87,13 @@ private fun generateProblem(table: Int): MultiplicationProblemL2 {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExercisingMultiplicationL2Screen(
+    skinColor: String = "#A5672C",
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
 
     var problem by remember { mutableStateOf(generateProblem(-1)) }
@@ -256,7 +259,7 @@ fun ExercisingMultiplicationL2Screen(
                 val cy = size.height * 0.5f
 
                 val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.parseColor("#2E7D32")
+                    color = handColor.hashCode()
                     style = Paint.Style.FILL
                     strokeJoin = Paint.Join.ROUND
                 }

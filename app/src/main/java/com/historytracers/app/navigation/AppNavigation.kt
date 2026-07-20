@@ -63,7 +63,7 @@ fun AppNavigation() {
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
-    val skinColor by preferences.skinColor.collectAsState(initial = "#2E7D32")
+    val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
     val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2")
     var startDest by remember { mutableStateOf<String?>(null) }
@@ -495,6 +495,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.Relationship.route) {
                         RelationshipScreen(
+                            skinColor = skinColor,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Workout.route, false)) {
                                     navController.navigate(Screen.Workout.route) {
@@ -509,6 +510,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.ExercisingMultiplicationL2.route) {
                         ExercisingMultiplicationL2Screen(
+                            skinColor = skinColor,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Workout.route, false)) {
                                     navController.navigate(Screen.Workout.route) {
