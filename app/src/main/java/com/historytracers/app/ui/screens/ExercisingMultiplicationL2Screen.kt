@@ -388,7 +388,7 @@ fun ExercisingMultiplicationL2Screen(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.offset(y = (-20).dp)
+                modifier = Modifier.offset(y = (-30).dp)
             ) {
                 FilledTonalButton(
                     onClick = { newMultiplication() },
