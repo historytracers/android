@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -175,6 +183,8 @@ fun MultiplyingWithAbacusLevel2Screen(
     var showLastLevelMessage by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         currentDigitLevel = MIN_DIGIT_LEVEL
@@ -272,285 +282,352 @@ fun MultiplyingWithAbacusLevel2Screen(
         resetExercise()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-                }
-                Text(
-                    text = s.mw2Title,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = s.mw2Instruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-            )
-
-            Text(
-                text = "${s.levelPrefix}$currentDigitLevel",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            Text(
-                text = "${exercise.a} \u00D7 ${exercise.b} = ?",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
-            ) {
-                FilledIconButton(
-                    onClick = { isSoroban = true },
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(24),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Text(
-                        text = "S",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Text(
-                    text = s.sorobanMode,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                FilledIconButton(
-                    onClick = { isSoroban = false },
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(24),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (!isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Text(
-                        text = "S",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Text(
-                    text = s.suanpanMode,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Canvas(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .aspectRatio(860f / 400f)
-                    .pointerInput(upperMax, lowerMax, stepCompleted) {
-                        detectTapGestures { offset ->
-                            if (stepCompleted) return@detectTapGestures
-                            val cw = size.width.toFloat()
-                            val ch = size.height.toFloat()
-                            handleMw2AbacusTap(
-                                offset.x, offset.y, cw, ch, state,
-                                COLUMNS, upperMax, lowerMax
-                            )
-                            if (!exerciseStarted) exerciseStarted = true
-                            checkStep()
-                        }
-                    }
-            ) {
-                drawMw2AbacusBackground(size)
-                drawMw2AbacusFrame(size)
-                val margin = 28f / 860f * size.width
-                val usableWidth = size.width - 2f * margin
-                val colWidth = usableWidth / COLUMNS
-                val startX = margin + colWidth / 2f
-                val beamY = size.height / 2f
-                val ballRadius = minOf(
-                    colWidth * 0.38f,
-                    10f / 400f * size.height,
-                    10f / 860f * size.width
-                )
-                val dtt = beamY - 28f / 400f * size.height
-                val dtb = beamY + 28f / 400f * size.height
-                for (col in 0 until COLUMNS) {
-                    drawMw2AbacusRod(
-                        cx = startX + col * colWidth,
-                        canvasWidth = size.width,
-                        canvasHeight = size.height
-                    )
-                    drawMw2ColumnBeads(
-                        cx = startX + col * colWidth,
-                        canvasWidth = size.width,
-                        canvasHeight = size.height,
-                        ballRadius = ballRadius,
-                        decimalTrackTop = dtt,
-                        decimalTrackBottom = dtb,
-                        upperCount = state.value[col].upper,
-                        lowerCount = state.value[col].lower,
-                        upperMax = upperMax,
-                        lowerMax = lowerMax
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(8.dp))
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Surface(
-                shape = RoundedCornerShape(40.dp),
-                color = Color(0xFF2E241F),
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = "${s.valuePrefix}${Mw2Value(state.value)}",
-                    color = Color(0xFFF2ECD8),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = "${s.mwStepPrefix}${steps[currentStepIdx].instruction}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(4.dp))
-
-            if (steps.isNotEmpty()) {
-                Text(
-                    text = s.mwStepStatus.format(currentStepIdx + 1, steps.size),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Spacer(Modifier.height(4.dp))
-
-            if (feedbackMessage.isNotEmpty()) {
-                Text(
-                    text = feedbackMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                val hideButtons = exerciseStarted && !finalCongratsShown
-
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (!hideButtons) {
-                        FilledTonalButton(
-                            onClick = { resetExercise() },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(
-                                text = s.newExercise,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                     }
-
-                    if (!finalCongratsShown) {
-                        FilledTonalButton(
-                            onClick = { advanceStep() },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(
-                                text = s.nextStep,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
-                    }
+                    Text(
+                        text = s.mw2Title,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
+            }
 
-                if (!hideButtons) {
-                    FilledTonalButton(
-                        onClick = { toggleLevel() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = s.mw2Instruction,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                )
+
+                Text(
+                    text = "${s.levelPrefix}$currentDigitLevel",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                Text(
+                    text = "${exercise.a} \u00D7 ${exercise.b} = ?",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    FilledIconButton(
+                        onClick = { isSoroban = true },
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         Text(
-                            text = s.nextLevel,
+                            text = "S",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = s.sorobanMode,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    FilledIconButton(
+                        onClick = { isSoroban = false },
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (!isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Text(
+                            text = "S",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = s.suanpanMode,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                        .aspectRatio(860f / 400f)
+                        .pointerInput(upperMax, lowerMax, stepCompleted) {
+                            detectTapGestures { offset ->
+                                if (stepCompleted) return@detectTapGestures
+                                val cw = size.width.toFloat()
+                                val ch = size.height.toFloat()
+                                handleMw2AbacusTap(
+                                    offset.x, offset.y, cw, ch, state,
+                                    COLUMNS, upperMax, lowerMax
+                                )
+                                if (!exerciseStarted) exerciseStarted = true
+                                checkStep()
+                            }
+                        }
+                ) {
+                    drawMw2AbacusBackground(size)
+                    drawMw2AbacusFrame(size)
+                    val margin = 28f / 860f * size.width
+                    val usableWidth = size.width - 2f * margin
+                    val colWidth = usableWidth / COLUMNS
+                    val startX = margin + colWidth / 2f
+                    val beamY = size.height / 2f
+                    val ballRadius = minOf(
+                        colWidth * 0.38f,
+                        10f / 400f * size.height,
+                        10f / 860f * size.width
+                    )
+                    val dtt = beamY - 28f / 400f * size.height
+                    val dtb = beamY + 28f / 400f * size.height
+                    for (col in 0 until COLUMNS) {
+                        drawMw2AbacusRod(
+                            cx = startX + col * colWidth,
+                            canvasWidth = size.width,
+                            canvasHeight = size.height
+                        )
+                        drawMw2ColumnBeads(
+                            cx = startX + col * colWidth,
+                            canvasWidth = size.width,
+                            canvasHeight = size.height,
+                            ballRadius = ballRadius,
+                            decimalTrackTop = dtt,
+                            decimalTrackBottom = dtb,
+                            upperCount = state.value[col].upper,
+                            lowerCount = state.value[col].lower,
+                            upperMax = upperMax,
+                            lowerMax = lowerMax
                         )
                     }
                 }
+
+                Spacer(Modifier.height(8.dp))
+
+                Surface(
+                    shape = RoundedCornerShape(40.dp),
+                    color = Color(0xFF2E241F),
+                ) {
+                    Text(
+                        text = "${s.valuePrefix}${Mw2Value(state.value)}",
+                        color = Color(0xFFF2ECD8),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Text(
+                            text = "${s.mwStepPrefix}${steps[currentStepIdx].instruction}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(12.dp)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(4.dp))
+
+                if (steps.isNotEmpty()) {
+                    Text(
+                        text = s.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Spacer(Modifier.height(4.dp))
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    val hideButtons = exerciseStarted && !finalCongratsShown
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (!hideButtons) {
+                            FilledTonalButton(
+                                onClick = { resetExercise() },
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(
+                                    text = s.newExercise,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+
+                        if (!finalCongratsShown) {
+                            FilledTonalButton(
+                                onClick = { advanceStep() },
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(
+                                    text = s.nextStep,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    if (!hideButtons) {
+                        FilledTonalButton(
+                            onClick = { toggleLevel() },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(
+                                text = s.nextLevel,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(2.dp))
+
+                if (feedbackMessage.isNotEmpty()) {
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
+        ) {
+            val uriHandler = LocalUriHandler.current
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = s.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
-            Spacer(Modifier.height(24.dp))
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.originalText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40")
+                    }
+                )
+            }
         }
     }
 }
