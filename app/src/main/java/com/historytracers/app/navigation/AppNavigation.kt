@@ -49,6 +49,7 @@ import com.historytracers.app.ui.screens.MultiplicationTableScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusLevel2Screen
 import com.historytracers.app.ui.screens.MultiplyingWithoutLimitsScreen
+import com.historytracers.app.ui.screens.SubtractingWithAbacusScreen
 import com.historytracers.app.ui.screens.RelationshipScreen
 import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
 import com.historytracers.app.notification.NotificationHelper
@@ -342,7 +343,8 @@ fun AppNavigation() {
                             onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTable.route) },
                             onNavigateToMultiplyingWithAbacus = { navController.navigate(Screen.MultiplyingWithAbacus.route) },
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
-                            onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) }
+                            onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
+                            onNavigateToSubtractingWithAbacus = { navController.navigate(Screen.SubtractingWithAbacus.route) }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
@@ -581,6 +583,20 @@ fun AppNavigation() {
                     }
                     composable(Screen.MultiplyingWithoutLimits.route) {
                         MultiplyingWithoutLimitsScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SubtractingWithAbacus.route) {
+                        SubtractingWithAbacusScreen(
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Abacus.route, false)) {
                                     navController.navigate(Screen.Abacus.route) {
