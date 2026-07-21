@@ -35,3 +35,52 @@
 - Add a `Flow<Set<String>>` getter and a `suspend fun mark[Screen]SectionCompleted(section: String)` setter in `UserPreferences.kt`.
 - In the hub screen: collect the flow, create controllers via `remember { LevelGroupController(sectionIds, completedSections) }`, sync via `LaunchedEffect(completedSections)`, and add `enabled = controller.allCompleted` to the flag button.
 - Each section's `onClick` must call `controller.markCompleted(id)` and `scope.launch { preferences.mark[Screen]SectionCompleted(id) }`.
+
+## Porting a JS Abacus App to Android
+
+When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `historytracers/lang/*/` repos to an Android Compose screen, follow this checklist:
+
+### 1. Extract messages from the JSON files
+- Read all three locale JSON files (`en-US/*.json`, `pt-BR/*.json`, `es-ES/*.json`) to extract user-facing strings.
+- Look in the `"text"` array of the `SECTION_game` section for `<span id="txt_*">` elements — these are the messages.
+- Map each `txt_*` id to a Kotlin string field using the pattern `sbw*` (or whatever prefix matches the screen name, e.g. `mw*` for multiplication).
+- Preserve all emojis and formatting exactly as in the JS source.
+
+### 2. Add strings to `UiStrings.kt`
+- Add new fields to the `UiStrings` data class.
+- Add values for all three locales (`EnStrings`, `PtStrings`, `EsStrings`).
+- Use `%d` / `%s` format specifiers (Kotlin style) instead of JS `{placeholder}` syntax.
+
+### 3. Create the screen file
+- Model after an existing similar screen (e.g. `MultiplyingWithAbacusLevel2Screen.kt` or `MultiplyingWithoutLimitsScreen.kt`).
+- The structure is:
+  - Constants (`COLUMNS`, `SOROBAN_UPPER`/`LOWER`, `SUANPAN_UPPER`/`LOWER`, `MAX_DIGIT_LEVEL`, `MIN_DIGIT_LEVEL`)
+  - Column state data class (upper/lower beads, normalize)
+  - Value conversion function
+  - Exercise generation (level-based number ranges)
+  - Step building function (modeled after the JS `buildStepsForNumbers`)
+  - Composable screen with:
+    - Top bar (back + title)
+    - Instruction text, level badge, exercise display (`{a} − {b} = ?`)
+    - Soroban/Suanpan mode toggle
+    - Abacus Canvas (with drawing functions renamed to `drawSbw*`)
+    - Value display panel
+    - Step instruction and step status
+    - Buttons (New Exercise, Next Step, Next Level)
+    - Feedback messages (correct, perfect, congrats, last level)
+    - Sources menu (with correct UUID link)
+- Copy the drawing functions (`draw*Background`, `draw*Frame`, `draw*Rod`, `draw*ColumnBeads`) from an existing screen and rename with the new prefix.
+- Copy the tap handler and rename accordingly.
+- The congratulation/feedback messages must be placed BELOW the buttons (not above).
+- The Sources menu must be hidden when `finalCongratsShown` is true.
+- The abacus must be frozen (`stepCompleted` in `pointerInput` keys) when a step is completed.
+
+### 4. Wire navigation
+- Add a `data object` route in `Screen.kt`.
+- Add the import and composable block in `AppNavigation.kt` (with back-navigation to the hub screen).
+- Add the `onNavigateTo*` parameter to the hub screen (`AbacusScreen.kt`) and wire it to the button's `onClick`.
+- Optionally add the section completion key to `UserPreferences.kt` and add a `LevelGroupController` entry.
+
+### 5. Build & verify
+- Run the build script to ensure compilation succeeds.
+- Fix any unresolved references (missing strings or imports).
