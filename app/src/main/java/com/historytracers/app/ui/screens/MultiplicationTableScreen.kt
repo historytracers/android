@@ -1,13 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,6 +23,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,7 +32,6 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 
 private const val COLUMNS = 9
@@ -81,6 +89,9 @@ fun MultiplicationTableScreen(
     var finalCongratsShown by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showBasisSubmenu by remember { mutableStateOf(false) }
 
     val currentResult = selectedNumber.toLong() * currentStep.toLong()
     val equationText = if (currentStep > 0) "$currentStep \u00D7 $selectedNumber = $currentResult" else ""
@@ -123,229 +134,252 @@ fun MultiplicationTableScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-                }
-                Text(
-                    text = s.multiplicationTable,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = s.multiplicationTableDescription,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
-            ) {
-                FilledIconButton(
-                    onClick = { isSoroban = true },
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(24),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                        color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                Text(s.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-
-                FilledIconButton(
-                    onClick = { isSoroban = false },
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(24),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (!isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                        color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                Text(s.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            }
-
-            Canvas(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .aspectRatio(860f / 400f)
-            ) {
-                drawPaAbacusBackground(size)
-                drawPaAbacusFrame(size)
-                val margin = 28f / 860f * size.width
-                val usableWidth = size.width - 2f * margin
-                val colWidth = usableWidth / COLUMNS
-                val startX = margin + colWidth / 2f
-                val beamY = size.height / 2f
-                val ballRadius = minOf(
-                    colWidth * 0.38f,
-                    10f / 400f * size.height,
-                    10f / 860f * size.width
-                )
-                val dtt = beamY - 28f / 400f * size.height
-                val dtb = beamY + 28f / 400f * size.height
-                for (col in 0 until COLUMNS) {
-                    drawPaAbacusRod(
-                        cx = startX + col * colWidth,
-                        canvasWidth = size.width,
-                        canvasHeight = size.height
-                    )
-                    drawMtColumnBeads(
-                        cx = startX + col * colWidth,
-                        canvasWidth = size.width,
-                        canvasHeight = size.height,
-                        ballRadius = ballRadius,
-                        decimalTrackTop = dtt,
-                        decimalTrackBottom = dtb,
-                        upperCount = state.value[col].upper,
-                        lowerCount = state.value[col].lower,
-                        upperMax = upperMax,
-                        lowerMax = lowerMax
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(8.dp))
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Surface(
-                shape = RoundedCornerShape(40.dp),
-                color = Color(0xFF2E241F),
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    }
+                    Text(
+                        text = s.multiplicationTable,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(8.dp))
+
                 Text(
-                    text = "${s.valuePrefix}${MtValue(state.value)}",
-                    color = Color(0xFFF2ECD8),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    text = s.multiplicationTableDescription,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                 )
-            }
 
-            Spacer(Modifier.height(12.dp))
-
-            if (equationText.isNotEmpty()) {
-                Text(
-                    text = equationText,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Spacer(Modifier.height(4.dp))
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Text(s.number, style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold)
-                var expanded by remember { mutableStateOf(false) }
-                Box {
-                    FilledTonalButton(
-                        onClick = { expanded = true },
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    FilledIconButton(
+                        onClick = { isSoroban = true },
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
-                        Text("$selectedNumber", style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold)
+                        Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                            color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                    Text(s.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+
+                    FilledIconButton(
+                        onClick = { isSoroban = false },
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (!isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                        )
                     ) {
-                        for (n in 1..9) {
-                            DropdownMenuItem(
-                                text = { Text("$n") },
-                                onClick = {
-                                    selectedNumber = n
-                                    expanded = false
-                                    reset()
-                                }
+                        Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                            color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Text(s.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                }
+
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                        .aspectRatio(860f / 400f)
+                ) {
+                    drawPaAbacusBackground(size)
+                    drawPaAbacusFrame(size)
+                    val margin = 28f / 860f * size.width
+                    val usableWidth = size.width - 2f * margin
+                    val colWidth = usableWidth / COLUMNS
+                    val startX = margin + colWidth / 2f
+                    val beamY = size.height / 2f
+                    val ballRadius = minOf(
+                        colWidth * 0.38f,
+                        10f / 400f * size.height,
+                        10f / 860f * size.width
+                    )
+                    val dtt = beamY - 28f / 400f * size.height
+                    val dtb = beamY + 28f / 400f * size.height
+                    for (col in 0 until COLUMNS) {
+                        drawPaAbacusRod(
+                            cx = startX + col * colWidth,
+                            canvasWidth = size.width,
+                            canvasHeight = size.height
+                        )
+                        drawMtColumnBeads(
+                            cx = startX + col * colWidth,
+                            canvasWidth = size.width,
+                            canvasHeight = size.height,
+                            ballRadius = ballRadius,
+                            decimalTrackTop = dtt,
+                            decimalTrackBottom = dtb,
+                            upperCount = state.value[col].upper,
+                            lowerCount = state.value[col].lower,
+                            upperMax = upperMax,
+                            lowerMax = lowerMax
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                Surface(
+                    shape = RoundedCornerShape(40.dp),
+                    color = Color(0xFF2E241F),
+                ) {
+                    Text(
+                        text = "${s.valuePrefix}${MtValue(state.value)}",
+                        color = Color(0xFFF2ECD8),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                if (equationText.isNotEmpty()) {
+                    Text(
+                        text = equationText,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(Modifier.height(4.dp))
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(s.number, style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold)
+                    var expanded by remember { mutableStateOf(false) }
+                    Box {
+                        FilledTonalButton(
+                            onClick = { expanded = true },
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
+                        ) {
+                            Text("$selectedNumber", style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold)
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            for (n in 1..9) {
+                                DropdownMenuItem(
+                                    text = { Text("$n") },
+                                    onClick = {
+                                        selectedNumber = n
+                                        expanded = false
+                                        reset()
+                                    }
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(4.dp))
 
-            if (currentStep > 0 && currentStep <= MAX_STEPS) {
-                Text(
-                    text = "${s.stepPrefix}${currentStep}/$MAX_STEPS",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+                if (currentStep > 0 && currentStep <= MAX_STEPS) {
+                    Text(
+                        text = "${s.stepPrefix}${currentStep}/$MAX_STEPS",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
 
-            Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(12.dp))
 
-            val isRunning = currentStep > 0 && currentStep < MAX_STEPS
-            val isComplete = currentStep >= MAX_STEPS
+                val isRunning = currentStep > 0 && currentStep < MAX_STEPS
+                val isComplete = currentStep >= MAX_STEPS
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(bottom = 12.dp)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(bottom = 12.dp)
                 ) {
-                    if (!isRunning || isComplete) {
-                        FilledTonalButton(
-                            onClick = { reset() },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(s.reset, style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (!isRunning || isComplete) {
+                            FilledTonalButton(
+                                onClick = { reset() },
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(s.reset, style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
+                            }
+                        }
+
+                        if (!isComplete) {
+                            FilledTonalButton(
+                                onClick = {
+                                    if (isAutoPlaying) {
+                                        isAutoPlaying = false
+                                    } else {
+                                        isAutoPlaying = true
+                                    }
+                                },
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(
+                                    if (isAutoPlaying) s.stop else s.auto,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
                         }
                     }
 
                     if (!isComplete) {
                         FilledTonalButton(
                             onClick = {
-                                if (isAutoPlaying) {
-                                    isAutoPlaying = false
-                                } else {
-                                    isAutoPlaying = true
-                                }
+                                isAutoPlaying = false
+                                stepForward()
                             },
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
@@ -353,44 +387,119 @@ fun MultiplicationTableScreen(
                                 contentColor = OnButtonYellow
                             )
                         ) {
-                            Text(
-                                if (isAutoPlaying) s.stop else s.auto,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
+                            Text(s.nextStep, style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
                         }
                     }
-                }
 
-                if (!isComplete) {
-                    FilledTonalButton(
-                        onClick = {
-                            isAutoPlaying = false
-                            stepForward()
-                        },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
+                    if (isComplete) {
+                        Text(
+                            text = s.complete,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2E7D32)
                         )
-                    ) {
-                        Text(s.nextStep, style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
                     }
                 }
 
-                if (isComplete) {
-                    Text(
-                        text = s.complete,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32)
-                    )
-                }
+                Spacer(Modifier.height(12.dp))
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
+        ) {
+            val uriHandler = LocalUriHandler.current
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = s.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
-            Spacer(Modifier.height(12.dp))
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu && !showBasisSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.originalText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.basis) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showBasisSubmenu = true }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=2bf58492-72be-4fbc-99b4-a0a3d4a0df31"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=2bf58492-72be-4fbc-99b4-a0a3d4a0df31")
+                    }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showBasisSubmenu,
+                onDismissRequest = { showBasisSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showBasisSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showBasisSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0")
+                    }
+                )
+            }
         }
     }
 }
