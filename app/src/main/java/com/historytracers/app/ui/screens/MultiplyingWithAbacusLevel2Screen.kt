@@ -565,68 +565,70 @@ fun MultiplyingWithAbacusLevel2Screen(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(bottom = 8.dp, start = 8.dp)
-        ) {
-            val uriHandler = LocalUriHandler.current
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+        if (!finalCongratsShown) {
+            Box(
                 modifier = Modifier
-                    .clickable { showSourcesMenu = true }
-                    .padding(8.dp)
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = 8.dp, start = 8.dp)
             ) {
-                Icon(
-                    Icons.Filled.Book,
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = s.sources,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+                val uriHandler = LocalUriHandler.current
 
-            DropdownMenu(
-                expanded = showSourcesMenu && !showMainTextSubmenu,
-                onDismissRequest = { showSourcesMenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(s.originalText) },
-                    trailingIcon = {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                    },
-                    onClick = { showMainTextSubmenu = true }
-                )
-            }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { showSourcesMenu = true }
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Book,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = s.sources,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
-            DropdownMenu(
-                expanded = showSourcesMenu && showMainTextSubmenu,
-                onDismissRequest = { showMainTextSubmenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
-                    onClick = {
-                        showSourcesMenu = false
-                        showMainTextSubmenu = false
-                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
-                    onClick = {
-                        showSourcesMenu = false
-                        showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40")
-                    }
-                )
+                DropdownMenu(
+                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    onDismissRequest = { showSourcesMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.originalText) },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showMainTextSubmenu = true }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showMainTextSubmenu,
+                    onDismissRequest = { showMainTextSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showMainTextSubmenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40"))
+                            Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showMainTextSubmenu = false
+                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40")
+                        }
+                    )
+                }
             }
         }
     }
