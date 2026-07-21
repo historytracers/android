@@ -91,7 +91,6 @@ fun MultiplicationTableScreen(
     val preferences = remember { UserPreferences(context) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
-    var showBasisSubmenu by remember { mutableStateOf(false) }
 
     val currentResult = selectedNumber.toLong() * currentStep.toLong()
     val equationText = if (currentStep > 0) "$currentStep \u00D7 $selectedNumber = $currentResult" else ""
@@ -434,7 +433,7 @@ fun MultiplicationTableScreen(
             }
 
             DropdownMenu(
-                expanded = showSourcesMenu && !showMainTextSubmenu && !showBasisSubmenu,
+                expanded = showSourcesMenu && !showMainTextSubmenu,
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
@@ -443,13 +442,6 @@ fun MultiplicationTableScreen(
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
                     onClick = { showMainTextSubmenu = true }
-                )
-                DropdownMenuItem(
-                    text = { Text(s.basis) },
-                    trailingIcon = {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                    },
-                    onClick = { showBasisSubmenu = true }
                 )
             }
 
@@ -463,30 +455,6 @@ fun MultiplicationTableScreen(
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=2bf58492-72be-4fbc-99b4-a0a3d4a0df31"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
-                    onClick = {
-                        showSourcesMenu = false
-                        showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=2bf58492-72be-4fbc-99b4-a0a3d4a0df31")
-                    }
-                )
-            }
-
-            DropdownMenu(
-                expanded = showSourcesMenu && showBasisSubmenu,
-                onDismissRequest = { showBasisSubmenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
-                    onClick = {
-                        showSourcesMenu = false
-                        showBasisSubmenu = false
-                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0"))
                         Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
                     }
@@ -495,7 +463,7 @@ fun MultiplicationTableScreen(
                     text = { Text(s.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
-                        showBasisSubmenu = false
+                        showMainTextSubmenu = false
                         uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0")
                     }
                 )
