@@ -466,20 +466,7 @@ fun MultiplyingWithAbacusScreen(
                     )
                 }
 
-                Spacer(Modifier.height(4.dp))
-
-                if (feedbackMessage.isNotEmpty()) {
-                    Text(
-                        text = feedbackMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(12.dp))
+                                Spacer(Modifier.height(12.dp))
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -502,6 +489,8 @@ fun MultiplyingWithAbacusScreen(
                             ) {
                                 Text(
                                     text = s.newExercise,
+
+
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -545,6 +534,19 @@ fun MultiplyingWithAbacusScreen(
                             )
                         }
                     }
+                }
+
+                if (feedbackMessage.isNotEmpty()) {
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 4.dp)
+                            .offset(y = (-10).dp)
+                    )
                 }
 
                 Spacer(Modifier.height(24.dp))
