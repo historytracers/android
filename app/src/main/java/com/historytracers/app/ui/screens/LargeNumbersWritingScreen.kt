@@ -408,7 +408,6 @@ fun LargeNumbersWritingScreen(
             scope.launch { preferences.recordLessonCompletion() }
             scope.launch { preferences.markAbacusSectionCompleted("large_numbers_writing") }
             stepCompleted = true
-            feedbackMessage = s.feedbackCorrect
             isFeedbackPositive = true
         }
 
