@@ -9,9 +9,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -138,11 +136,9 @@ fun LargeNumbersWritingScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(top = 100.dp),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Top
             ) {
             Spacer(Modifier.height(12.dp))
 
@@ -152,13 +148,12 @@ fun LargeNumbersWritingScreen(
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 8.dp)
-                    .offset(y = (-100).dp)
             )
 
             Spacer(Modifier.height(12.dp))
 
             Column(
-                modifier = Modifier.offset(y = (-90).dp),
+                modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var isSoroban by remember { mutableStateOf(true) }
@@ -226,7 +221,6 @@ fun LargeNumbersWritingScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 400f)
-                        .offset(y = (-20).dp)
                         .pointerInput(upperMax, lowerMax, stepCompleted) {
                             detectTapGestures { offset ->
                                 if (stepCompleted) return@detectTapGestures
@@ -402,6 +396,29 @@ fun LargeNumbersWritingScreen(
                     }
                 }
 
+                Spacer(Modifier.height(24.dp))
+            }
+        }
+    }
+
+        if (currentValue == targetValue.value && !showCongrats.value) {
+            showCongrats.value = true
+            completedLevel = currentLevel
+            onScoreChanged(currentScore + 2)
+            scope.launch { preferences.recordLessonCompletion() }
+            scope.launch { preferences.markAbacusSectionCompleted("large_numbers_writing") }
+            stepCompleted = true
+            feedbackMessage = s.feedbackCorrect
+            isFeedbackPositive = true
+        }
+
+        if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage || feedbackMessage.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
                     val congratsText = if (completedLevel == 8) {
                         "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
@@ -417,7 +434,6 @@ fun LargeNumbersWritingScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                 }
-
                 if (feedbackMessage.isNotEmpty()) {
                     Text(
                         text = feedbackMessage,
@@ -426,23 +442,8 @@ fun LargeNumbersWritingScreen(
                         color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
-                    Spacer(Modifier.height(8.dp))
                 }
-
-                Spacer(Modifier.height(24.dp))
             }
-        }
-    }
-
-        if (currentValue == targetValue.value && !showCongrats.value) {
-            showCongrats.value = true
-            completedLevel = currentLevel
-            onScoreChanged(currentScore + 2)
-            scope.launch { preferences.recordLessonCompletion() }
-            scope.launch { preferences.markAbacusSectionCompleted("large_numbers_writing") }
-            stepCompleted = true
-            feedbackMessage = s.feedbackCorrect
-            isFeedbackPositive = true
         }
 
         Box(
