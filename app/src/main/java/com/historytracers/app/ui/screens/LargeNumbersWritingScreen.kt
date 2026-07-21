@@ -325,33 +325,6 @@ fun LargeNumbersWritingScreen(
                     }
                 }
 
-                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
-                    val congratsText = if (completedLevel == 8) {
-                        "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
-                    } else {
-                        "${s.levelComplete.format(completedLevel)} \uD83C\uDF89"
-                    }
-                    Text(
-                        text = congratsText,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-
-                if (feedbackMessage.isNotEmpty()) {
-                    Text(
-                        text = feedbackMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-
                 Spacer(Modifier.height(12.dp))
 
                 Row(
@@ -427,6 +400,33 @@ fun LargeNumbersWritingScreen(
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
+                }
+
+                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
+                    val congratsText = if (completedLevel == 8) {
+                        "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
+                    } else {
+                        "${s.levelComplete.format(completedLevel)} \uD83C\uDF89"
+                    }
+                    Text(
+                        text = congratsText,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                if (feedbackMessage.isNotEmpty()) {
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
                 }
 
                 Spacer(Modifier.height(24.dp))
