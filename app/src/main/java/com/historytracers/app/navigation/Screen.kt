@@ -29,4 +29,5 @@ sealed class Screen(val route: String) {
     data object SubtractingWithAbacus : Screen("subtracting_with_abacus")
     data object Relationship : Screen("relationship")
     data object ExercisingMultiplicationL2 : Screen("exercising_multiplication_l2")
+    data object Yupana : Screen("yupana")
 }

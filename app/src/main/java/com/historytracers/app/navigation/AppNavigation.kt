@@ -52,6 +52,7 @@ import com.historytracers.app.ui.screens.MultiplyingWithoutLimitsScreen
 import com.historytracers.app.ui.screens.SubtractingWithAbacusScreen
 import com.historytracers.app.ui.screens.RelationshipScreen
 import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
+import com.historytracers.app.ui.screens.YupanaScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -66,7 +67,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -282,7 +283,8 @@ fun AppNavigation() {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
                             onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } },
-                            onNavigateToAbacus = { navController.navigate(Screen.Abacus.route) { launchSingleTop = true } }
+                            onNavigateToAbacus = { navController.navigate(Screen.Abacus.route) { launchSingleTop = true } },
+                            onNavigateToYupana = { navController.navigate(Screen.Yupana.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.FirstSteps.route) {
@@ -345,6 +347,18 @@ fun AppNavigation() {
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
                             onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
                             onNavigateToSubtractingWithAbacus = { navController.navigate(Screen.SubtractingWithAbacus.route) }
+                        )
+                    }
+                    composable(Screen.Yupana.route) {
+                        YupanaScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {

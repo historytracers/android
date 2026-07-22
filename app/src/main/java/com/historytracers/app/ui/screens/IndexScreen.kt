@@ -24,7 +24,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 fun IndexScreen(
     onNavigateToFirstSteps: () -> Unit = {},
     onNavigateToWorkout: () -> Unit = {},
-    onNavigateToAbacus: () -> Unit = {}
+    onNavigateToAbacus: () -> Unit = {},
+    onNavigateToYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -205,7 +206,7 @@ fun IndexScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledTonalButton(
-                onClick = { /* TODO */ },
+                onClick = onNavigateToYupana,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = ButtonYellow,

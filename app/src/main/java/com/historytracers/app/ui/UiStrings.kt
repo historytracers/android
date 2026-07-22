@@ -235,6 +235,7 @@ data class UiStrings(
     val whereAreWeFrom: String,
     val returning: String,
     val yupana: String,
+    val quipu: String,
 )
 
 val EnStrings = UiStrings(
@@ -469,6 +470,7 @@ val EnStrings = UiStrings(
     whereAreWeFrom = "Where are we from?",
     returning = "Returning",
     yupana = "Yupana",
+    quipu = "Quipu",
 )
 
 val PtStrings = UiStrings(
@@ -703,6 +705,7 @@ val PtStrings = UiStrings(
     whereAreWeFrom = "De onde somos?",
     returning = "Retornando",
     yupana = "Yupana",
+    quipu = "Quipu",
 )
 
 val EsStrings = UiStrings(
@@ -937,6 +940,7 @@ val EsStrings = UiStrings(
     whereAreWeFrom = "¿De dónde somos?",
     returning = "Regresando",
     yupana = "Yupana",
+    quipu = "Quipu",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
