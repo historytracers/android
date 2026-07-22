@@ -1,0 +1,21 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- sign board -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M10,20 L110,20 Q115,20 115,25 L115,95 Q115,100 110,100 L10,100 Q5,100 5,95 L5,25 Q5,20 10,20Z" />
+    <!-- sign border -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M10,20 L110,20 Q115,20 115,25 L115,95 Q115,100 110,100 L10,100 Q5,100 5,95 L5,25 Q5,20 10,20Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2" />
+    <!-- left turn arrow - single bold path -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M75,45 L50,45 L50,38 L30,50 L50,62 L50,55 L75,55 Q85,55 85,60 Q85,65 75,65 L65,65 L65,75 L75,75 Q95,75 95,60 Q95,45 75,45Z" />
+</vector>

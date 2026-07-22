@@ -233,6 +233,7 @@ data class UiStrings(
     val sbwWelcomeMessage: String,
     val sbwStepStatus: String,
     val whereAreWeFrom: String,
+    val returning: String,
 )
 
 val EnStrings = UiStrings(
@@ -465,6 +466,7 @@ val EnStrings = UiStrings(
     sbwWelcomeMessage = "Click 'New exercise' to start. Follow the instructions to arrange the abacus.",
     sbwStepStatus = "📖 Step %d/%d",
     whereAreWeFrom = "Where are we from?",
+    returning = "Returning",
 )
 
 val PtStrings = UiStrings(
@@ -697,6 +699,7 @@ val PtStrings = UiStrings(
     sbwWelcomeMessage = "Clique em 'Novo exercício' para iniciar. Siga as instruções para organizar o ábaco.",
     sbwStepStatus = "📖 Passo %d/%d",
     whereAreWeFrom = "De onde somos?",
+    returning = "Retornando",
 )
 
 val EsStrings = UiStrings(
@@ -929,6 +932,7 @@ val EsStrings = UiStrings(
     sbwWelcomeMessage = "Haz clic en 'Nuevo ejercicio' para comenzar. Sigue las instrucciones para organizar el ábaco.",
     sbwStepStatus = "📖 Paso %d/%d",
     whereAreWeFrom = "¿De dónde somos?",
+    returning = "Regresando",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
