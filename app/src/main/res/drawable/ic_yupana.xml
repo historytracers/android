@@ -1,0 +1,59 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- main stepped body (Inca platform / Yupana table) -->
+    <path
+        android:fillColor="#C9714C"
+        android:pathData="M10,100 L110,100 L95,20 L25,20Z" />
+    <!-- top step ledges (gold, Inca architectural motif) -->
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M25,20 L35,20 L30,34 L20,34Z" />
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M85,20 L95,20 L100,34 L90,34Z" />
+    <!-- mid step ledges -->
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M18,48 L30,48 L26,58 L14,58Z" />
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M90,48 L102,48 L106,58 L94,58Z" />
+    <!-- counting circles row 1 -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M42,40 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#5C2E16"
+        android:pathData="M60,40 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M78,40 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <!-- counting circles row 2 -->
+    <path
+        android:fillColor="#5C2E16"
+        android:pathData="M42,60 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M60,60 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#5C2E16"
+        android:pathData="M78,60 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <!-- counting circles row 3 -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M42,80 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#5C2E16"
+        android:pathData="M60,80 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M78,80 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0Z" />
+    <!-- Inca sun accent at top center -->
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M60,8 L62,16 L66,14 L64,18 L68,20 L64,21 L60,26 L56,21 L52,20 L56,18 L54,14 L58,16Z" />
+</vector>

@@ -234,6 +234,7 @@ data class UiStrings(
     val sbwStepStatus: String,
     val whereAreWeFrom: String,
     val returning: String,
+    val yupana: String,
 )
 
 val EnStrings = UiStrings(
@@ -467,6 +468,7 @@ val EnStrings = UiStrings(
     sbwStepStatus = "📖 Step %d/%d",
     whereAreWeFrom = "Where are we from?",
     returning = "Returning",
+    yupana = "Yupana",
 )
 
 val PtStrings = UiStrings(
@@ -700,6 +702,7 @@ val PtStrings = UiStrings(
     sbwStepStatus = "📖 Passo %d/%d",
     whereAreWeFrom = "De onde somos?",
     returning = "Retornando",
+    yupana = "Yupana",
 )
 
 val EsStrings = UiStrings(
@@ -933,6 +936,7 @@ val EsStrings = UiStrings(
     sbwStepStatus = "📖 Paso %d/%d",
     whereAreWeFrom = "¿De dónde somos?",
     returning = "Regresando",
+    yupana = "Yupana",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
