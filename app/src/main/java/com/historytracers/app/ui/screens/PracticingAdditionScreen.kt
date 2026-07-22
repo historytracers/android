@@ -451,7 +451,7 @@ fun PracticingAdditionScreen(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = steps[currentStepIdx].instruction,
+                        text = "🧮 ${steps[currentStepIdx].instruction}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(12.dp)
                     )

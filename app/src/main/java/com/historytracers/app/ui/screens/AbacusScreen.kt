@@ -602,7 +602,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (completedSections.contains("subtracting_with_abacus")) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {
