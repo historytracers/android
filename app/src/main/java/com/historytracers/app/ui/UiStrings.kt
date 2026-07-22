@@ -232,6 +232,7 @@ data class UiStrings(
     val sbwLastLevelMessage: String,
     val sbwWelcomeMessage: String,
     val sbwStepStatus: String,
+    val whereAreWeFrom: String,
 )
 
 val EnStrings = UiStrings(
@@ -463,6 +464,7 @@ val EnStrings = UiStrings(
     sbwLastLevelMessage = "🎉🏆 ALL LEVELS COMPLETE! 🏆🎉\nYou mastered subtraction! Click \"New exercise\" to start again at level 1.",
     sbwWelcomeMessage = "Click 'New exercise' to start. Follow the instructions to arrange the abacus.",
     sbwStepStatus = "📖 Step %d/%d",
+    whereAreWeFrom = "Where are we from?",
 )
 
 val PtStrings = UiStrings(
@@ -694,6 +696,7 @@ val PtStrings = UiStrings(
     sbwLastLevelMessage = "🎉🏆 TODOS OS NÍVEIS CONCLUÍDOS! 🏆🎉\nVocê dominou a subtração! Clique em \"Novo exercício\" para começar novamente no nível 1.",
     sbwWelcomeMessage = "Clique em 'Novo exercício' para iniciar. Siga as instruções para organizar o ábaco.",
     sbwStepStatus = "📖 Passo %d/%d",
+    whereAreWeFrom = "De onde somos?",
 )
 
 val EsStrings = UiStrings(
@@ -925,6 +928,7 @@ val EsStrings = UiStrings(
     sbwLastLevelMessage = "🎉🏆 ¡TODOS LOS NIVELES COMPLETADOS! 🏆🎉\n¡Dominaste la resta! Haz clic en \"Nuevo ejercicio\" para empezar de nuevo en el nivel 1.",
     sbwWelcomeMessage = "Haz clic en 'Nuevo ejercicio' para comenzar. Sigue las instrucciones para organizar el ábaco.",
     sbwStepStatus = "📖 Paso %d/%d",
+    whereAreWeFrom = "¿De dónde somos?",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

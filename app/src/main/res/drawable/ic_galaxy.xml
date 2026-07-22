@@ -1,0 +1,57 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- outer glow -->
+    <path
+        android:fillColor="#FFF3B0"
+        android:pathData="M60,60 m-45,0 a45,45 0 1,0 90,0 a45,45 0 1,0 -90,0Z"
+        android:alpha="0.3" />
+    <!-- sun rays -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M60,10 L63,25 L57,25Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M60,110 L63,95 L57,95Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M10,60 L25,57 L25,63Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M110,60 L95,57 L95,63Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M27,27 L38,38 L34,42Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M93,93 L82,82 L86,78Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M27,93 L38,82 L42,86Z"
+        android:alpha="0.7" />
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M93,27 L82,38 L78,34Z"
+        android:alpha="0.7" />
+    <!-- sun body -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M60,60 m-25,0 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0Z" />
+    <!-- sun inner highlight -->
+    <path
+        android:fillColor="#FFD54F"
+        android:pathData="M60,60 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0Z" />
+    <!-- sun core -->
+    <path
+        android:fillColor="#FFE082"
+        android:pathData="M60,60 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0Z" />
+</vector>
