@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.ui.LocalUiStrings
@@ -76,6 +77,30 @@ fun IndexScreen(
                 Spacer(Modifier.width(12.dp))
                 Text(
                     text = s.iAmNotLikeYou,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            FilledTonalButton(
+                onClick = { /* TODO */ },
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_road),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = s.aRoadToSomewhere,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
