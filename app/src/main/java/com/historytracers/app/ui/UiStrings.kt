@@ -68,6 +68,7 @@ data class UiStrings(
     val history: String,
     val writingToSoroban: String,
     val writingToSuanpan: String,
+    val writingLargeNumbers: String,
     val largeNumbers: String,
     val evaluateOn: String,
     val reminder: String,
@@ -237,6 +238,7 @@ data class UiStrings(
     val yupana: String,
     val quipu: String,
     val handsOnYupana: String,
+    val movingInYupana: String,
 )
 
 val EnStrings = UiStrings(
@@ -304,7 +306,8 @@ val EnStrings = UiStrings(
     history = "History",
     writingToSoroban = "Writing to Soroban",
     writingToSuanpan = "Writing to Suanpan",
-    largeNumbers = "Writing large numbers",
+    writingLargeNumbers = "Writing large numbers",
+    largeNumbers = "Large numbers",
     evaluateOn = "Evaluate on:",
     reminder = "Study Reminder",
     reminderTime = "Reminder time",
@@ -473,6 +476,7 @@ val EnStrings = UiStrings(
     yupana = "Yupana",
     quipu = "Quipu",
     handsOnYupana = "Hands on Yupana",
+    movingInYupana = "Moving in Yupana",
 )
 
 val PtStrings = UiStrings(
@@ -540,7 +544,8 @@ val PtStrings = UiStrings(
     history = "Hist\u00f3ria",
     writingToSoroban = "Escrevendo no Soroban",
     writingToSuanpan = "Escrevendo no Suanpan",
-    largeNumbers = "Escrevendo n\u00fameros grandes",
+    writingLargeNumbers = "Escrevendo n\u00fameros grandes",
+    largeNumbers = "N\u00fameros grandes",
     evaluateOn = "Avaliar em:",
     reminder = "Lembrete de Estudo",
     reminderTime = "Hor\u00e1rio do lembrete",
@@ -709,6 +714,7 @@ val PtStrings = UiStrings(
     yupana = "Yupana",
     quipu = "Quipu",
     handsOnYupana = "M\u00e3os no Yupana",
+    movingInYupana = "Movendo no Yupana",
 )
 
 val EsStrings = UiStrings(
@@ -776,7 +782,8 @@ val EsStrings = UiStrings(
     history = "Historia",
     writingToSoroban = "Escribiendo en el Soroban",
     writingToSuanpan = "Escribiendo en el Suanpan",
-    largeNumbers = "Escribiendo n\u00fameros grandes",
+    writingLargeNumbers = "Escribiendo n\u00fameros grandes",
+    largeNumbers = "N\u00fameros grandes",
     evaluateOn = "Evaluar en:",
     reminder = "Recordatorio de Estudio",
     reminderTime = "Hora del recordatorio",
@@ -945,6 +952,7 @@ val EsStrings = UiStrings(
     yupana = "Yupana",
     quipu = "Quipu",
     handsOnYupana = "Manos en Yupana",
+    movingInYupana = "Moviéndose en Yupana",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

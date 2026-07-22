@@ -127,7 +127,7 @@ fun LargeNumbersWritingScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
                     }
                     Text(
-                        text = s.largeNumbers,
+                        text = s.writingLargeNumbers,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )

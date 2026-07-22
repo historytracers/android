@@ -117,10 +117,12 @@ fun AppNavigation() {
     val savedFirstStepsScroll by preferences.firstStepsScroll.collectAsState(initial = 0)
     val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
     val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
+    val savedYupanaScroll by preferences.yupanaScroll.collectAsState(initial = 0)
 
     val firstStepsScrollState = remember { ScrollState(0) }
     val workoutScrollState = remember { ScrollState(0) }
     val abacusScrollState = remember { ScrollState(0) }
+    val yupanaScrollState = remember { ScrollState(0) }
 
     LaunchedEffect(savedFirstStepsScroll) {
         if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
@@ -130,6 +132,9 @@ fun AppNavigation() {
     }
     LaunchedEffect(savedAbacusScroll) {
         if (savedAbacusScroll > 0) abacusScrollState.scrollTo(savedAbacusScroll)
+    }
+    LaunchedEffect(savedYupanaScroll) {
+        if (savedYupanaScroll > 0) yupanaScrollState.scrollTo(savedYupanaScroll)
     }
 
     LaunchedEffect(Unit) {
@@ -143,6 +148,10 @@ fun AppNavigation() {
     LaunchedEffect(Unit) {
         snapshotFlow { abacusScrollState.value }
             .collect { preferences.setAbacusScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { yupanaScrollState.value }
+            .collect { preferences.setYupanaScroll(it) }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -351,6 +360,9 @@ fun AppNavigation() {
                     }
                     composable(Screen.Yupana.route) {
                         YupanaScreen(
+                            scrollState = yupanaScrollState,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -358,7 +370,8 @@ fun AppNavigation() {
                                         launchSingleTop = true
                                     }
                                 }
-                            }
+                            },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
