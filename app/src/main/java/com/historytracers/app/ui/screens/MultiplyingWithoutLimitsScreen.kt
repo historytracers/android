@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -260,6 +268,8 @@ fun MultiplyingWithoutLimitsScreen(
     var showResetButton by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         currentDigitLevel = MIN_DIGIT_LEVEL
@@ -378,7 +388,8 @@ fun MultiplyingWithoutLimitsScreen(
         resetExercise()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
         Surface(
             tonalElevation = 3.dp,
             modifier = Modifier.fillMaxWidth()
@@ -610,19 +621,6 @@ fun MultiplyingWithoutLimitsScreen(
                 )
             }
 
-            Spacer(Modifier.height(4.dp))
-
-            if (feedbackMessage.isNotEmpty()) {
-                Text(
-                    text = feedbackMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
-            }
-
             Spacer(Modifier.height(12.dp))
 
             Column(
@@ -691,7 +689,88 @@ fun MultiplyingWithoutLimitsScreen(
                 }
             }
 
+            Spacer(Modifier.height(2.dp))
+
+            if (feedbackMessage.isNotEmpty()) {
+                Text(
+                    text = feedbackMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
+        }
+        }
+
+        if (!finalCongratsShown) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = 8.dp, start = 8.dp)
+            ) {
+                val uriHandler = LocalUriHandler.current
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { showSourcesMenu = true }
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Book,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = s.sources,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    onDismissRequest = { showSourcesMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.originalText) },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showMainTextSubmenu = true }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showMainTextSubmenu,
+                    onDismissRequest = { showMainTextSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showMainTextSubmenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=052bd667-eb38-4e87-8c05-439cfd9c4178"))
+                            Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showMainTextSubmenu = false
+                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=052bd667-eb38-4e87-8c05-439cfd9c4178")
+                        }
+                    )
+                }
+            }
         }
     }
 }

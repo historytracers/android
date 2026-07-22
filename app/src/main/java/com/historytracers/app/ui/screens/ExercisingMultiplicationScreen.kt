@@ -1,16 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,12 +27,14 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -151,11 +160,13 @@ private fun generateProblem(table: Int): MultiplicationProblem {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RelationshipScreen(
+    skinColor: String = "#A5672C",
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
     val footPath = remember {
         val scale = 0.1f
@@ -196,6 +207,8 @@ fun RelationshipScreen(
     var lastOneChoice by remember { mutableIntStateOf(-1) }
     var lastTwoChoice by remember { mutableIntStateOf(-1) }
     var lastThreeChoice by remember { mutableIntStateOf(-1) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val clapProgress = remember { Animatable(0f) }
@@ -405,315 +418,383 @@ fun RelationshipScreen(
             isPlaying = false
             isDone = true
             onScoreChanged(currentScore + 2)
-            preferences.markWorkoutSectionCompleted("relationship")
             preferences.markWorkoutSectionCompleted("exercising_multiplication")
             preferences.recordLessonCompletion()
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    }
+                    Text(
+                        text = s.exercisingMultiplication,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                    .offset(y = (-10).dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-                }
                 Text(
-                    text = s.relationship,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    text = s.relationshipReinforce,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
                 )
+
+                Spacer(Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(Modifier.width(35.dp))
+                    Text(
+                        text = "${problem.topValue}",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp),
+                        modifier = Modifier.width(35.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(Modifier.width(35.dp), contentAlignment = Alignment.Center) {
+                        Text("×", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp))
+                    }
+                    Text(
+                        text = "${problem.bottomValue}",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp),
+                        modifier = Modifier.width(35.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Box(Modifier.width(120.dp)) { Divider(thickness = 4.dp) }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(Modifier.width(35.dp))
+                    Text(
+                        text = "${problem.result}",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 21.sp),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(35.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                Canvas(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    val s = minOf(size.width / 600f, size.height / 600f)
+                    val cx = size.width * 0.5f + 90f * density - 20f * density
+                    val cy = size.height * 0.5f
+
+                    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = handColor.hashCode()
+                        style = Paint.Style.FILL
+                        strokeJoin = Paint.Join.ROUND
+                    }
+
+                    val footScale = s * (0.125f / 0.6f) * 0.7f
+                    val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density + 20f * density - 70f * density + 20f * density - 10f * density
+                    val footBaseX = cx - 20f * density
+                    val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density - 70f * density + 20f * density + 10f * density
+
+                    val restOff = 120f * s
+                    val prog = clapProgress.value
+                    val handHorizProg = handHorizontalProgress.value
+                    val handSpreadProg = handSpreadProgress.value
+
+                    val leftOff: Float
+                    val rightOff: Float
+
+                    if (prog > 0f) {
+                        leftOff = -restOff + restOff * prog
+                        rightOff = restOff - restOff * prog
+                    } else if (handSpreadProg > 0f) {
+                        val spreadOff = restOff * handSpreadProg
+                        leftOff = -restOff - spreadOff
+                        rightOff = restOff + spreadOff
+                    } else if (handHorizProg > 0f) {
+                        val horizOff = restOff * handHorizProg
+                        leftOff = if (handHorizontalIsLeft) -restOff - horizOff else -restOff
+                        rightOff = if (!handHorizontalIsLeft) restOff + horizOff else restOff
+                    } else {
+                        leftOff = -restOff
+                        rightOff = restOff
+                    }
+
+                    val leftMatrix = Matrix()
+                    leftMatrix.setTranslate(cx + leftOff, handY)
+                    leftMatrix.preScale(s * 0.7f, s * 0.7f)
+                    val left = Path()
+                    left.addPath(handPath, leftMatrix)
+                    drawContext.canvas.nativeCanvas.drawPath(left, paint)
+
+                    val rightMatrix = Matrix()
+                    rightMatrix.setTranslate(cx + rightOff, handY)
+                    rightMatrix.preScale(s * 0.7f, s * 0.7f)
+                    val right = Path()
+                    right.addPath(handPath, rightMatrix)
+                    drawContext.canvas.nativeCanvas.drawPath(right, paint)
+
+                    fun drawFoot(xOffset: Float, mirrorX: Boolean, scaleMul: Float = 1f, yOffset: Float = 0f) {
+                        val m = Matrix()
+                        val ms = footScale * scaleMul
+                        val footCx = (footMinX + footMaxX) / 2f
+                        val footCy = (footMinY + footMaxY) / 2f
+                        m.setTranslate(footBaseX + xOffset - footCx * ms, footY + yOffset - footCy * ms)
+                        m.preScale(if (mirrorX) -ms else ms, ms)
+                        val fp = Path()
+                        fp.addPath(footPath.first, m)
+                        drawContext.canvas.nativeCanvas.drawPath(fp, paint)
+                    }
+
+                    val leftZoom: Float
+                    val rightZoom: Float
+                    val leftYOff: Float
+                    val rightYOff: Float
+
+                    val p = footZoomProgress.value
+                    val stepPhase = if (p < 0.5f) p * 2f else (1f - (p - 0.5f) * 2f)
+                    val rise = -40f * s * stepPhase
+                    val zoom = 1f + stepPhase * 0.1f
+
+                    if (isPlaying && p > 0f) {
+                        if (jumpActive) {
+                            leftZoom = 1f + p * 0.08f
+                            rightZoom = leftZoom
+                            leftYOff = 0f
+                            rightYOff = 0f
+                        } else {
+                            leftZoom = if (stepIsLeft) zoom else 1f
+                            rightZoom = if (!stepIsLeft) zoom else 1f
+                            leftYOff = if (stepIsLeft) rise else 0f
+                            rightYOff = if (!stepIsLeft) rise else 0f
+                        }
+                    } else {
+                        leftZoom = 1f
+                        rightZoom = 1f
+                        leftYOff = 0f
+                        rightYOff = 0f
+                    }
+
+                    drawFoot(-45f * s, mirrorX = true, leftZoom, leftYOff)
+                    drawFoot(45f * s, mirrorX = false, rightZoom, rightYOff)
+                }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+.offset(y = (-50).dp)
+                .padding(horizontal = 16.dp, vertical = 4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.offset(y = (-40).dp)
+                ) {
+                    Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
+
+                    var expanded by remember { mutableStateOf(false) }
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { if (!isPlaying) expanded = !expanded }
+                    ) {
+                        OutlinedTextField(
+                            value = if (selectedTable == -1) s.randomly else "${selectedTable}",
+                            onValueChange = {},
+                            readOnly = true,
+                            enabled = !isPlaying,
+                            textStyle = MaterialTheme.typography.bodyMedium,
+                            singleLine = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            modifier = Modifier.menuAnchor().width(120.dp)
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(s.randomly) },
+                                onClick = { selectedTable = -1; expanded = false; newMultiplication() }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("1") },
+                                onClick = { selectedTable = 1; expanded = false; newMultiplication() }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("2") },
+                                onClick = { selectedTable = 2; expanded = false; newMultiplication() }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("3") },
+                                onClick = { selectedTable = 3; expanded = false; newMultiplication() }
+                            )
+                        }
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.offset(y = (-40).dp)
+                ) {
+                    Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                    Slider(
+                        value = sliderPos,
+                        onValueChange = { if (!isPlaying) sliderPos = it },
+                        valueRange = 600f..1600f,
+                        modifier = Modifier.width(150.dp),
+                        enabled = !isPlaying
+                    )
+                    Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.offset(y = (-40).dp)
+            ) {
+                FilledTonalButton(
+                    onClick = { newMultiplication() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        ),
+                        enabled = !isPlaying
+                    ) {
+                        Text(
+                            text = s.newExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick = { startExercise() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        ),
+                        enabled = !isPlaying
+                    ) {
+                        Text(
+                            text = s.doExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                }
             }
         }
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        if (isDone && !isPlaying) {
             Text(
-                text = s.relationshipReinforce,
+                text = s.exercisingAdditionCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 50.dp)
             )
-
-            Spacer(Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(Modifier.width(35.dp))
-                Text(
-                    text = "${problem.topValue}",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
-                    modifier = Modifier.width(35.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(Modifier.width(35.dp), contentAlignment = Alignment.Center) {
-                    Text("×", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp))
-                }
-                Text(
-                    text = "${problem.bottomValue}",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
-                    modifier = Modifier.width(35.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-            Box(Modifier.width(120.dp)) { Divider(thickness = 4.dp) }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(Modifier.width(35.dp))
-                Text(
-                    text = "${problem.result}",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 26.sp),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(35.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
         }
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
         ) {
-            Canvas(
-                modifier = Modifier.fillMaxSize()
+            val uriHandler = LocalUriHandler.current
+            val context = LocalContext.current
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
             ) {
-                val s = minOf(size.width / 600f, size.height / 600f)
-                val cx = size.width * 0.5f + 90f * density - 20f * density
-                val cy = size.height * 0.5f
-
-                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.parseColor("#F4C2A1")
-                    style = Paint.Style.FILL
-                    strokeJoin = Paint.Join.ROUND
-                }
-
-                val footScale = s * (0.125f / 0.6f) * 0.7f
-                val footY = cy + 60f * s + 30f * density - 70f * density + 20f * density + 20f * density + 20f * density - 70f * density + 20f * density
-                val footBaseX = cx - 20f * density
-                val handY = cy - 200f * s - 140f * density + 10f * density + 10f * density + 20f * density + 40f * density - 70f * density + 20f * density + 10f * density
-
-                val restOff = 120f * s
-                val prog = clapProgress.value
-                val handHorizProg = handHorizontalProgress.value
-                val handSpreadProg = handSpreadProgress.value
-
-                val leftOff: Float
-                val rightOff: Float
-
-                if (prog > 0f) {
-                    leftOff = -restOff + restOff * prog
-                    rightOff = restOff - restOff * prog
-                } else if (handSpreadProg > 0f) {
-                    val spreadOff = restOff * handSpreadProg
-                    leftOff = -restOff - spreadOff
-                    rightOff = restOff + spreadOff
-                } else if (handHorizProg > 0f) {
-                    val horizOff = restOff * handHorizProg
-                    leftOff = if (handHorizontalIsLeft) -restOff - horizOff else -restOff
-                    rightOff = if (!handHorizontalIsLeft) restOff + horizOff else restOff
-                } else {
-                    leftOff = -restOff
-                    rightOff = restOff
-                }
-
-                val leftMatrix = Matrix()
-                leftMatrix.setTranslate(cx + leftOff, handY)
-                leftMatrix.preScale(s * 0.7f, s * 0.7f)
-                val left = Path()
-                left.addPath(handPath, leftMatrix)
-                drawContext.canvas.nativeCanvas.drawPath(left, paint)
-
-                val rightMatrix = Matrix()
-                rightMatrix.setTranslate(cx + rightOff, handY)
-                rightMatrix.preScale(s * 0.7f, s * 0.7f)
-                val right = Path()
-                right.addPath(handPath, rightMatrix)
-                drawContext.canvas.nativeCanvas.drawPath(right, paint)
-
-                fun drawFoot(xOffset: Float, mirrorX: Boolean, scaleMul: Float = 1f, yOffset: Float = 0f) {
-                    val m = Matrix()
-                    val ms = footScale * scaleMul
-                    val footCx = (footMinX + footMaxX) / 2f
-                    val footCy = (footMinY + footMaxY) / 2f
-                    m.setTranslate(footBaseX + xOffset - footCx * ms, footY + yOffset - footCy * ms)
-                    m.preScale(if (mirrorX) -ms else ms, ms)
-                    val fp = Path()
-                    fp.addPath(footPath.first, m)
-                    drawContext.canvas.nativeCanvas.drawPath(fp, paint)
-                }
-
-                val leftZoom: Float
-                val rightZoom: Float
-                val leftYOff: Float
-                val rightYOff: Float
-
-                val p = footZoomProgress.value
-                val stepPhase = if (p < 0.5f) p * 2f else (1f - (p - 0.5f) * 2f)
-                val rise = -40f * s * stepPhase
-                val zoom = 1f + stepPhase * 0.1f
-
-                if (isPlaying && p > 0f) {
-                    if (jumpActive) {
-                        leftZoom = 1f + p * 0.08f
-                        rightZoom = leftZoom
-                        leftYOff = 0f
-                        rightYOff = 0f
-                    } else {
-                        leftZoom = if (stepIsLeft) zoom else 1f
-                        rightZoom = if (!stepIsLeft) zoom else 1f
-                        leftYOff = if (stepIsLeft) rise else 0f
-                        rightYOff = if (!stepIsLeft) rise else 0f
-                    }
-                } else {
-                    leftZoom = 1f
-                    rightZoom = 1f
-                    leftYOff = 0f
-                    rightYOff = 0f
-                }
-
-                drawFoot(-45f * s, mirrorX = true, leftZoom, leftYOff)
-                drawFoot(45f * s, mirrorX = false, rightZoom, rightYOff)
-            }
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .offset(y = (-30).dp)
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.offset(y = (-40).dp)
-            ) {
-                Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
-
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { if (!isPlaying) expanded = !expanded }
-                ) {
-                    OutlinedTextField(
-                        value = if (selectedTable == -1) s.randomly else "${selectedTable}",
-                        onValueChange = {},
-                        readOnly = true,
-                        enabled = !isPlaying,
-                        textStyle = MaterialTheme.typography.bodyMedium,
-                        singleLine = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor().width(120.dp)
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(s.randomly) },
-                            onClick = { selectedTable = -1; expanded = false; newMultiplication() }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("1") },
-                            onClick = { selectedTable = 1; expanded = false; newMultiplication() }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("2") },
-                            onClick = { selectedTable = 2; expanded = false; newMultiplication() }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("3") },
-                            onClick = { selectedTable = 3; expanded = false; newMultiplication() }
-                        )
-                    }
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.offset(y = (-40).dp)
-            ) {
-                Text(s.slowly, style = MaterialTheme.typography.bodySmall)
-                Slider(
-                    value = sliderPos,
-                    onValueChange = { if (!isPlaying) sliderPos = it },
-                    valueRange = 600f..1600f,
-                    modifier = Modifier.width(150.dp),
-                    enabled = !isPlaying
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = s.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.offset(y = (-20).dp)
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
             ) {
-                FilledTonalButton(
-                    onClick = { newMultiplication() },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = ButtonYellow,
-                        contentColor = OnButtonYellow
-                    ),
-                    enabled = !isPlaying
-                ) {
-                    Text(
-                        text = s.newExercise,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
+                DropdownMenuItem(
+                    text = { Text(s.originalText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
+            }
 
-                FilledTonalButton(
-                    onClick = { startExercise() },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = ButtonYellow,
-                        contentColor = OnButtonYellow
-                    ),
-                    enabled = !isPlaying
-                ) {
-                    Text(
-                        text = s.doExercise,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=59648475-3d23-45fe-8d6e-f3def1a2729b"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=59648475-3d23-45fe-8d6e-f3def1a2729b")
+                    }
+                )
             }
         }
-    }
-
-    if (isDone && !isPlaying) {
-        Text(
-            text = s.exercisingAdditionCompletionMessage,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF2E7D32),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 10.dp)
-                .wrapContentHeight(Alignment.Bottom)
-        )
     }
 }

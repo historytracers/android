@@ -4,6 +4,7 @@ package com.historytracers.app.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.ScrollState
 import androidx.compose.material.icons.Icons
@@ -43,7 +44,8 @@ fun AbacusScreen(
     onNavigateToMultiplicationTable: () -> Unit = {},
     onNavigateToMultiplyingWithAbacus: () -> Unit = {},
     onNavigateToMultiplyingWithAbacusLevel2: () -> Unit = {},
-    onNavigateToMultiplyingWithoutLimits: () -> Unit = {}
+    onNavigateToMultiplyingWithoutLimits: () -> Unit = {},
+    onNavigateToSubtractingWithAbacus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
@@ -556,6 +558,66 @@ fun AbacusScreen(
 
             Text(
                 text = s.nextLevel,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            FilledIconButton(
+                onClick = { /* TODO */ },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_road),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Unspecified
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.returningWithAbacus,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToSubtractingWithAbacus,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("subtracting_with_abacus")) ButtonYellowDark else ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Text(
+                    text = "9 - 5",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.subtractingWithAbacus,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

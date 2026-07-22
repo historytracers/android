@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -61,8 +69,12 @@ fun SuanpanWritingScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showAPalSubmenu by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
         Surface(
             tonalElevation = 3.dp,
             modifier = Modifier.fillMaxWidth()
@@ -306,29 +318,134 @@ fun SuanpanWritingScreen(
                 )
             }
 
-        if (showCongrats.value) {
-            Text(
-                text = "${s.congratulationTitle} \uD83C\uDF89",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = s.resetHint,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-            }
-
             Spacer(Modifier.height(24.dp))
             }
         }
     }
 
-    if (currentValue == targetValue.value.toLong() && !showCongrats.value) {
+    if (showCongrats.value) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "${s.congratulationTitle} \uD83C\uDF89",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = s.resetHint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .align(Alignment.BottomStart)
+            .padding(bottom = 8.dp, start = 8.dp)
+    ) {
+        val uriHandler = LocalUriHandler.current
+        val ctx = LocalContext.current
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { showSourcesMenu = true }
+                .padding(8.dp)
+        ) {
+            Icon(
+                Icons.Filled.Book,
+                contentDescription = null,
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = s.sources,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        DropdownMenu(
+            expanded = showSourcesMenu && !showMainTextSubmenu && !showAPalSubmenu,
+            onDismissRequest = { showSourcesMenu = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(s.originalText) },
+                trailingIcon = {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                },
+                onClick = { showMainTextSubmenu = true }
+            )
+            DropdownMenuItem(
+                text = { Text(s.aPal) },
+                trailingIcon = {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                },
+                onClick = { showAPalSubmenu = true }
+            )
+        }
+
+        DropdownMenu(
+            expanded = showSourcesMenu && showMainTextSubmenu,
+            onDismissRequest = { showMainTextSubmenu = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(s.copyUrl) },
+                onClick = {
+                    showSourcesMenu = false
+                    showMainTextSubmenu = false
+                    val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=716d6fe5-78cc-4fef-85da-11daff12399d"))
+                    Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(s.goToUrl) },
+                onClick = {
+                    showSourcesMenu = false
+                    showMainTextSubmenu = false
+                    uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=716d6fe5-78cc-4fef-85da-11daff12399d")
+                }
+            )
+        }
+
+        DropdownMenu(
+            expanded = showSourcesMenu && showAPalSubmenu,
+            onDismissRequest = { showAPalSubmenu = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(s.copyUrl) },
+                onClick = {
+                    showSourcesMenu = false
+                    showAPalSubmenu = false
+                    val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf"))
+                    Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(s.goToUrl) },
+                onClick = {
+                    showSourcesMenu = false
+                    showAPalSubmenu = false
+                    uriHandler.openUri("https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf")
+                }
+            )
+        }
+    }
+}
+
+if (currentValue == targetValue.value.toLong() && !showCongrats.value) {
         showCongrats.value = true
         onScoreChanged(currentScore + 2)
         scope.launch { preferences.recordLessonCompletion() }

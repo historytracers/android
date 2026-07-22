@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -48,6 +49,7 @@ import com.historytracers.app.ui.screens.MultiplicationTableScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusLevel2Screen
 import com.historytracers.app.ui.screens.MultiplyingWithoutLimitsScreen
+import com.historytracers.app.ui.screens.SubtractingWithAbacusScreen
 import com.historytracers.app.ui.screens.RelationshipScreen
 import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
 import com.historytracers.app.notification.NotificationHelper
@@ -62,7 +64,7 @@ fun AppNavigation() {
     val preferences = remember { UserPreferences(context) }
     val language by preferences.language.collectAsState(initial = "en-US")
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
-    val skinColor by preferences.skinColor.collectAsState(initial = "#FFF8E0")
+    val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
     val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2")
     var startDest by remember { mutableStateOf<String?>(null) }
@@ -234,7 +236,7 @@ fun AppNavigation() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text("History Tracers") },
+                        title = {},
                         navigationIcon = {
                             IconButton(onClick = {
                                 scope.launch { drawerState.open() }
@@ -250,6 +252,18 @@ fun AppNavigation() {
                             Spacer(Modifier.padding(end = 4.dp))
                             Icon(
                                 Icons.Default.Psychology,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.padding(end = 8.dp))
+                            Text(
+                                text = streakCount.toString(),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(Modifier.padding(end = 4.dp))
+                            Icon(
+                                Icons.Default.LocalFireDepartment,
                                 contentDescription = null,
                                 modifier = Modifier.size(24.dp),
                                 tint = MaterialTheme.colorScheme.primary
@@ -329,7 +343,8 @@ fun AppNavigation() {
                             onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTable.route) },
                             onNavigateToMultiplyingWithAbacus = { navController.navigate(Screen.MultiplyingWithAbacus.route) },
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
-                            onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) }
+                            onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
+                            onNavigateToSubtractingWithAbacus = { navController.navigate(Screen.SubtractingWithAbacus.route) }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
@@ -482,6 +497,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.Relationship.route) {
                         RelationshipScreen(
+                            skinColor = skinColor,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Workout.route, false)) {
                                     navController.navigate(Screen.Workout.route) {
@@ -496,6 +512,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.ExercisingMultiplicationL2.route) {
                         ExercisingMultiplicationL2Screen(
+                            skinColor = skinColor,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Workout.route, false)) {
                                     navController.navigate(Screen.Workout.route) {
@@ -566,6 +583,20 @@ fun AppNavigation() {
                     }
                     composable(Screen.MultiplyingWithoutLimits.route) {
                         MultiplyingWithoutLimitsScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SubtractingWithAbacus.route) {
+                        SubtractingWithAbacusScreen(
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Abacus.route, false)) {
                                     navController.navigate(Screen.Abacus.route) {

@@ -1,14 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,6 +83,10 @@ fun LargeNumbersWritingScreen(
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
     var hasInteracted by remember { mutableStateOf(false) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showAPalSubmenu by remember { mutableStateOf(false) }
+    var showTomokoSubmenu by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -100,37 +110,36 @@ fun LargeNumbersWritingScreen(
         hasInteracted = false
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    }
+                    Text(
+                        text = s.largeNumbers,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
-                Text(
-                    text = s.largeNumbers,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
             }
-        }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(top = 100.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
             Spacer(Modifier.height(12.dp))
 
             Text(
@@ -139,13 +148,12 @@ fun LargeNumbersWritingScreen(
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 8.dp)
-                    .offset(y = (-100).dp)
             )
 
             Spacer(Modifier.height(12.dp))
 
             Column(
-                modifier = Modifier.offset(y = (-90).dp),
+                modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var isSoroban by remember { mutableStateOf(true) }
@@ -213,7 +221,6 @@ fun LargeNumbersWritingScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 400f)
-                        .offset(y = (-20).dp)
                         .pointerInput(upperMax, lowerMax, stepCompleted) {
                             detectTapGestures { offset ->
                                 if (stepCompleted) return@detectTapGestures
@@ -312,33 +319,6 @@ fun LargeNumbersWritingScreen(
                     }
                 }
 
-                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
-                    val congratsText = if (completedLevel == 8) {
-                        "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
-                    } else {
-                        "${s.levelComplete.format(completedLevel)} \uD83C\uDF89"
-                    }
-                    Text(
-                        text = congratsText,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-
-                if (feedbackMessage.isNotEmpty()) {
-                    Text(
-                        text = feedbackMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-
                 Spacer(Modifier.height(12.dp))
 
                 Row(
@@ -421,15 +401,177 @@ fun LargeNumbersWritingScreen(
         }
     }
 
-    if (currentValue == targetValue.value && !showCongrats.value) {
-        showCongrats.value = true
-        completedLevel = currentLevel
-        onScoreChanged(currentScore + 2)
-        scope.launch { preferences.recordLessonCompletion() }
-    scope.launch { preferences.markAbacusSectionCompleted("large_numbers_writing") }
-        stepCompleted = true
-        feedbackMessage = s.feedbackCorrect
-        isFeedbackPositive = true
+        if (currentValue == targetValue.value && !showCongrats.value) {
+            showCongrats.value = true
+            completedLevel = currentLevel
+            onScoreChanged(currentScore + 2)
+            scope.launch { preferences.recordLessonCompletion() }
+            scope.launch { preferences.markAbacusSectionCompleted("large_numbers_writing") }
+            stepCompleted = true
+            isFeedbackPositive = true
+        }
+
+        if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage || feedbackMessage.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
+                    val congratsText = if (completedLevel == 8) {
+                        "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
+                    } else {
+                        "${s.levelComplete.format(completedLevel)} \uD83C\uDF89"
+                    }
+                    Text(
+                        text = congratsText,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+                if (feedbackMessage.isNotEmpty()) {
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
+        ) {
+            val uriHandler = LocalUriHandler.current
+            val context = LocalContext.current
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = s.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu && !showAPalSubmenu && !showTomokoSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.originalText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.aPal) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showAPalSubmenu = true }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.tomokoHoult) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showTomokoSubmenu = true }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=4dc32200-392c-4d20-ae2d-0089b3c288bb"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=4dc32200-392c-4d20-ae2d-0089b3c288bb")
+                    }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showAPalSubmenu,
+                onDismissRequest = { showAPalSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showAPalSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showAPalSubmenu = false
+                        uriHandler.openUri("https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf")
+                    }
+                )
+            }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showTomokoSubmenu,
+                onDismissRequest = { showTomokoSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showTomokoSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.youtube.com/watch?v=-br2yp3tQ1M"))
+                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showTomokoSubmenu = false
+                        uriHandler.openUri("https://www.youtube.com/watch?v=-br2yp3tQ1M")
+                    }
+                )
+            }
+        }
     }
 }
 
