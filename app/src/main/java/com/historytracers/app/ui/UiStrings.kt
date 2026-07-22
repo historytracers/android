@@ -236,6 +236,7 @@ data class UiStrings(
     val returning: String,
     val yupana: String,
     val quipu: String,
+    val handsOnYupana: String,
 )
 
 val EnStrings = UiStrings(
@@ -471,6 +472,7 @@ val EnStrings = UiStrings(
     returning = "Returning",
     yupana = "Yupana",
     quipu = "Quipu",
+    handsOnYupana = "Hands on Yupana",
 )
 
 val PtStrings = UiStrings(
@@ -706,6 +708,7 @@ val PtStrings = UiStrings(
     returning = "Retornando",
     yupana = "Yupana",
     quipu = "Quipu",
+    handsOnYupana = "M\u00e3os no Yupana",
 )
 
 val EsStrings = UiStrings(
@@ -941,6 +944,7 @@ val EsStrings = UiStrings(
     returning = "Regresando",
     yupana = "Yupana",
     quipu = "Quipu",
+    handsOnYupana = "Manos en Yupana",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }

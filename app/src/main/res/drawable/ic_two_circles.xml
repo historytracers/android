@@ -1,0 +1,15 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- top circle -->
+    <path
+        android:fillColor="#C9714C"
+        android:pathData="M60,20 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0Z" />
+    <!-- bottom circle -->
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M60,80 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0Z" />
+</vector>
