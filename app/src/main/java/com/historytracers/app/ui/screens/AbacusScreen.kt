@@ -71,10 +71,17 @@ fun AbacusScreen(
             completedSections
         )
     }
+    val group4Controller = remember {
+        LevelGroupController(
+            listOf("returning_with_abacus", "subtracting_with_abacus"),
+            completedSections
+        )
+    }
     LaunchedEffect(completedSections) {
         group1Controller.syncFromPersisted(completedSections)
         group2Controller.syncFromPersisted(completedSections)
         group3Controller.syncFromPersisted(completedSections)
+        group4Controller.syncFromPersisted(completedSections)
     }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
@@ -618,6 +625,40 @@ fun AbacusScreen(
 
             Text(
                 text = s.subtractingWithAbacus,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    claimLevel("abacus_group4")
+                    onNavigateToCongratulation()
+                },
+                enabled = group4Controller.allCompleted,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if ("abacus_group4" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_flag),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Unspecified
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
