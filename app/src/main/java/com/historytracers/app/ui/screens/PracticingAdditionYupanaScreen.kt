@@ -282,6 +282,40 @@ fun PracticingAdditionYupanaScreen(
         resetExercise()
     }
 
+    fun advanceToPhase(newPhase: Int) {
+        phase = newPhase
+        stepRowIdx = 0
+        when (newPhase) {
+            0 -> { userRedColumns = emptySet() }
+            1 -> { userBlueColumns = emptySet() }
+            else -> { greenColumns = emptySet(); consumedLeft = emptySet(); consumedRight = emptySet() }
+        }
+        rowCompleted = false
+        feedbackMessage = ""
+        while (stepRowIdx <= lastMeaningfulStepRowIdx) {
+            val idx = ROWS - 1 - stepRowIdx
+            val digit = when (newPhase) {
+                0 -> rows[idx].leftDigit
+                1 -> rows[idx].rightDigit
+                else -> rows[idx].resultDigit
+            }
+            if (getMarkersForDigit(digit).isNotEmpty()) break
+            when (newPhase) {
+                0 -> completedRedMarkers = completedRedMarkers.toMutableList().also { it[idx] = emptySet() }
+                1 -> completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[idx] = emptySet() }
+            }
+            if (stepRowIdx >= lastMeaningfulStepRowIdx) {
+                if (newPhase >= 2) {
+                    rowCompleted = true
+                } else {
+                    advanceToPhase(newPhase + 1)
+                }
+                return
+            }
+            stepRowIdx++
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Surface(
@@ -501,73 +535,51 @@ fun PracticingAdditionYupanaScreen(
                                 when (phase) {
                                     0 -> {
                                         if (stepRowIdx == -1) {
-                                            stepRowIdx = 0
-                                            userRedColumns = emptySet()
-                                            rowCompleted = false
-                                            feedbackMessage = ""
+                                            advanceToPhase(0)
                                         } else {
                                             if (stepRowIdx >= lastMeaningfulStepRowIdx) {
-                                                phase = 1
-                                                stepRowIdx = -1
-                                                rowCompleted = false
-                                                feedbackMessage = ""
+                                                advanceToPhase(1)
                                                 return@FilledTonalButton
                                             }
                                             stepRowIdx++
                                             userRedColumns = emptySet()
                                             rowCompleted = false
                                             feedbackMessage = ""
-                                        }
-                                        while (stepRowIdx <= lastMeaningfulStepRowIdx) {
-                                            val activeIdx = ROWS - 1 - stepRowIdx
-                                            if (getMarkersForDigit(rows[activeIdx].leftDigit).isEmpty()) {
-                                                completedRedMarkers = completedRedMarkers.toMutableList().also { it[activeIdx] = emptySet() }
-                                                if (stepRowIdx >= lastMeaningfulStepRowIdx) {
-                                                    phase = 1
-                                                    stepRowIdx = -1
-                                                    rowCompleted = false
-                                                    feedbackMessage = ""
-                                                    return@FilledTonalButton
-                                                }
-                                                stepRowIdx++
-                                            } else {
-                                                break
+                                            while (stepRowIdx <= lastMeaningfulStepRowIdx) {
+                                                val idx = ROWS - 1 - stepRowIdx
+                                                if (getMarkersForDigit(rows[idx].leftDigit).isEmpty()) {
+                                                    completedRedMarkers = completedRedMarkers.toMutableList().also { it[idx] = emptySet() }
+                                                    if (stepRowIdx >= lastMeaningfulStepRowIdx) {
+                                                        advanceToPhase(1)
+                                                        return@FilledTonalButton
+                                                    }
+                                                    stepRowIdx++
+                                                } else { break }
                                             }
                                         }
                                     }
                                     1 -> {
                                         if (stepRowIdx == -1) {
-                                            stepRowIdx = 0
-                                            userBlueColumns = emptySet()
-                                            rowCompleted = false
-                                            feedbackMessage = ""
+                                            advanceToPhase(1)
                                         } else {
                                             if (stepRowIdx >= lastMeaningfulStepRowIdx) {
-                                                phase = 2
-                                                stepRowIdx = -1
-                                                rowCompleted = false
-                                                feedbackMessage = ""
+                                                advanceToPhase(2)
                                                 return@FilledTonalButton
                                             }
                                             stepRowIdx++
                                             userBlueColumns = emptySet()
                                             rowCompleted = false
                                             feedbackMessage = ""
-                                        }
-                                        while (stepRowIdx <= lastMeaningfulStepRowIdx) {
-                                            val activeIdx = ROWS - 1 - stepRowIdx
-                                            if (getMarkersForDigit(rows[activeIdx].rightDigit).isEmpty()) {
-                                                completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[activeIdx] = emptySet() }
-                                                if (stepRowIdx >= lastMeaningfulStepRowIdx) {
-                                                    phase = 2
-                                                    stepRowIdx = -1
-                                                    rowCompleted = false
-                                                    feedbackMessage = ""
-                                                    return@FilledTonalButton
-                                                }
-                                                stepRowIdx++
-                                            } else {
-                                                break
+                                            while (stepRowIdx <= lastMeaningfulStepRowIdx) {
+                                                val idx = ROWS - 1 - stepRowIdx
+                                                if (getMarkersForDigit(rows[idx].rightDigit).isEmpty()) {
+                                                    completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[idx] = emptySet() }
+                                                    if (stepRowIdx >= lastMeaningfulStepRowIdx) {
+                                                        advanceToPhase(2)
+                                                        return@FilledTonalButton
+                                                    }
+                                                    stepRowIdx++
+                                                } else { break }
                                             }
                                         }
                                     }
@@ -580,16 +592,14 @@ fun PracticingAdditionYupanaScreen(
                                         rowCompleted = false
                                         feedbackMessage = ""
                                         while (stepRowIdx <= lastMeaningfulStepRowIdx) {
-                                            val activeIdx = ROWS - 1 - stepRowIdx
-                                            if (getMarkersForDigit(rows[activeIdx].resultDigit).isEmpty()) {
+                                            val idx = ROWS - 1 - stepRowIdx
+                                            if (getMarkersForDigit(rows[idx].resultDigit).isEmpty()) {
                                                 if (stepRowIdx >= lastMeaningfulStepRowIdx) {
                                                     rowCompleted = true
                                                     return@FilledTonalButton
                                                 }
                                                 stepRowIdx++
-                                            } else {
-                                                break
-                                            }
+                                            } else { break }
                                         }
                                     }
                                 }
