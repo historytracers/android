@@ -547,17 +547,18 @@ private fun DrawScope.drawYupanaRow(
         size = Size(4f * cellWidth, 0.8f / 440f * ch),
     )
 
-    val dotRadius = minOf(cellWidth * 0.09f, cellHeight * 0.09f, 4.5f / 860f * cw)
+    val dotRadius = minOf(cellWidth * 0.18f, cellHeight * 0.18f, 9f / 860f * cw)
     val markerRadius = dotRadius * 0.9f
     val markerGap = cellHeight * 0.12f
+    val extraPx = with(density) { 3.dp.toPx() }
 
     val dotPositionsByCol = listOf(
         listOf(
             Offset(-dotRadius * 1.5f, -dotRadius * 2f),
             Offset(-dotRadius * 1.5f, 0f),
             Offset(-dotRadius * 1.5f, dotRadius * 2f),
-            Offset(dotRadius * 1.5f, -dotRadius * 0.8f),
-            Offset(dotRadius * 1.5f, dotRadius * 0.8f),
+            Offset(dotRadius * 1.5f, -dotRadius * 0.8f - extraPx / 2f),
+            Offset(dotRadius * 1.5f, dotRadius * 0.8f + extraPx / 2f),
         ),
         listOf(
             Offset(0f, -dotRadius * 1.8f),
