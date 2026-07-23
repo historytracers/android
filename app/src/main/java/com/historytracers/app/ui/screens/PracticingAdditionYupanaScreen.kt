@@ -636,12 +636,12 @@ private fun DrawScope.drawYupanaRow(
         if (resultActive) {
             val my = topMarkerY - extraPx
             drawCircle(
-                color = Color(0xFF2E241F),
+                color = Color(0xFF27AE60),
                 radius = markerRadius,
                 center = Offset(cx, my)
             )
             drawCircle(
-                color = Color(0xFFF2ECD8).copy(alpha = 0.3f),
+                color = Color(0xFFA8E6C1).copy(alpha = 0.4f),
                 radius = markerRadius * 0.7f,
                 center = Offset(cx, my)
             )
