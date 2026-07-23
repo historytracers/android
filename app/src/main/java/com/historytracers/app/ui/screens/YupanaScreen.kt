@@ -35,7 +35,8 @@ fun YupanaScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    onNavigateToCongratulation: () -> Unit = {}
+    onNavigateToCongratulation: () -> Unit = {},
+    onNavigateToPracticingAdditionYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
@@ -253,7 +254,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { /* TODO */ },
+                    onClick = { onNavigateToPracticingAdditionYupana() },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(

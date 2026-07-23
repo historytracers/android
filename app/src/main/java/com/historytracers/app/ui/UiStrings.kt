@@ -239,6 +239,12 @@ data class UiStrings(
     val quipu: String,
     val handsOnYupana: String,
     val movingInYupana: String,
+    val practicingWithYupana: String,
+    val practicingAdditionYupanaInstruction: String,
+    val yupanaValues: String,
+    val yupanaResult: String,
+    val yupanaStepByStep: String,
+    val moves: String,
 )
 
 val EnStrings = UiStrings(
@@ -477,6 +483,12 @@ val EnStrings = UiStrings(
     quipu = "Quipu",
     handsOnYupana = "Hands on Yupana",
     movingInYupana = "Moving in Yupana",
+    practicingWithYupana = "Practicing with the Yupana (Addition)",
+    practicingAdditionYupanaInstruction = "To better understand the Yupana Inka Tawa Pukllay method, we will use a Yupana with 4 rows to add two numbers. With this configuration, we can represent values up to 4,999. However, it is possible to add more rows to add larger numbers, without limitations.\n\nIn the following example, we initially demonstrate the addition of 512 + 513. We invite you to switch between the three options to better understand the Yupana Inka Tawa Pukllay. Each option presents the following:\n- Values: shows how the numbers are written on the Yupana;\n- Result: shows the final result of the addition operation;\n- Step by Step: performs the addition row by row.\n\nYou can also modify the values in the example to reinforce your learning. After changing them, first click the Values button to display the numbers, and then see how they are represented on the Yupana.",
+    yupanaValues = "Values",
+    yupanaResult = "Result",
+    yupanaStepByStep = "Step by Step",
+    moves = "Moves",
 )
 
 val PtStrings = UiStrings(
@@ -715,6 +727,12 @@ val PtStrings = UiStrings(
     quipu = "Quipu",
     handsOnYupana = "M\u00e3os no Yupana",
     movingInYupana = "Movendo no Yupana",
+    practicingWithYupana = "Exercitando com a Yupana (Adi\u00e7\u00e3o)",
+    practicingAdditionYupanaInstruction = "Para compreender melhor o m\u00e9todo Yupana Inka Tawa Pukllay, utilizaremos uma Yupana com 4 linhas para somar dois n\u00fameros. Com essa configura\u00e7\u00e3o, podemos representar valores de at\u00e9 4.999. No entanto, \u00e9 poss\u00edvel adicionar mais linhas para somar n\u00fameros maiores, sem limita\u00e7\u00f5es.\n\nNo exemplo a seguir, demonstramos inicialmente a soma de 512 + 513. Convidamos voc\u00ea a alternar entre as tr\u00eas op\u00e7\u00f5es para compreender melhor o m\u00e9todo Yupana Inka Tawa Pukllay. Cada op\u00e7\u00e3o apresenta o seguinte:\n- Valores: mostra como os n\u00fameros s\u00e3o escritos na Yupana;\n- Calcular: mostra o resultado final da opera\u00e7\u00e3o de soma;\n- Passo a Passo: executa a soma linha por linha.\n\nVoc\u00ea tamb\u00e9m pode modificar os valores do exemplo para refor\u00e7ar seu aprendizado. Ap\u00f3s alter\u00e1-los, clique primeiro no bot\u00e3o Valores para exibir os n\u00fameros e, em seguida, veja como eles s\u00e3o representados na Yupana.",
+    yupanaValues = "Valores",
+    yupanaResult = "Calcular",
+    yupanaStepByStep = "Passo a Passo",
+    moves = "Movimentos",
 )
 
 val EsStrings = UiStrings(
@@ -953,6 +971,12 @@ val EsStrings = UiStrings(
     quipu = "Quipu",
     handsOnYupana = "Manos en Yupana",
     movingInYupana = "Moviéndose en Yupana",
+    practicingWithYupana = "Ejercitando con la Yupana (Adición)",
+    practicingAdditionYupanaInstruction = "Para comprender mejor el método Yupana Inka Tawa Pukllay, utilizaremos una Yupana con 4 filas para sumar dos números. Con esta configuración, podemos representar valores de hasta 4.999. Sin embargo, es posible agregar más filas para sumar números mayores, sin limitaciones.\n\nEn el siguiente ejemplo, demostramos inicialmente la suma de 512 + 513. Te invitamos a alternar entre las tres opciones para comprender mejor el método Yupana Inka Tawa Pukllay. Cada opción presenta lo siguiente:\n- Valores: muestra cómo se escriben los números en la Yupana;\n- Calcular: muestra el resultado final de la operación de suma;\n- Paso a Paso: ejecuta la suma fila por fila.\n\nTambién puedes modificar los valores del ejemplo para reforzar tu aprendizaje. Después de cambiarlos, haz clic primero en el botón Valores para mostrar los números y, a continuación, observa cómo se representan en la Yupana.",
+    yupanaValues = "Valores",
+    yupanaResult = "Calcular",
+    yupanaStepByStep = "Paso a Paso",
+    moves = "Movimientos",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
