@@ -220,10 +220,11 @@ fun PracticingAdditionYupanaScreen(
                             val ry = startY + row * rowHeight
                             val rowState = rows.getOrNull(row) ?: YpRowState()
 
-                            val leftMarkers = getMarkersForDigit(rowState.leftDigit)
-                            val rightMarkers = getMarkersForDigit(rowState.rightDigit)
+                            val showResult = row >= ROWS - 1 - stepRowIdx
+                            val leftMarkers = if (showResult) emptySet() else getMarkersForDigit(rowState.leftDigit)
+                            val rightMarkers = if (showResult) emptySet() else getMarkersForDigit(rowState.rightDigit)
                             val resultMarkers = getMarkersForDigit(
-                                if (row >= ROWS - 1 - stepRowIdx) rowState.resultDigit else 0
+                                if (showResult) rowState.resultDigit else 0
                             )
 
                             drawYupanaRow(
