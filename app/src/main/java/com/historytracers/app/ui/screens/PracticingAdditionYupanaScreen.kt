@@ -242,16 +242,16 @@ fun PracticingAdditionYupanaScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .aspectRatio(860f / 440f)
+                        .aspectRatio(860f / 480f)
                 ) {
                     drawYupanaBackground(size)
                     drawYupanaFrame(size)
                     val margin = 28f / 860f * size.width
                     val usableWidth = size.width - 2f * margin
-                    val rowHeight = (size.height - 44f / 440f * size.height) / ROWS
-                    val colW = usableWidth / 4f
-                    val startX = margin
-                    val startY = 42f / 440f * size.height
+    val rowHeight = (size.height - 48f / 480f * size.height) / ROWS
+    val colW = usableWidth / 4f
+    val startX = margin
+    val startY = 46f / 480f * size.height
 
                     for (row in 0 until ROWS) {
                         val ry = startY + row * rowHeight
@@ -515,9 +515,9 @@ private fun DrawScope.drawYupanaBackground(size: Size) {
 private fun DrawScope.drawYupanaFrame(size: Size) {
     drawRect(
         color = Color(0xFFB48B5A),
-        topLeft = Offset(3f / 860f * size.width, 3f / 440f * size.height),
-        size = Size(size.width - 6f / 860f * size.width, size.height - 6f / 440f * size.height),
-        style = Stroke(width = 2f / 440f * size.height)
+        topLeft = Offset(3f / 860f * size.width, 3f / 480f * size.height),
+        size = Size(size.width - 6f / 860f * size.width, size.height - 6f / 480f * size.height),
+        style = Stroke(width = 2f / 480f * size.height)
     )
 }
 
@@ -604,49 +604,52 @@ private fun DrawScope.drawYupanaRow(
         }
 
         if (leftActive) {
+            val my = topMarkerY - extraPx
             drawCircle(
                 color = Color(0xFFC0392B),
                 radius = markerRadius,
-                center = Offset(cx, topMarkerY)
+                center = Offset(cx, my)
             )
             drawCircle(
                 color = Color(0xFF000000).copy(alpha = 0.2f),
                 radius = markerRadius,
-                center = Offset(cx, topMarkerY),
-                style = Stroke(width = 0.8f / 440f * ch)
+                center = Offset(cx, my),
+                style = Stroke(width = 0.8f / 480f * ch)
             )
         }
 
         if (rightActive) {
+            val my = bottomMarkerY + extraPx
             drawCircle(
                 color = Color(0xFF2980B9),
                 radius = markerRadius,
-                center = Offset(cx, bottomMarkerY)
+                center = Offset(cx, my)
             )
             drawCircle(
                 color = Color(0xFF000000).copy(alpha = 0.2f),
                 radius = markerRadius,
-                center = Offset(cx, bottomMarkerY),
-                style = Stroke(width = 0.8f / 440f * ch)
+                center = Offset(cx, my),
+                style = Stroke(width = 0.8f / 480f * ch)
             )
         }
 
         if (resultActive) {
+            val my = topMarkerY - extraPx
             drawCircle(
                 color = Color(0xFF2E241F),
                 radius = markerRadius,
-                center = Offset(cx, topMarkerY)
+                center = Offset(cx, my)
             )
             drawCircle(
                 color = Color(0xFFF2ECD8).copy(alpha = 0.3f),
                 radius = markerRadius * 0.7f,
-                center = Offset(cx, topMarkerY)
+                center = Offset(cx, my)
             )
             drawCircle(
                 color = Color(0xFF000000).copy(alpha = 0.2f),
                 radius = markerRadius,
-                center = Offset(cx, topMarkerY),
-                style = Stroke(width = 0.8f / 440f * ch)
+                center = Offset(cx, my),
+                style = Stroke(width = 0.8f / 480f * ch)
             )
         }
 
