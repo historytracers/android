@@ -229,12 +229,8 @@ fun MultiplyingWithAbacusLevel2Screen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    if (!finalCongratsShown) {
-                        finalCongratsShown = true
-                        onScoreChanged(currentScore + 2)
-                        feedbackMessage = s.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
-                        isFeedbackPositive = true
-                    }
+                    feedbackMessage = s.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    isFeedbackPositive = true
                 } else {
                     feedbackMessage = s.mwCorrectMessage
                     isFeedbackPositive = true
@@ -252,19 +248,20 @@ fun MultiplyingWithAbacusLevel2Screen(
         val currentVal = Mw2Value(state.value)
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
         if (currentVal != currentStepTarget) return
+        val isLastStep = currentStepIdx == steps.size - 1
 
-        if (currentStepIdx + 1 < steps.size) {
+        if (isLastStep) {
+            if (!finalCongratsShown) {
+                finalCongratsShown = true
+                onScoreChanged(currentScore + 2)
+            }
+            feedbackMessage = s.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            isFeedbackPositive = true
+        } else {
             currentStepIdx++
             stepCompleted = false
             feedbackMessage = ""
             isFeedbackPositive = false
-        } else {
-            if (currentVal == exercise.expected && !finalCongratsShown) {
-                finalCongratsShown = true
-                onScoreChanged(currentScore + 2)
-                feedbackMessage = s.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
-                isFeedbackPositive = true
-            }
         }
     }
 

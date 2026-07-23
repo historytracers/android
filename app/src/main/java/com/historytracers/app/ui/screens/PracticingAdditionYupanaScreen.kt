@@ -122,6 +122,10 @@ fun PracticingAdditionYupanaScreen(
     var consumedRight by remember { mutableStateOf(setOf<Int>()) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     var rowCompleted by remember { mutableStateOf(false) }
+    val lastMeaningfulStepRowIdx = remember(rows) {
+        val nonZeroActiveIdx = (0 until ROWS).firstOrNull { rows[it].resultDigit != 0 } ?: ROWS
+        if (nonZeroActiveIdx == ROWS) -1 else ROWS - 1 - nonZeroActiveIdx
+    }
 
     fun recomputeConsumed() {
         val leftSrc = getMarkersForDigit(rows[ROWS - 1 - stepRowIdx].leftDigit)
@@ -154,12 +158,12 @@ fun PracticingAdditionYupanaScreen(
             val expected = getMarkersForDigit(rows[activeIdx].resultDigit)
             if (greenColumns == expected) {
                 rowCompleted = true
-                if (stepRowIdx == ROWS - 1) {
+                if (stepRowIdx == lastMeaningfulStepRowIdx) {
                     stepCompleted = true
                     feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                    finalCongratsShown = true
                     onScoreChanged(currentScore + 2)
                     scope.launch { preferences.recordLessonCompletion() }
-                    if (currentDigitLevel == MAX_DIGIT_LEVEL) finalCongratsShown = true
                 }
             }
         }
@@ -193,6 +197,8 @@ fun PracticingAdditionYupanaScreen(
         consumedLeft = emptySet()
         consumedRight = emptySet()
         rowCompleted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
     }
 
     fun toggleLevel() {
@@ -379,7 +385,7 @@ fun PracticingAdditionYupanaScreen(
                     ) {
                         FilledTonalButton(
                             onClick = {
-                                if (stepRowIdx < ROWS - 1) {
+                                if (stepRowIdx < lastMeaningfulStepRowIdx) {
                                     stepRowIdx++
                                     greenColumns = emptySet()
                                     consumedLeft = emptySet()

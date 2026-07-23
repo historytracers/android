@@ -220,11 +220,8 @@ fun PracticingAdditionScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    if (!finalCongratsShown) {
-                        finalCongratsShown = true
-                        feedbackMessage = s.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
-                        isFeedbackPositive = true
-                    }
+                    feedbackMessage = s.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
+                    isFeedbackPositive = true
                 } else {
                     feedbackMessage = s.feedbackCorrect
                     isFeedbackPositive = true
@@ -242,18 +239,19 @@ fun PracticingAdditionScreen(
         val currentVal = PaValue(state.value)
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
         if (currentVal != currentStepTarget) return
+        val isLastStep = currentStepIdx == steps.size - 1
 
-        if (currentStepIdx + 1 < steps.size) {
+        if (isLastStep) {
+            if (!finalCongratsShown) {
+                finalCongratsShown = true
+            }
+            feedbackMessage = s.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            isFeedbackPositive = true
+        } else {
             currentStepIdx++
             stepCompleted = false
             feedbackMessage = ""
             isFeedbackPositive = false
-        } else {
-            if (currentVal == exercise.expected && !finalCongratsShown) {
-                finalCongratsShown = true
-                feedbackMessage = s.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
-                isFeedbackPositive = true
-            }
         }
     }
 

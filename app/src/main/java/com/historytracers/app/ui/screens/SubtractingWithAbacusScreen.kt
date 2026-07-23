@@ -157,11 +157,6 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
         }
     }
 
-    steps.add(SbwStepInfo(
-        s.sbwFinalInstruction.format(a, b, expected),
-        expected
-    ))
-
     return steps
 }
 
@@ -236,12 +231,8 @@ fun SubtractingWithAbacusScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    if (!finalCongratsShown) {
-                        finalCongratsShown = true
-                        onScoreChanged(currentScore + 2)
-                        feedbackMessage = s.sbwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
-                        isFeedbackPositive = true
-                    }
+                    feedbackMessage = s.sbwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    isFeedbackPositive = true
                 } else {
                     feedbackMessage = s.sbwCorrectMessage
                     isFeedbackPositive = true
@@ -259,19 +250,20 @@ fun SubtractingWithAbacusScreen(
         val currentVal = SbwValue(state.value)
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
         if (currentVal != currentStepTarget) return
+        val isLastStep = currentStepIdx == steps.size - 1
 
-        if (currentStepIdx + 1 < steps.size) {
+        if (isLastStep) {
+            if (!finalCongratsShown) {
+                finalCongratsShown = true
+                onScoreChanged(currentScore + 2)
+            }
+            feedbackMessage = s.sbwCongratsMessage.format(exercise.a, exercise.b, exercise.expected)
+            isFeedbackPositive = true
+        } else {
             currentStepIdx++
             stepCompleted = false
             feedbackMessage = ""
             isFeedbackPositive = false
-        } else {
-            if (currentVal == exercise.expected && !finalCongratsShown) {
-                finalCongratsShown = true
-                onScoreChanged(currentScore + 2)
-                feedbackMessage = s.sbwCongratsMessage.format(exercise.a, exercise.b, exercise.expected)
-                isFeedbackPositive = true
-            }
         }
     }
 
