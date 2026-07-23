@@ -242,16 +242,16 @@ fun PracticingAdditionYupanaScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .aspectRatio(860f / 380f)
+                        .aspectRatio(860f / 440f)
                 ) {
                     drawYupanaBackground(size)
                     drawYupanaFrame(size)
-                    val margin = 24f / 860f * size.width
+                    val margin = 28f / 860f * size.width
                     val usableWidth = size.width - 2f * margin
-                    val rowHeight = (size.height - 40f / 380f * size.height) / ROWS
+                    val rowHeight = (size.height - 44f / 440f * size.height) / ROWS
                     val colW = usableWidth / 4f
                     val startX = margin
-                    val startY = 38f / 380f * size.height
+                    val startY = 42f / 440f * size.height
 
                     for (row in 0 until ROWS) {
                         val ry = startY + row * rowHeight
@@ -271,8 +271,6 @@ fun PracticingAdditionYupanaScreen(
                             }
                         )
 
-                        val isStepRow = mode == YpMode.STEP_BY_STEP && (row == ROWS - 1 - stepRowIdx || (stepRowIdx < 0 && row == ROWS - 1))
-
                         drawYupanaRow(
                             cellOriginX = startX,
                             cellOriginY = ry,
@@ -282,8 +280,7 @@ fun PracticingAdditionYupanaScreen(
                             leftMarkers = leftMarkers,
                             rightMarkers = rightMarkers,
                             resultMarkers = resultMarkers,
-                            mode = mode,
-                            isStepRow = isStepRow
+                            mode = mode
                         )
                     }
                 }
@@ -518,9 +515,9 @@ private fun DrawScope.drawYupanaBackground(size: Size) {
 private fun DrawScope.drawYupanaFrame(size: Size) {
     drawRect(
         color = Color(0xFFB48B5A),
-        topLeft = Offset(3f / 860f * size.width, 3f / 380f * size.height),
-        size = Size(size.width - 6f / 860f * size.width, size.height - 6f / 380f * size.height),
-        style = Stroke(width = 2f / 380f * size.height)
+        topLeft = Offset(3f / 860f * size.width, 3f / 440f * size.height),
+        size = Size(size.width - 6f / 860f * size.width, size.height - 6f / 440f * size.height),
+        style = Stroke(width = 2f / 440f * size.height)
     )
 }
 
@@ -533,15 +530,13 @@ private fun DrawScope.drawYupanaRow(
     leftMarkers: Set<Int>,
     rightMarkers: Set<Int>,
     resultMarkers: Set<Int>,
-    mode: YpMode,
-    isStepRow: Boolean
+    mode: YpMode
 ) {
     val cw = canvasSize.width
     val ch = canvasSize.height
 
-    val rowBg = if (isStepRow) Color(0xFFFFF3D6) else Color(0xFFFEF8E8)
     drawRect(
-        color = rowBg,
+        color = Color(0xFFFEF8E8),
         topLeft = Offset(cellOriginX, cellOriginY),
         size = Size(4f * cellWidth, cellHeight)
     )
@@ -549,114 +544,132 @@ private fun DrawScope.drawYupanaRow(
     drawRect(
         color = Color(0xFFD4B87A),
         topLeft = Offset(cellOriginX, cellOriginY + cellHeight),
-        size = Size(4f * cellWidth, 1f / 380f * ch),
+        size = Size(4f * cellWidth, 0.8f / 440f * ch),
     )
 
-    val dotRadius = minOf(cellWidth * 0.1f, cellHeight * 0.1f, 5f / 860f * cw)
-    val markerRadius = dotRadius * 1.3f
+    val dotRadius = minOf(cellWidth * 0.09f, cellHeight * 0.09f, 4.5f / 860f * cw)
+    val markerRadius = dotRadius * 0.9f
+    val markerGap = cellHeight * 0.12f
 
-    val dotCounts = listOf(5, 3, 2, 1)
+    val dotPositionsByCol = listOf(
+        listOf(
+            Offset(-dotRadius * 1.5f, -dotRadius * 2f),
+            Offset(-dotRadius * 1.5f, 0f),
+            Offset(-dotRadius * 1.5f, dotRadius * 2f),
+            Offset(dotRadius * 1.5f, -dotRadius * 0.8f),
+            Offset(dotRadius * 1.5f, dotRadius * 0.8f),
+        ),
+        listOf(
+            Offset(0f, -dotRadius * 1.8f),
+            Offset(0f, 0f),
+            Offset(0f, dotRadius * 1.8f),
+        ),
+        listOf(
+            Offset(0f, -dotRadius * 1.2f),
+            Offset(0f, dotRadius * 1.2f),
+        ),
+        listOf(
+            Offset(0f, 0f),
+        ),
+    )
 
     for (col in 0..3) {
         val cx = cellOriginX + col * cellWidth + cellWidth / 2f
         val cy = cellOriginY + cellHeight / 2f
         val colNum = col + 1
+        val dotPositions = dotPositionsByCol[col]
 
         val hasLeftMarker = colNum in leftMarkers
         val hasRightMarker = colNum in rightMarkers
         val hasResultMarker = colNum in resultMarkers
 
-        val markerActive = when (mode) {
-            YpMode.VALUES -> hasLeftMarker || hasRightMarker
-            YpMode.RESULT -> hasResultMarker
-            YpMode.STEP_BY_STEP -> hasResultMarker
+        val topEdge = cellOriginY + cellHeight * 0.08f
+        val bottomEdge = cellOriginY + cellHeight * 0.92f
+
+        val topMarkerY = topEdge + markerGap
+        val bottomMarkerY = bottomEdge - markerGap
+
+        val leftActive = when (mode) {
+            YpMode.VALUES -> hasLeftMarker
+            else -> false
+        }
+        val rightActive = when (mode) {
+            YpMode.VALUES -> hasRightMarker
+            else -> false
+        }
+        val resultActive = when (mode) {
+            YpMode.RESULT, YpMode.STEP_BY_STEP -> hasResultMarker
+            YpMode.VALUES -> false
         }
 
-        val dotPositions = when (col) {
-            0 -> listOf(
-                Offset(-dotRadius * 1.5f, -dotRadius * 2.5f),
-                Offset(-dotRadius * 1.5f, 0f),
-                Offset(-dotRadius * 1.5f, dotRadius * 2.5f),
-                Offset(dotRadius * 1.5f, -dotRadius * 1.2f),
-                Offset(dotRadius * 1.5f, dotRadius * 1.2f),
+        if (leftActive) {
+            drawCircle(
+                color = Color(0xFFC0392B),
+                radius = markerRadius,
+                center = Offset(cx, topMarkerY)
             )
-            1 -> listOf(
-                Offset(0f, -dotRadius * 2.2f),
-                Offset(0f, 0f),
-                Offset(0f, dotRadius * 2.2f),
+            drawCircle(
+                color = Color(0xFF000000).copy(alpha = 0.2f),
+                radius = markerRadius,
+                center = Offset(cx, topMarkerY),
+                style = Stroke(width = 0.8f / 440f * ch)
             )
-            2 -> listOf(
-                Offset(0f, -dotRadius * 1.5f),
-                Offset(0f, dotRadius * 1.5f),
+        }
+
+        if (rightActive) {
+            drawCircle(
+                color = Color(0xFF2980B9),
+                radius = markerRadius,
+                center = Offset(cx, bottomMarkerY)
             )
-            3 -> listOf(
-                Offset(0f, 0f),
+            drawCircle(
+                color = Color(0xFF000000).copy(alpha = 0.2f),
+                radius = markerRadius,
+                center = Offset(cx, bottomMarkerY),
+                style = Stroke(width = 0.8f / 440f * ch)
             )
-            else -> emptyList()
+        }
+
+        if (resultActive) {
+            drawCircle(
+                color = Color(0xFF2E241F),
+                radius = markerRadius,
+                center = Offset(cx, topMarkerY)
+            )
+            drawCircle(
+                color = Color(0xFFF2ECD8).copy(alpha = 0.3f),
+                radius = markerRadius * 0.7f,
+                center = Offset(cx, topMarkerY)
+            )
+            drawCircle(
+                color = Color(0xFF000000).copy(alpha = 0.2f),
+                radius = markerRadius,
+                center = Offset(cx, topMarkerY),
+                style = Stroke(width = 0.8f / 440f * ch)
+            )
+        }
+
+        val dotColor = when (col) {
+            0 -> Color(0xFF6B3A1A)
+            1 -> Color(0xFF5B2E12)
+            2 -> Color(0xFF4A2210)
+            3 -> Color(0xFF3A1808)
+            else -> Color.Gray
         }
 
         for (pos in dotPositions) {
             val dotCenter = Offset(cx + pos.x, cy + pos.y)
             drawCircle(
-                color = Color(0xFFD4C4A0),
-                radius = dotRadius * 0.85f,
-                center = dotCenter,
-                style = Stroke(width = 1f / 380f * ch)
+                color = dotColor,
+                radius = dotRadius * 0.8f,
+                center = dotCenter
             )
-        }
-
-        if (markerActive) {
-            when (mode) {
-                YpMode.VALUES -> {
-                    if (hasLeftMarker) {
-                        val topPos = dotPositions.first()
-                        drawCircle(
-                            color = Color(0xFFC0392B),
-                            radius = markerRadius,
-                            center = Offset(cx + topPos.x, cy + topPos.y)
-                        )
-                        drawCircle(
-                            color = Color(0xFF000000).copy(alpha = 0.2f),
-                            radius = markerRadius,
-                            center = Offset(cx + topPos.x, cy + topPos.y),
-                            style = Stroke(width = 1f / 380f * ch)
-                        )
-                    }
-                    if (hasRightMarker) {
-                        val bottomPos = dotPositions.last()
-                        drawCircle(
-                            color = Color(0xFF2980B9),
-                            radius = markerRadius,
-                            center = Offset(cx + bottomPos.x, cy + bottomPos.y)
-                        )
-                        drawCircle(
-                            color = Color(0xFF000000).copy(alpha = 0.2f),
-                            radius = markerRadius,
-                            center = Offset(cx + bottomPos.x, cy + bottomPos.y),
-                            style = Stroke(width = 1f / 380f * ch)
-                        )
-                    }
-                }
-                YpMode.RESULT, YpMode.STEP_BY_STEP -> {
-                    val midPos = dotPositions[dotPositions.size / 2]
-                    drawCircle(
-                        color = Color(0xFF2E241F),
-                        radius = markerRadius,
-                        center = Offset(cx + midPos.x, cy + midPos.y)
-                    )
-                    drawCircle(
-                        color = Color(0xFFF2ECD8).copy(alpha = 0.3f),
-                        radius = markerRadius * 0.7f,
-                        center = Offset(cx + midPos.x, cy + midPos.y)
-                    )
-                    drawCircle(
-                        color = Color(0xFF000000).copy(alpha = 0.2f),
-                        radius = markerRadius,
-                        center = Offset(cx + midPos.x, cy + midPos.y),
-                        style = Stroke(width = 1f / 380f * ch)
-                    )
-                }
-            }
+            drawCircle(
+                color = Color(0xFF000000).copy(alpha = 0.15f),
+                radius = dotRadius * 0.8f,
+                center = dotCenter,
+                style = Stroke(width = 0.6f / 440f * ch)
+            )
         }
     }
 }
