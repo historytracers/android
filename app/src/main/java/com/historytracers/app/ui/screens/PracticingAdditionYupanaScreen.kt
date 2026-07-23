@@ -10,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -29,15 +29,17 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.min
+import kotlin.random.Random
 
 private const val ROWS = 4
+private const val MAX_DIGIT_LEVEL = 9
+private const val MIN_DIGIT_LEVEL = 1
 
 private val yupanaSelectors = listOf(
     -1, 4, 3, 2, 4, 1, 1, 1, 1, 1,
@@ -76,6 +78,19 @@ private fun numberToDigits(n: Int): List<Int> {
     return s.map { it - '0' }
 }
 
+private fun getLevelRange(level: Int): Pair<Int, Int> {
+    val base = (level - 1) * 100
+    val min = if (level == 1) 1 else base
+    return Pair(min, base + 99)
+}
+
+private fun generateYpExercise(level: Int): YpExercise {
+    val (min, max) = getLevelRange(level)
+    val left = Random.nextInt(min, max + 1)
+    val right = Random.nextInt(min, max + 1)
+    return YpExercise(left, right)
+}
+
 @Composable
 fun PracticingAdditionYupanaScreen(
     onNavigateBack: () -> Unit = {},
@@ -84,18 +99,21 @@ fun PracticingAdditionYupanaScreen(
 ) {
     val s = LocalUiStrings.current
 
-    var leftValue by remember { mutableStateOf("512") }
-    var rightValue by remember { mutableStateOf("513") }
+    var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
+    var exercise by remember { mutableStateOf(generateYpExercise(currentDigitLevel)) }
     var mode by remember { mutableStateOf(YpMode.VALUES) }
     var rows by remember { mutableStateOf(List(ROWS) { YpRowState() }) }
-    var stepRowIdx by remember { mutableStateOf(-1) }
+    var stepRowIdx by remember { mutableIntStateOf(-1) }
+    var stepCompleted by remember { mutableStateOf(false) }
+    var feedbackMessage by remember { mutableStateOf("") }
+    var showLastLevelMessage by remember { mutableStateOf(false) }
+    var finalCongratsShown by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     fun updateDisplay() {
-        val l = leftValue.toIntOrNull()?.coerceIn(0, 4999) ?: 0
-        val r = rightValue.toIntOrNull()?.coerceIn(0, 4999) ?: 0
+        val l = exercise.left
+        val r = exercise.right
         val lDigits = numberToDigits(l)
         val rDigits = numberToDigits(r)
         val sum = l + r
@@ -110,14 +128,35 @@ fun PracticingAdditionYupanaScreen(
         }
     }
 
-    LaunchedEffect(Unit) { updateDisplay() }
+    LaunchedEffect(exercise) { updateDisplay() }
 
-    fun handleValues() { mode = YpMode.VALUES; stepRowIdx = -1; updateDisplay() }
-    fun handleResult() { mode = YpMode.RESULT; stepRowIdx = -1; updateDisplay() }
+    fun handleValues() { mode = YpMode.VALUES; stepRowIdx = -1; stepCompleted = false; feedbackMessage = ""; updateDisplay() }
+    fun handleResult() { mode = YpMode.RESULT; stepRowIdx = -1; stepCompleted = false; feedbackMessage = ""; updateDisplay() }
     fun handleStepByStep() {
         mode = YpMode.STEP_BY_STEP
         stepRowIdx = -1
+        stepCompleted = false
+        feedbackMessage = ""
         updateDisplay()
+    }
+
+    fun resetExercise() {
+        exercise = generateYpExercise(currentDigitLevel)
+        stepRowIdx = -1
+        stepCompleted = false
+        feedbackMessage = ""
+        mode = YpMode.VALUES
+    }
+
+    fun toggleLevel() {
+        if (currentDigitLevel == MAX_DIGIT_LEVEL && !showLastLevelMessage) {
+            showLastLevelMessage = true
+            feedbackMessage = s.ypLastLevelMessage
+            return
+        }
+        showLastLevelMessage = false
+        currentDigitLevel = if (currentDigitLevel >= MAX_DIGIT_LEVEL) MIN_DIGIT_LEVEL else currentDigitLevel + 1
+        resetExercise()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -152,37 +191,24 @@ fun PracticingAdditionYupanaScreen(
             ) {
                 Spacer(Modifier.height(8.dp))
 
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Text(
+                    text = "${s.levelPrefix}$currentDigitLevel",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color(0xFF2E241F),
                 ) {
-                    OutlinedTextField(
-                        value = leftValue,
-                        onValueChange = {
-                            val filtered = it.filter { c -> c.isDigit() }
-                            if (filtered.length <= 4) leftValue = filtered
-                        },
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true,
-                        label = { Text("512") }
-                    )
                     Text(
-                        text = "+",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    OutlinedTextField(
-                        value = rightValue,
-                        onValueChange = {
-                            val filtered = it.filter { c -> c.isDigit() }
-                            if (filtered.length <= 4) rightValue = filtered
-                        },
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true,
-                        label = { Text("513") }
+                        text = "${exercise.left} + ${exercise.right} = ?",
+                        color = Color(0xFFF2ECD8),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                     )
                 }
 
@@ -238,50 +264,52 @@ fun PracticingAdditionYupanaScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                Canvas(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 480f)
                 ) {
-                    drawYupanaBackground(size)
-                    drawYupanaFrame(size)
-                    val margin = 28f / 860f * size.width
-                    val usableWidth = size.width - 2f * margin
-    val rowHeight = (size.height - 48f / 480f * size.height) / ROWS
-    val colW = usableWidth / 4f
-    val startX = margin
-    val startY = 46f / 480f * size.height
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawYupanaBackground(size)
+                        drawYupanaFrame(size)
+                        val margin = 28f / 860f * size.width
+                        val usableWidth = size.width - 2f * margin
+                        val rowHeight = (size.height - 48f / 480f * size.height) / ROWS
+                        val colW = usableWidth / 4f
+                        val startX = margin
+                        val startY = 46f / 480f * size.height
 
-                    for (row in 0 until ROWS) {
-                        val ry = startY + row * rowHeight
-                        val rowState = rows.getOrNull(row) ?: YpRowState()
+                        for (row in 0 until ROWS) {
+                            val ry = startY + row * rowHeight
+                            val rowState = rows.getOrNull(row) ?: YpRowState()
 
-                        val leftMarkers = getMarkersForDigit(
-                            if (mode == YpMode.RESULT) 0 else rowState.leftDigit
-                        )
-                        val rightMarkers = getMarkersForDigit(
-                            if (mode == YpMode.RESULT) 0 else rowState.rightDigit
-                        )
-                        val resultMarkers = getMarkersForDigit(
-                            when (mode) {
-                                YpMode.RESULT -> rowState.resultDigit
-                                YpMode.STEP_BY_STEP -> if (row >= ROWS - 1 - stepRowIdx) rowState.resultDigit else 0
-                                YpMode.VALUES -> 0
-                            }
-                        )
+                            val leftMarkers = getMarkersForDigit(
+                                if (mode == YpMode.RESULT) 0 else rowState.leftDigit
+                            )
+                            val rightMarkers = getMarkersForDigit(
+                                if (mode == YpMode.RESULT) 0 else rowState.rightDigit
+                            )
+                            val resultMarkers = getMarkersForDigit(
+                                when (mode) {
+                                    YpMode.RESULT -> rowState.resultDigit
+                                    YpMode.STEP_BY_STEP -> if (row >= ROWS - 1 - stepRowIdx) rowState.resultDigit else 0
+                                    YpMode.VALUES -> 0
+                                }
+                            )
 
-                        drawYupanaRow(
-                            cellOriginX = startX,
-                            cellOriginY = ry,
-                            cellWidth = colW,
-                            cellHeight = rowHeight,
-                            canvasSize = size,
-                            leftMarkers = leftMarkers,
-                            rightMarkers = rightMarkers,
-                            resultMarkers = resultMarkers,
-                            mode = mode
-                        )
+                            drawYupanaRow(
+                                cellOriginX = startX,
+                                cellOriginY = ry,
+                                cellWidth = colW,
+                                cellHeight = rowHeight,
+                                canvasSize = size,
+                                leftMarkers = leftMarkers,
+                                rightMarkers = rightMarkers,
+                                resultMarkers = resultMarkers,
+                                mode = mode
+                            )
+                        }
                     }
                 }
 
@@ -291,10 +319,8 @@ fun PracticingAdditionYupanaScreen(
                     shape = RoundedCornerShape(16.dp),
                     color = Color(0xFF2E241F),
                 ) {
-                    val l = leftValue.toIntOrNull() ?: 0
-                    val r = rightValue.toIntOrNull() ?: 0
                     Text(
-                        text = "${l} + ${r} = ${l + r}",
+                        text = "${exercise.left} + ${exercise.right} = ${exercise.left + exercise.right}",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -385,7 +411,7 @@ fun PracticingAdditionYupanaScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = if (mode == YpMode.RESULT) "→" else "",
+                            text = if (mode == YpMode.RESULT) "\u2192" else "",
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
@@ -393,33 +419,36 @@ fun PracticingAdditionYupanaScreen(
                     }
                 }
 
-                if (mode == YpMode.STEP_BY_STEP) {
-                    Spacer(Modifier.height(8.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                Spacer(Modifier.height(8.dp))
+
+                if (feedbackMessage.isNotEmpty()) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        if (stepRowIdx < ROWS - 1) {
-                            FilledTonalButton(
-                                onClick = {
-                                    if (stepRowIdx < ROWS - 1) stepRowIdx++
-                                },
-                                shape = RoundedCornerShape(24.dp),
-                                colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = ButtonYellow,
-                                    contentColor = OnButtonYellow
-                                )
-                            ) {
-                                Text(
-                                    text = s.nextStep,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 4.dp)
-                                )
-                            }
-                        }
+                        Text(
+                            text = feedbackMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(12.dp)
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    if (mode == YpMode.STEP_BY_STEP && stepRowIdx < ROWS - 1 && !stepCompleted) {
                         FilledTonalButton(
                             onClick = {
-                                stepRowIdx = -1
-                                handleValues()
+                                stepRowIdx++
+                                if (stepRowIdx == ROWS - 1) {
+                                    stepCompleted = true
+                                    feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                                    if (currentDigitLevel == MAX_DIGIT_LEVEL) finalCongratsShown = true
+                                }
                             },
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
@@ -428,11 +457,39 @@ fun PracticingAdditionYupanaScreen(
                             )
                         ) {
                             Text(
-                                text = s.newExercise,
+                                text = s.nextStep,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )
                         }
+                    }
+                    FilledTonalButton(
+                        onClick = { resetExercise() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.newExercise,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                    FilledTonalButton(
+                        onClick = { toggleLevel() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.nextLevel,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
                     }
                 }
 
@@ -440,69 +497,71 @@ fun PracticingAdditionYupanaScreen(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(bottom = 8.dp, start = 8.dp)
-        ) {
-            val uriHandler = LocalUriHandler.current
-            val ctx = LocalContext.current
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+        if (!finalCongratsShown) {
+            Box(
                 modifier = Modifier
-                    .clickable { showSourcesMenu = true }
-                    .padding(8.dp)
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = 8.dp, start = 8.dp)
             ) {
-                Icon(
-                    Icons.Filled.Book,
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = s.sources,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+                val uriHandler = LocalUriHandler.current
+                val ctx = LocalContext.current
 
-            DropdownMenu(
-                expanded = showSourcesMenu && !showMainTextSubmenu,
-                onDismissRequest = { showSourcesMenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(s.originalText) },
-                    trailingIcon = {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                    },
-                    onClick = { showMainTextSubmenu = true }
-                )
-            }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { showSourcesMenu = true }
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Book,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = s.sources,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
-            DropdownMenu(
-                expanded = showSourcesMenu && showMainTextSubmenu,
-                onDismissRequest = { showMainTextSubmenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
-                    onClick = {
-                        showSourcesMenu = false
-                        showMainTextSubmenu = false
-                        val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2"))
-                        Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
-                    onClick = {
-                        showSourcesMenu = false
-                        showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2")
-                    }
-                )
+                DropdownMenu(
+                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    onDismissRequest = { showSourcesMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.originalText) },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showMainTextSubmenu = true }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showMainTextSubmenu,
+                    onDismissRequest = { showMainTextSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showMainTextSubmenu = false
+                            val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2"))
+                            Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showMainTextSubmenu = false
+                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2")
+                        }
+                    )
+                }
             }
         }
     }
