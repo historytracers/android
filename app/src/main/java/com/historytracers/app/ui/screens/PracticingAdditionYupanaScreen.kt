@@ -57,8 +57,6 @@ private data class YpExercise(val left: Int, val right: Int) {
     val sum: Int get() = left + right
 }
 
-private enum class YpMode { VALUES, RESULT, STEP_BY_STEP }
-
 private val placeLabels = listOf("thousands", "hundreds", "tens", "units")
 
 private fun getMarkersForDigit(digit: Int): Set<Int> {
@@ -101,7 +99,6 @@ fun PracticingAdditionYupanaScreen(
 
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
     var exercise by remember { mutableStateOf(generateYpExercise(currentDigitLevel)) }
-    var mode by remember { mutableStateOf(YpMode.VALUES) }
     var rows by remember { mutableStateOf(List(ROWS) { YpRowState() }) }
     var stepRowIdx by remember { mutableIntStateOf(-1) }
     var stepCompleted by remember { mutableStateOf(false) }
@@ -130,22 +127,11 @@ fun PracticingAdditionYupanaScreen(
 
     LaunchedEffect(exercise) { updateDisplay() }
 
-    fun handleValues() { mode = YpMode.VALUES; stepRowIdx = -1; stepCompleted = false; feedbackMessage = ""; updateDisplay() }
-    fun handleResult() { mode = YpMode.RESULT; stepRowIdx = -1; stepCompleted = false; feedbackMessage = ""; updateDisplay() }
-    fun handleStepByStep() {
-        mode = YpMode.STEP_BY_STEP
-        stepRowIdx = -1
-        stepCompleted = false
-        feedbackMessage = ""
-        updateDisplay()
-    }
-
     fun resetExercise() {
         exercise = generateYpExercise(currentDigitLevel)
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
-        mode = YpMode.VALUES
     }
 
     fun toggleLevel() {
@@ -214,56 +200,6 @@ fun PracticingAdditionYupanaScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                ) {
-                    FilledTonalButton(
-                        onClick = { handleValues() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = if (mode == YpMode.VALUES) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = if (mode == YpMode.VALUES) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    ) {
-                        Text(
-                            text = s.yupanaValues,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                    FilledTonalButton(
-                        onClick = { handleResult() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = if (mode == YpMode.RESULT) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = if (mode == YpMode.RESULT) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    ) {
-                        Text(
-                            text = s.yupanaResult,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                    FilledTonalButton(
-                        onClick = { handleStepByStep() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = if (mode == YpMode.STEP_BY_STEP) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = if (mode == YpMode.STEP_BY_STEP) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    ) {
-                        Text(
-                            text = s.yupanaStepByStep,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(12.dp))
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -284,18 +220,10 @@ fun PracticingAdditionYupanaScreen(
                             val ry = startY + row * rowHeight
                             val rowState = rows.getOrNull(row) ?: YpRowState()
 
-                            val leftMarkers = getMarkersForDigit(
-                                if (mode == YpMode.RESULT) 0 else rowState.leftDigit
-                            )
-                            val rightMarkers = getMarkersForDigit(
-                                if (mode == YpMode.RESULT) 0 else rowState.rightDigit
-                            )
+                            val leftMarkers = getMarkersForDigit(rowState.leftDigit)
+                            val rightMarkers = getMarkersForDigit(rowState.rightDigit)
                             val resultMarkers = getMarkersForDigit(
-                                when (mode) {
-                                    YpMode.RESULT -> rowState.resultDigit
-                                    YpMode.STEP_BY_STEP -> if (row >= ROWS - 1 - stepRowIdx) rowState.resultDigit else 0
-                                    YpMode.VALUES -> 0
-                                }
+                                if (row >= ROWS - 1 - stepRowIdx) rowState.resultDigit else 0
                             )
 
                             drawYupanaRow(
@@ -306,8 +234,7 @@ fun PracticingAdditionYupanaScreen(
                                 canvasSize = size,
                                 leftMarkers = leftMarkers,
                                 rightMarkers = rightMarkers,
-                                resultMarkers = resultMarkers,
-                                mode = mode
+                                resultMarkers = resultMarkers
                             )
                         }
                     }
@@ -330,7 +257,7 @@ fun PracticingAdditionYupanaScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                if (mode == YpMode.STEP_BY_STEP && stepRowIdx >= 0 && stepRowIdx < ROWS) {
+                if (stepRowIdx >= 0 && stepRowIdx < ROWS) {
                     val placeIdx = ROWS - 1 - stepRowIdx
                     Surface(
                         shape = RoundedCornerShape(12.dp),
@@ -411,7 +338,7 @@ fun PracticingAdditionYupanaScreen(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = if (mode == YpMode.RESULT) "\u2192" else "",
+                            text = "",
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
@@ -421,11 +348,14 @@ fun PracticingAdditionYupanaScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    if (mode == YpMode.STEP_BY_STEP && stepRowIdx < ROWS - 1 && !stepCompleted) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         FilledTonalButton(
                             onClick = {
                                 stepRowIdx++
@@ -447,21 +377,22 @@ fun PracticingAdditionYupanaScreen(
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )
                         }
+                        FilledTonalButton(
+                            onClick = { resetExercise() },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(
+                                text = s.newExercise,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                     }
-                    FilledTonalButton(
-                        onClick = { resetExercise() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Text(
-                            text = s.newExercise,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
+
                     FilledTonalButton(
                         onClick = { toggleLevel() },
                         shape = RoundedCornerShape(24.dp),
@@ -589,7 +520,6 @@ private fun DrawScope.drawYupanaRow(
     leftMarkers: Set<Int>,
     rightMarkers: Set<Int>,
     resultMarkers: Set<Int>,
-    mode: YpMode
 ) {
     val cw = canvasSize.width
     val ch = canvasSize.height
@@ -649,18 +579,9 @@ private fun DrawScope.drawYupanaRow(
         val topMarkerY = topEdge + markerGap
         val bottomMarkerY = bottomEdge - markerGap
 
-        val leftActive = when (mode) {
-            YpMode.VALUES -> hasLeftMarker
-            else -> false
-        }
-        val rightActive = when (mode) {
-            YpMode.VALUES -> hasRightMarker
-            else -> false
-        }
-        val resultActive = when (mode) {
-            YpMode.RESULT, YpMode.STEP_BY_STEP -> hasResultMarker
-            YpMode.VALUES -> false
-        }
+        val leftActive = hasLeftMarker
+        val rightActive = hasRightMarker
+        val resultActive = hasResultMarker
 
         if (leftActive) {
             val my = topMarkerY - extraPx
