@@ -113,6 +113,7 @@ fun PracticingAdditionYupanaScreen(
     var stepRowIdx by remember { mutableIntStateOf(-1) }
     var stepCompleted by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
+    var isFeedbackPositive by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
@@ -125,6 +126,16 @@ fun PracticingAdditionYupanaScreen(
     val lastMeaningfulStepRowIdx = remember(rows) {
         val nonZeroActiveIdx = (0 until ROWS).firstOrNull { rows[it].resultDigit != 0 } ?: ROWS
         if (nonZeroActiveIdx == ROWS) -1 else ROWS - 1 - nonZeroActiveIdx
+    }
+    val carryIntoRow = remember(rows) {
+        val carries = IntArray(ROWS) { 0 }
+        var carry = 0
+        for (i in ROWS - 1 downTo 0) {
+            carries[i] = carry
+            val sum = rows[i].leftDigit + rows[i].rightDigit + carry
+            carry = sum / 10
+        }
+        carries
     }
 
     fun recomputeConsumed() {
@@ -164,7 +175,10 @@ fun PracticingAdditionYupanaScreen(
                     finalCongratsShown = true
                     onScoreChanged(currentScore + 2)
                     scope.launch { preferences.recordLessonCompletion() }
+                } else {
+                    feedbackMessage = s.ypCorrectMessage
                 }
+                isFeedbackPositive = true
             }
         }
     }
@@ -193,6 +207,20 @@ fun PracticingAdditionYupanaScreen(
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
+        isFeedbackPositive = false
+        greenColumns = emptySet()
+        consumedLeft = emptySet()
+        consumedRight = emptySet()
+        rowCompleted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+    }
+
+    fun resetCurrentExercise() {
+        stepRowIdx = -1
+        stepCompleted = false
+        feedbackMessage = ""
+        isFeedbackPositive = false
         greenColumns = emptySet()
         consumedLeft = emptySet()
         consumedRight = emptySet()
@@ -361,15 +389,34 @@ fun PracticingAdditionYupanaScreen(
                     val target = rows[placeIdx].resultDigit
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = if (rowCompleted) Color(0xFF2E7D32) else MaterialTheme.colorScheme.surfaceVariant,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        Text(
-                            text = if (rowCompleted) "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $target (${placeLabels[placeIdx]})"
-                                   else "Set $target in ${placeLabels[placeIdx]}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(12.dp)
-                        )
+                    Text(
+                        text = if (rowCompleted) {
+                                   val digitSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
+                                   "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $digitSum (${placeLabels[placeIdx]})"
+                               } else {
+                                   val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit
+                                   val carryFromPrev = carryIntoRow[placeIdx]
+                                   val totalWithCarry = rawSum + carryFromPrev
+                                   val curCarry = totalWithCarry / 10
+                                   if (curCarry > 0) {
+                                       val nextPlace = if (placeIdx > 0) placeLabels[placeIdx - 1] else ""
+                                       if (carryFromPrev > 0)
+                                           s.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
+                                       else
+                                           s.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
+                                   } else {
+                                       if (carryFromPrev > 0)
+                                           s.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
+                                       else
+                                           s.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
+                                   }
+                               },
+                             style = MaterialTheme.typography.bodyMedium,
+                             modifier = Modifier.padding(12.dp)
+                         )
                     }
                 }
 
@@ -427,35 +474,51 @@ fun PracticingAdditionYupanaScreen(
                         }
                     }
 
-                    FilledTonalButton(
-                        onClick = { toggleLevel() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
-                            text = s.nextLevel,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
+                        if (finalCongratsShown) {
+                            FilledTonalButton(
+                                onClick = { resetCurrentExercise() },
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(
+                                    text = s.reset,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+                        FilledTonalButton(
+                            onClick = { toggleLevel() },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(
+                                text = s.nextLevel,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                     }
                 }
 
                 if (feedbackMessage.isNotEmpty()) {
-                    Spacer(Modifier.height(8.dp))
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        Text(
-                            text = feedbackMessage,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(12.dp)
-                        )
-                    }
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
                 }
 
                 Spacer(Modifier.height(48.dp))
