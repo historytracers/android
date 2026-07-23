@@ -31,9 +31,11 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -96,6 +98,9 @@ fun PracticingAdditionYupanaScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
 
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
     var exercise by remember { mutableStateOf(generateYpExercise(currentDigitLevel)) }
@@ -289,6 +294,8 @@ fun PracticingAdditionYupanaScreen(
                                 if (stepRowIdx == ROWS - 1) {
                                     stepCompleted = true
                                     feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                                    onScoreChanged(currentScore + 2)
+                                    scope.launch { preferences.recordLessonCompletion() }
                                     if (currentDigitLevel == MAX_DIGIT_LEVEL) finalCongratsShown = true
                                 }
                             },
