@@ -36,10 +36,14 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.min
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 private const val ROWS = 4
+
+private val yupanaSelectors = listOf(
+    -1, 4, 3, 2, 4, 1, 1, 1, 1, 1,
+    -1, -1, -1, -1, 2, -1, 4, 3, 2, 2,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, 4
+)
 
 private data class YpRowState(
     val leftDigit: Int = 0,
@@ -53,18 +57,17 @@ private data class YpExercise(val left: Int, val right: Int) {
 
 private enum class YpMode { VALUES, RESULT, STEP_BY_STEP }
 
-private val placeLabels = listOf("milhares", "centenas", "dezenas", "unidades")
+private val placeLabels = listOf("thousands", "hundreds", "tens", "units")
 
-private fun decomposeDigit(d: Int): List<Int> {
-    var rem = d.coerceIn(0, 9)
-    val caps = listOf(5, 3, 2, 1)
-    val result = mutableListOf<Int>()
-    for (cap in caps) {
-        val fill = minOf(rem, cap)
-        result.add(fill)
-        rem -= fill
+private fun getMarkersForDigit(digit: Int): Set<Int> {
+    val cols = mutableSetOf<Int>()
+    for (offset in 0..2) {
+        val idx = digit + offset * 10
+        if (idx >= yupanaSelectors.size) break
+        val col = yupanaSelectors[idx]
+        if (col > 0) cols.add(col)
     }
-    return result
+    return cols
 }
 
 private fun numberToDigits(n: Int): List<Int> {
@@ -254,17 +257,21 @@ fun PracticingAdditionYupanaScreen(
                         val ry = startY + row * rowHeight
                         val rowState = rows.getOrNull(row) ?: YpRowState()
 
-                        val leftDecomp = decomposeDigit(if (mode == YpMode.RESULT) 0 else rowState.leftDigit)
-                        val rightDecomp = decomposeDigit(if (mode == YpMode.RESULT) 0 else rowState.rightDigit)
-                        val resultDecomp = decomposeDigit(
+                        val leftMarkers = getMarkersForDigit(
+                            if (mode == YpMode.RESULT) 0 else rowState.leftDigit
+                        )
+                        val rightMarkers = getMarkersForDigit(
+                            if (mode == YpMode.RESULT) 0 else rowState.rightDigit
+                        )
+                        val resultMarkers = getMarkersForDigit(
                             when (mode) {
                                 YpMode.RESULT -> rowState.resultDigit
-                                YpMode.STEP_BY_STEP -> if (row <= stepRowIdx) rowState.resultDigit else if (row == stepRowIdx + 1) 0 else 0
+                                YpMode.STEP_BY_STEP -> if (row >= ROWS - 1 - stepRowIdx) rowState.resultDigit else 0
                                 YpMode.VALUES -> 0
                             }
                         )
 
-                        val isStepRow = mode == YpMode.STEP_BY_STEP && (row == stepRowIdx || (stepRowIdx < 0 && row == 0))
+                        val isStepRow = mode == YpMode.STEP_BY_STEP && (row == ROWS - 1 - stepRowIdx || (stepRowIdx < 0 && row == ROWS - 1))
 
                         drawYupanaRow(
                             cellOriginX = startX,
@@ -272,9 +279,9 @@ fun PracticingAdditionYupanaScreen(
                             cellWidth = colW,
                             cellHeight = rowHeight,
                             canvasSize = size,
-                            leftDecomp = leftDecomp,
-                            rightDecomp = rightDecomp,
-                            resultDecomp = resultDecomp,
+                            leftMarkers = leftMarkers,
+                            rightMarkers = rightMarkers,
+                            resultMarkers = resultMarkers,
                             mode = mode,
                             isStepRow = isStepRow
                         )
@@ -301,14 +308,14 @@ fun PracticingAdditionYupanaScreen(
                 Spacer(Modifier.height(12.dp))
 
                 if (mode == YpMode.STEP_BY_STEP && stepRowIdx >= 0 && stepRowIdx < ROWS) {
-                    val displayRows = rows.map { it.leftDigit } + rows.map { it.rightDigit }
+                    val placeIdx = ROWS - 1 - stepRowIdx
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "Row ${ROWS - stepRowIdx} (${placeLabels[stepRowIdx]}): ${rows[stepRowIdx].leftDigit} + ${rows[stepRowIdx].rightDigit} = ${rows[stepRowIdx].resultDigit}",
+                            text = "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = ${rows[placeIdx].resultDigit} (${placeLabels[placeIdx]})",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -523,13 +530,12 @@ private fun DrawScope.drawYupanaRow(
     cellWidth: Float,
     cellHeight: Float,
     canvasSize: Size,
-    leftDecomp: List<Int>,
-    rightDecomp: List<Int>,
-    resultDecomp: List<Int>,
+    leftMarkers: Set<Int>,
+    rightMarkers: Set<Int>,
+    resultMarkers: Set<Int>,
     mode: YpMode,
     isStepRow: Boolean
 ) {
-    val cellDots = listOf(5, 3, 2, 1)
     val cw = canvasSize.width
     val ch = canvasSize.height
 
@@ -546,14 +552,25 @@ private fun DrawScope.drawYupanaRow(
         size = Size(4f * cellWidth, 1f / 380f * ch),
     )
 
+    val dotRadius = minOf(cellWidth * 0.1f, cellHeight * 0.1f, 5f / 860f * cw)
+    val markerRadius = dotRadius * 1.3f
+
+    val dotCounts = listOf(5, 3, 2, 1)
+
     for (col in 0..3) {
         val cx = cellOriginX + col * cellWidth + cellWidth / 2f
-        val maxDots = cellDots[col]
-        val filledLeft = if (mode == YpMode.VALUES) leftDecomp.getOrElse(col) { 0 } else 0
-        val filledRight = if (mode == YpMode.VALUES) rightDecomp.getOrElse(col) { 0 } else 0
-        val filledResult = if (mode != YpMode.VALUES) resultDecomp.getOrElse(col) { 0 } else 0
+        val cy = cellOriginY + cellHeight / 2f
+        val colNum = col + 1
 
-        val dotRadius = minOf(cellWidth * 0.12f, cellHeight * 0.12f, 6f / 860f * cw)
+        val hasLeftMarker = colNum in leftMarkers
+        val hasRightMarker = colNum in rightMarkers
+        val hasResultMarker = colNum in resultMarkers
+
+        val markerActive = when (mode) {
+            YpMode.VALUES -> hasLeftMarker || hasRightMarker
+            YpMode.RESULT -> hasResultMarker
+            YpMode.STEP_BY_STEP -> hasResultMarker
+        }
 
         val dotPositions = when (col) {
             0 -> listOf(
@@ -578,54 +595,67 @@ private fun DrawScope.drawYupanaRow(
             else -> emptyList()
         }
 
-        val colColor = when (col) {
-            0 -> Color(0xFF8B4513)
-            1 -> Color(0xFF5B3A1A)
-            2 -> Color(0xFF3A2510)
-            3 -> Color(0xFF2A1A0A)
-            else -> Color.Gray
+        for (pos in dotPositions) {
+            val dotCenter = Offset(cx + pos.x, cy + pos.y)
+            drawCircle(
+                color = Color(0xFFD4C4A0),
+                radius = dotRadius * 0.85f,
+                center = dotCenter,
+                style = Stroke(width = 1f / 380f * ch)
+            )
         }
 
-        for ((dotIdx, pos) in dotPositions.withIndex()) {
-            val dotCenter = Offset(cx + pos.x, cellOriginY + cellHeight / 2f + pos.y)
-
-            val leftFilled = dotIdx < filledLeft
-            val rightFilled = dotIdx < filledRight
-            val resultFilled = dotIdx < filledResult
-
-            val isFilled = when (mode) {
-                YpMode.VALUES -> leftFilled || rightFilled
-                YpMode.RESULT -> resultFilled
-                YpMode.STEP_BY_STEP -> resultFilled
-            }
-
-            val fillColor = when {
-                mode == YpMode.VALUES && leftFilled && rightFilled -> Color(0xFF9B59B6)
-                mode == YpMode.VALUES && leftFilled -> Color(0xFFC0392B)
-                mode == YpMode.VALUES && rightFilled -> Color(0xFF2980B9)
-                isFilled -> colColor
-                else -> Color(0xFFE8DCC0)
-            }
-
-            if (isFilled || (mode == YpMode.VALUES && (leftFilled || rightFilled))) {
-                drawCircle(
-                    color = fillColor,
-                    radius = dotRadius * 0.9f,
-                    center = dotCenter
-                )
-                drawCircle(
-                    color = Color(0xFF000000).copy(alpha = 0.15f),
-                    radius = dotRadius * 0.9f,
-                    center = dotCenter,
-                    style = Stroke(width = 0.8f / 380f * ch)
-                )
-            } else {
-                drawCircle(
-                    color = Color(0xFFD4C4A0),
-                    radius = dotRadius * 0.9f,
-                    center = dotCenter,
-                    style = Stroke(width = 1f / 380f * ch)
-                )
+        if (markerActive) {
+            when (mode) {
+                YpMode.VALUES -> {
+                    if (hasLeftMarker) {
+                        val topPos = dotPositions.first()
+                        drawCircle(
+                            color = Color(0xFFC0392B),
+                            radius = markerRadius,
+                            center = Offset(cx + topPos.x, cy + topPos.y)
+                        )
+                        drawCircle(
+                            color = Color(0xFF000000).copy(alpha = 0.2f),
+                            radius = markerRadius,
+                            center = Offset(cx + topPos.x, cy + topPos.y),
+                            style = Stroke(width = 1f / 380f * ch)
+                        )
+                    }
+                    if (hasRightMarker) {
+                        val bottomPos = dotPositions.last()
+                        drawCircle(
+                            color = Color(0xFF2980B9),
+                            radius = markerRadius,
+                            center = Offset(cx + bottomPos.x, cy + bottomPos.y)
+                        )
+                        drawCircle(
+                            color = Color(0xFF000000).copy(alpha = 0.2f),
+                            radius = markerRadius,
+                            center = Offset(cx + bottomPos.x, cy + bottomPos.y),
+                            style = Stroke(width = 1f / 380f * ch)
+                        )
+                    }
+                }
+                YpMode.RESULT, YpMode.STEP_BY_STEP -> {
+                    val midPos = dotPositions[dotPositions.size / 2]
+                    drawCircle(
+                        color = Color(0xFF2E241F),
+                        radius = markerRadius,
+                        center = Offset(cx + midPos.x, cy + midPos.y)
+                    )
+                    drawCircle(
+                        color = Color(0xFFF2ECD8).copy(alpha = 0.3f),
+                        radius = markerRadius * 0.7f,
+                        center = Offset(cx + midPos.x, cy + midPos.y)
+                    )
+                    drawCircle(
+                        color = Color(0xFF000000).copy(alpha = 0.2f),
+                        radius = markerRadius,
+                        center = Offset(cx + midPos.x, cy + midPos.y),
+                        style = Stroke(width = 1f / 380f * ch)
+                    )
+                }
             }
         }
     }
