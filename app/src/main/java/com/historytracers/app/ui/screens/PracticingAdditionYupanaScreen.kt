@@ -7,6 +7,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -58,6 +61,8 @@ private data class YpRowState(
 private data class YpExercise(val left: Int, val right: Int) {
     val sum: Int get() = left + right
 }
+
+private val colValues = mapOf(1 to 5, 2 to 3, 3 to 2, 4 to 1)
 
 private val placeLabels = listOf("thousands", "hundreds", "tens", "units")
 
@@ -112,6 +117,53 @@ fun PracticingAdditionYupanaScreen(
     var finalCongratsShown by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var greenColumns by remember { mutableStateOf(setOf<Int>()) }
+    var consumedLeft by remember { mutableStateOf(setOf<Int>()) }
+    var consumedRight by remember { mutableStateOf(setOf<Int>()) }
+    var canvasSize by remember { mutableStateOf(Size.Zero) }
+    var rowCompleted by remember { mutableStateOf(false) }
+
+    fun recomputeConsumed() {
+        val leftSrc = getMarkersForDigit(rows[ROWS - 1 - stepRowIdx].leftDigit)
+        val rightSrc = getMarkersForDigit(rows[ROWS - 1 - stepRowIdx].rightDigit)
+        val newConsumedLeft = mutableSetOf<Int>()
+        val newConsumedRight = mutableSetOf<Int>()
+        for (col in greenColumns.sortedByDescending { colValues[it] }) {
+            val target = colValues[col] ?: continue
+            var remaining = target
+            val all = (leftSrc - newConsumedLeft).map { it to 'L' } + (rightSrc - newConsumedRight).map { it to 'R' }
+            for ((c, type) in all.sortedByDescending { colValues[it.first] }) {
+                val v = colValues[c] ?: 0
+                if (v <= remaining) {
+                    remaining -= v
+                    if (type == 'L') newConsumedLeft.add(c) else newConsumedRight.add(c)
+                    if (remaining == 0) break
+                }
+            }
+        }
+        consumedLeft = newConsumedLeft
+        consumedRight = newConsumedRight
+    }
+
+    fun toggleGreenColumn(col: Int) {
+        if (rowCompleted) return
+        greenColumns = if (col in greenColumns) greenColumns - col else greenColumns + col
+        recomputeConsumed()
+        if (stepRowIdx in 0 until ROWS) {
+            val activeIdx = ROWS - 1 - stepRowIdx
+            val expected = getMarkersForDigit(rows[activeIdx].resultDigit)
+            if (greenColumns == expected) {
+                rowCompleted = true
+                if (stepRowIdx == ROWS - 1) {
+                    stepCompleted = true
+                    feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                    onScoreChanged(currentScore + 2)
+                    scope.launch { preferences.recordLessonCompletion() }
+                    if (currentDigitLevel == MAX_DIGIT_LEVEL) finalCongratsShown = true
+                }
+            }
+        }
+    }
 
     fun updateDisplay() {
         val l = exercise.left
@@ -137,6 +189,10 @@ fun PracticingAdditionYupanaScreen(
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
+        greenColumns = emptySet()
+        consumedLeft = emptySet()
+        consumedRight = emptySet()
+        rowCompleted = false
     }
 
     fun toggleLevel() {
@@ -210,6 +266,21 @@ fun PracticingAdditionYupanaScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 480f)
+                        .onSizeChanged { canvasSize = Size(it.width.toFloat(), it.height.toFloat()) }
+                        .pointerInput(stepRowIdx, rowCompleted) {
+                            if (stepRowIdx in 0 until ROWS && !rowCompleted) {
+                                detectTapGestures { offset ->
+                                    val margin = 28f / 860f * canvasSize.width
+                                    val usableWidth = canvasSize.width - 2f * margin
+                                    val colW = usableWidth / 4f
+                                    val startX = margin
+                                    if (offset.x in startX..(startX + 4f * colW)) {
+                                        val col = ((offset.x - startX) / colW).toInt().coerceIn(0, 3)
+                                        toggleGreenColumn(col + 1)
+                                    }
+                                }
+                            }
+                        }
                 ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         drawYupanaBackground(size)
@@ -225,12 +296,28 @@ fun PracticingAdditionYupanaScreen(
                             val ry = startY + row * rowHeight
                             val rowState = rows.getOrNull(row) ?: YpRowState()
 
-                            val showResult = row >= ROWS - 1 - stepRowIdx
-                            val leftMarkers = if (showResult) emptySet() else getMarkersForDigit(rowState.leftDigit)
-                            val rightMarkers = if (showResult) emptySet() else getMarkersForDigit(rowState.rightDigit)
-                            val resultMarkers = getMarkersForDigit(
-                                if (showResult) rowState.resultDigit else 0
-                            )
+                            val activeRow = ROWS - 1 - stepRowIdx
+                            val leftMarkers: Set<Int>
+                            val rightMarkers: Set<Int>
+                            val resultMarkers: Set<Int>
+
+                            when {
+                                row > activeRow -> {
+                                    leftMarkers = emptySet()
+                                    rightMarkers = emptySet()
+                                    resultMarkers = getMarkersForDigit(rowState.resultDigit)
+                                }
+                                row == activeRow -> {
+                                    leftMarkers = if (rowCompleted) emptySet() else getMarkersForDigit(rowState.leftDigit) - consumedLeft
+                                    rightMarkers = if (rowCompleted) emptySet() else getMarkersForDigit(rowState.rightDigit) - consumedRight
+                                    resultMarkers = greenColumns
+                                }
+                                else -> {
+                                    leftMarkers = getMarkersForDigit(rowState.leftDigit)
+                                    rightMarkers = getMarkersForDigit(rowState.rightDigit)
+                                    resultMarkers = emptySet()
+                                }
+                            }
 
                             drawYupanaRow(
                                 cellOriginX = startX,
@@ -263,15 +350,17 @@ fun PracticingAdditionYupanaScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                if (stepRowIdx >= 0 && stepRowIdx < ROWS) {
+                if (stepRowIdx in 0 until ROWS) {
                     val placeIdx = ROWS - 1 - stepRowIdx
+                    val target = rows[placeIdx].resultDigit
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = if (rowCompleted) Color(0xFF2E7D32) else MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = ${rows[placeIdx].resultDigit} (${placeLabels[placeIdx]})",
+                            text = if (rowCompleted) "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $target (${placeLabels[placeIdx]})"
+                                   else "Set $target in ${placeLabels[placeIdx]}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -290,15 +379,20 @@ fun PracticingAdditionYupanaScreen(
                     ) {
                         FilledTonalButton(
                             onClick = {
-                                stepRowIdx++
-                                if (stepRowIdx == ROWS - 1) {
-                                    stepCompleted = true
-                                    feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
-                                    onScoreChanged(currentScore + 2)
-                                    scope.launch { preferences.recordLessonCompletion() }
-                                    if (currentDigitLevel == MAX_DIGIT_LEVEL) finalCongratsShown = true
+                                if (stepRowIdx < ROWS - 1) {
+                                    stepRowIdx++
+                                    greenColumns = emptySet()
+                                    consumedLeft = emptySet()
+                                    consumedRight = emptySet()
+                                    rowCompleted = false
+                                    feedbackMessage = ""
+                                    val activeIdx = ROWS - 1 - stepRowIdx
+                                    if (getMarkersForDigit(rows[activeIdx].resultDigit).isEmpty()) {
+                                        rowCompleted = true
+                                    }
                                 }
                             },
+                            enabled = stepRowIdx == -1 || rowCompleted,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
