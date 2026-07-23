@@ -123,6 +123,11 @@ fun PracticingAdditionYupanaScreen(
     var consumedRight by remember { mutableStateOf(setOf<Int>()) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     var rowCompleted by remember { mutableStateOf(false) }
+    var phase by remember { mutableIntStateOf(0) }
+    var userRedColumns by remember { mutableStateOf(emptySet<Int>()) }
+    var userBlueColumns by remember { mutableStateOf(emptySet<Int>()) }
+    var completedRedMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
+    var completedBlueMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
     val lastMeaningfulStepRowIdx = remember(rows) {
         val nonZeroActiveIdx = (0 until ROWS).firstOrNull { rows[it].resultDigit != 0 } ?: ROWS
         if (nonZeroActiveIdx == ROWS) -1 else ROWS - 1 - nonZeroActiveIdx
@@ -139,8 +144,9 @@ fun PracticingAdditionYupanaScreen(
     }
 
     fun recomputeConsumed() {
-        val leftSrc = getMarkersForDigit(rows[ROWS - 1 - stepRowIdx].leftDigit)
-        val rightSrc = getMarkersForDigit(rows[ROWS - 1 - stepRowIdx].rightDigit)
+        val activeIdx = ROWS - 1 - stepRowIdx
+        val leftSrc = completedRedMarkers.getOrElse(activeIdx) { getMarkersForDigit(rows[activeIdx].leftDigit) }
+        val rightSrc = completedBlueMarkers.getOrElse(activeIdx) { getMarkersForDigit(rows[activeIdx].rightDigit) }
         val newConsumedLeft = mutableSetOf<Int>()
         val newConsumedRight = mutableSetOf<Int>()
         for (col in greenColumns.sortedByDescending { colValues[it] }) {
@@ -160,25 +166,51 @@ fun PracticingAdditionYupanaScreen(
         consumedRight = newConsumedRight
     }
 
-    fun toggleGreenColumn(col: Int) {
+    fun toggleColumn(col: Int) {
         if (rowCompleted) return
-        greenColumns = if (col in greenColumns) greenColumns - col else greenColumns + col
-        recomputeConsumed()
-        if (stepRowIdx in 0 until ROWS) {
-            val activeIdx = ROWS - 1 - stepRowIdx
-            val expected = getMarkersForDigit(rows[activeIdx].resultDigit)
-            if (greenColumns == expected) {
-                rowCompleted = true
-                if (stepRowIdx == lastMeaningfulStepRowIdx) {
-                    stepCompleted = true
-                    feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
-                    finalCongratsShown = true
-                    onScoreChanged(currentScore + 2)
-                    scope.launch { preferences.recordLessonCompletion() }
-                } else {
+        when (phase) {
+            0 -> {
+                userRedColumns = if (col in userRedColumns) userRedColumns - col else userRedColumns + col
+                val activeIdx = ROWS - 1 - stepRowIdx
+                val expected = getMarkersForDigit(rows[activeIdx].leftDigit)
+                if (userRedColumns == expected) {
+                    completedRedMarkers = completedRedMarkers.toMutableList().also { it[activeIdx] = userRedColumns }
+                    rowCompleted = true
                     feedbackMessage = s.ypCorrectMessage
+                    isFeedbackPositive = true
                 }
-                isFeedbackPositive = true
+            }
+            1 -> {
+                userBlueColumns = if (col in userBlueColumns) userBlueColumns - col else userBlueColumns + col
+                val activeIdx = ROWS - 1 - stepRowIdx
+                val expected = getMarkersForDigit(rows[activeIdx].rightDigit)
+                if (userBlueColumns == expected) {
+                    completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[activeIdx] = userBlueColumns }
+                    rowCompleted = true
+                    feedbackMessage = s.ypCorrectMessage
+                    isFeedbackPositive = true
+                }
+            }
+            2 -> {
+                greenColumns = if (col in greenColumns) greenColumns - col else greenColumns + col
+                recomputeConsumed()
+                if (stepRowIdx in 0 until ROWS) {
+                    val activeIdx = ROWS - 1 - stepRowIdx
+                    val expected = getMarkersForDigit(rows[activeIdx].resultDigit)
+                    if (greenColumns == expected) {
+                        rowCompleted = true
+                        if (stepRowIdx == lastMeaningfulStepRowIdx) {
+                            stepCompleted = true
+                            feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                            finalCongratsShown = true
+                            onScoreChanged(currentScore + 2)
+                            scope.launch { preferences.recordLessonCompletion() }
+                        } else {
+                            feedbackMessage = s.ypCorrectMessage
+                        }
+                        isFeedbackPositive = true
+                    }
+                }
             }
         }
     }
@@ -204,6 +236,7 @@ fun PracticingAdditionYupanaScreen(
 
     fun resetExercise() {
         exercise = generateYpExercise(currentDigitLevel)
+        phase = 0
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
@@ -211,12 +244,17 @@ fun PracticingAdditionYupanaScreen(
         greenColumns = emptySet()
         consumedLeft = emptySet()
         consumedRight = emptySet()
+        userRedColumns = emptySet()
+        userBlueColumns = emptySet()
+        completedRedMarkers = List(ROWS) { emptySet() }
+        completedBlueMarkers = List(ROWS) { emptySet() }
         rowCompleted = false
         finalCongratsShown = false
         showLastLevelMessage = false
     }
 
     fun resetCurrentExercise() {
+        phase = 0
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
@@ -224,6 +262,10 @@ fun PracticingAdditionYupanaScreen(
         greenColumns = emptySet()
         consumedLeft = emptySet()
         consumedRight = emptySet()
+        userRedColumns = emptySet()
+        userBlueColumns = emptySet()
+        completedRedMarkers = List(ROWS) { emptySet() }
+        completedBlueMarkers = List(ROWS) { emptySet() }
         rowCompleted = false
         finalCongratsShown = false
         showLastLevelMessage = false
@@ -285,7 +327,7 @@ fun PracticingAdditionYupanaScreen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${exercise.left} + ${exercise.right} = ?",
+                        text = if (phase == 0) "${exercise.left} + ? = ?" else "${exercise.left} + ${exercise.right} = ?",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -301,7 +343,7 @@ fun PracticingAdditionYupanaScreen(
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 480f)
                         .onSizeChanged { canvasSize = Size(it.width.toFloat(), it.height.toFloat()) }
-                        .pointerInput(stepRowIdx, rowCompleted) {
+                        .pointerInput(phase, stepRowIdx, rowCompleted) {
                             if (stepRowIdx in 0 until ROWS && !rowCompleted) {
                                 detectTapGestures { offset ->
                                     val margin = 28f / 860f * canvasSize.width
@@ -310,7 +352,7 @@ fun PracticingAdditionYupanaScreen(
                                     val startX = margin
                                     if (offset.x in startX..(startX + 4f * colW)) {
                                         val col = ((offset.x - startX) / colW).toInt().coerceIn(0, 3)
-                                        toggleGreenColumn(col + 1)
+                                        toggleColumn(col + 1)
                                     }
                                 }
                             }
@@ -335,21 +377,41 @@ fun PracticingAdditionYupanaScreen(
                             val rightMarkers: Set<Int>
                             val resultMarkers: Set<Int>
 
-                            when {
-                                row > activeRow -> {
-                                    leftMarkers = emptySet()
-                                    rightMarkers = emptySet()
-                                    resultMarkers = getMarkersForDigit(rowState.resultDigit)
+                            when (phase) {
+                                0 -> {
+                                    val redActiveRow = ROWS - 1 - stepRowIdx
+                                    when {
+                                        row > redActiveRow -> { leftMarkers = emptySet(); rightMarkers = emptySet(); resultMarkers = emptySet() }
+                                        row == redActiveRow -> { leftMarkers = userRedColumns; rightMarkers = emptySet(); resultMarkers = emptySet() }
+                                        else -> { leftMarkers = completedRedMarkers[row]; rightMarkers = emptySet(); resultMarkers = emptySet() }
+                                    }
                                 }
-                                row == activeRow -> {
-                                    leftMarkers = if (rowCompleted) emptySet() else getMarkersForDigit(rowState.leftDigit) - consumedLeft
-                                    rightMarkers = if (rowCompleted) emptySet() else getMarkersForDigit(rowState.rightDigit) - consumedRight
-                                    resultMarkers = greenColumns
+                                1 -> {
+                                    val blueActiveRow = ROWS - 1 - stepRowIdx
+                                    when {
+                                        row > blueActiveRow -> { leftMarkers = emptySet(); rightMarkers = emptySet(); resultMarkers = emptySet() }
+                                        row == blueActiveRow -> { leftMarkers = completedRedMarkers[row]; rightMarkers = userBlueColumns; resultMarkers = emptySet() }
+                                        else -> { leftMarkers = completedRedMarkers[row]; rightMarkers = completedBlueMarkers[row]; resultMarkers = emptySet() }
+                                    }
                                 }
                                 else -> {
-                                    leftMarkers = getMarkersForDigit(rowState.leftDigit)
-                                    rightMarkers = getMarkersForDigit(rowState.rightDigit)
-                                    resultMarkers = emptySet()
+                                    when {
+                                        row > activeRow -> {
+                                            leftMarkers = emptySet()
+                                            rightMarkers = emptySet()
+                                            resultMarkers = getMarkersForDigit(rowState.resultDigit)
+                                        }
+                                        row == activeRow -> {
+                                            leftMarkers = if (rowCompleted) emptySet() else completedRedMarkers[row] - consumedLeft
+                                            rightMarkers = if (rowCompleted) emptySet() else completedBlueMarkers[row] - consumedRight
+                                            resultMarkers = greenColumns
+                                        }
+                                        else -> {
+                                            leftMarkers = completedRedMarkers[row]
+                                            rightMarkers = completedBlueMarkers[row]
+                                            resultMarkers = emptySet()
+                                        }
+                                    }
                                 }
                             }
 
@@ -369,17 +431,19 @@ fun PracticingAdditionYupanaScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color(0xFF2E241F),
-                ) {
-                    Text(
-                        text = "${exercise.left} + ${exercise.right} = ${exercise.left + exercise.right}",
-                        color = Color(0xFFF2ECD8),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                    )
+                if (phase >= 2) {
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = Color(0xFF2E241F),
+                    ) {
+                        Text(
+                            text = "${exercise.left} + ${exercise.right} = ${exercise.left + exercise.right}",
+                            color = Color(0xFFF2ECD8),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -393,27 +457,31 @@ fun PracticingAdditionYupanaScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                     Text(
-                        text = if (rowCompleted) {
-                                   val digitSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
-                                   "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $digitSum (${placeLabels[placeIdx]})"
-                               } else {
-                                   val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit
-                                   val carryFromPrev = carryIntoRow[placeIdx]
-                                   val totalWithCarry = rawSum + carryFromPrev
-                                   val curCarry = totalWithCarry / 10
-                                   if (curCarry > 0) {
-                                       val nextPlace = if (placeIdx > 0) placeLabels[placeIdx - 1] else ""
-                                       if (carryFromPrev > 0)
-                                           s.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
-                                       else
-                                           s.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
+                        text = when (phase) {
+                            0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
+                            1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
+                            else -> if (rowCompleted) {
+                                       val digitSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
+                                       "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $digitSum (${placeLabels[placeIdx]})"
                                    } else {
-                                       if (carryFromPrev > 0)
-                                           s.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
-                                       else
-                                           s.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
+                                       val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit
+                                       val carryFromPrev = carryIntoRow[placeIdx]
+                                       val totalWithCarry = rawSum + carryFromPrev
+                                       val curCarry = totalWithCarry / 10
+                                       if (curCarry > 0) {
+                                           val nextPlace = if (placeIdx > 0) placeLabels[placeIdx - 1] else ""
+                                           if (carryFromPrev > 0)
+                                               s.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
+                                           else
+                                               s.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
+                                       } else {
+                                           if (carryFromPrev > 0)
+                                               s.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
+                                           else
+                                               s.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
+                                       }
                                    }
-                               },
+                        },
                              style = MaterialTheme.typography.bodyMedium,
                              modifier = Modifier.padding(12.dp)
                          )
@@ -432,20 +500,73 @@ fun PracticingAdditionYupanaScreen(
                     ) {
                         FilledTonalButton(
                             onClick = {
-                                if (stepRowIdx < lastMeaningfulStepRowIdx) {
-                                    stepRowIdx++
-                                    greenColumns = emptySet()
-                                    consumedLeft = emptySet()
-                                    consumedRight = emptySet()
-                                    rowCompleted = false
-                                    feedbackMessage = ""
-                                    val activeIdx = ROWS - 1 - stepRowIdx
-                                    if (getMarkersForDigit(rows[activeIdx].resultDigit).isEmpty()) {
-                                        rowCompleted = true
+                                when (phase) {
+                                    0 -> {
+                                        if (stepRowIdx == -1) {
+                                            stepRowIdx = 0
+                                            userRedColumns = emptySet()
+                                            feedbackMessage = ""
+                                        } else if (stepRowIdx < lastMeaningfulStepRowIdx) {
+                                            stepRowIdx++
+                                            userRedColumns = emptySet()
+                                            rowCompleted = false
+                                            feedbackMessage = ""
+                                        } else {
+                                            phase = 1
+                                            stepRowIdx = -1
+                                            rowCompleted = false
+                                            feedbackMessage = ""
+                                            return@FilledTonalButton
+                                        }
+                                        val activeIdx = ROWS - 1 - stepRowIdx
+                                        if (getMarkersForDigit(rows[activeIdx].leftDigit).isEmpty()) {
+                                            completedRedMarkers = completedRedMarkers.toMutableList().also { it[activeIdx] = emptySet() }
+                                            rowCompleted = true
+                                        }
+                                    }
+                                    1 -> {
+                                        if (stepRowIdx == -1) {
+                                            stepRowIdx = 0
+                                            userBlueColumns = emptySet()
+                                            feedbackMessage = ""
+                                        } else if (stepRowIdx < lastMeaningfulStepRowIdx) {
+                                            stepRowIdx++
+                                            userBlueColumns = emptySet()
+                                            rowCompleted = false
+                                            feedbackMessage = ""
+                                        } else {
+                                            phase = 2
+                                            stepRowIdx = -1
+                                            rowCompleted = false
+                                            feedbackMessage = ""
+                                            return@FilledTonalButton
+                                        }
+                                        val activeIdx = ROWS - 1 - stepRowIdx
+                                        if (getMarkersForDigit(rows[activeIdx].rightDigit).isEmpty()) {
+                                            completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[activeIdx] = emptySet() }
+                                            rowCompleted = true
+                                        }
+                                    }
+                                    else -> {
+                                        if (stepRowIdx < lastMeaningfulStepRowIdx) {
+                                            stepRowIdx++
+                                            greenColumns = emptySet()
+                                            consumedLeft = emptySet()
+                                            consumedRight = emptySet()
+                                            rowCompleted = false
+                                            feedbackMessage = ""
+                                            val activeIdx = ROWS - 1 - stepRowIdx
+                                            if (getMarkersForDigit(rows[activeIdx].resultDigit).isEmpty()) {
+                                                rowCompleted = true
+                                            }
+                                        }
                                     }
                                 }
                             },
-                            enabled = stepRowIdx == -1 || rowCompleted,
+                            enabled = when (phase) {
+                                0, 1 -> stepRowIdx == -1 || rowCompleted
+                                else -> stepRowIdx == -1 || rowCompleted
+                            },
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,

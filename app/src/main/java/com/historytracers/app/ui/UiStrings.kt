@@ -253,6 +253,8 @@ data class UiStrings(
     val ypCarryingCarry: String,
     val ypCongratsMessage: String,
     val ypLastLevelMessage: String,
+    val ypRedPhase: String,
+    val ypBluePhase: String,
 )
 
 val EnStrings = UiStrings(
@@ -505,6 +507,8 @@ val EnStrings = UiStrings(
     ypCarryingCarry = "Carrying 1: Adding to %s gives %d + %d + %d (carry) = %d (> 10). Place markers for %d in the Yupana and carry 1 to %s.",
     ypCongratsMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 CONGRATULATIONS! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nYou calculated %d + %d = %d\nClick 'New exercise' to practice more!",
     ypLastLevelMessage = "\uD83C\uDF89\uD83C\uDFC6 ALL LEVELS COMPLETE! \uD83C\uDFC6\uD83C\uDF89\nYou mastered all 9 levels! Click \"New exercise\" to start again at level 1.",
+    ypRedPhase = "Place RED markers for %d in the %s.",
+    ypBluePhase = "Place BLUE markers for %d in the %s.",
 )
 
 val PtStrings = UiStrings(
@@ -757,6 +761,8 @@ val PtStrings = UiStrings(
     ypCarryingCarry = "Carregando 1: Adicionar a %s resulta em %d + %d + %d (transporte) = %d (> 10). Coloque marcadores para %d na Yupana e transporte 1 para %s.",
     ypCongratsMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PARAB\u00c9NS! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nVoc\u00ea calculou %d + %d = %d\nClique em 'Novo exerc\u00edcio' para praticar mais!",
     ypLastLevelMessage = "\uD83C\uDF89\uD83C\uDFC6 TODOS OS N\u00cdVEIS CONCLU\u00cdDOS! \uD83C\uDFC6\uD83C\uDF89\nVoc\u00ea dominou todos os 9 n\u00edveis! Clique em \"Novo exerc\u00edcio\" para come\u00e7ar novamente no n\u00edvel 1.",
+    ypRedPhase = "Coloque marcadores VERMELHOS para %d na %s.",
+    ypBluePhase = "Coloque marcadores AZUIS para %d na %s.",
 )
 
 val EsStrings = UiStrings(
@@ -1009,6 +1015,8 @@ val EsStrings = UiStrings(
     ypCarryingCarry = "Llevando 1: Agregar a %s da %d + %d + %d (llevada) = %d (> 10). Coloca marcadores para %d en la Yupana y lleva 1 a %s.",
     ypCongratsMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1FELICITACIONES! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nHas calculado %d + %d = %d\n\u00a1Haz clic en 'Nuevo ejercicio' para practicar m\u00e1s!",
     ypLastLevelMessage = "\uD83C\uDF89\uD83C\uDFC6 \u00a1TODOS LOS NIVELES COMPLETADOS! \uD83C\uDFC6\uD83C\uDF89\n\u00a1Dominaste los 9 niveles! Haz clic en \"Nuevo ejercicio\" para empezar de nuevo en el nivel 1.",
+    ypRedPhase = "Coloca marcadores ROJOS para %d en %s.",
+    ypBluePhase = "Coloca marcadores AZULES para %d en %s.",
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
