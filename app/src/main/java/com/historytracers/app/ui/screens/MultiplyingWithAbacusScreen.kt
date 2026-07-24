@@ -469,30 +469,25 @@ fun MultiplyingWithAbacusScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    val hideButtons = !finalCongratsShown
-
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (!hideButtons) {
-                            FilledTonalButton(
-                                onClick = { resetExercise() },
-                                shape = RoundedCornerShape(24.dp),
-                                colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = ButtonYellow,
-                                    contentColor = OnButtonYellow
-                                )
-                            ) {
-                                Text(
-                                    text = s.newExercise,
-
-
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 4.dp)
-                                )
-                            }
+                        FilledTonalButton(
+                            onClick = { resetExercise() },
+                            enabled = !exerciseStarted || finalCongratsShown,
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(
+                                text = s.newExercise,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
                         }
 
                         if (!finalCongratsShown) {
@@ -514,22 +509,21 @@ fun MultiplyingWithAbacusScreen(
                         }
                     }
 
-                    if (!hideButtons) {
-                        FilledTonalButton(
-                            onClick = { toggleLevel() },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(
-                                text = s.nextLevel,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
+                    FilledTonalButton(
+                        onClick = { toggleLevel() },
+                        enabled = !exerciseStarted || finalCongratsShown,
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.nextLevel,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
                     }
                 }
 

@@ -622,6 +622,7 @@ fun PracticingAdditionYupanaScreen(
                         }
                         FilledTonalButton(
                             onClick = { resetExercise() },
+                            enabled = stepRowIdx == -1 || finalCongratsShown,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
@@ -657,6 +658,7 @@ fun PracticingAdditionYupanaScreen(
                         }
                         FilledTonalButton(
                             onClick = { toggleLevel() },
+                            enabled = stepRowIdx == -1 || finalCongratsShown,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
