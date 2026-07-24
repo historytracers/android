@@ -603,7 +603,8 @@ fun PracticingAdditionYupanaScreen(
                                 canvasSize = size,
                                 leftMarkers = leftMarkers,
                                 rightMarkers = rightMarkers,
-                                resultMarkers = resultMarkers
+                                resultMarkers = resultMarkers,
+                                carryMarker = carryIntoRow[row] > 0
                             )
                         }
                     }
@@ -939,6 +940,7 @@ private fun DrawScope.drawYupanaRow(
     leftMarkers: Set<Int>,
     rightMarkers: Set<Int>,
     resultMarkers: Set<Int>,
+    carryMarker: Boolean = false,
 ) {
     val cw = canvasSize.width
     val ch = canvasSize.height
@@ -1067,6 +1069,21 @@ private fun DrawScope.drawYupanaRow(
                 color = Color(0xFF000000).copy(alpha = 0.2f),
                 radius = markerRadius,
                 center = Offset(cx, my),
+                style = Stroke(width = 0.8f / 480f * ch)
+            )
+        }
+
+        if (carryMarker && colNum == 4) {
+            val carryY = cellOriginY + cellHeight / 2f
+            drawCircle(
+                color = Color(0xFF808080),
+                radius = markerRadius * 1.1f,
+                center = Offset(cx, carryY)
+            )
+            drawCircle(
+                color = Color(0xFF000000).copy(alpha = 0.2f),
+                radius = markerRadius * 1.1f,
+                center = Offset(cx, carryY),
                 style = Stroke(width = 0.8f / 480f * ch)
             )
         }
