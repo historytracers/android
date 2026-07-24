@@ -106,8 +106,8 @@ private fun writeSumOnYupana(withoutMoves: String, lValue: Int, rBase: Int, carr
     // Auxiliary vector: count of markers per column
     // index 0=col1(value5), 1=col2(value3), 2=col3(value2), 3=col4(value1)
     val count = intArrayOf(0, 0, 0, 0)
-    for (c in leftMarkers) count[4 - c]++
-    for (c in rightMarkers) count[4 - c]++
+    for (c in leftMarkers) count[c - 1]++
+    for (c in rightMarkers) count[c - 1]++
     // Carry from previous row adds one marker in col4 (value 1)
     count[3] += carryIn
 
