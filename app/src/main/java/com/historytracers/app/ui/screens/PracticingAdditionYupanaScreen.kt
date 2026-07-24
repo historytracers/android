@@ -88,132 +88,77 @@ private fun movementDesc(name: String): String = when (name) {
     YP_ISKAY -> "$YP_ISKAY (1 + 1 = 2)"
     YP_KIMSA -> "$YP_KIMSA (2 + 1 = 3)"
     YP_PISQA -> "$YP_PISQA (5 + 5 = 10)"
-    YP_KIKIN -> "$YP_KIKIN (1 + 4 = 5)"
+    YP_KIKIN -> "$YP_KIKIN (1 + 1 + 1 = 3)"
     YP_PICHANA -> "$YP_PICHANA (3 + 3 = 5 + 1)"
     else -> name
 }
 
-private fun writeSumOnYupana(withoutMoves: String, carry: String, lValue: Int, rValue: Int, result: Int): List<String> {
+private fun writeSumOnYupana(withoutMoves: String, lValue: Int, rBase: Int, carryIn: Int): List<String> {
     val m = mutableListOf<String>()
-    if (lValue == rValue) {
-        when (lValue) {
-            1 -> m.add(YP_KIKIN)
-            4 -> { m.add(YP_KIKIN); m.add(YP_KIMSA) }
-            2 -> m.add(YP_ISKAY)
-            3 -> m.add(YP_KIMSA)
-            5 -> m.add(YP_PISQA)
-            6 -> { m.add(YP_KIKIN); m.add(YP_PISQA) }
-            7 -> { m.add(YP_ISKAY); m.add(YP_PISQA) }
-            8 -> { m.add(YP_KIMSA); m.add(YP_PISQA) }
-            9 -> { m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA) }
-        }
-    } else if (lValue != 0 && rValue != 0) {
-        var res = result
-        if (res > 10 && lValue >= 5 && rValue >= 5) {
-            val leftRem = lValue - 5
-            val rightRem = rValue - 5
-            if (leftRem + rightRem < 5) {
-                if (leftRem > 0 && rightRem > 0 && leftRem + rightRem != 4) {
-                    m.add(YP_PICHANA)
-                    m.add(YP_PISQA)
-                } else {
-                    m.add(YP_PISQA)
-                }
-                return m
-            }
-        }
-        var bigger = false
-        if (res > 10) {
-            m.add(carry)
-            res %= 10
-            bigger = true
-        }
-        when (res) {
-            2, 3 -> {
-                if (bigger) {
-                    val carryList = m.toList(); m.clear()
-                    val lr = if (lValue >= 5) lValue - 5 else lValue
-                    val rr = if (rValue >= 5) rValue - 5 else rValue
-                    if (lr == 1 || lr == 4 || rr == 1 || rr == 4) {
-                        m.add(YP_KIKIN); m.add(YP_KIMSA); m.add(YP_PISQA)
-                    } else {
-                        m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA)
-                    }
-                    m.addAll(carryList)
-                } else if (res == 3) {
-                    m.add(YP_PICHANA)
-                }
-            }
-            7 -> {
-                if (bigger) {
-                    val carryList = m.toList(); m.clear()
-                    val lr = if (lValue >= 5) lValue - 5 else lValue
-                    val rr = if (rValue >= 5) rValue - 5 else rValue
-                    if (lr == 1 || lr == 4 || rr == 1 || rr == 4) {
-                        m.add(YP_KIKIN); m.add(YP_KIMSA); m.add(YP_PISQA)
-                    } else {
-                        m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA)
-                    }
-                    m.addAll(carryList)
-                } else {
-                    if (lValue == 4 || rValue == 4) m.add(YP_KIMSA)
-                    else if (lValue == 5 || rValue == 5) { m.add(withoutMoves); return m }
-                    m.add(YP_KIKIN)
-                }
-            }
-            4 -> m.add(withoutMoves)
-            5 -> {
-                if (bigger) {
-                    val carryList = m.toList(); m.clear()
-                    val lr = if (lValue >= 5) lValue - 5 else lValue
-                    val rr = if (rValue >= 5) rValue - 5 else rValue
-                    if (lr == 1 || lr == 4 || rr == 1 || rr == 4) {
-                        m.add(YP_KIKIN); m.add(YP_KIMSA); m.add(YP_PISQA)
-                    } else {
-                        m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA)
-                    }
-                    m.addAll(carryList)
-                } else {
-                    if (lValue == 4 || rValue == 4) m.add(YP_KIKIN)
-                    m.add(YP_PICHANA)
-                }
-            }
-            1, 6 -> {
-                if (bigger) {
-                    val carryList = m.toList(); m.clear()
-                    m.add(YP_PICHANA); m.add(YP_KIMSA); m.addAll(carryList); m.addAll(carryList)
-                } else {
-                    if (lValue == 4 || rValue == 4) m.add(YP_PICHANA)
-                }
-            }
-            9 -> { if (lValue == 7 || rValue == 7) m.add(YP_ISKAY) }
-            10 -> {
-                when {
-                    lValue == 9 || rValue == 9 -> { m.add(YP_KIKIN); m.add(YP_PICHANA) }
-                    lValue == 8 || rValue == 8 -> m.add(YP_KIMSA)
-                    lValue == 7 || rValue == 7 -> m.add(YP_KIMSA)
-                    lValue == 6 || rValue == 6 -> { m.add(YP_KIKIN); m.add(YP_PICHANA) }
-                }
-                m.add(YP_PISQA)
-            }
-            8 -> if (!bigger) {
-                when {
-                    lValue == 5 || rValue == 5 -> { m.add(withoutMoves); m.add(YP_KIMSA) }
-                    lValue == 6 || rValue == 6 || lValue == 7 || rValue == 7 -> {
-                        val lrem = if (lValue >= 5) lValue - 5 else lValue
-                        val rrem = if (rValue >= 5) rValue - 5 else rValue
-                        m.add(YP_PISQA)
-                        for (rem in listOf(lrem, rrem)) {
-                            if (rem == 1) m.add(YP_PICHANA)
-                            else if (rem == 2) m.add(YP_ISKAY)
-                        }
-                        m.add(YP_PISQA); m.add(YP_KIMSA)
-                    }
-                    else -> m.add(withoutMoves)
-                }
-            }
-        }
+    if (lValue == 0 && rBase == 0 && carryIn == 0) {
+        m.add(withoutMoves)
+        return m.map { movementDesc(it) }
     }
+
+    val leftMarkers = getMarkersForDigit(lValue)
+    val rightMarkers = getMarkersForDigit(rBase)
+
+    // Auxiliary vector: count of markers per column
+    // index 0=col1(value5), 1=col2(value3), 2=col3(value2), 3=col4(value1)
+    val count = intArrayOf(0, 0, 0, 0)
+    for (c in leftMarkers) count[4 - c]++
+    for (c in rightMarkers) count[4 - c]++
+    // Carry from previous row adds one marker in col4 (value 1)
+    count[3] += carryIn
+
+    // Iterative consolidation from col4 to col1 until stable
+    while (true) {
+        var changed = false
+
+        // KIKIN: 1+1+1=3 (three col4 markers → one col2 marker)
+        while (count[3] >= 3) {
+            count[3] -= 3
+            count[1]++
+            m.add(YP_KIKIN)
+            changed = true
+        }
+
+        // ISKAY: 1+1=2 (col4 + col4 → col3)
+        while (count[3] >= 2) {
+            count[3] -= 2
+            count[2]++
+            m.add(YP_ISKAY)
+            changed = true
+        }
+
+        // KIMSA: 2+1=3 (col3 + col4 → col2)
+        while (count[2] >= 1 && count[3] >= 1) {
+            count[2]--
+            count[3]--
+            count[1]++
+            m.add(YP_KIMSA)
+            changed = true
+        }
+
+        // PICHANA: 3+3=5+1 (col2 + col2 → col1 + col4)
+        while (count[1] >= 2) {
+            count[1] -= 2
+            count[0]++
+            count[3]++
+            m.add(YP_PICHANA)
+            changed = true
+        }
+
+        // PISQA: 5+5=10 (col1 + col1 → carry to next row)
+        while (count[0] >= 2) {
+            count[0] -= 2
+            m.add(YP_PISQA)
+            changed = true
+        }
+
+        if (!changed) break
+    }
+
     if (m.isEmpty()) m.add(withoutMoves)
     return m.map { movementDesc(it) }
 }
@@ -262,6 +207,7 @@ fun PracticingAdditionYupanaScreen(
     var greenColumns by remember { mutableStateOf(setOf<Int>()) }
     var consumedLeft by remember { mutableStateOf(setOf<Int>()) }
     var consumedRight by remember { mutableStateOf(setOf<Int>()) }
+    var consumedCarry by remember { mutableStateOf(false) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     var rowCompleted by remember { mutableStateOf(false) }
     var phase by remember { mutableIntStateOf(0) }
@@ -290,21 +236,30 @@ fun PracticingAdditionYupanaScreen(
         val rightSrc = completedBlueMarkers.getOrElse(activeIdx) { getMarkersForDigit(rows[activeIdx].rightDigit) }
         val newConsumedLeft = mutableSetOf<Int>()
         val newConsumedRight = mutableSetOf<Int>()
+        var newConsumedCarry = false
         for (col in greenColumns.sortedByDescending { colValues[it] }) {
             val target = colValues[col] ?: continue
             var remaining = target
-            val all = (leftSrc - newConsumedLeft).map { it to 'L' } + (rightSrc - newConsumedRight).map { it to 'R' }
+            val all = mutableListOf<Pair<Int, Char>>()
+            for (c in (leftSrc - newConsumedLeft)) all.add(c to 'L')
+            for (c in (rightSrc - newConsumedRight)) all.add(c to 'R')
+            if (!newConsumedCarry && carryIntoRow[activeIdx] > 0) all.add(4 to 'C')
             for ((c, type) in all.sortedByDescending { colValues[it.first] }) {
                 val v = colValues[c] ?: 0
                 if (v <= remaining) {
                     remaining -= v
-                    if (type == 'L') newConsumedLeft.add(c) else newConsumedRight.add(c)
+                    when (type) {
+                        'L' -> newConsumedLeft.add(c)
+                        'R' -> newConsumedRight.add(c)
+                        'C' -> newConsumedCarry = true
+                    }
                     if (remaining == 0) break
                 }
             }
         }
         consumedLeft = newConsumedLeft
         consumedRight = newConsumedRight
+        consumedCarry = newConsumedCarry
     }
 
     fun toggleColumn(col: Int) {
@@ -386,6 +341,7 @@ fun PracticingAdditionYupanaScreen(
         greenColumns = emptySet()
         consumedLeft = emptySet()
         consumedRight = emptySet()
+        consumedCarry = false
         userRedColumns = emptySet()
         userBlueColumns = emptySet()
         completedRedMarkers = List(ROWS) { emptySet() }
@@ -405,6 +361,7 @@ fun PracticingAdditionYupanaScreen(
         greenColumns = emptySet()
         consumedLeft = emptySet()
         consumedRight = emptySet()
+        consumedCarry = false
         userRedColumns = emptySet()
         userBlueColumns = emptySet()
         completedRedMarkers = List(ROWS) { emptySet() }
@@ -431,7 +388,7 @@ fun PracticingAdditionYupanaScreen(
         when (newPhase) {
             0 -> { userRedColumns = emptySet() }
             1 -> { userBlueColumns = emptySet() }
-            else -> { greenColumns = emptySet(); consumedLeft = emptySet(); consumedRight = emptySet() }
+            else -> { greenColumns = emptySet(); consumedLeft = emptySet(); consumedRight = emptySet(); consumedCarry = false }
         }
         rowCompleted = false
         feedbackMessage = ""
@@ -604,7 +561,9 @@ fun PracticingAdditionYupanaScreen(
                                 leftMarkers = leftMarkers,
                                 rightMarkers = rightMarkers,
                                 resultMarkers = resultMarkers,
-                                carryMarker = carryIntoRow[row] > 0
+                                carryMarker = phase >= 2 && carryIntoRow[row] > 0 && !consumedCarry &&
+                                    (ROWS - 2 - row < stepRowIdx ||
+                                     (ROWS - 2 - row == stepRowIdx && rowCompleted))
                             )
                         }
                     }
@@ -641,15 +600,16 @@ fun PracticingAdditionYupanaScreen(
                         text = when (phase) {
                             0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.yupana.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
                             1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.yupana.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
-                             else -> if (rowCompleted) {
-                                        val lv = rows[placeIdx].leftDigit
-                                        val rv = rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
-                                        val rs = lv + rv
-                                        val lang = context.resources.configuration.locales[0].toLanguageTag()
-                                        val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
-                                        val cw = if (lang == "pt-BR") "transporte" else if (lang == "es-ES") "llevada" else "carry"
-                                        val moves = writeSumOnYupana(wm, cw, lv, rv, rs)
-                                        "$lv + $rv = ${rows[placeIdx].resultDigit} (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
+                              else -> if (rowCompleted) {
+                                         val lv = rows[placeIdx].leftDigit
+                                         val rBase = rows[placeIdx].rightDigit
+                                         val carryIn = carryIntoRow[placeIdx]
+                                         val rv = rBase + carryIn
+                                         val rs = lv + rv
+                                         val lang = context.resources.configuration.locales[0].toLanguageTag()
+                                         val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+                                         val moves = writeSumOnYupana(wm, lv, rBase, carryIn)
+                                         "$lv + $rv = ${rows[placeIdx].resultDigit} (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
                                     } else {
                                        val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit
                                        val carryFromPrev = carryIntoRow[placeIdx]
@@ -762,6 +722,7 @@ fun PracticingAdditionYupanaScreen(
                                         greenColumns = emptySet()
                                         consumedLeft = emptySet()
                                         consumedRight = emptySet()
+                                        consumedCarry = false
                                         rowCompleted = false
                                         feedbackMessage = ""
 
@@ -1074,7 +1035,7 @@ private fun DrawScope.drawYupanaRow(
         }
 
         if (carryMarker && colNum == 4) {
-            val carryY = cellOriginY + cellHeight / 2f
+            val carryY = bottomMarkerY + extraPx
             drawCircle(
                 color = Color(0xFF808080),
                 radius = markerRadius * 1.1f,
