@@ -94,7 +94,7 @@ fun LargeNumbersWritingScreen(
     fun advanceLevel() {
         if (currentLevel == 8 && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mw2LastLevelMessage
+            feedbackMessage = s.mw.mw2LastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -124,10 +124,10 @@ fun LargeNumbersWritingScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.writingLargeNumbers,
+                        text = s.abacusWrite.writingLargeNumbers,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -143,7 +143,7 @@ fun LargeNumbersWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.largeNumbersWritingInstruction,
+                text = s.abacusWrite.largeNumbersWritingInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
@@ -159,7 +159,7 @@ fun LargeNumbersWritingScreen(
                 var isSoroban by remember { mutableStateOf(true) }
 
                 Text(
-                    text = "${s.level}: $currentLevel/8",
+                    text = "${s.common.level}: $currentLevel/8",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -187,7 +187,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = s.sorobanMode,
+                        text = s.abacusWrite.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -207,7 +207,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = s.suanpanMode,
+                        text = s.abacusWrite.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -282,7 +282,7 @@ fun LargeNumbersWritingScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = s.value,
+                                text = s.common.value,
                                 color = Color(0xFFF2ECD8),
                                 style = MaterialTheme.typography.titleSmall,
                                 modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 8.dp)
@@ -303,7 +303,7 @@ fun LargeNumbersWritingScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = s.write,
+                                text = s.common.write,
                                 color = Color(0xFF2E241F),
                                 style = MaterialTheme.typography.titleSmall,
                                 modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 8.dp)
@@ -343,7 +343,7 @@ fun LargeNumbersWritingScreen(
                         )
                     ) {
                         Text(
-                            text = s.reset,
+                            text = s.common.reset,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -369,7 +369,7 @@ fun LargeNumbersWritingScreen(
                         )
                     ) {
                         Text(
-                            text = s.newExercise,
+                            text = s.common.newExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -388,7 +388,7 @@ fun LargeNumbersWritingScreen(
                         )
                     ) {
                         Text(
-                            text = s.nextLevel,
+                            text = s.common.nextLevel,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -419,19 +419,26 @@ fun LargeNumbersWritingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
-                    val congratsText = if (completedLevel == 8) {
-                        "${s.levelCompleteMax} \uD83C\uDF89\uD83C\uDF89"
-                    } else {
-                        "${s.levelComplete.format(completedLevel)} \uD83C\uDF89"
-                    }
                     Text(
-                        text = congratsText,
+                        text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color(0xFF2E7D32),
                         modifier = Modifier.padding(horizontal = 32.dp)
                     )
                     Spacer(Modifier.height(8.dp))
+                    val levelText = if (completedLevel == 8) {
+                        s.common.levelCompleteMax
+                    } else {
+                        s.common.levelComplete.format(completedLevel)
+                    }
+                    Text(
+                        text = levelText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32),
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
                 }
                 if (feedbackMessage.isNotEmpty()) {
                     Text(
@@ -467,7 +474,7 @@ fun LargeNumbersWritingScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -478,21 +485,21 @@ fun LargeNumbersWritingScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
                     onClick = { showMainTextSubmenu = true }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.aPal) },
+                    text = { Text(s.titles.aPal) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
                     onClick = { showAPalSubmenu = true }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.tomokoHoult) },
+                    text = { Text(s.titles.tomokoHoult) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -505,17 +512,17 @@ fun LargeNumbersWritingScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=4dc32200-392c-4d20-ae2d-0089b3c288bb"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
@@ -529,17 +536,17 @@ fun LargeNumbersWritingScreen(
                 onDismissRequest = { showAPalSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showAPalSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showAPalSubmenu = false
@@ -553,17 +560,17 @@ fun LargeNumbersWritingScreen(
                 onDismissRequest = { showTomokoSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showTomokoSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.youtube.com/watch?v=-br2yp3tQ1M"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showTomokoSubmenu = false

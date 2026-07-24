@@ -437,10 +437,10 @@ fun RelationshipScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.exercisingMultiplication,
+                        text = s.body.exercisingMultiplication,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -454,7 +454,7 @@ fun RelationshipScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = s.relationshipReinforce,
+                    text = s.body.relationshipReinforce,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
                 )
@@ -619,7 +619,7 @@ fun RelationshipScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.offset(y = (-40).dp)
                 ) {
-                    Text("${s.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
+                    Text("${s.misc.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
 
                     var expanded by remember { mutableStateOf(false) }
                     ExposedDropdownMenuBox(
@@ -627,7 +627,7 @@ fun RelationshipScreen(
                         onExpandedChange = { if (!isPlaying) expanded = !expanded }
                     ) {
                         OutlinedTextField(
-                            value = if (selectedTable == -1) s.randomly else "${selectedTable}",
+                            value = if (selectedTable == -1) s.common.randomly else "${selectedTable}",
                             onValueChange = {},
                             readOnly = true,
                             enabled = !isPlaying,
@@ -641,7 +641,7 @@ fun RelationshipScreen(
                             onDismissRequest = { expanded = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text(s.randomly) },
+                                text = { Text(s.common.randomly) },
                                 onClick = { selectedTable = -1; expanded = false; newMultiplication() }
                             )
                             DropdownMenuItem(
@@ -665,7 +665,7 @@ fun RelationshipScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.offset(y = (-40).dp)
                 ) {
-                    Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                    Text(s.common.slowly, style = MaterialTheme.typography.bodySmall)
                     Slider(
                         value = sliderPos,
                         onValueChange = { if (!isPlaying) sliderPos = it },
@@ -673,7 +673,7 @@ fun RelationshipScreen(
                         modifier = Modifier.width(150.dp),
                         enabled = !isPlaying
                     )
-                    Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                    Text(s.common.fast, style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
@@ -691,7 +691,7 @@ fun RelationshipScreen(
                         enabled = !isPlaying
                     ) {
                         Text(
-                            text = s.newExercise,
+                            text = s.common.newExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -708,7 +708,7 @@ fun RelationshipScreen(
                         enabled = !isPlaying
                     ) {
                         Text(
-                            text = s.doExercise,
+                            text = s.common.doExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -720,14 +720,14 @@ fun RelationshipScreen(
 
         if (isDone && !isPlaying) {
             Text(
-                text = s.exercisingAdditionCompletionMessage,
+                text = s.body.exercisingAdditionCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 50.dp)
+                    .padding(bottom = 35.dp)
             )
         }
 
@@ -753,7 +753,7 @@ fun RelationshipScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -764,7 +764,7 @@ fun RelationshipScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -777,17 +777,17 @@ fun RelationshipScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=59648475-3d23-45fe-8d6e-f3def1a2729b"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false

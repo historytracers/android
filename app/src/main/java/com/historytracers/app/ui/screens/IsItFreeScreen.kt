@@ -29,7 +29,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = s.isItFreeContent,
+            text = s.titles.isItFreeContent,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -38,7 +38,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(16.dp))
 
         Text(
-            text = s.isItFreeDonateCall,
+            text = s.titles.isItFreeDonateCall,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -49,7 +49,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Button(onClick = {
             uriHandler.openUri("https://www.patreon.com/bePatron?u=104667333")
         }) {
-            Text(s.patreon)
+            Text(s.common.patreon)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -57,13 +57,13 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Button(onClick = {
             uriHandler.openUri("https://www.paypal.com/donate/?hosted_button_id=F9SD36K5M3BW6")
         }) {
-            Text(s.paypal)
+            Text(s.common.paypal)
         }
 
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = s.isItFreeFollowPrefix,
+            text = s.titles.isItFreeFollowPrefix,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
@@ -71,7 +71,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(12.dp))
 
         Button(onClick = onNavigateToAbout) {
-            Text(s.aboutUs)
+            Text(s.titles.aboutUs)
         }
 
         Spacer(Modifier.height(32.dp))

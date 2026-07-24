@@ -94,11 +94,11 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
 
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val placeNames = listOf(
-        s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands,
-        s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions
+        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
+        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
     )
 
-    steps.add(SbwStepInfo(s.sbwSetupInstruction.format(a), a.toLong()))
+    steps.add(SbwStepInfo(s.sbw.sbwSetupInstruction.format(a), a.toLong()))
 
     var currentValue = a.toLong()
     val bDigitCount = b.toString().length
@@ -112,9 +112,9 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
 
         if (currentDigit >= bDigit) {
             currentValue -= bDigit * multipliers[pos]
-            val desc = s.sbwSubStepDesc.format(bDigit, placeNames[pos])
+            val desc = s.sbw.sbwSubStepDesc.format(bDigit, placeNames[pos])
             steps.add(SbwStepInfo(
-                prefix + s.sbwSubStepInstruction.format(desc, currentValue),
+                prefix + s.sbw.sbwSubStepInstruction.format(desc, currentValue),
                 currentValue
             ))
         } else {
@@ -128,9 +128,9 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
                 val pDigit = (currentValue / multipliers[p] % 10).toInt()
                 if (pDigit == 0) {
                     currentValue += 9 * multipliers[p]
-                    val desc = s.sbwBorrowSetNine.format(placeNames[p], placeNames[borrowFrom], placeNames[p])
+                    val desc = s.sbw.sbwBorrowSetNine.format(placeNames[p], placeNames[borrowFrom], placeNames[p])
                     steps.add(SbwStepInfo(
-                        prefix + s.sbwSubStepInstruction.format(desc, currentValue),
+                        prefix + s.sbw.sbwSubStepInstruction.format(desc, currentValue),
                         currentValue
                     ))
                 }
@@ -139,18 +139,18 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
             if (borrowFrom <= maxPos) {
                 val borrowDigit = (currentValue / multipliers[borrowFrom] % 10).toInt()
                 currentValue -= 1 * multipliers[borrowFrom]
-                val desc = s.sbwBorrowReduce.format(placeNames[borrowFrom], borrowDigit, borrowDigit - 1)
+                val desc = s.sbw.sbwBorrowReduce.format(placeNames[borrowFrom], borrowDigit, borrowDigit - 1)
                 steps.add(SbwStepInfo(
-                    prefix + s.sbwSubStepInstruction.format(desc, currentValue),
+                    prefix + s.sbw.sbwSubStepInstruction.format(desc, currentValue),
                     currentValue
                 ))
 
                 val complement = 10 - bDigit
                 currentValue += complement * multipliers[pos]
                 val newDigit = (currentValue / multipliers[pos] % 10).toInt()
-                val descAdd = s.sbwBorrowSubUnits.format(complement, bDigit, complement, placeNames[pos], placeNames[pos], newDigit)
+                val descAdd = s.sbw.sbwBorrowSubUnits.format(complement, bDigit, complement, placeNames[pos], placeNames[pos], newDigit)
                 steps.add(SbwStepInfo(
-                    prefix + s.sbwSubStepInstruction.format(descAdd, currentValue),
+                    prefix + s.sbw.sbwSubStepInstruction.format(descAdd, currentValue),
                     currentValue
                 ))
             }
@@ -231,10 +231,10 @@ fun SubtractingWithAbacusScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.sbwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = s.sbw.sbwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.sbwCorrectMessage
+                    feedbackMessage = s.sbw.sbwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -257,7 +257,7 @@ fun SubtractingWithAbacusScreen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.sbwCongratsMessage.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = s.sbw.sbwCongratsMessage.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -272,7 +272,7 @@ fun SubtractingWithAbacusScreen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.sbwLastLevelMessage
+            feedbackMessage = s.sbw.sbwLastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -295,10 +295,10 @@ fun SubtractingWithAbacusScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.sbwTitle,
+                        text = s.sbw.sbwTitle,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -314,7 +314,7 @@ fun SubtractingWithAbacusScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.sbwInstruction,
+                    text = s.sbw.sbwInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -322,7 +322,7 @@ fun SubtractingWithAbacusScreen(
                 )
 
                 Text(
-                    text = "${s.levelPrefix}$currentDigitLevel",
+                    text = "${s.common.levelPrefix}$currentDigitLevel",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -357,7 +357,7 @@ fun SubtractingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.sorobanMode,
+                        text = s.abacusWrite.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -377,7 +377,7 @@ fun SubtractingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.suanpanMode,
+                        text = s.abacusWrite.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -444,7 +444,7 @@ fun SubtractingWithAbacusScreen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${s.valuePrefix}${SbwValue(state.value)}",
+                        text = "${s.common.valuePrefix}${SbwValue(state.value)}",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -461,7 +461,7 @@ fun SubtractingWithAbacusScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${s.sbwStepPrefix}${steps[currentStepIdx].instruction}",
+                            text = "${s.sbw.sbwStepPrefix}${steps[currentStepIdx].instruction}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -472,7 +472,7 @@ fun SubtractingWithAbacusScreen(
 
                 if (steps.isNotEmpty()) {
                     Text(
-                        text = s.sbwStepStatus.format(currentStepIdx + 1, steps.size),
+                        text = s.sbw.sbwStepStatus.format(currentStepIdx + 1, steps.size),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -499,7 +499,7 @@ fun SubtractingWithAbacusScreen(
                             )
                         ) {
                             Text(
-                                text = s.newExercise,
+                                text = s.common.newExercise,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -516,7 +516,7 @@ fun SubtractingWithAbacusScreen(
                                 )
                             ) {
                                 Text(
-                                    text = s.nextStep,
+                                    text = s.common.nextStep,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -535,7 +535,7 @@ fun SubtractingWithAbacusScreen(
                         )
                     ) {
                         Text(
-                            text = s.nextLevel,
+                            text = s.common.nextLevel,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -582,7 +582,7 @@ fun SubtractingWithAbacusScreen(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = s.sources,
+                        text = s.common.sources,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -593,7 +593,7 @@ fun SubtractingWithAbacusScreen(
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.originalText) },
+                        text = { Text(s.common.originalText) },
                         trailingIcon = {
                             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                         },
@@ -606,17 +606,17 @@ fun SubtractingWithAbacusScreen(
                     onDismissRequest = { showMainTextSubmenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.copyUrl) },
+                        text = { Text(s.common.copyUrl) },
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=e4103f19-1efb-469f-bd69-d44d43e0d3a3"))
-                            Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(s.goToUrl) },
+                        text = { Text(s.common.goToUrl) },
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false

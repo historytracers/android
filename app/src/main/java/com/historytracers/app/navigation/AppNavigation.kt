@@ -168,7 +168,7 @@ fun AppNavigation() {
     LaunchedEffect(reminderEnabled, reminderHour, reminderMinute, language) {
         NotificationHelper.scheduleAlarm(
             context, reminderEnabled, reminderHour, reminderMinute,
-            uiStrings.reminderTitle, uiStrings.reminderMessage
+            uiStrings.common.reminderTitle, uiStrings.common.reminderMessage
         )
     }
 
@@ -186,7 +186,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                        label = { Text(uiStrings.home) },
+                        label = { Text(uiStrings.common.home) },
                         selected = currentRoute == Screen.Index.route,
                         onClick = {
                             navController.navigate(Screen.Index.route) {
@@ -197,7 +197,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                        label = { Text(uiStrings.settings) },
+                        label = { Text(uiStrings.common.settings) },
                         selected = currentRoute == Screen.Settings.route,
                         onClick = {
                             navController.navigate(Screen.Settings.route)
@@ -206,7 +206,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.LocalFireDepartment, contentDescription = null) },
-                        label = { Text(uiStrings.streak) },
+                        label = { Text(uiStrings.common.streak) },
                         selected = currentRoute == Screen.Streak.route,
                         onClick = {
                             navController.navigate(Screen.Streak.route)
@@ -216,7 +216,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text(uiStrings.isItFree) },
+                        label = { Text(uiStrings.titles.isItFree) },
                         selected = currentRoute == Screen.IsItFree.route,
                         onClick = {
                             navController.navigate(Screen.IsItFree.route)
@@ -225,7 +225,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Info, contentDescription = null) },
-                        label = { Text(uiStrings.aboutUs) },
+                        label = { Text(uiStrings.titles.aboutUs) },
                         selected = currentRoute == Screen.About.route,
                         onClick = {
                             navController.navigate(Screen.About.route)
@@ -235,7 +235,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Close, contentDescription = null) },
-                        label = { Text(uiStrings.close) },
+                        label = { Text(uiStrings.common.close) },
                         selected = false,
                         onClick = {
                             (context as? android.app.Activity)?.finishAndRemoveTask()
@@ -252,7 +252,7 @@ fun AppNavigation() {
                             IconButton(onClick = {
                                 scope.launch { drawerState.open() }
                             }) {
-                                Icon(Icons.Default.Menu, contentDescription = uiStrings.menu)
+                                Icon(Icons.Default.Menu, contentDescription = uiStrings.common.menu)
                             }
                         },
                         actions = {
@@ -665,14 +665,14 @@ fun AppNavigation() {
     if (showBreakDialog) {
         AlertDialog(
             onDismissRequest = { },
-            title = { Text(uiStrings.breakReminderTitle) },
-            text = { Text(uiStrings.breakMessage) },
+            title = { Text(uiStrings.common.breakReminderTitle) },
+            text = { Text(uiStrings.common.breakMessage) },
             confirmButton = {
                 TextButton(onClick = {
                     breakStartTime = System.currentTimeMillis() / 1000L
                     showBreakDialog = false
                 }) {
-                    Text(uiStrings.imBack)
+                    Text(uiStrings.common.imBack)
                 }
             }
         )

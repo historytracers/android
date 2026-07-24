@@ -80,25 +80,25 @@ private sealed class Level(val maxDigits: Int) {
 }
 
 private fun levelName(level: Level, s: UiStrings): String = when (level) {
-    Level.Units -> s.levelUnits
-    Level.Tens -> s.levelTens
-    Level.Hundreds -> s.levelHundreds
-    Level.Thousands -> s.levelThousands
-    Level.TenThousands -> s.levelTenThousands
-    Level.HundredThousands -> s.levelHundredThousands
-    Level.Millions -> s.levelMillions
-    Level.TenMillions -> s.levelTenMillions
+    Level.Units -> s.place.levelUnits
+    Level.Tens -> s.place.levelTens
+    Level.Hundreds -> s.place.levelHundreds
+    Level.Thousands -> s.place.levelThousands
+    Level.TenThousands -> s.place.levelTenThousands
+    Level.HundredThousands -> s.place.levelHundredThousands
+    Level.Millions -> s.place.levelMillions
+    Level.TenMillions -> s.place.levelTenMillions
 }
 
 private fun placeNames(level: Level, s: UiStrings): List<String> = when (level) {
-    Level.Units -> listOf(s.placeUnits)
-    Level.Tens -> listOf(s.placeUnits, s.placeTens)
-    Level.Hundreds -> listOf(s.placeUnits, s.placeTens, s.placeHundreds)
-    Level.Thousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands)
-    Level.TenThousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands)
-    Level.HundredThousands -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands)
-    Level.Millions -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands, s.placeMillions)
-    Level.TenMillions -> listOf(s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands, s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions)
+    Level.Units -> listOf(s.place.placeUnits)
+    Level.Tens -> listOf(s.place.placeUnits, s.place.placeTens)
+    Level.Hundreds -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds)
+    Level.Thousands -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands)
+    Level.TenThousands -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands)
+    Level.HundredThousands -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands)
+    Level.Millions -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions)
+    Level.TenMillions -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions)
 }
 
 private val levels = listOf(
@@ -136,7 +136,7 @@ private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<Ste
     val pn = placeNames(level, s)
     val placeDescription = pn.reversed().joinToString(", ")
 
-    steps.add(StepInfo(s.stepWriteFirst.format(exercise.a, placeDescription), exercise.a))
+    steps.add(StepInfo(s.pa.stepWriteFirst.format(exercise.a, placeDescription), exercise.a))
 
     var currentValue = exercise.a
 
@@ -149,17 +149,17 @@ private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<Ste
 
         if (total < 10) {
             currentValue += digitB * multiplier[p]
-            steps.add(StepInfo(s.stepAddTo.format(pn[p], digitB, pn[p], currentValue), currentValue))
+            steps.add(StepInfo(s.pa.stepAddTo.format(pn[p], digitB, pn[p], currentValue), currentValue))
         } else {
             val complement = 10 - digitB
             val newValue = currentValue + (multiplier[p] * 10) - (complement * multiplier[p])
-            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.placeNext
-            steps.add(StepInfo(s.stepCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue), newValue))
+            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.place.placeNext
+            steps.add(StepInfo(s.pa.stepCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue), newValue))
             currentValue = newValue
         }
     }
 
-    steps.add(StepInfo(s.stepFinal.format(exercise.a, exercise.b, exercise.expected), exercise.expected))
+    steps.add(StepInfo(s.pa.stepFinal.format(exercise.a, exercise.b, exercise.expected), exercise.expected))
     return steps
 }
 
@@ -220,10 +220,10 @@ fun PracticingAdditionScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = s.pa.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.feedbackCorrect
+                    feedbackMessage = s.pa.feedbackCorrect
                     isFeedbackPositive = true
                 }
             }
@@ -245,7 +245,7 @@ fun PracticingAdditionScreen(
             if (!finalCongratsShown) {
                 finalCongratsShown = true
             }
-            feedbackMessage = s.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = s.pa.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -260,7 +260,7 @@ fun PracticingAdditionScreen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showFinalCongratsMessage) {
             showFinalCongratsMessage = true
-            feedbackMessage = "${s.levelCompleteMax} \uD83C\uDF89"
+            feedbackMessage = "${s.common.levelCompleteMax} \uD83C\uDF89"
             isFeedbackPositive = true
             return
         }
@@ -283,10 +283,10 @@ fun PracticingAdditionScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.practicingAddition,
+                        text = s.pa.practicingAddition,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -302,7 +302,7 @@ fun PracticingAdditionScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.practicingAdditionInstruction,
+                text = s.pa.practicingAdditionInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -310,7 +310,7 @@ fun PracticingAdditionScreen(
             )
 
             Text(
-                text = "${s.levelPrefix}${levelName(levels[currentLevelIdx], s)}",
+                text = "${s.common.levelPrefix}${levelName(levels[currentLevelIdx], s)}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -345,7 +345,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = s.sorobanMode,
+                    text = s.abacusWrite.sorobanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -365,7 +365,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = s.suanpanMode,
+                    text = s.abacusWrite.suanpanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -432,7 +432,7 @@ fun PracticingAdditionScreen(
                 color = Color(0xFF2E241F),
             ) {
                 Text(
-                    text = "${s.valuePrefix}${PaValue(state.value)}",
+                    text = "${s.common.valuePrefix}${PaValue(state.value)}",
                     color = Color(0xFFF2ECD8),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -460,7 +460,7 @@ fun PracticingAdditionScreen(
 
             if (steps.isNotEmpty()) {
                 Text(
-                    text = "${s.stepPrefix}${currentStepIdx + 1}/${steps.size}",
+                    text = "${s.common.stepPrefix}${currentStepIdx + 1}/${steps.size}",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -487,7 +487,7 @@ fun PracticingAdditionScreen(
                         )
                     ) {
                         Text(
-                            text = s.newExercise,
+                            text = s.common.newExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -504,7 +504,7 @@ fun PracticingAdditionScreen(
                             )
                         ) {
                             Text(
-                                text = s.nextStep,
+                                text = s.common.nextStep,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -523,7 +523,7 @@ fun PracticingAdditionScreen(
                     )
                 ) {
                     Text(
-                        text = s.nextLevel,
+                        text = s.common.nextLevel,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 4.dp)
@@ -568,7 +568,7 @@ fun PracticingAdditionScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -579,7 +579,7 @@ fun PracticingAdditionScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -592,17 +592,17 @@ fun PracticingAdditionScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=f91d9720-3085-4e71-ae5d-7e7cf6b7b7b2"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false

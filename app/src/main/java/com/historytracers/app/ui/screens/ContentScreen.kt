@@ -53,8 +53,8 @@ fun ContentScreen(
         NavigationBar(
             onBack = onNavigateBack,
             onHome = onNavigateHome,
-            backLabel = s.back,
-            homeLabel = s.home
+            backLabel = s.common.back,
+            homeLabel = s.common.home
         )
 
         when (val res = result) {
@@ -62,7 +62,7 @@ fun ContentScreen(
                 CircularProgressIndicator()
             }
             is ContentResult.Error -> Text(
-                "${s.error}: ${res.message}",
+                "${s.common.error}: ${res.message}",
                 modifier = Modifier.padding(16.dp)
             )
             is ContentResult.ClassContent -> ClassScreen(res.data, repo, s)
@@ -70,7 +70,7 @@ fun ContentScreen(
             is ContentResult.FamilyTree -> FamilyTreeScreen(res.data, repo, s)
             is ContentResult.SMGame -> SMGameScreen(res.data, repo, s)
             is ContentResult.IndexClass -> IndexContentScreen(res.data, repo, s)
-            else -> Text("${s.error}: ${s.unsupportedContentType}", modifier = Modifier.padding(16.dp))
+            else -> Text("${s.common.error}: ${s.common.unsupportedContentType}", modifier = Modifier.padding(16.dp))
         }
     }
 }
@@ -123,7 +123,7 @@ private fun ClassScreen(data: ClassTemplateFile, repo: ContentRepository, s: UiS
         data.exercises?.let { exercises ->
             Spacer(Modifier.height(16.dp))
             Text(
-                s.exercises,
+                s.common.exercises,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -165,7 +165,7 @@ private fun ExerciseCard(exercise: HTExercise, s: UiStrings) {
                             containerColor = ButtonYellow
                         )
                     ) {
-                        Text(s.yes)
+                        Text(s.common.yes)
                     }
                     OutlinedButton(
                         onClick = {
@@ -173,12 +173,12 @@ private fun ExerciseCard(exercise: HTExercise, s: UiStrings) {
                             answered = true
                         }
                     ) {
-                        Text(s.no)
+                        Text(s.common.no)
                     }
                 }
             } else {
                 Text(
-                    text = if (isCorrect) s.correct else s.incorrect,
+                    text = if (isCorrect) s.common.correct else s.common.incorrect,
                     color = if (isCorrect) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge,
@@ -195,7 +195,7 @@ private fun ExerciseCard(exercise: HTExercise, s: UiStrings) {
                         isCorrect = false
                     }
                 ) {
-                    Text(s.retry)
+                    Text(s.common.retry)
                 }
             }
         }
@@ -305,14 +305,14 @@ private fun PersonSection(person: FamilyPerson, repo: ContentRepository, s: UiSt
                 person.birth?.forEach { event ->
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${s.birth}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.unknown}",
+                        text = "${s.titles.birth}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.common.unknown}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
                 person.death?.forEach { event ->
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${s.death}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.unknown}",
+                        text = "${s.titles.death}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.common.unknown}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -349,13 +349,13 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository, s: UiStrings
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${s.score}: $score",
+                    text = "${s.common.score}: $score",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = if (contentList.size > 0 && currentNodeId != null) {
-                        "${s.step} ${contentList.indexOfFirst { it.id == currentNodeId } + 1}/${contentList.size}"
+                        "${s.common.step} ${contentList.indexOfFirst { it.id == currentNodeId } + 1}/${contentList.size}"
                     } else "",
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -415,7 +415,7 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository, s: UiStrings
                             onClick = { currentNodeId = prevId },
                             modifier = Modifier.weight(1f).padding(end = 4.dp)
                         ) {
-                            Text(s.previous)
+                            Text(s.common.previous)
                         }
                     }
                     currentNode?.jumpTo?.let { jumpId ->
@@ -423,7 +423,7 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository, s: UiStrings
                             onClick = { currentNodeId = jumpId },
                             modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                         ) {
-                            Text(s.jump)
+                            Text(s.common.jump)
                         }
                     }
                     currentNode?.next?.let { nextId ->
@@ -431,7 +431,7 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository, s: UiStrings
                             onClick = { currentNodeId = nextId },
                             modifier = Modifier.weight(1f).padding(start = 4.dp)
                         ) {
-                            Text(s.next)
+                            Text(s.common.next)
                         }
                     }
                 }
@@ -454,7 +454,7 @@ private fun LevelSelectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = s.selectLevel,
+            text = s.common.selectLevel,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
@@ -511,7 +511,7 @@ private fun AnswerSection(
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
-                text = "${s.answer} (+$scoreValue pts)",
+                text = "${s.common.answer} (+$scoreValue pts)",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -542,8 +542,8 @@ private fun AnswerSection(
             } else {
                 val isCorrect = selectedAnswer == correctAnswer
                 Text(
-                    text = if (isCorrect) "${s.correct} +$scoreValue pts"
-                    else "${s.incorrect}. ${s.answer}: $correctAnswer",
+                    text = if (isCorrect) "${s.common.correct} +$scoreValue pts"
+                    else "${s.common.incorrect}. ${s.common.answer}: $correctAnswer",
                     color = if (isCorrect) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge,
@@ -554,7 +554,7 @@ private fun AnswerSection(
                     selectedAnswer = null
                     hasSubmitted = false
                 }) {
-                    Text(s.tryAgain)
+                    Text(s.common.tryAgain)
                 }
             }
         }

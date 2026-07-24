@@ -94,10 +94,10 @@ fun WorkoutScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.workout,
+                    text = s.titles.workout,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -147,7 +147,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.voice,
+                text = s.common.voice,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -176,7 +176,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.exercisingHands,
+                text = s.body.exercisingHands,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -205,7 +205,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.walking,
+                text = s.body.walking,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -234,7 +234,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.exercisingFeetAndHands,
+                text = s.body.exercisingFeetAndHands,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -268,7 +268,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.nextLevel,
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -287,7 +287,7 @@ fun WorkoutScreen(
                 )
             ) {
                 Text(
-                    text = s.whoWalkFirstButton,
+                    text = s.titles.whoWalkFirstButton,
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -297,7 +297,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.whoWalkFirst,
+                text = s.titles.whoWalkFirst,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -326,7 +326,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.exercisingAddition,
+                text = s.body.exercisingAddition,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -360,7 +360,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.nextLevel,
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -389,7 +389,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.relationship,
+                text = s.body.relationship,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -418,7 +418,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.exercisingMultiplication,
+                text = s.body.exercisingMultiplication,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -447,7 +447,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.thinking,
+                text = s.common.thinking,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -488,7 +488,7 @@ fun WorkoutScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.exercisingMultiplicationL2,
+                text = s.body.exercisingMultiplicationL2,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

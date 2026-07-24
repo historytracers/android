@@ -147,10 +147,10 @@ fun MultiplicationTableScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.multiplicationTable,
+                        text = s.misc.multiplicationTable,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -166,7 +166,7 @@ fun MultiplicationTableScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.multiplicationTableDescription,
+                    text = s.misc.multiplicationTableDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -189,7 +189,7 @@ fun MultiplicationTableScreen(
                         Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                             color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Text(s.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(s.abacusWrite.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
 
                     FilledIconButton(
                         onClick = { isSoroban = false },
@@ -202,7 +202,7 @@ fun MultiplicationTableScreen(
                         Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                             color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Text(s.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(s.abacusWrite.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 }
 
                 Canvas(
@@ -253,7 +253,7 @@ fun MultiplicationTableScreen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${s.valuePrefix}${MtValue(state.value)}",
+                        text = "${s.common.valuePrefix}${MtValue(state.value)}",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -278,7 +278,7 @@ fun MultiplicationTableScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(s.number, style = MaterialTheme.typography.titleSmall,
+                    Text(s.common.number, style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold)
                     var expanded by remember { mutableStateOf(false) }
                     Box {
@@ -314,7 +314,7 @@ fun MultiplicationTableScreen(
 
                 if (currentStep > 0 && currentStep <= MAX_STEPS) {
                     Text(
-                        text = "${s.stepPrefix}${currentStep}/$MAX_STEPS",
+                        text = "${s.common.stepPrefix}${currentStep}/$MAX_STEPS",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -344,7 +344,7 @@ fun MultiplicationTableScreen(
                                     contentColor = OnButtonYellow
                                 )
                             ) {
-                                Text(s.reset, style = MaterialTheme.typography.titleMedium,
+                                Text(s.common.reset, style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
                             }
                         }
@@ -365,7 +365,7 @@ fun MultiplicationTableScreen(
                                 )
                             ) {
                                 Text(
-                                    if (isAutoPlaying) s.stop else s.auto,
+                                    if (isAutoPlaying) s.common.stop else s.common.auto,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -386,14 +386,14 @@ fun MultiplicationTableScreen(
                                 contentColor = OnButtonYellow
                             )
                         ) {
-                            Text(s.nextStep, style = MaterialTheme.typography.titleMedium,
+                            Text(s.common.nextStep, style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
                         }
                     }
 
                     if (isComplete) {
                         Text(
-                            text = s.complete,
+                            text = s.common.complete,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF2E7D32)
@@ -426,7 +426,7 @@ fun MultiplicationTableScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -437,7 +437,7 @@ fun MultiplicationTableScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -450,17 +450,17 @@ fun MultiplicationTableScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false

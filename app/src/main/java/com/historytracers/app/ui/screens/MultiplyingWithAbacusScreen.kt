@@ -88,12 +88,12 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
 
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val placeNames = listOf(
-        s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands,
-        s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions
+        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
+        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
     )
 
     steps.add(MwStepInfo(
-        s.mwStepWriteFirst.format(tensDigit, b, tensMult, b, tensProduct, tensProduct),
+        s.mw.mwStepWriteFirst.format(tensDigit, b, tensMult, b, tensProduct, tensProduct),
         tensProduct.toLong()
     ))
 
@@ -111,7 +111,7 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
 
         var prefix = ""
         if (firstAddStep) {
-            prefix = s.mwUnitsProductHeader.format(unitsDigit, b, unitsProduct)
+            prefix = s.mw.mwUnitsProductHeader.format(unitsDigit, b, unitsProduct)
             firstAddStep = false
         }
 
@@ -121,15 +121,15 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
         if (totalDigit < 10) {
             currentValue += digitB * multipliers[p].toInt()
             steps.add(MwStepInfo(
-                prefix + s.mwStepAdd.format(digitB, placeNames[p], currentValue),
+                prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
                 currentValue.toLong()
             ))
         } else {
             val complement = 10 - digitB
             val newValue = currentValue + (multipliers[p].toInt() * 10) - (complement * multipliers[p].toInt())
-            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.placeNext
+            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
             steps.add(MwStepInfo(
-                prefix + s.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
+                prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
                 newValue.toLong()
             ))
             currentValue = newValue
@@ -137,7 +137,7 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
     }
 
     steps.add(MwStepInfo(
-        s.mwStepFinal.format(a, b, total),
+        s.mw.mwStepFinal.format(a, b, total),
         total.toLong()
     ))
 
@@ -215,10 +215,10 @@ fun MultiplyingWithAbacusScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = s.mw.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.mwCorrectMessage
+                    feedbackMessage = s.mw.mwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -241,7 +241,7 @@ fun MultiplyingWithAbacusScreen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -256,7 +256,7 @@ fun MultiplyingWithAbacusScreen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mwLastLevelMessage.format(currentMultiplier)
+            feedbackMessage = s.mw.mwLastLevelMessage.format(currentMultiplier)
             isFeedbackPositive = true
             return
         }
@@ -279,10 +279,10 @@ fun MultiplyingWithAbacusScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.multiplyingWithAbacusDescription,
+                        text = s.mw.multiplyingWithAbacusDescription,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -298,7 +298,7 @@ fun MultiplyingWithAbacusScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.multiplyingWithAbacusInstruction,
+                    text = s.mw.multiplyingWithAbacusInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -341,7 +341,7 @@ fun MultiplyingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.sorobanMode,
+                        text = s.abacusWrite.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -361,7 +361,7 @@ fun MultiplyingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.suanpanMode,
+                        text = s.abacusWrite.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -428,7 +428,7 @@ fun MultiplyingWithAbacusScreen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${s.valuePrefix}${MwValue(state.value)}",
+                        text = "${s.common.valuePrefix}${MwValue(state.value)}",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -445,7 +445,7 @@ fun MultiplyingWithAbacusScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${s.mwStepPrefix}${steps[currentStepIdx].instruction}",
+                            text = "${s.mw.mwStepPrefix}${steps[currentStepIdx].instruction}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -456,7 +456,7 @@ fun MultiplyingWithAbacusScreen(
 
                 if (steps.isNotEmpty()) {
                     Text(
-                        text = s.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                        text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -483,7 +483,7 @@ fun MultiplyingWithAbacusScreen(
                             )
                         ) {
                             Text(
-                                text = s.newExercise,
+                                text = s.common.newExercise,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -500,7 +500,7 @@ fun MultiplyingWithAbacusScreen(
                                 )
                             ) {
                                 Text(
-                                    text = s.nextStep,
+                                    text = s.common.nextStep,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -519,7 +519,7 @@ fun MultiplyingWithAbacusScreen(
                         )
                     ) {
                         Text(
-                            text = s.nextLevel,
+                            text = s.common.nextLevel,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -565,7 +565,7 @@ fun MultiplyingWithAbacusScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -576,7 +576,7 @@ fun MultiplyingWithAbacusScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -589,17 +589,17 @@ fun MultiplyingWithAbacusScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=2bf58492-72be-4fbc-99b4-a0a3d4a0df31"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false

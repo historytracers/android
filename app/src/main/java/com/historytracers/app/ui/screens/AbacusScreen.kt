@@ -105,10 +105,10 @@ fun AbacusScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.abacus,
+                    text = s.titles.abacus,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -143,7 +143,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.history,
+                text = s.titles.history,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -172,7 +172,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.writingToSoroban,
+                text = s.abacusWrite.writingToSoroban,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -201,7 +201,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.writingToSuanpan,
+                text = s.abacusWrite.writingToSuanpan,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -230,7 +230,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.writingLargeNumbers,
+                text = s.abacusWrite.writingLargeNumbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -264,7 +264,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.nextLevel,
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -293,7 +293,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.addingTwoNumbers,
+                text = s.body.addingTwoNumbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -322,7 +322,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.addingLargeNumbers,
+                text = s.body.addingLargeNumbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -351,7 +351,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.practicingAddition,
+                text = s.pa.practicingAddition,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -385,7 +385,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.nextLevel,
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -414,7 +414,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.multiplicationTable,
+                text = s.misc.multiplicationTable,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -433,7 +433,7 @@ fun AbacusScreen(
                 )
             ) {
                 Text(
-                    text = s.abacusInOrdersReading,
+                    text = s.misc.abacusInOrdersReading,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
@@ -443,7 +443,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.abacusInRereading,
+                text = s.misc.abacusInRereading,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -462,7 +462,7 @@ fun AbacusScreen(
                 )
             ) {
                 Text(
-                    text = s.multiplyingWithAbacus,
+                    text = s.mw.multiplyingWithAbacus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
@@ -472,7 +472,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.multiplyingWithAbacusDescription,
+                text = s.mw.multiplyingWithAbacusDescription,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -501,7 +501,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.mw2Title,
+                text = s.mw.mw2Title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -530,7 +530,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.mw3Title,
+                text = s.mw.mw3Title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -564,7 +564,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.nextLevel,
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -594,7 +594,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.returningWithAbacus,
+                text = s.sbw.returningWithAbacus,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -624,7 +624,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.subtractingWithAbacus,
+                text = s.sbw.subtractingWithAbacus,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -658,7 +658,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.nextLevel,
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

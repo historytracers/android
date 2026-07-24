@@ -338,10 +338,10 @@ fun ExercisingAdditionScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { onNavigateBack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.exercisingAddition,
+                        text = s.body.exercisingAddition,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -349,7 +349,7 @@ fun ExercisingAdditionScreen(
             }
 
             Text(
-                text = s.exercisingAdditionInstruction,
+                text = s.body.exercisingAdditionInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -538,16 +538,16 @@ fun ExercisingAdditionScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("${s.clapCounter} $clapCompleted", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.stepsCounter} $stepsCompleted", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.jumpsCounter} $jumpsCompleted", style = MaterialTheme.typography.bodySmall)
+                    Text("${s.body.clapCounter} $clapCompleted", style = MaterialTheme.typography.bodySmall)
+                    Text("${s.body.stepsCounter} $stepsCompleted", style = MaterialTheme.typography.bodySmall)
+                    Text("${s.body.jumpsCounter} $jumpsCompleted", style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                    Text(s.common.slowly, style = MaterialTheme.typography.bodySmall)
                     Slider(
                         value = sliderPos,
                         onValueChange = { if (!isPlaying) sliderPos = it },
@@ -555,7 +555,7 @@ fun ExercisingAdditionScreen(
                         modifier = Modifier.width(180.dp),
                         enabled = !isPlaying
                     )
-                    Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                    Text(s.common.fast, style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
@@ -572,7 +572,7 @@ fun ExercisingAdditionScreen(
                         enabled = !isPlaying
                     ) {
                         Text(
-                            text = s.newExercise,
+                            text = s.common.newExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -589,7 +589,7 @@ fun ExercisingAdditionScreen(
                         enabled = !isPlaying
                     ) {
                         Text(
-                            text = s.doExercise,
+                            text = s.common.doExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -601,7 +601,7 @@ fun ExercisingAdditionScreen(
 
         if (phase == ExercisePhase.DONE && !isPlaying) {
             Text(
-                text = s.exercisingAdditionCompletionMessage,
+                text = s.body.exercisingAdditionCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
@@ -634,7 +634,7 @@ fun ExercisingAdditionScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -645,7 +645,7 @@ fun ExercisingAdditionScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -658,17 +658,17 @@ fun ExercisingAdditionScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=48f8f1cd-5036-4140-aafc-697963fe5dfb"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false

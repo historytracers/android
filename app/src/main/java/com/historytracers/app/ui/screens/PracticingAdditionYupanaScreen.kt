@@ -78,6 +78,146 @@ private fun getMarkersForDigit(digit: Int): Set<Int> {
     return cols
 }
 
+private val YP_ISKAY = "ISKAY"
+private val YP_KIMSA = "KIMSA"
+private val YP_PISQA = "PISQA"
+private val YP_KIKIN = "KIKIN"
+private val YP_PICHANA = "PICHANA"
+
+private fun movementDesc(name: String): String = when (name) {
+    YP_ISKAY -> "$YP_ISKAY (1 + 1 = 2)"
+    YP_KIMSA -> "$YP_KIMSA (2 + 1 = 3)"
+    YP_PISQA -> "$YP_PISQA (5 + 5 = 10)"
+    YP_KIKIN -> "$YP_KIKIN (1 + 4 = 5)"
+    YP_PICHANA -> "$YP_PICHANA (3 + 3 = 5 + 1)"
+    else -> name
+}
+
+private fun writeSumOnYupana(withoutMoves: String, carry: String, lValue: Int, rValue: Int, result: Int): List<String> {
+    val m = mutableListOf<String>()
+    if (lValue == rValue) {
+        when (lValue) {
+            1 -> m.add(YP_KIKIN)
+            4 -> { m.add(YP_KIKIN); m.add(YP_KIMSA) }
+            2 -> m.add(YP_ISKAY)
+            3 -> m.add(YP_KIMSA)
+            5 -> m.add(YP_PISQA)
+            6 -> { m.add(YP_KIKIN); m.add(YP_PISQA) }
+            7 -> { m.add(YP_ISKAY); m.add(YP_PISQA) }
+            8 -> { m.add(YP_KIMSA); m.add(YP_PISQA) }
+            9 -> { m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA) }
+        }
+    } else if (lValue != 0 && rValue != 0) {
+        var res = result
+        if (res > 10 && lValue >= 5 && rValue >= 5) {
+            val leftRem = lValue - 5
+            val rightRem = rValue - 5
+            if (leftRem + rightRem < 5) {
+                if (leftRem > 0 && rightRem > 0 && leftRem + rightRem != 4) {
+                    m.add(YP_PICHANA)
+                    m.add(YP_PISQA)
+                } else {
+                    m.add(YP_PISQA)
+                }
+                return m
+            }
+        }
+        var bigger = false
+        if (res > 10) {
+            m.add(carry)
+            res %= 10
+            bigger = true
+        }
+        when (res) {
+            2, 3 -> {
+                if (bigger) {
+                    val carryList = m.toList(); m.clear()
+                    val lr = if (lValue >= 5) lValue - 5 else lValue
+                    val rr = if (rValue >= 5) rValue - 5 else rValue
+                    if (lr == 1 || lr == 4 || rr == 1 || rr == 4) {
+                        m.add(YP_KIKIN); m.add(YP_KIMSA); m.add(YP_PISQA)
+                    } else {
+                        m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA)
+                    }
+                    m.addAll(carryList)
+                } else if (res == 3) {
+                    m.add(YP_PICHANA)
+                }
+            }
+            7 -> {
+                if (bigger) {
+                    val carryList = m.toList(); m.clear()
+                    val lr = if (lValue >= 5) lValue - 5 else lValue
+                    val rr = if (rValue >= 5) rValue - 5 else rValue
+                    if (lr == 1 || lr == 4 || rr == 1 || rr == 4) {
+                        m.add(YP_KIKIN); m.add(YP_KIMSA); m.add(YP_PISQA)
+                    } else {
+                        m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA)
+                    }
+                    m.addAll(carryList)
+                } else {
+                    if (lValue == 4 || rValue == 4) m.add(YP_KIMSA)
+                    else if (lValue == 5 || rValue == 5) { m.add(withoutMoves); return m }
+                    m.add(YP_KIKIN)
+                }
+            }
+            4 -> m.add(withoutMoves)
+            5 -> {
+                if (bigger) {
+                    val carryList = m.toList(); m.clear()
+                    val lr = if (lValue >= 5) lValue - 5 else lValue
+                    val rr = if (rValue >= 5) rValue - 5 else rValue
+                    if (lr == 1 || lr == 4 || rr == 1 || rr == 4) {
+                        m.add(YP_KIKIN); m.add(YP_KIMSA); m.add(YP_PISQA)
+                    } else {
+                        m.add(YP_KIMSA); m.add(YP_KIKIN); m.add(YP_PISQA)
+                    }
+                    m.addAll(carryList)
+                } else {
+                    if (lValue == 4 || rValue == 4) m.add(YP_KIKIN)
+                    m.add(YP_PICHANA)
+                }
+            }
+            1, 6 -> {
+                if (bigger) {
+                    val carryList = m.toList(); m.clear()
+                    m.add(YP_PICHANA); m.add(YP_KIMSA); m.addAll(carryList); m.addAll(carryList)
+                } else {
+                    if (lValue == 4 || rValue == 4) m.add(YP_PICHANA)
+                }
+            }
+            9 -> { if (lValue == 7 || rValue == 7) m.add(YP_ISKAY) }
+            10 -> {
+                when {
+                    lValue == 9 || rValue == 9 -> { m.add(YP_KIKIN); m.add(YP_PICHANA) }
+                    lValue == 8 || rValue == 8 -> m.add(YP_KIMSA)
+                    lValue == 7 || rValue == 7 -> m.add(YP_KIMSA)
+                    lValue == 6 || rValue == 6 -> { m.add(YP_KIKIN); m.add(YP_PICHANA) }
+                }
+                m.add(YP_PISQA)
+            }
+            8 -> if (!bigger) {
+                when {
+                    lValue == 5 || rValue == 5 -> { m.add(withoutMoves); m.add(YP_KIMSA) }
+                    lValue == 6 || rValue == 6 || lValue == 7 || rValue == 7 -> {
+                        val lrem = if (lValue >= 5) lValue - 5 else lValue
+                        val rrem = if (rValue >= 5) rValue - 5 else rValue
+                        m.add(YP_PISQA)
+                        for (rem in listOf(lrem, rrem)) {
+                            if (rem == 1) m.add(YP_PICHANA)
+                            else if (rem == 2) m.add(YP_ISKAY)
+                        }
+                        m.add(YP_PISQA); m.add(YP_KIMSA)
+                    }
+                    else -> m.add(withoutMoves)
+                }
+            }
+        }
+    }
+    if (m.isEmpty()) m.add(withoutMoves)
+    return m.map { movementDesc(it) }
+}
+
 private fun numberToDigits(n: Int): List<Int> {
     val clamped = n.coerceIn(0, 9999)
     val s = clamped.toString().padStart(ROWS, '0')
@@ -177,7 +317,7 @@ fun PracticingAdditionYupanaScreen(
                 if (userRedColumns == expected) {
                     completedRedMarkers = completedRedMarkers.toMutableList().also { it[activeIdx] = userRedColumns }
                     rowCompleted = true
-                    feedbackMessage = s.ypCorrectMessage
+                    feedbackMessage = s.yupana.ypCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -188,7 +328,7 @@ fun PracticingAdditionYupanaScreen(
                 if (userBlueColumns == expected) {
                     completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[activeIdx] = userBlueColumns }
                     rowCompleted = true
-                    feedbackMessage = s.ypCorrectMessage
+                    feedbackMessage = s.yupana.ypCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -202,12 +342,21 @@ fun PracticingAdditionYupanaScreen(
                         rowCompleted = true
                         if (stepRowIdx == lastMeaningfulStepRowIdx) {
                             stepCompleted = true
-                            feedbackMessage = s.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                            feedbackMessage = s.yupana.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
                             finalCongratsShown = true
                             onScoreChanged(currentScore + 2)
                             scope.launch { preferences.recordLessonCompletion() }
                         } else {
-                            feedbackMessage = s.ypCorrectMessage
+                            val lv = rows[activeIdx].leftDigit
+                            val rv = rows[activeIdx].rightDigit + carryIntoRow[activeIdx]
+                            val rs = lv + rv
+                            val eq = "$lv + $rv = ${rows[activeIdx].resultDigit}"
+                            val lang = context.resources.configuration.locales[0].toLanguageTag()
+                            val withoutMoves = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+                            val carryWord = if (lang == "pt-BR") "transporte" else if (lang == "es-ES") "llevada" else "carry"
+                            val movements = writeSumOnYupana(withoutMoves, carryWord, lv, rv, rs)
+                            val movementText = movements.joinToString(", ")
+                            feedbackMessage = "$eq (${placeLabels[activeIdx]}): $movementText"
                         }
                         isFeedbackPositive = true
                     }
@@ -275,7 +424,7 @@ fun PracticingAdditionYupanaScreen(
     fun toggleLevel() {
         if (currentDigitLevel == MAX_DIGIT_LEVEL && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.ypLastLevelMessage
+            feedbackMessage = s.yupana.ypLastLevelMessage
             return
         }
         showLastLevelMessage = false
@@ -331,10 +480,10 @@ fun PracticingAdditionYupanaScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.practicingWithYupana,
+                        text = s.yupana.practicingWithYupana,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -350,7 +499,7 @@ fun PracticingAdditionYupanaScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "${s.levelPrefix}$currentDigitLevel",
+                    text = "${s.common.levelPrefix}$currentDigitLevel",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -491,8 +640,8 @@ fun PracticingAdditionYupanaScreen(
                     ) {
                     Text(
                         text = when (phase) {
-                            0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
-                            1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
+                            0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.yupana.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
+                            1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.yupana.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
                             else -> if (rowCompleted) {
                                        val digitSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
                                        "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $digitSum (${placeLabels[placeIdx]})"
@@ -504,14 +653,14 @@ fun PracticingAdditionYupanaScreen(
                                        if (curCarry > 0) {
                                            val nextPlace = if (placeIdx > 0) placeLabels[placeIdx - 1] else ""
                                            if (carryFromPrev > 0)
-                                               s.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
+                                               s.yupana.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
                                            else
-                                               s.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
+                                               s.yupana.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
                                        } else {
                                            if (carryFromPrev > 0)
-                                               s.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
+                                               s.yupana.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
                                            else
-                                               s.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
+                                               s.yupana.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
                                        }
                                    }
                         },
@@ -529,8 +678,24 @@ fun PracticingAdditionYupanaScreen(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        FilledTonalButton(
+                            onClick = { resetExercise() },
+                            enabled = stepRowIdx == -1 || finalCongratsShown,
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(
+                                text = s.common.newExercise,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                         FilledTonalButton(
                             onClick = {
                                 when (phase) {
@@ -616,22 +781,7 @@ fun PracticingAdditionYupanaScreen(
                             )
                         ) {
                             Text(
-                                text = s.nextStep,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
-                        FilledTonalButton(
-                            onClick = { resetExercise() },
-                            enabled = stepRowIdx == -1 || finalCongratsShown,
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(
-                                text = s.newExercise,
+                                text = s.common.nextStep,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )
@@ -641,22 +791,6 @@ fun PracticingAdditionYupanaScreen(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        if (finalCongratsShown) {
-                            FilledTonalButton(
-                                onClick = { resetCurrentExercise() },
-                                shape = RoundedCornerShape(24.dp),
-                                colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = ButtonYellow,
-                                    contentColor = OnButtonYellow
-                                )
-                            ) {
-                                Text(
-                                    text = s.reset,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 4.dp)
-                                )
-                            }
-                        }
                         FilledTonalButton(
                             onClick = { toggleLevel() },
                             enabled = stepRowIdx == -1 || finalCongratsShown,
@@ -667,7 +801,7 @@ fun PracticingAdditionYupanaScreen(
                             )
                         ) {
                             Text(
-                                text = s.nextLevel,
+                                text = s.common.nextLevel,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )
@@ -713,7 +847,7 @@ fun PracticingAdditionYupanaScreen(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = s.sources,
+                        text = s.common.sources,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -724,7 +858,7 @@ fun PracticingAdditionYupanaScreen(
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.originalText) },
+                        text = { Text(s.common.originalText) },
                         trailingIcon = {
                             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                         },
@@ -737,17 +871,17 @@ fun PracticingAdditionYupanaScreen(
                     onDismissRequest = { showMainTextSubmenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.copyUrl) },
+                        text = { Text(s.common.copyUrl) },
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2"))
-                            Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(ctx, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(s.goToUrl) },
+                        text = { Text(s.common.goToUrl) },
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false

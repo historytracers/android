@@ -90,8 +90,8 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
 
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val placeNames = listOf(
-        s.placeUnits, s.placeTens, s.placeHundreds, s.placeThousands,
-        s.placeTenThousands, s.placeHundredThousands, s.placeMillions, s.placeTenMillions
+        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
+        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
     )
 
     val numPlaces = strA.length
@@ -110,7 +110,7 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
     val firstDigitValue = first.first * Math.pow(10.0, first.second.toDouble()).toLong()
     val firstProduct = first.third
     steps.add(Mw2StepInfo(
-        s.mw2StepWriteFirst.format(firstDigitValue, b, firstProduct, firstProduct),
+        s.mw.mw2StepWriteFirst.format(firstDigitValue, b, firstProduct, firstProduct),
         firstProduct
     ))
 
@@ -134,15 +134,15 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
             if (totalDigit < 10) {
                 currentValue += digitB * multipliers[p]
                 steps.add(Mw2StepInfo(
-                    prefix + s.mwStepAdd.format(digitB, placeNames[p], currentValue),
+                    prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
                     currentValue
                 ))
             } else {
                 val complement = 10 - digitB
                 val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.placeNext
+                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
                 steps.add(Mw2StepInfo(
-                    prefix + s.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
+                    prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
                     newValue
                 ))
                 currentValue = newValue
@@ -151,7 +151,7 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
     }
 
     steps.add(Mw2StepInfo(
-        s.mwStepFinal.format(a, b, total),
+        s.mw.mwStepFinal.format(a, b, total),
         total.toLong()
     ))
 
@@ -229,10 +229,10 @@ fun MultiplyingWithAbacusLevel2Screen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = s.mw.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.mwCorrectMessage
+                    feedbackMessage = s.mw.mwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -255,7 +255,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -270,7 +270,7 @@ fun MultiplyingWithAbacusLevel2Screen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mw2LastLevelMessage
+            feedbackMessage = s.mw.mw2LastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -293,10 +293,10 @@ fun MultiplyingWithAbacusLevel2Screen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.mw2Title,
+                        text = s.mw.mw2Title,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -312,7 +312,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.mw2Instruction,
+                    text = s.mw.mw2Instruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -320,7 +320,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                 )
 
                 Text(
-                    text = "${s.levelPrefix}$currentDigitLevel",
+                    text = "${s.common.levelPrefix}$currentDigitLevel",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -355,7 +355,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     }
                     Text(
-                        text = s.sorobanMode,
+                        text = s.abacusWrite.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -375,7 +375,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     }
                     Text(
-                        text = s.suanpanMode,
+                        text = s.abacusWrite.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -442,7 +442,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${s.valuePrefix}${Mw2Value(state.value)}",
+                        text = "${s.common.valuePrefix}${Mw2Value(state.value)}",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -459,7 +459,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${s.mwStepPrefix}${steps[currentStepIdx].instruction}",
+                            text = "${s.mw.mwStepPrefix}${steps[currentStepIdx].instruction}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -470,7 +470,7 @@ fun MultiplyingWithAbacusLevel2Screen(
 
                 if (steps.isNotEmpty()) {
                     Text(
-                        text = s.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                        text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -497,7 +497,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                             )
                         ) {
                             Text(
-                                text = s.newExercise,
+                                text = s.common.newExercise,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -514,7 +514,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                                 )
                             ) {
                                 Text(
-                                    text = s.nextStep,
+                                    text = s.common.nextStep,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -533,7 +533,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     ) {
                         Text(
-                            text = s.nextLevel,
+                            text = s.common.nextLevel,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -580,7 +580,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = s.sources,
+                        text = s.common.sources,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -591,7 +591,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.originalText) },
+                        text = { Text(s.common.originalText) },
                         trailingIcon = {
                             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                         },
@@ -604,17 +604,17 @@ fun MultiplyingWithAbacusLevel2Screen(
                     onDismissRequest = { showMainTextSubmenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.copyUrl) },
+                        text = { Text(s.common.copyUrl) },
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40"))
-                            Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(s.goToUrl) },
+                        text = { Text(s.common.goToUrl) },
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false

@@ -75,10 +75,10 @@ fun YupanaScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.yupana,
+                    text = s.yupana.yupana,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -116,7 +116,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.quipu,
+                    text = s.yupana.quipu,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -148,7 +148,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.handsOnYupana,
+                    text = s.yupana.handsOnYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -180,7 +180,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.largeNumbers,
+                    text = s.abacusWrite.largeNumbers,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -214,7 +214,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.nextLevel,
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -243,7 +243,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.movingInYupana,
+                    text = s.yupana.movingInYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -272,7 +272,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.practicingAddition,
+                    text = s.pa.practicingAddition,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

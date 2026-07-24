@@ -33,10 +33,10 @@ fun CongratulationScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.congratulationTitle,
+                    text = s.titles.congratulationTitle,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -48,7 +48,7 @@ fun CongratulationScreen(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = s.congratulationMessage,
+                text = s.titles.congratulationMessage,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 24.dp)

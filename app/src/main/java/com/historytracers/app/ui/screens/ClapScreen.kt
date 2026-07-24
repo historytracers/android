@@ -138,10 +138,10 @@ fun ClapScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { onNavigateBack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.exercisingHands,
+                        text = s.body.exercisingHands,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -157,19 +157,19 @@ fun ClapScreen(
             ) {
 
                 Text(
-                    text = s.clapReinforce,
+                    text = s.body.clapReinforce,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 Text(
-                    text = s.clapInstructions,
+                    text = s.body.clapInstructions,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 Text(
-                    text = s.clapSkinColorHint,
+                    text = s.body.clapSkinColorHint,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
@@ -219,7 +219,7 @@ fun ClapScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(s.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
+                    Text(s.common.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
 
                     FilledIconButton(
                         onClick = { if (!isPlaying && clapCount > 1) clapCount-- },
@@ -250,7 +250,7 @@ fun ClapScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(s.speedSlow, style = MaterialTheme.typography.bodySmall)
+                    Text(s.body.speedSlow, style = MaterialTheme.typography.bodySmall)
                     Slider(
                         value = sliderPos,
                         onValueChange = { if (!isPlaying) sliderPos = it },
@@ -258,7 +258,7 @@ fun ClapScreen(
                         modifier = Modifier.width(200.dp),
                         enabled = !isPlaying
                     )
-                    Text(s.speedFast, style = MaterialTheme.typography.bodySmall)
+                    Text(s.body.speedFast, style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
@@ -327,14 +327,14 @@ fun ClapScreen(
 
         if (showCompletionMessage) {
             Text(
-                text = s.clapCompletionMessage,
+                text = s.body.exercisingHandsCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 80.dp)
+                    .padding(bottom = 70.dp)
             )
         }
 
@@ -360,7 +360,7 @@ fun ClapScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -371,7 +371,7 @@ fun ClapScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -384,17 +384,17 @@ fun ClapScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
