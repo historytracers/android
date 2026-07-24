@@ -347,16 +347,7 @@ fun PracticingAdditionYupanaScreen(
                             onScoreChanged(currentScore + 2)
                             scope.launch { preferences.recordLessonCompletion() }
                         } else {
-                            val lv = rows[activeIdx].leftDigit
-                            val rv = rows[activeIdx].rightDigit + carryIntoRow[activeIdx]
-                            val rs = lv + rv
-                            val eq = "$lv + $rv = ${rows[activeIdx].resultDigit}"
-                            val lang = context.resources.configuration.locales[0].toLanguageTag()
-                            val withoutMoves = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
-                            val carryWord = if (lang == "pt-BR") "transporte" else if (lang == "es-ES") "llevada" else "carry"
-                            val movements = writeSumOnYupana(withoutMoves, carryWord, lv, rv, rs)
-                            val movementText = movements.joinToString(", ")
-                            feedbackMessage = "$eq (${placeLabels[activeIdx]}): $movementText"
+                            feedbackMessage = s.yupana.ypCorrectMessage
                         }
                         isFeedbackPositive = true
                     }
@@ -390,6 +381,7 @@ fun PracticingAdditionYupanaScreen(
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
+
         isFeedbackPositive = false
         greenColumns = emptySet()
         consumedLeft = emptySet()
@@ -408,6 +400,7 @@ fun PracticingAdditionYupanaScreen(
         stepRowIdx = -1
         stepCompleted = false
         feedbackMessage = ""
+
         isFeedbackPositive = false
         greenColumns = emptySet()
         consumedLeft = emptySet()
@@ -442,6 +435,7 @@ fun PracticingAdditionYupanaScreen(
         }
         rowCompleted = false
         feedbackMessage = ""
+
         while (stepRowIdx <= lastMeaningfulStepRowIdx) {
             val idx = ROWS - 1 - stepRowIdx
             val digit = when (newPhase) {
@@ -642,10 +636,16 @@ fun PracticingAdditionYupanaScreen(
                         text = when (phase) {
                             0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.yupana.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
                             1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.yupana.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
-                            else -> if (rowCompleted) {
-                                       val digitSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
-                                       "${rows[placeIdx].leftDigit} + ${rows[placeIdx].rightDigit} = $digitSum (${placeLabels[placeIdx]})"
-                                   } else {
+                             else -> if (rowCompleted) {
+                                        val lv = rows[placeIdx].leftDigit
+                                        val rv = rows[placeIdx].rightDigit + carryIntoRow[placeIdx]
+                                        val rs = lv + rv
+                                        val lang = context.resources.configuration.locales[0].toLanguageTag()
+                                        val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+                                        val cw = if (lang == "pt-BR") "transporte" else if (lang == "es-ES") "llevada" else "carry"
+                                        val moves = writeSumOnYupana(wm, cw, lv, rv, rs)
+                                        "$lv + $rv = ${rows[placeIdx].resultDigit} (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
+                                    } else {
                                        val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit
                                        val carryFromPrev = carryIntoRow[placeIdx]
                                        val totalWithCarry = rawSum + carryFromPrev
@@ -711,6 +711,7 @@ fun PracticingAdditionYupanaScreen(
                                             userRedColumns = emptySet()
                                             rowCompleted = false
                                             feedbackMessage = ""
+
                                             while (stepRowIdx <= lastMeaningfulStepRowIdx) {
                                                 val idx = ROWS - 1 - stepRowIdx
                                                 if (getMarkersForDigit(rows[idx].leftDigit).isEmpty()) {
@@ -736,6 +737,7 @@ fun PracticingAdditionYupanaScreen(
                                             userBlueColumns = emptySet()
                                             rowCompleted = false
                                             feedbackMessage = ""
+
                                             while (stepRowIdx <= lastMeaningfulStepRowIdx) {
                                                 val idx = ROWS - 1 - stepRowIdx
                                                 if (getMarkersForDigit(rows[idx].rightDigit).isEmpty()) {
@@ -757,6 +759,7 @@ fun PracticingAdditionYupanaScreen(
                                         consumedRight = emptySet()
                                         rowCompleted = false
                                         feedbackMessage = ""
+
                                         while (stepRowIdx <= lastMeaningfulStepRowIdx) {
                                             val idx = ROWS - 1 - stepRowIdx
                                             if (getMarkersForDigit(rows[idx].resultDigit).isEmpty()) {
@@ -791,6 +794,22 @@ fun PracticingAdditionYupanaScreen(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        if (finalCongratsShown) {
+                            FilledTonalButton(
+                                onClick = { resetCurrentExercise() },
+                                shape = RoundedCornerShape(24.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(
+                                    text = s.common.reset,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
                         FilledTonalButton(
                             onClick = { toggleLevel() },
                             enabled = stepRowIdx == -1 || finalCongratsShown,
