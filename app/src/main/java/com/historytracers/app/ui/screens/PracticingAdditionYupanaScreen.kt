@@ -200,6 +200,7 @@ fun PracticingAdditionYupanaScreen(
     var stepCompleted by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
     var isFeedbackPositive by remember { mutableStateOf(false) }
+    var exerciseStarted by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
@@ -264,6 +265,7 @@ fun PracticingAdditionYupanaScreen(
 
     fun toggleColumn(col: Int) {
         if (rowCompleted) return
+        if (!exerciseStarted) exerciseStarted = true
         when (phase) {
             0 -> {
                 userRedColumns = if (col in userRedColumns) userRedColumns - col else userRedColumns + col
@@ -328,60 +330,6 @@ fun PracticingAdditionYupanaScreen(
         }
     }
 
-    LaunchedEffect(exercise) { updateDisplay() }
-
-    fun resetExercise() {
-        exercise = generateYpExercise(currentDigitLevel)
-        phase = 0
-        stepRowIdx = -1
-        stepCompleted = false
-        feedbackMessage = ""
-
-        isFeedbackPositive = false
-        greenColumns = emptySet()
-        consumedLeft = emptySet()
-        consumedRight = emptySet()
-        consumedCarry = false
-        userRedColumns = emptySet()
-        userBlueColumns = emptySet()
-        completedRedMarkers = List(ROWS) { emptySet() }
-        completedBlueMarkers = List(ROWS) { emptySet() }
-        rowCompleted = false
-        finalCongratsShown = false
-        showLastLevelMessage = false
-    }
-
-    fun resetCurrentExercise() {
-        phase = 0
-        stepRowIdx = -1
-        stepCompleted = false
-        feedbackMessage = ""
-
-        isFeedbackPositive = false
-        greenColumns = emptySet()
-        consumedLeft = emptySet()
-        consumedRight = emptySet()
-        consumedCarry = false
-        userRedColumns = emptySet()
-        userBlueColumns = emptySet()
-        completedRedMarkers = List(ROWS) { emptySet() }
-        completedBlueMarkers = List(ROWS) { emptySet() }
-        rowCompleted = false
-        finalCongratsShown = false
-        showLastLevelMessage = false
-    }
-
-    fun toggleLevel() {
-        if (currentDigitLevel == MAX_DIGIT_LEVEL && !showLastLevelMessage) {
-            showLastLevelMessage = true
-            feedbackMessage = s.yupana.ypLastLevelMessage
-            return
-        }
-        showLastLevelMessage = false
-        currentDigitLevel = if (currentDigitLevel >= MAX_DIGIT_LEVEL) MIN_DIGIT_LEVEL else currentDigitLevel + 1
-        resetExercise()
-    }
-
     fun advanceToPhase(newPhase: Int) {
         phase = newPhase
         stepRowIdx = 0
@@ -415,6 +363,66 @@ fun PracticingAdditionYupanaScreen(
             }
             stepRowIdx++
         }
+    }
+
+    LaunchedEffect(exercise) {
+        updateDisplay()
+        exerciseStarted = false
+        advanceToPhase(0)
+    }
+
+    fun resetExercise() {
+        exercise = generateYpExercise(currentDigitLevel)
+        phase = 0
+        stepRowIdx = -1
+        stepCompleted = false
+        feedbackMessage = ""
+
+        isFeedbackPositive = false
+        greenColumns = emptySet()
+        consumedLeft = emptySet()
+        consumedRight = emptySet()
+        consumedCarry = false
+        userRedColumns = emptySet()
+        userBlueColumns = emptySet()
+        completedRedMarkers = List(ROWS) { emptySet() }
+        completedBlueMarkers = List(ROWS) { emptySet() }
+        rowCompleted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+    }
+
+    fun resetCurrentExercise() {
+        phase = 0
+        stepRowIdx = -1
+        stepCompleted = false
+        feedbackMessage = ""
+
+        isFeedbackPositive = false
+        exerciseStarted = false
+        greenColumns = emptySet()
+        consumedLeft = emptySet()
+        consumedRight = emptySet()
+        consumedCarry = false
+        userRedColumns = emptySet()
+        userBlueColumns = emptySet()
+        completedRedMarkers = List(ROWS) { emptySet() }
+        completedBlueMarkers = List(ROWS) { emptySet() }
+        rowCompleted = false
+        finalCongratsShown = false
+        showLastLevelMessage = false
+        advanceToPhase(0)
+    }
+
+    fun toggleLevel() {
+        if (currentDigitLevel == MAX_DIGIT_LEVEL && !showLastLevelMessage) {
+            showLastLevelMessage = true
+            feedbackMessage = s.yupana.ypLastLevelMessage
+            return
+        }
+        showLastLevelMessage = false
+        currentDigitLevel = if (currentDigitLevel >= MAX_DIGIT_LEVEL) MIN_DIGIT_LEVEL else currentDigitLevel + 1
+        resetExercise()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -648,7 +656,7 @@ fun PracticingAdditionYupanaScreen(
                     ) {
                         FilledTonalButton(
                             onClick = { resetExercise() },
-                            enabled = stepRowIdx == -1 || finalCongratsShown,
+                            enabled = !exerciseStarted || finalCongratsShown,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
@@ -739,10 +747,7 @@ fun PracticingAdditionYupanaScreen(
                                     }
                                 }
                             },
-                            enabled = when (phase) {
-                                0, 1 -> stepRowIdx == -1 || rowCompleted
-                                else -> stepRowIdx == -1 || rowCompleted
-                            },
+                            enabled = rowCompleted,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
@@ -778,7 +783,7 @@ fun PracticingAdditionYupanaScreen(
                         }
                         FilledTonalButton(
                             onClick = { toggleLevel() },
-                            enabled = stepRowIdx == -1 || finalCongratsShown,
+                            enabled = !exerciseStarted || finalCongratsShown,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
