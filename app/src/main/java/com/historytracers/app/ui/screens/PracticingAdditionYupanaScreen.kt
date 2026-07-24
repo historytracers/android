@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -380,7 +381,7 @@ fun PracticingAdditionYupanaScreen(
                         .pointerInput(phase, stepRowIdx, rowCompleted) {
                             if (stepRowIdx in 0 until ROWS && !rowCompleted) {
                                 detectTapGestures { offset ->
-                                    val margin = 28f / 860f * canvasSize.width
+                                    val margin = 3f / 860f * canvasSize.width
                                     val usableWidth = canvasSize.width - 2f * margin
                                     val colW = usableWidth / 4f
                                     val startX = margin
@@ -395,12 +396,12 @@ fun PracticingAdditionYupanaScreen(
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         drawYupanaBackground(size)
                         drawYupanaFrame(size)
-                        val margin = 28f / 860f * size.width
+                        val margin = 3f / 860f * size.width
                         val usableWidth = size.width - 2f * margin
-                        val rowHeight = (size.height - 48f / 480f * size.height) / ROWS
+                        val rowHeight = (size.height - 6f / 480f * size.height) / ROWS
                         val colW = usableWidth / 4f
                         val startX = margin
-                        val startY = 46f / 480f * size.height
+                        val startY = 3f / 480f * size.height
 
                         for (row in 0 until ROWS) {
                             val ry = startY + row * rowHeight
@@ -785,17 +786,36 @@ private fun DrawScope.drawYupanaRow(
     val cw = canvasSize.width
     val ch = canvasSize.height
 
-    drawRect(
-        color = Color(0xFFFEF8E8),
-        topLeft = Offset(cellOriginX, cellOriginY),
-        size = Size(4f * cellWidth, cellHeight)
-    )
+    val cornerRadius = CornerRadius(6f / 860f * cw)
+    val borderWidth = 1.2f / 480f * ch
+    val shadowOffset = 2f / 480f * ch
 
-    drawRect(
-        color = Color(0xFFD4B87A),
-        topLeft = Offset(cellOriginX, cellOriginY + cellHeight),
-        size = Size(4f * cellWidth, 0.8f / 440f * ch),
-    )
+    for (col in 0..3) {
+        val cellLeft = cellOriginX + col * cellWidth
+        val cellTop = cellOriginY
+
+        drawRoundRect(
+            color = Color(0xFF000000).copy(alpha = 0.1f),
+            topLeft = Offset(cellLeft + shadowOffset, cellTop + shadowOffset),
+            size = Size(cellWidth, cellHeight),
+            cornerRadius = cornerRadius
+        )
+
+        drawRoundRect(
+            color = Color(0xFFFEF8E8),
+            topLeft = Offset(cellLeft, cellTop),
+            size = Size(cellWidth, cellHeight),
+            cornerRadius = cornerRadius
+        )
+
+        drawRoundRect(
+            color = Color(0xFFB48B5A),
+            topLeft = Offset(cellLeft, cellTop),
+            size = Size(cellWidth, cellHeight),
+            cornerRadius = cornerRadius,
+            style = Stroke(width = borderWidth)
+        )
+    }
 
     val dotRadius = minOf(cellWidth * 0.18f, cellHeight * 0.18f, 9f / 860f * cw)
     val markerRadius = dotRadius * 0.9f
