@@ -528,7 +528,11 @@ fun PracticingAdditionYupanaScreen(
                                     val usableWidth = canvasSize.width - 2f * margin
                                     val colW = usableWidth / 4f
                                     val startX = margin
-                                    if (offset.x in startX..(startX + 4f * colW)) {
+                                    val rowHeight = (canvasSize.height - 6f / 480f * canvasSize.height) / ROWS
+                                    val startY = 3f / 480f * canvasSize.height
+                                    val activeRow = ROWS - 1 - stepRowIdx
+                                    val rowTop = startY + activeRow * rowHeight
+                                    if (offset.x in startX..(startX + 4f * colW) && offset.y in rowTop..(rowTop + rowHeight)) {
                                         val col = ((offset.x - startX) / colW).toInt().coerceIn(0, 3)
                                         toggleColumn(col + 1)
                                     }
