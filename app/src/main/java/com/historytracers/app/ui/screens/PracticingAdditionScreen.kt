@@ -473,7 +473,7 @@ fun PracticingAdditionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                val hideButtons = exerciseStarted && !finalCongratsShown
+                val hideButtons = !finalCongratsShown
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
