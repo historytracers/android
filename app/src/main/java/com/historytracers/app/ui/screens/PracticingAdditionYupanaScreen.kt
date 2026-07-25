@@ -226,6 +226,7 @@ fun PracticingAdditionYupanaScreen(
     var finalCongratsShown by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showDhavitPremSubmenu by remember { mutableStateOf(false) }
     var greenColumns by remember { mutableStateOf(setOf<Int>()) }
     var consumedLeft by remember { mutableStateOf(setOf<Int>()) }
     var consumedRight by remember { mutableStateOf(setOf<Int>()) }
@@ -869,9 +870,16 @@ fun PracticingAdditionYupanaScreen(
                 }
 
                 DropdownMenu(
-                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    expanded = showSourcesMenu && !showMainTextSubmenu && !showDhavitPremSubmenu,
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text("Dhavit Prem") },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showDhavitPremSubmenu = true }
+                    )
                     DropdownMenuItem(
                         text = { Text(s.common.originalText) },
                         trailingIcon = {
@@ -901,6 +909,30 @@ fun PracticingAdditionYupanaScreen(
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2")
+                        }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showDhavitPremSubmenu,
+                    onDismissRequest = { showDhavitPremSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showDhavitPremSubmenu = false
+                            val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES"))
+                            Toast.makeText(ctx, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showDhavitPremSubmenu = false
+                            uriHandler.openUri("https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES")
                         }
                     )
                 }
