@@ -76,20 +76,22 @@ private fun getMarkersForDigit(digit: Int): Set<Int> {
     return cols
 }
 
-private val YP_ISKAY = "ISKAY"
-private val YP_KIMSA = "KIMSA"
-private val YP_PISQA = "PISQA"
-private val YP_KIKIN = "KIKIN"
-private val YP_PICHANA = "PICHANA"
-private val YP_TAWA = "TAWA"
+private val ACT_KINKIN_PAIR = "KINKIN_PAIR"
+private val ACT_KINKIN_TRIPLE = "KINKIN_TRIPLE"
+private val ACT_ISKAY = "ISKAY"
+private val ACT_KIMSA = "KIMSA"
+private val ACT_PICHANA_ADD = "PICHANA_ADD"
+private val ACT_PICHANA_COMBINE = "PICHANA_COMBINE"
+private val ACT_PISQA = "PISQA"
 
 private fun movementDesc(name: String): String = when (name) {
-    YP_ISKAY -> "$YP_ISKAY (1 + 1 = 2)"
-    YP_KIMSA -> "$YP_KIMSA (2 + 1 = 3)"
-    YP_PISQA -> "$YP_PISQA (5 + 5 = 10)"
-    YP_KIKIN -> "$YP_KIKIN (1 + 1 + 1 = 3)"
-    YP_PICHANA -> "$YP_PICHANA (3 + 3 = 5 + 1)"
-    YP_TAWA -> "$YP_TAWA (2 + 2 = 3 + 1)"
+    ACT_KINKIN_PAIR -> "KINKIN (1 + 1 = 2)"
+    ACT_KINKIN_TRIPLE -> "KINKIN (1 + 1 + 1 = 3)"
+    ACT_ISKAY -> "ISKAY (2 + 2 = 1 + 3)"
+    ACT_KIMSA -> "KIMSA (3 + 3 = 1 + 5)"
+    ACT_PICHANA_ADD -> "PICHANA (1 + 2 = 3)"
+    ACT_PICHANA_COMBINE -> "PICHANA (2 + 3 = 5)"
+    ACT_PISQA -> "PISQA (5 + 5 = 10)"
     else -> name
 }
 
@@ -115,54 +117,62 @@ private fun writeSumOnYupana(withoutMoves: String, lValue: Int, rBase: Int, carr
     while (true) {
         var changed = false
 
-        // KIKIN: 1+1+1=3 (three col4 markers → one col2 marker)
+        // KINKIN: 1+1+1=3 (three col4 markers → one col2 marker)
         while (count[3] >= 3) {
             count[3] -= 3
             count[1]++
-            m.add(YP_KIKIN)
+            m.add(ACT_KINKIN_TRIPLE)
             changed = true
         }
 
-        // KIMSA: 2+1=3 (col3 + col4 → col2)
-        // Apply before ISKAY so col4 markers are available for this combination
+        // PICHANA: 1+2=3 (col3 + col4 → col2)
         while (count[2] >= 1 && count[3] >= 1) {
             count[2]--
             count[3]--
             count[1]++
-            m.add(YP_KIMSA)
+            m.add(ACT_PICHANA_ADD)
             changed = true
         }
 
-        // ISKAY: 1+1=2 (col4 + col4 → col3)
+        // KINKIN: 1+1=2 (col4 + col4 → col3)
         while (count[3] >= 2) {
             count[3] -= 2
             count[2]++
-            m.add(YP_ISKAY)
+            m.add(ACT_KINKIN_PAIR)
             changed = true
         }
 
-        // TAWA: 2+2=3+1 (col3 + col3 → col2 + col4)
+        // ISKAY: 2+2=1+3 (col3 + col3 → col4 + col2)
         while (count[2] >= 2) {
             count[2] -= 2
             count[1]++
             count[3]++
-            m.add(YP_TAWA)
+            m.add(ACT_ISKAY)
             changed = true
         }
 
-        // PICHANA: 3+3=5+1 (col2 + col2 → col1 + col4)
+        // KIMSA: 3+3=1+5 (col2 + col2 → col4 + col1)
         while (count[1] >= 2) {
             count[1] -= 2
             count[0]++
             count[3]++
-            m.add(YP_PICHANA)
+            m.add(ACT_KIMSA)
+            changed = true
+        }
+
+        // PICHANA: 2+3=5 (col2 + col3 → col1)
+        while (count[1] >= 1 && count[2] >= 1) {
+            count[1]--
+            count[2]--
+            count[0]++
+            m.add(ACT_PICHANA_COMBINE)
             changed = true
         }
 
         // PISQA: 5+5=10 (col1 + col1 → carry to next row)
         while (count[0] >= 2) {
             count[0] -= 2
-            m.add(YP_PISQA)
+            m.add(ACT_PISQA)
             changed = true
         }
 
