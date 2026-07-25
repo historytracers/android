@@ -666,16 +666,18 @@ fun PracticingAdditionYupanaScreen(
                         text = when (phase) {
                             0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.yupana.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
                             1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.yupana.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
-                              else -> if (rowCompleted) {
-                                         val lv = rows[placeIdx].leftDigit
-                                         val rBase = rows[placeIdx].rightDigit
-                                         val carryIn = carryIntoRow[placeIdx]
-                                         val rv = rBase + carryIn
-                                         val rs = lv + rv
-                                         val lang = context.resources.configuration.locales[0].toLanguageTag()
-                                         val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
-                                         val moves = writeSumOnYupana(wm, lv, rBase, carryIn)
-                                         "$lv + $rv = ${rows[placeIdx].resultDigit} (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
+                               else -> if (rowCompleted) {
+                                          val lv = rows[placeIdx].leftDigit
+                                          val rBase = rows[placeIdx].rightDigit
+                                          val carryIn = carryIntoRow[placeIdx]
+                                          val total = lv + rBase + carryIn
+                                          val lang = context.resources.configuration.locales[0].toLanguageTag()
+                                          val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+                                          val moves = writeSumOnYupana(wm, lv, rBase, carryIn)
+                                          if (carryIn > 0)
+                                              "$lv + $rBase + $carryIn ${s.yupana.ypCarry} = $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
+                                          else
+                                              "$lv + $rBase = $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
                                     } else {
                                        val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit
                                        val carryFromPrev = carryIntoRow[placeIdx]

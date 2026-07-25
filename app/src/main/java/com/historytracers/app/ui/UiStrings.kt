@@ -287,6 +287,7 @@ val EnStrings = UiStrings(
         ypNothingRight = "Nothing to add from the right in the %s column.",
         ypNothingResult = "Nothing to place in the %s column.",
         ypSumTen = "%d + %d + %d = %d → 0 in the %s column, carry %d.",
+        ypCarry = "(carry)",
     ),
     misc = MiscStrings(
         multiplicationTable = "Multiplication Table",
@@ -567,6 +568,7 @@ val PtStrings = UiStrings(
         ypNothingRight = "Nada a adicionar da direita na coluna %s.",
         ypNothingResult = "Nada a colocar na coluna %s.",
         ypSumTen = "%d + %d + %d = %d → 0 na coluna %s, transporte %d.",
+        ypCarry = "(transporte)",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabela de Multiplica\u00e7\u00e3o",
@@ -847,6 +849,7 @@ val EsStrings = UiStrings(
         ypNothingRight = "Nada que agregar de la derecha en la columna %s.",
         ypNothingResult = "Nada que colocar en la columna %s.",
         ypSumTen = "%d + %d + %d = %d → 0 en la columna %s, llevada %d.",
+        ypCarry = "(llevada)",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabla de Multiplicar",
