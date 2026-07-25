@@ -24,7 +24,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 fun IndexScreen(
     onNavigateToFirstSteps: () -> Unit = {},
     onNavigateToWorkout: () -> Unit = {},
-    onNavigateToAbacus: () -> Unit = {}
+    onNavigateToAbacus: () -> Unit = {},
+    onNavigateToYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
 
@@ -52,7 +53,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.firstSteps,
+                    text = s.titles.firstSteps,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -76,7 +77,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.iAmNotLikeYou,
+                    text = s.titles.iAmNotLikeYou,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -100,7 +101,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.aRoadToSomewhere,
+                    text = s.titles.aRoadToSomewhere,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -124,7 +125,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.runningAndGrowing,
+                    text = s.common.runningAndGrowing,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -148,7 +149,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.whereAreWeFrom,
+                    text = s.titles.whereAreWeFrom,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -172,7 +173,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.returning,
+                    text = s.titles.returning,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -196,7 +197,31 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.workout,
+                    text = s.titles.workout,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            FilledTonalButton(
+                onClick = onNavigateToYupana,
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_yupana),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = s.yupana.yupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -220,7 +245,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.abacus,
+                    text = s.titles.abacus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

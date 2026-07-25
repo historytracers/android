@@ -1,0 +1,38 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- vertical cords -->
+    <path
+        android:fillColor="#C49A6C"
+        android:pathData="M35,15 L41,15 L41,105 L35,105Z" />
+    <path
+        android:fillColor="#B8860B"
+        android:pathData="M60,15 L66,15 L66,105 L60,105Z" />
+    <path
+        android:fillColor="#C49A6C"
+        android:pathData="M85,15 L91,15 L91,105 L85,105Z" />
+    <!-- knot on first cord -->
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M26,30 C26,20 50,20 50,30 C50,45 26,45 26,30Z" />
+    <path
+        android:fillColor="#A0782C"
+        android:pathData="M26,30 C26,40 50,40 50,30" />
+    <!-- knot on second cord (different position) -->
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M51,55 C51,45 75,45 75,55 C75,70 51,70 51,55Z" />
+    <path
+        android:fillColor="#A0782C"
+        android:pathData="M51,55 C51,65 75,65 75,55" />
+    <!-- knot on third cord -->
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M76,80 C76,70 100,70 100,80 C100,95 76,95 76,80Z" />
+    <path
+        android:fillColor="#A0782C"
+        android:pathData="M76,80 C76,90 100,90 100,80" />
+</vector>

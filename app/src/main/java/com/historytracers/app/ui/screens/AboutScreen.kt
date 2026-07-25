@@ -72,7 +72,7 @@ fun AboutScreen() {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = s.aboutDescription,
+            text = s.titles.aboutDescription,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
@@ -128,23 +128,23 @@ private fun SocialIconButton(link: SocialLink) {
             onDismissRequest = { showMenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.copyUrl) },
+                text = { Text(s.common.copyUrl) },
                 onClick = {
                     showMenu = false
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("URL", link.url))
-                    Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                 }
             )
             DropdownMenuItem(
-                text = { Text(s.goToUrl) },
+                text = { Text(s.common.goToUrl) },
                 onClick = {
                     showMenu = false
                     uriHandler.openUri(link.url)
                 }
             )
             DropdownMenuItem(
-                text = { Text(s.openApp) },
+                text = { Text(s.common.openApp) },
                 onClick = {
                     showMenu = false
                     try {
@@ -156,7 +156,7 @@ private fun SocialIconButton(link: SocialLink) {
                         }
                         context.startActivity(intent)
                     } catch (_: ActivityNotFoundException) {
-                        Toast.makeText(context, s.appNotInstalled, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.appNotInstalled, Toast.LENGTH_SHORT).show()
                     }
                 }
             )

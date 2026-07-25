@@ -34,9 +34,11 @@ class UserPreferences(private val context: Context) {
         private val FIRST_STEPS_SCROLL_KEY = intPreferencesKey("first_steps_scroll")
         private val WORKOUT_SCROLL_KEY = intPreferencesKey("workout_scroll")
         private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
+        private val YUPANA_SCROLL_KEY = intPreferencesKey("yupana_scroll")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
+        private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
     }
 
@@ -200,6 +202,16 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val yupanaScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[YUPANA_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setYupanaScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[YUPANA_SCROLL_KEY] = value
+        }
+    }
+
     val completedWorkoutSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
         preferences[WORKOUT_SECTIONS_KEY] ?: emptySet()
     }
@@ -227,6 +239,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markAbacusSectionCompleted(section: String) {
         context.dataStore.edit { preferences ->
             preferences[ABACUS_SECTIONS_KEY] = (preferences[ABACUS_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedYupanaSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[YUPANA_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markYupanaSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[YUPANA_SECTIONS_KEY] = (preferences[YUPANA_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 

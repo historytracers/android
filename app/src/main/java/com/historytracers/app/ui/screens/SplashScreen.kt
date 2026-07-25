@@ -29,13 +29,13 @@ fun SplashScreen() {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = s.history,
+                text = s.titles.history,
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = s.tracers,
+                text = s.common.tracers,
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

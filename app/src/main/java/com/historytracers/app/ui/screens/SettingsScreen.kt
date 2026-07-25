@@ -23,9 +23,9 @@ import com.historytracers.app.ui.theme.SkinColorPalette
 import com.historytracers.app.ui.theme.parseHexColor
 
 private fun availableLanguages(s: UiStrings) = listOf(
-    "en-US" to s.langEnUs,
-    "pt-BR" to s.langPtBr,
-    "es-ES" to s.langEsEs
+    "en-US" to s.titles.langEnUs,
+    "pt-BR" to s.titles.langPtBr,
+    "es-ES" to s.titles.langEsEs
 )
 
 private val availableBreakTimes = listOf(15, 25, 30, 35, 45, 50, 60)
@@ -61,10 +61,10 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.settings,
+                    text = s.common.settings,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -78,7 +78,7 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = s.language,
+                text = s.common.language,
                 style = MaterialTheme.typography.titleMedium
             )
 
@@ -116,11 +116,11 @@ fun SettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text = s.breakTime,
+                text = s.common.breakTime,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = s.breakTimeDesc,
+                text = s.common.breakTimeDesc,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -130,7 +130,7 @@ fun SettingsScreen(
                 onExpandedChange = { breakTimeExpanded = it }
             ) {
                 OutlinedTextField(
-                    value = "$currentBreakTime ${s.minutes}",
+                    value = "$currentBreakTime ${s.common.minutes}",
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = breakTimeExpanded) },
@@ -144,7 +144,7 @@ fun SettingsScreen(
                 ) {
                     availableBreakTimes.forEach { minutes ->
                         DropdownMenuItem(
-                            text = { Text("$minutes ${s.minutes}") },
+                            text = { Text("$minutes ${s.common.minutes}") },
                             onClick = {
                                 onBreakTimeChanged(minutes)
                                 breakTimeExpanded = false
@@ -159,7 +159,7 @@ fun SettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text = s.skinColor,
+                text = s.common.skinColor,
                 style = MaterialTheme.typography.titleMedium
             )
 

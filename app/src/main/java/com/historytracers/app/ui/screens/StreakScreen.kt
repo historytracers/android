@@ -63,10 +63,10 @@ fun StreakScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.streak,
+                    text = s.common.streak,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -105,7 +105,7 @@ fun StreakScreen(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            text = s.reminder,
+                            text = s.common.reminder,
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.clickable { onReminderEnabledChanged(!reminderEnabled) }
                         )
@@ -113,7 +113,7 @@ fun StreakScreen(
                     if (reminderEnabled) {
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            text = s.reminderTime,
+                            text = s.common.reminderTime,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -181,15 +181,15 @@ private fun TimePickerDialog(
             TextButton(onClick = {
                 onConfirm(state.hour, state.minute)
             }) {
-                Text(s.ok)
+                Text(s.common.ok)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(s.cancel)
+                Text(s.common.cancel)
             }
         },
-        title = { Text(s.selectTime) },
+        title = { Text(s.common.selectTime) },
         text = { TimePicker(state = state) }
     )
 }
@@ -224,7 +224,7 @@ private fun StreakCounter(count: Int, s: UiStrings) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = s.days,
+                    text = s.common.days,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -244,7 +244,7 @@ private fun WeekDaySelector(selectedDays: Set<String>, language: String, s: UiSt
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = s.evaluateOn,
+            text = s.common.evaluateOn,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -292,7 +292,7 @@ private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, s: UiStri
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onPreviousMonth) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = s.previousMonth)
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = s.common.previousMonth)
         }
         Text(
             text = month.format(formatter).replaceFirstChar { it.uppercase() },
@@ -300,7 +300,7 @@ private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, s: UiStri
             fontWeight = FontWeight.Bold
         )
         IconButton(onClick = onNextMonth) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = s.nextMonth)
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = s.common.nextMonth)
         }
     }
 }

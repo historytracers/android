@@ -87,10 +87,10 @@ fun SuanpanWritingScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.writingToSuanpan,
+                    text = s.abacusWrite.writingToSuanpan,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -108,7 +108,7 @@ fun SuanpanWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.suanpanWritingInstruction,
+                text = s.abacusWrite.suanpanWritingInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
@@ -274,7 +274,7 @@ fun SuanpanWritingScreen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${s.value}: $currentValue",
+                        text = "${s.common.value}: $currentValue",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
@@ -287,7 +287,7 @@ fun SuanpanWritingScreen(
                     color = Color(0xFFFFF9E6),
                 ) {
                     Text(
-                        text = "${s.write}: ${targetValue.value}",
+                        text = "${s.common.write}: ${targetValue.value}",
                         color = Color(0xFF2E241F),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
@@ -311,7 +311,7 @@ fun SuanpanWritingScreen(
                 )
             ) {
                 Text(
-                    text = s.newExercise,
+                    text = s.common.newExercise,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -331,17 +331,17 @@ fun SuanpanWritingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "${s.congratulationTitle} \uD83C\uDF89",
+                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color(0xFF2E7D32),
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = s.resetHint,
+                text = s.common.resetHint,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = Color(0xFF2E7D32),
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
         }
@@ -369,7 +369,7 @@ fun SuanpanWritingScreen(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = s.sources,
+                text = s.common.sources,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -380,14 +380,14 @@ fun SuanpanWritingScreen(
             onDismissRequest = { showSourcesMenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.originalText) },
+                text = { Text(s.common.originalText) },
                 trailingIcon = {
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                 },
                 onClick = { showMainTextSubmenu = true }
             )
             DropdownMenuItem(
-                text = { Text(s.aPal) },
+                text = { Text(s.titles.aPal) },
                 trailingIcon = {
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                 },
@@ -400,17 +400,17 @@ fun SuanpanWritingScreen(
             onDismissRequest = { showMainTextSubmenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.copyUrl) },
+                text = { Text(s.common.copyUrl) },
                 onClick = {
                     showSourcesMenu = false
                     showMainTextSubmenu = false
                     val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=716d6fe5-78cc-4fef-85da-11daff12399d"))
-                    Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                 }
             )
             DropdownMenuItem(
-                text = { Text(s.goToUrl) },
+                text = { Text(s.common.goToUrl) },
                 onClick = {
                     showSourcesMenu = false
                     showMainTextSubmenu = false
@@ -424,17 +424,17 @@ fun SuanpanWritingScreen(
             onDismissRequest = { showAPalSubmenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.copyUrl) },
+                text = { Text(s.common.copyUrl) },
                 onClick = {
                     showSourcesMenu = false
                     showAPalSubmenu = false
                     val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf"))
-                    Toast.makeText(ctx, s.copyUrl, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                 }
             )
             DropdownMenuItem(
-                text = { Text(s.goToUrl) },
+                text = { Text(s.common.goToUrl) },
                 onClick = {
                     showSourcesMenu = false
                     showAPalSubmenu = false

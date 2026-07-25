@@ -52,6 +52,8 @@ import com.historytracers.app.ui.screens.MultiplyingWithoutLimitsScreen
 import com.historytracers.app.ui.screens.SubtractingWithAbacusScreen
 import com.historytracers.app.ui.screens.RelationshipScreen
 import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
+import com.historytracers.app.ui.screens.YupanaScreen
+import com.historytracers.app.ui.screens.PracticingAdditionYupanaScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -66,7 +68,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -116,10 +118,12 @@ fun AppNavigation() {
     val savedFirstStepsScroll by preferences.firstStepsScroll.collectAsState(initial = 0)
     val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
     val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
+    val savedYupanaScroll by preferences.yupanaScroll.collectAsState(initial = 0)
 
     val firstStepsScrollState = remember { ScrollState(0) }
     val workoutScrollState = remember { ScrollState(0) }
     val abacusScrollState = remember { ScrollState(0) }
+    val yupanaScrollState = remember { ScrollState(0) }
 
     LaunchedEffect(savedFirstStepsScroll) {
         if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
@@ -129,6 +133,9 @@ fun AppNavigation() {
     }
     LaunchedEffect(savedAbacusScroll) {
         if (savedAbacusScroll > 0) abacusScrollState.scrollTo(savedAbacusScroll)
+    }
+    LaunchedEffect(savedYupanaScroll) {
+        if (savedYupanaScroll > 0) yupanaScrollState.scrollTo(savedYupanaScroll)
     }
 
     LaunchedEffect(Unit) {
@@ -142,6 +149,10 @@ fun AppNavigation() {
     LaunchedEffect(Unit) {
         snapshotFlow { abacusScrollState.value }
             .collect { preferences.setAbacusScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { yupanaScrollState.value }
+            .collect { preferences.setYupanaScroll(it) }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -157,7 +168,7 @@ fun AppNavigation() {
     LaunchedEffect(reminderEnabled, reminderHour, reminderMinute, language) {
         NotificationHelper.scheduleAlarm(
             context, reminderEnabled, reminderHour, reminderMinute,
-            uiStrings.reminderTitle, uiStrings.reminderMessage
+            uiStrings.common.reminderTitle, uiStrings.common.reminderMessage
         )
     }
 
@@ -175,7 +186,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                        label = { Text(uiStrings.home) },
+                        label = { Text(uiStrings.common.home) },
                         selected = currentRoute == Screen.Index.route,
                         onClick = {
                             navController.navigate(Screen.Index.route) {
@@ -186,7 +197,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                        label = { Text(uiStrings.settings) },
+                        label = { Text(uiStrings.common.settings) },
                         selected = currentRoute == Screen.Settings.route,
                         onClick = {
                             navController.navigate(Screen.Settings.route)
@@ -195,7 +206,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.LocalFireDepartment, contentDescription = null) },
-                        label = { Text(uiStrings.streak) },
+                        label = { Text(uiStrings.common.streak) },
                         selected = currentRoute == Screen.Streak.route,
                         onClick = {
                             navController.navigate(Screen.Streak.route)
@@ -205,7 +216,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text(uiStrings.isItFree) },
+                        label = { Text(uiStrings.titles.isItFree) },
                         selected = currentRoute == Screen.IsItFree.route,
                         onClick = {
                             navController.navigate(Screen.IsItFree.route)
@@ -214,7 +225,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Info, contentDescription = null) },
-                        label = { Text(uiStrings.aboutUs) },
+                        label = { Text(uiStrings.titles.aboutUs) },
                         selected = currentRoute == Screen.About.route,
                         onClick = {
                             navController.navigate(Screen.About.route)
@@ -224,7 +235,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Close, contentDescription = null) },
-                        label = { Text(uiStrings.close) },
+                        label = { Text(uiStrings.common.close) },
                         selected = false,
                         onClick = {
                             (context as? android.app.Activity)?.finishAndRemoveTask()
@@ -241,7 +252,7 @@ fun AppNavigation() {
                             IconButton(onClick = {
                                 scope.launch { drawerState.open() }
                             }) {
-                                Icon(Icons.Default.Menu, contentDescription = uiStrings.menu)
+                                Icon(Icons.Default.Menu, contentDescription = uiStrings.common.menu)
                             }
                         },
                         actions = {
@@ -282,7 +293,8 @@ fun AppNavigation() {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
                             onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } },
-                            onNavigateToAbacus = { navController.navigate(Screen.Abacus.route) { launchSingleTop = true } }
+                            onNavigateToAbacus = { navController.navigate(Screen.Abacus.route) { launchSingleTop = true } },
+                            onNavigateToYupana = { navController.navigate(Screen.Yupana.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.FirstSteps.route) {
@@ -345,6 +357,37 @@ fun AppNavigation() {
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
                             onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
                             onNavigateToSubtractingWithAbacus = { navController.navigate(Screen.SubtractingWithAbacus.route) }
+                        )
+                    }
+                    composable(Screen.Yupana.route) {
+                        YupanaScreen(
+                            scrollState = yupanaScrollState,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
+                            onNavigateToPracticingAdditionYupana = { navController.navigate(Screen.PracticingAdditionYupana.route) }
+                        )
+                    }
+                    composable(Screen.PracticingAdditionYupana.route) {
+                        PracticingAdditionYupanaScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.SorobanWriting.route) {
@@ -622,14 +665,14 @@ fun AppNavigation() {
     if (showBreakDialog) {
         AlertDialog(
             onDismissRequest = { },
-            title = { Text(uiStrings.breakReminderTitle) },
-            text = { Text(uiStrings.breakMessage) },
+            title = { Text(uiStrings.common.breakReminderTitle) },
+            text = { Text(uiStrings.common.breakMessage) },
             confirmButton = {
                 TextButton(onClick = {
                     breakStartTime = System.currentTimeMillis() / 1000L
                     showBreakDialog = false
                 }) {
-                    Text(uiStrings.imBack)
+                    Text(uiStrings.common.imBack)
                 }
             }
         )

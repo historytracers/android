@@ -239,10 +239,10 @@ fun FeetAndHandsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { onNavigateBack() }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.exercisingFeetAndHands,
+                    text = s.body.exercisingFeetAndHands,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -250,7 +250,7 @@ fun FeetAndHandsScreen(
         }
 
         Text(
-            text = s.feetAndHandsReinforce,
+            text = s.body.feetAndHandsReinforce,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -258,7 +258,7 @@ fun FeetAndHandsScreen(
         )
 
         Text(
-            text = s.feetAndHandsInstructions,
+            text = s.body.feetAndHandsInstructions,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -266,7 +266,7 @@ fun FeetAndHandsScreen(
         )
 
         Text(
-            text = s.feetAndHandsSkinColorHint,
+            text = s.body.feetAndHandsSkinColorHint,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
@@ -314,7 +314,7 @@ fun FeetAndHandsScreen(
             ) {
                 Icon(
                     Icons.Default.PanTool,
-                    contentDescription = s.clap,
+                    contentDescription = s.body.clap,
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -352,7 +352,7 @@ fun FeetAndHandsScreen(
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.DirectionsRun,
-                    contentDescription = s.steps,
+                    contentDescription = s.body.steps,
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -391,7 +391,7 @@ fun FeetAndHandsScreen(
             ) {
                 Icon(
                     Icons.Default.Accessibility,
-                    contentDescription = s.jumps,
+                    contentDescription = s.body.jumps,
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -516,16 +516,16 @@ fun FeetAndHandsScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("${s.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                        Text("${s.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                        Text("${s.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.body.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.body.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.body.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(s.slowly, style = MaterialTheme.typography.bodySmall)
+                        Text(s.common.slowly, style = MaterialTheme.typography.bodySmall)
                         Slider(
                             value = sliderPos,
                             onValueChange = { if (!isPlaying) sliderPos = it },
@@ -533,14 +533,14 @@ fun FeetAndHandsScreen(
                             modifier = Modifier.width(180.dp),
                             enabled = !isPlaying
                         )
-                        Text(s.fast, style = MaterialTheme.typography.bodySmall)
+                        Text(s.common.fast, style = MaterialTheme.typography.bodySmall)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("${s.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
+                        Text("${s.body.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
                         FilledIconButton(
                             onClick = { if (!isPlaying && count > 1) count-- },
                             modifier = Modifier.size(32.dp),
@@ -571,14 +571,14 @@ fun FeetAndHandsScreen(
 
         if (showCompletionMessage) {
             Text(
-                text = s.clapCompletionMessage,
+                text = s.body.exercisingFeetAndHandsCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 50.dp)
+                    .padding(bottom = 40.dp)
             )
         }
 
@@ -604,7 +604,7 @@ fun FeetAndHandsScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = s.sources,
+                    text = s.common.sources,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -615,7 +615,7 @@ fun FeetAndHandsScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.originalText) },
+                    text = { Text(s.common.originalText) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
@@ -628,17 +628,17 @@ fun FeetAndHandsScreen(
                 onDismissRequest = { showMainTextSubmenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.copyUrl) },
+                    text = { Text(s.common.copyUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=ef299aac-2abd-4fac-9974-05e697639b20"))
-                        Toast.makeText(context, s.copyUrl, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.goToUrl) },
+                    text = { Text(s.common.goToUrl) },
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
