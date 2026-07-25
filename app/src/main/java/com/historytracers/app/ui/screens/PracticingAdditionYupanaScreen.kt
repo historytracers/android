@@ -505,6 +505,16 @@ fun PracticingAdditionYupanaScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
+                    text = s.yupana.ypButtonInstruction,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                Text(
                     text = "${s.common.levelPrefix}$currentDigitLevel",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,

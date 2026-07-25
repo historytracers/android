@@ -288,6 +288,7 @@ val EnStrings = UiStrings(
         ypNothingResult = "Nothing to place in the %s column.",
         ypSumTen = "%d + %d + %d = %d → 0 in the %s column, carry %d.",
         ypCarry = "(carry)",
+        ypButtonInstruction = "Tap the Yupana columns to place or remove markers. When the row is correct, click \"Next Step\". Use \"New Exercise\" to restart or \"Next Level\" to advance.",
     ),
     misc = MiscStrings(
         multiplicationTable = "Multiplication Table",
@@ -569,6 +570,7 @@ val PtStrings = UiStrings(
         ypNothingResult = "Nada a colocar na coluna %s.",
         ypSumTen = "%d + %d + %d = %d → 0 na coluna %s, transporte %d.",
         ypCarry = "(transporte)",
+        ypButtonInstruction = "Toque nas colunas da Yupana para colocar ou remover marcadores. Quando a linha estiver correta, clique em \"Pr\u00f3ximo passo\". Use \"Novo exerc\u00edcio\" para reiniciar ou \"Pr\u00f3ximo n\u00edvel\" para avan\u00e7ar.",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabela de Multiplica\u00e7\u00e3o",
@@ -850,6 +852,7 @@ val EsStrings = UiStrings(
         ypNothingResult = "Nada que colocar en la columna %s.",
         ypSumTen = "%d + %d + %d = %d → 0 en la columna %s, llevada %d.",
         ypCarry = "(llevada)",
+        ypButtonInstruction = "Toca las columnas de la Yupana para colocar o quitar marcadores. Cuando la fila sea correcta, haz clic en \"Siguiente paso\". Usa \"Nuevo ejercicio\" para reiniciar o \"Siguiente nivel\" para avanzar.",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabla de Multiplicar",
