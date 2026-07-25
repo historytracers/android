@@ -123,20 +123,21 @@ private fun writeSumOnYupana(withoutMoves: String, lValue: Int, rBase: Int, carr
             changed = true
         }
 
-        // ISKAY: 1+1=2 (col4 + col4 → col3)
-        while (count[3] >= 2) {
-            count[3] -= 2
-            count[2]++
-            m.add(YP_ISKAY)
-            changed = true
-        }
-
         // KIMSA: 2+1=3 (col3 + col4 → col2)
+        // Apply before ISKAY so col4 markers are available for this combination
         while (count[2] >= 1 && count[3] >= 1) {
             count[2]--
             count[3]--
             count[1]++
             m.add(YP_KIMSA)
+            changed = true
+        }
+
+        // ISKAY: 1+1=2 (col4 + col4 → col3)
+        while (count[3] >= 2) {
+            count[3] -= 2
+            count[2]++
+            m.add(YP_ISKAY)
             changed = true
         }
 
@@ -488,6 +489,16 @@ fun PracticingAdditionYupanaScreen(
                         .onSizeChanged { canvasSize = Size(it.width.toFloat(), it.height.toFloat()) }
                         .pointerInput(phase, stepRowIdx, rowCompleted) {
                             if (stepRowIdx in 0 until ROWS && !rowCompleted) {
+                                val activeIdx = ROWS - 1 - stepRowIdx
+                                val digit = when (phase) {
+                                    0 -> rows[activeIdx].leftDigit
+                                    1 -> rows[activeIdx].rightDigit
+                                    else -> rows[activeIdx].resultDigit
+                                }
+                                if (getMarkersForDigit(digit).isEmpty()) {
+                                    rowCompleted = true
+                                    return@pointerInput
+                                }
                                 detectTapGestures { offset ->
                                     val margin = 3f / 860f * canvasSize.width
                                     val usableWidth = canvasSize.width - 2f * margin
@@ -570,8 +581,7 @@ fun PracticingAdditionYupanaScreen(
                                 rightMarkers = rightMarkers,
                                 resultMarkers = resultMarkers,
                                 carryMarker = phase >= 2 && carryIntoRow[row] > 0 && !consumedCarry &&
-                                    (ROWS - 2 - row < stepRowIdx ||
-                                     (ROWS - 2 - row == stepRowIdx && rowCompleted))
+                                    ROWS - 1 - row == stepRowIdx && !rowCompleted
                             )
                         }
                     }
@@ -1041,15 +1051,16 @@ private fun DrawScope.drawYupanaRow(
 
         if (carryMarker && colNum == 4) {
             val carryY = bottomMarkerY + extraPx
+            val carryX = if (rightActive) cx + markerRadius * 1.2f else cx
             drawCircle(
                 color = Color(0xFF808080),
                 radius = markerRadius * 1.1f,
-                center = Offset(cx, carryY)
+                center = Offset(carryX, carryY)
             )
             drawCircle(
                 color = Color(0xFF000000).copy(alpha = 0.2f),
                 radius = markerRadius * 1.1f,
-                center = Offset(cx, carryY),
+                center = Offset(carryX, carryY),
                 style = Stroke(width = 0.8f / 480f * ch)
             )
         }
