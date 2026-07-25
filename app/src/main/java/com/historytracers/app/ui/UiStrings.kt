@@ -283,6 +283,10 @@ val EnStrings = UiStrings(
         ypLastLevelMessage = "\uD83C\uDF89\uD83C\uDFC6 ALL LEVELS COMPLETE! \uD83C\uDFC6\uD83C\uDF89\nYou mastered all 9 levels! Click \"New exercise\" to start again at level 1.",
         ypRedPhase = "Place RED markers for %d in the %s.",
         ypBluePhase = "Place BLUE markers for %d in the %s.",
+        ypNothingLeft = "Nothing to add from the left in the %s column.",
+        ypNothingRight = "Nothing to add from the right in the %s column.",
+        ypNothingResult = "Nothing to place in the %s column.",
+        ypSumTen = "%d + %d + %d = %d → 0 in the %s column, carry %d.",
     ),
     misc = MiscStrings(
         multiplicationTable = "Multiplication Table",
@@ -559,6 +563,10 @@ val PtStrings = UiStrings(
         ypLastLevelMessage = "\uD83C\uDF89\uD83C\uDFC6 TODOS OS N\u00cdVEIS CONCLU\u00cdDOS! \uD83C\uDFC6\uD83C\uDF89\nVoc\u00ea dominou todos os 9 n\u00edveis! Clique em \"Novo exerc\u00edcio\" para come\u00e7ar novamente no n\u00edvel 1.",
         ypRedPhase = "Coloque marcadores VERMELHOS para %d na %s.",
         ypBluePhase = "Coloque marcadores AZUIS para %d na %s.",
+        ypNothingLeft = "Nada a adicionar da esquerda na coluna %s.",
+        ypNothingRight = "Nada a adicionar da direita na coluna %s.",
+        ypNothingResult = "Nada a colocar na coluna %s.",
+        ypSumTen = "%d + %d + %d = %d → 0 na coluna %s, transporte %d.",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabela de Multiplica\u00e7\u00e3o",
@@ -835,6 +843,10 @@ val EsStrings = UiStrings(
         ypLastLevelMessage = "\uD83C\uDF89\uD83C\uDFC6 \u00a1TODOS LOS NIVELES COMPLETADOS! \uD83C\uDFC6\uD83C\uDF89\n\u00a1Dominaste los 9 niveles! Haz clic en \"Nuevo ejercicio\" para empezar de nuevo en el nivel 1.",
         ypRedPhase = "Coloca marcadores ROJOS para %d en %s.",
         ypBluePhase = "Coloca marcadores AZULES para %d en %s.",
+        ypNothingLeft = "Nada que agregar de la izquierda en la columna %s.",
+        ypNothingRight = "Nada que agregar de la derecha en la columna %s.",
+        ypNothingResult = "Nada que colocar en la columna %s.",
+        ypSumTen = "%d + %d + %d = %d → 0 en la columna %s, llevada %d.",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabla de Multiplicar",

@@ -199,6 +199,7 @@ fun PracticingAdditionYupanaScreen(
     var stepCompleted by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
     var isFeedbackPositive by remember { mutableStateOf(false) }
+    var isNeutralFeedback by remember { mutableStateOf(false) }
     var exerciseStarted by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
@@ -314,6 +315,7 @@ fun PracticingAdditionYupanaScreen(
         }
         rowCompleted = false
         feedbackMessage = ""
+        isNeutralFeedback = false
 
         while (stepRowIdx <= lastMeaningfulStepRowIdx) {
             val idx = ROWS - 1 - stepRowIdx
@@ -339,6 +341,24 @@ fun PracticingAdditionYupanaScreen(
         }
     }
 
+    fun zeroDigitMessage(idx: Int): String {
+        val placeLabel = placeLabels[idx]
+        return when (phase) {
+            0 -> s.yupana.ypNothingLeft.format(placeLabel)
+            1 -> s.yupana.ypNothingRight.format(placeLabel)
+            else -> {
+                val carryIn = carryIntoRow[idx]
+                val total = rows[idx].leftDigit + rows[idx].rightDigit + carryIn
+                if (carryIn > 0 || total >= 10) {
+                    val carryOut = total / 10
+                    s.yupana.ypSumTen.format(rows[idx].leftDigit, rows[idx].rightDigit, carryIn, total, placeLabel, carryOut)
+                } else {
+                    s.yupana.ypNothingResult.format(placeLabel)
+                }
+            }
+        }
+    }
+
     fun advanceToNextRow() {
         if (stepRowIdx >= lastMeaningfulStepRowIdx) {
             when (phase) {
@@ -355,28 +375,17 @@ fun PracticingAdditionYupanaScreen(
         }
         rowCompleted = false
         feedbackMessage = ""
-        while (stepRowIdx <= lastMeaningfulStepRowIdx) {
-            val idx = ROWS - 1 - stepRowIdx
-            val digit = when (phase) {
-                0 -> rows[idx].leftDigit
-                1 -> rows[idx].rightDigit
-                else -> rows[idx].resultDigit
-            }
-            if (getMarkersForDigit(digit).isEmpty()) {
-                when (phase) {
-                    0 -> completedRedMarkers = completedRedMarkers.toMutableList().also { it[idx] = emptySet() }
-                    1 -> completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[idx] = emptySet() }
-                }
-                if (stepRowIdx >= lastMeaningfulStepRowIdx) {
-                    when (phase) {
-                        0 -> advanceToPhase(1)
-                        1 -> advanceToPhase(2)
-                        else -> rowCompleted = true
-                    }
-                    return
-                }
-                stepRowIdx++
-            } else { break }
+        isNeutralFeedback = false
+        val idx = ROWS - 1 - stepRowIdx
+        val digit = when (phase) {
+            0 -> rows[idx].leftDigit
+            1 -> rows[idx].rightDigit
+            else -> rows[idx].resultDigit
+        }
+        if (getMarkersForDigit(digit).isEmpty()) {
+            feedbackMessage = zeroDigitMessage(idx)
+            isNeutralFeedback = true
+            rowCompleted = true
         }
     }
 
@@ -394,6 +403,7 @@ fun PracticingAdditionYupanaScreen(
         feedbackMessage = ""
 
         isFeedbackPositive = false
+        isNeutralFeedback = false
         greenColumns = emptySet()
         consumedLeft = emptySet()
         consumedRight = emptySet()
@@ -414,6 +424,7 @@ fun PracticingAdditionYupanaScreen(
         feedbackMessage = ""
 
         isFeedbackPositive = false
+        isNeutralFeedback = false
         exerciseStarted = false
         greenColumns = emptySet()
         consumedLeft = emptySet()
@@ -510,7 +521,9 @@ fun PracticingAdditionYupanaScreen(
                                     else -> rows[activeIdx].resultDigit
                                 }
                                 if (getMarkersForDigit(digit).isEmpty()) {
-                                    advanceToNextRow()
+                                    feedbackMessage = zeroDigitMessage(activeIdx)
+                                    isNeutralFeedback = true
+                                    rowCompleted = true
                                     return@pointerInput
                                 }
                                 detectTapGestures { offset ->
@@ -768,14 +781,31 @@ fun PracticingAdditionYupanaScreen(
                 }
 
                 if (feedbackMessage.isNotEmpty()) {
-                    Text(
-                        text = feedbackMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
+                    if (isNeutralFeedback) {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color(0xFFE0E0E0),
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = feedbackMessage,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFF555555),
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = feedbackMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(48.dp))

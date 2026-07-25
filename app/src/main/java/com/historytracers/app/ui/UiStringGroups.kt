@@ -140,6 +140,8 @@ data class YupanaStrings(
     val ypCarrying: String, val ypCarryingCarry: String,
     val ypCongratsMessage: String, val ypLastLevelMessage: String,
     val ypRedPhase: String, val ypBluePhase: String,
+    val ypNothingLeft: String, val ypNothingRight: String,
+    val ypNothingResult: String, val ypSumTen: String,
 )
 
 data class MiscStrings(
