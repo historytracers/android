@@ -81,6 +81,7 @@ private val YP_KIMSA = "KIMSA"
 private val YP_PISQA = "PISQA"
 private val YP_KIKIN = "KIKIN"
 private val YP_PICHANA = "PICHANA"
+private val YP_TAWA = "TAWA"
 
 private fun movementDesc(name: String): String = when (name) {
     YP_ISKAY -> "$YP_ISKAY (1 + 1 = 2)"
@@ -88,6 +89,7 @@ private fun movementDesc(name: String): String = when (name) {
     YP_PISQA -> "$YP_PISQA (5 + 5 = 10)"
     YP_KIKIN -> "$YP_KIKIN (1 + 1 + 1 = 3)"
     YP_PICHANA -> "$YP_PICHANA (3 + 3 = 5 + 1)"
+    YP_TAWA -> "$YP_TAWA (2 + 2 = 3 + 1)"
     else -> name
 }
 
@@ -136,6 +138,15 @@ private fun writeSumOnYupana(withoutMoves: String, lValue: Int, rBase: Int, carr
             count[3] -= 2
             count[2]++
             m.add(YP_ISKAY)
+            changed = true
+        }
+
+        // TAWA: 2+2=3+1 (col3 + col3 → col2 + col4)
+        while (count[2] >= 2) {
+            count[2] -= 2
+            count[1]++
+            count[3]++
+            m.add(YP_TAWA)
             changed = true
         }
 
@@ -782,20 +793,14 @@ fun PracticingAdditionYupanaScreen(
 
                 if (feedbackMessage.isNotEmpty()) {
                     if (isNeutralFeedback) {
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = Color(0xFFE0E0E0),
+                        Text(
+                            text = feedbackMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF2E7D32),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                        ) {
-                            Text(
-                                text = feedbackMessage,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFF555555),
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                            )
-                        }
+                        )
                     } else {
                         Text(
                             text = feedbackMessage,
