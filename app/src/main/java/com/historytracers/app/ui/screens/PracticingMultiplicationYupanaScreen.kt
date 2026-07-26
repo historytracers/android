@@ -189,7 +189,10 @@ fun PracticingMultiplicationYupanaScreen(
     }
 
     fun startNextIteration() {
-        computeRows(); advanceToPhase(0)
+        computeRows()
+        completedRedMarkers = List(ROWS) { emptySet() }
+        completedBlueMarkers = List(ROWS) { emptySet() }
+        advanceToPhase(0)
         if (exercise.second >= 2) { rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true }
     }
 
@@ -328,7 +331,7 @@ fun PracticingMultiplicationYupanaScreen(
                             when (phase) {
                                 0 -> { val ra = ROWS - 1 - stepRowIdx; when { row == ra -> { leftMarkers = userRedColumns; rightMarkers = emptySet(); resultMarkers = emptySet() } else -> { leftMarkers = completedRedMarkers[row]; rightMarkers = emptySet(); resultMarkers = emptySet() } } }
                                 1 -> { val ba = ROWS - 1 - stepRowIdx; when { row == ba -> { leftMarkers = completedRedMarkers[row]; rightMarkers = userBlueColumns; resultMarkers = emptySet() } else -> { leftMarkers = completedRedMarkers[row]; rightMarkers = completedBlueMarkers[row]; resultMarkers = emptySet() } } }
-                                else -> { when { row > activeRow -> { leftMarkers = emptySet(); rightMarkers = emptySet(); resultMarkers = getMarkersForDigit(rowState.resultDigit) }; row == activeRow -> { leftMarkers = if (rowCompleted) emptySet() else completedRedMarkers[row]; rightMarkers = if (rowCompleted) emptySet() else completedBlueMarkers[row]; resultMarkers = greenColumns }; else -> { leftMarkers = completedRedMarkers[row]; rightMarkers = completedBlueMarkers[row]; resultMarkers = emptySet() } } }
+                                 else -> { when { row > activeRow -> { leftMarkers = emptySet(); rightMarkers = emptySet(); resultMarkers = getMarkersForDigit(rowState.resultDigit) }; row == activeRow -> { leftMarkers = if (rowCompleted) emptySet() else completedRedMarkers[row]; rightMarkers = if (rowCompleted) emptySet() else completedBlueMarkers[row]; resultMarkers = greenColumns }; else -> { leftMarkers = completedRedMarkers[row]; rightMarkers = completedBlueMarkers[row]; resultMarkers = emptySet() } } }
                             }
                             drawYpMultiplyRow(cellOriginX = startX, cellOriginY = ry, cellWidth = colW, cellHeight = rowHeight, canvasSize = size, leftMarkers = leftMarkers, rightMarkers = rightMarkers, resultMarkers = resultMarkers, carryMarker = phase >= 2 && carryIntoRow[row] > 0 && ROWS - 1 - row == stepRowIdx && !rowCompleted)
                         }
