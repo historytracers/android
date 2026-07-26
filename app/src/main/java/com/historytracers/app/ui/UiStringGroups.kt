@@ -131,6 +131,8 @@ data class SbwStrings(
 data class YupanaStrings(
     val yupana: String, val quipu: String,
     val handsOnYupana: String, val movingInYupana: String,
+    val multiplyingWithYupana: String,
+    val practicingMultiplicationYupana: String,
     val practicingWithYupana: String,
     val practicingAdditionYupanaInstruction: String,
     val yupanaValues: String, val yupanaResult: String,
@@ -143,6 +145,9 @@ data class YupanaStrings(
     val ypNothingLeft: String, val ypNothingRight: String,
     val ypNothingResult: String, val ypSumTen: String,
     val ypCarry: String, val ypButtonInstruction: String,
+    val ypMultiplyInstruction: String,
+    val ypMultiplyStepPlace: String,
+    val ypMultiplyStepAdd: String,
 )
 
 data class MiscStrings(

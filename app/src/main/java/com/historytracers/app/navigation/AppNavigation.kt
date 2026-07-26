@@ -54,6 +54,7 @@ import com.historytracers.app.ui.screens.RelationshipScreen
 import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
 import com.historytracers.app.ui.screens.YupanaScreen
 import com.historytracers.app.ui.screens.PracticingAdditionYupanaScreen
+import com.historytracers.app.ui.screens.PracticingMultiplicationYupanaScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -373,11 +374,26 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
-                            onNavigateToPracticingAdditionYupana = { navController.navigate(Screen.PracticingAdditionYupana.route) }
+                            onNavigateToPracticingAdditionYupana = { navController.navigate(Screen.PracticingAdditionYupana.route) },
+                            onNavigateToPracticingMultiplicationYupana = { navController.navigate(Screen.PracticingMultiplicationYupana.route) }
                         )
                     }
                     composable(Screen.PracticingAdditionYupana.route) {
                         PracticingAdditionYupanaScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.PracticingMultiplicationYupana.route) {
+                        PracticingMultiplicationYupanaScreen(
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Yupana.route, false)) {
                                     navController.navigate(Screen.Yupana.route) {
