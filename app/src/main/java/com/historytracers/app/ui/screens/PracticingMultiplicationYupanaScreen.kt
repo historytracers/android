@@ -133,10 +133,8 @@ fun PracticingMultiplicationYupanaScreen(
 
     var currentMultiplier by remember { mutableIntStateOf(MIN_MULTIPLIER) }
     var exercise by remember { mutableStateOf(generateExercise(currentMultiplier)) }
-    val a = exercise.first; val b = exercise.second
     var runningTotal by remember { mutableIntStateOf(0) }
     var iteration by remember { mutableIntStateOf(0) }
-
     var rows by remember { mutableStateOf(List(ROWS) { MypRowState() }) }
     var stepRowIdx by remember { mutableIntStateOf(-1) }
     var rowCompleted by remember { mutableStateOf(false) }
@@ -170,9 +168,8 @@ fun PracticingMultiplicationYupanaScreen(
     }
 
     fun computeRows() {
-        val l = a; val r = runningTotal; val result = runningTotal + a
-        val lDigits = numberToDigits(l); val rDigits = numberToDigits(r); val resDigits = numberToDigits(result)
-        rows = List(ROWS) { i -> MypRowState(leftDigit = lDigits[i], rightDigit = rDigits[i], resultDigit = resDigits[i]) }
+        val runningDigits = numberToDigits(runningTotal); val aDigits = numberToDigits(exercise.first); val resDigits = numberToDigits(runningTotal + exercise.first)
+        rows = List(ROWS) { i -> MypRowState(leftDigit = runningDigits[i], rightDigit = aDigits[i], resultDigit = resDigits[i]) }
     }
 
     fun advanceToPhase(newPhase: Int) {
@@ -192,20 +189,21 @@ fun PracticingMultiplicationYupanaScreen(
     }
 
     fun startNextIteration() {
-        computeRows(); advanceToPhase(0)
+        computeRows()
+        if (exercise.second >= 2) completedRedMarkers = numberToDigits(runningTotal).map { getMarkersForDigit(it) }
+        advanceToPhase(0)
+        if (exercise.second >= 2) { rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true }
     }
 
     fun finishIteration() {
-        runningTotal += a; iteration++
-        if (iteration >= b) {
-            finalCongratsShown = true
+        runningTotal += exercise.first; iteration++
+        if (iteration >= exercise.second) {
+            rowCompleted = false; finalCongratsShown = true
             onScoreChanged(currentScore + 2)
             scope.launch { preferences.recordLessonCompletion() }
-            feedbackMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 $a \u00D7 $b = $runningTotal\n${s.yupana.ypMultiplyPerfectMessage.format(a, b, runningTotal)}"
+            feedbackMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${exercise.first} \u00D7 ${exercise.second} = $runningTotal\n${s.yupana.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)}"
             isFeedbackPositive = true
-        } else {
-            startNextIteration()
-        }
+        } else { startNextIteration() }
     }
 
     fun advanceToNextRow() {
@@ -266,13 +264,12 @@ fun PracticingMultiplicationYupanaScreen(
 
     fun setupExercise() {
         exercise = generateExercise(currentMultiplier)
-        runningTotal = 0; iteration = 0; computeRows()
-        stepRowIdx = -1; rowCompleted = false; phase = 0
-        feedbackMessage = ""; isFeedbackPositive = false; isNeutralFeedback = false
+        runningTotal = if (exercise.second >= 2) exercise.first else 0; iteration = 0; computeRows()
+        rowCompleted = false; feedbackMessage = ""; isFeedbackPositive = false; isNeutralFeedback = false
         exerciseStarted = false; finalCongratsShown = false; showLastLevelMessage = false
         userRedColumns = emptySet(); userBlueColumns = emptySet(); greenColumns = emptySet()
         completedRedMarkers = List(ROWS) { emptySet() }; completedBlueMarkers = List(ROWS) { emptySet() }
-        advanceToPhase(0)
+        if (exercise.second == 1) advanceToPhase(2) else startNextIteration()
     }
 
     fun toggleLevel() {
@@ -284,7 +281,7 @@ fun PracticingMultiplicationYupanaScreen(
         setupExercise()
     }
 
-    LaunchedEffect(exercise) { computeRows(); advanceToPhase(0); exerciseStarted = false }
+    LaunchedEffect(Unit) { setupExercise() }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -299,9 +296,8 @@ fun PracticingMultiplicationYupanaScreen(
                 Text(text = s.yupana.ypMultiplyInstruction, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
                 Spacer(Modifier.height(4.dp))
                 Text(text = "${s.common.levelPrefix}$currentMultiplier", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(bottom = 4.dp))
-                val displayResult = if (exerciseStarted && stepRowIdx >= 0) runningTotal + a else runningTotal + a
                 Surface(shape = RoundedCornerShape(16.dp), color = Color(0xFF2E241F)) {
-                    Text(text = "$a \u00D7 $b = ?", color = Color(0xFFF2ECD8), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+                    Text(text = "${exercise.first} \u00D7 ${exercise.second} = ?", color = Color(0xFFF2ECD8), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
                 }
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp).aspectRatio(860f / 480f).onSizeChanged { canvasSize = Size(it.width.toFloat(), it.height.toFloat()) }.pointerInput(phase, stepRowIdx, rowCompleted) {
@@ -340,14 +336,6 @@ fun PracticingMultiplicationYupanaScreen(
                     }
                 }
                 Spacer(Modifier.height(12.dp))
-                if (stepRowIdx in 0 until ROWS) {
-                    val placeIdx = ROWS - 1 - stepRowIdx; val target = rows[placeIdx].resultDigit
-                    Surface(shape = RoundedCornerShape(12.dp), color = Color(0xFF2E241F), modifier = Modifier.padding(horizontal = 16.dp)) {
-                        val stepInfo = "${s.common.stepPrefix} ${iteration + 1}/${b}: $a \u00D7 ${iteration + 1} = ${a * (iteration + 1)}"
-                        Text(text = stepInfo, color = Color(0xFFF2ECD8), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(12.dp))
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
                 if (stepRowIdx in 0 until ROWS) {
                     val placeIdx = ROWS - 1 - stepRowIdx
                     Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.padding(horizontal = 16.dp)) {
