@@ -27,7 +27,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -53,9 +52,7 @@ private val yupanaSelectors = listOf(
     -1, -1, -1, -1, -1, -1, -1, -1, -1, 4
 )
 
-private data class MypExercise(val a: Int, val b: Int) {
-    val expected: Int get() = a * b
-}
+private data class MypExercise(val a: Int, val b: Int)
 
 private val placeLabels = listOf("thousands", "hundreds", "tens", "units")
 
@@ -134,36 +131,15 @@ private fun computeAddMovements(prevTotal: Int, addValue: Int, withoutMoves: Str
     return allMoves.distinct()
 }
 
-private fun computeMarkerValue(markersByRow: List<Set<Int>>): Int {
-    var total = 0
-    for (row in markersByRow.indices) {
-        var rowValue = 0
-        for (col in markersByRow[row]) {
-            rowValue += when (col) { 1 -> 5; 2 -> 3; 3 -> 2; 4 -> 1; else -> 0 }
-        }
-        val place = ROWS - 1 - row
-        total += rowValue * Math.pow(10.0, place.toDouble()).toInt()
-    }
-    return total
-}
-
-private fun generateMypExercise(multiplier: Int): MypExercise {
-    val a = Random.nextInt(1, 10)
-    return MypExercise(a, multiplier)
-}
-
 private fun numberToDigits(n: Int): List<Int> {
     val clamped = n.coerceIn(0, 9999)
     val s = clamped.toString().padStart(ROWS, '0')
     return s.map { it - '0' }
 }
 
-private fun buildMypSteps(exercise: MypExercise): List<Int> {
-    val steps = mutableListOf<Int>()
-    for (i in 1..exercise.b) {
-        steps.add(exercise.a * i)
-    }
-    return steps
+private fun generateMypExercise(multiplier: Int): MypExercise {
+    val a = Random.nextInt(1, 10)
+    return MypExercise(a, multiplier)
 }
 
 @Composable
@@ -179,9 +155,10 @@ fun PracticingMultiplicationYupanaScreen(
 
     var currentMultiplier by remember { mutableIntStateOf(MIN_MULTIPLIER) }
     var exercise by remember { mutableStateOf(generateMypExercise(currentMultiplier)) }
-    var steps by remember { mutableStateOf(buildMypSteps(exercise)) }
-    var currentStepIdx by remember { mutableIntStateOf(0) }
-    var stepCompleted by remember { mutableStateOf(false) }
+    var runningTotal by remember { mutableIntStateOf(0) }
+    var iteration by remember { mutableIntStateOf(0) }
+    var phase by remember { mutableIntStateOf(0) }
+    var rowCompleted by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var exerciseStarted by remember { mutableStateOf(false) }
@@ -191,66 +168,163 @@ fun PracticingMultiplicationYupanaScreen(
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showDhavitPremSubmenu by remember { mutableStateOf(false) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
-    var userMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
+    var redMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
+    var blueColumns by remember { mutableStateOf(emptySet<Int>()) }
+    var greenMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
     var currentMovesText by remember { mutableStateOf("") }
 
-    fun checkStep(): Boolean {
-        val target = steps[currentStepIdx]
-        val currentValue = computeMarkerValue(userMarkers)
-        return currentValue == target
+    fun expectedGreenForResult(): List<Set<Int>> {
+        val result = exercise.a * (iteration + 1)
+        val digits = numberToDigits(result)
+        return digits.map { getMarkersForDigit(it) }
     }
 
-    fun toggleColumn(row: Int, col: Int) {
-        if (stepCompleted) return
-        if (!exerciseStarted) exerciseStarted = true
-        userMarkers = userMarkers.toMutableList().also { list ->
-            val current = list[row]
-            list[row] = if (col in current) current - col else current + col
-        }
-        if (checkStep()) {
-            stepCompleted = true
+    fun nextIteration() {
+        iteration++
+        if (iteration >= exercise.b) {
+            finalCongratsShown = true
+            onScoreChanged(currentScore + 2)
+            scope.launch { preferences.recordLessonCompletion() }
+            feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.a, exercise.b, runningTotal)
+            isFeedbackPositive = true
+        } else {
             val lang = context.resources.configuration.locales[0].toLanguageTag()
             val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
-            val prevTotal = if (currentStepIdx == 0) 0 else steps[currentStepIdx - 1]
-            val addValue = exercise.a
-            val movements = computeAddMovements(prevTotal, addValue, wm)
+            val movements = computeAddMovements(runningTotal, exercise.a, wm)
             currentMovesText = movements.joinToString("; ")
-            if (currentStepIdx == steps.lastIndex) {
-                finalCongratsShown = true
-                onScoreChanged(currentScore + 2)
-                scope.launch { preferences.recordLessonCompletion() }
-                feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
-                isFeedbackPositive = true
-            } else {
+            redMarkers = greenMarkers.map { it.toSet() }
+            phase = 0
+            rowCompleted = true
+            feedbackMessage = s.yupana.ypCorrectMessage
+            isFeedbackPositive = true
+            blueColumns = emptySet()
+            greenMarkers = List(ROWS) { emptySet() }
+        }
+    }
+
+    fun completeGreen(resultMarkers: List<Set<Int>>) {
+        greenMarkers = resultMarkers
+        runningTotal = exercise.a * (iteration + 1)
+        val lang = context.resources.configuration.locales[0].toLanguageTag()
+        val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+        val movements = computeAddMovements(runningTotal - exercise.a, exercise.a, wm)
+        currentMovesText = movements.joinToString("; ")
+        rowCompleted = true
+        feedbackMessage = s.yupana.ypCorrectMessage
+        isFeedbackPositive = true
+    }
+
+    fun toggleColumn(col: Int) {
+        if (rowCompleted) return
+        if (!exerciseStarted) exerciseStarted = true
+        if (exercise.b == 1) {
+            val current = greenMarkers[ROWS - 1]
+            greenMarkers = greenMarkers.toMutableList().also { it[ROWS - 1] = if (col in current) current - col else current + col }
+            val expected = expectedGreenForResult()
+            if (greenMarkers == expected) {
+                runningTotal = exercise.a
+                rowCompleted = true
+                val lang = context.resources.configuration.locales[0].toLanguageTag()
+                val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+                currentMovesText = wm
                 feedbackMessage = s.yupana.ypCorrectMessage
                 isFeedbackPositive = true
             }
+        } else {
+            when (phase) {
+                0 -> {
+                    val current = redMarkers[ROWS - 1]
+                    redMarkers = redMarkers.toMutableList().also { it[ROWS - 1] = if (col in current) current - col else current + col }
+                    if (redMarkers[ROWS - 1] == getMarkersForDigit(exercise.a)) {
+                        rowCompleted = true
+                        feedbackMessage = s.yupana.ypCorrectMessage
+                        isFeedbackPositive = true
+                    }
+                }
+                1 -> {
+                    blueColumns = if (col in blueColumns) blueColumns - col else blueColumns + col
+                    if (blueColumns == getMarkersForDigit(exercise.a)) {
+                        rowCompleted = true
+                        feedbackMessage = s.yupana.ypCorrectMessage
+                        isFeedbackPositive = true
+                    }
+                }
+                2 -> {
+                    val current = greenMarkers[ROWS - 1]
+                    greenMarkers = greenMarkers.toMutableList().also { it[ROWS - 1] = if (col in current) current - col else current + col }
+                    val expected = expectedGreenForResult()
+                    if (greenMarkers == expected) {
+                        completeGreen(greenMarkers)
+                    }
+                }
+            }
+        }
+    }
+
+    fun advancePhase() {
+        if (exercise.b == 1) {
+            if (rowCompleted && !finalCongratsShown) {
+                finalCongratsShown = true
+                onScoreChanged(currentScore + 2)
+                scope.launch { preferences.recordLessonCompletion() }
+                feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.a, exercise.b, exercise.a)
+                isFeedbackPositive = true
+            }
+            return
+        }
+        phase++
+        rowCompleted = false
+        feedbackMessage = ""
+        currentMovesText = ""
+        blueColumns = emptySet()
+        if (phase > 2) {
+            val result = exercise.a * (iteration + 1)
+            val markers = numberToDigits(result).map { getMarkersForDigit(it) }
+            greenMarkers = markers
+            runningTotal = result
+            nextIteration()
+        } else if (phase == 0 && runningTotal > 0) {
+            redMarkers = greenMarkers.map { it.toSet() }
+            rowCompleted = true
+            feedbackMessage = s.yupana.ypCorrectMessage
+            isFeedbackPositive = true
+        } else if (phase == 0) {
+            redMarkers = List(ROWS) { emptySet() }
+            greenMarkers = List(ROWS) { emptySet() }
         }
     }
 
     fun resetExercise() {
         exercise = generateMypExercise(currentMultiplier)
-        steps = buildMypSteps(exercise)
-        currentStepIdx = 0
-        stepCompleted = false
+        runningTotal = 0
+        iteration = 0
+        phase = 0
+        rowCompleted = false
         feedbackMessage = ""
         isFeedbackPositive = false
         exerciseStarted = false
         finalCongratsShown = false
         showLastLevelMessage = false
-        userMarkers = List(ROWS) { emptySet() }
+        redMarkers = List(ROWS) { emptySet() }
+        blueColumns = emptySet()
+        greenMarkers = List(ROWS) { emptySet() }
         currentMovesText = ""
     }
 
     fun resetCurrentExercise() {
-        currentStepIdx = 0
-        stepCompleted = false
+        val prevTotal = runningTotal - exercise.a
+        runningTotal = if (prevTotal >= 0) prevTotal else 0
+        iteration = (iteration - 1).coerceAtLeast(0)
+        phase = 0
+        rowCompleted = false
         feedbackMessage = ""
         isFeedbackPositive = false
         exerciseStarted = false
         finalCongratsShown = false
         showLastLevelMessage = false
-        userMarkers = List(ROWS) { emptySet() }
+        redMarkers = List(ROWS) { emptySet() }
+        blueColumns = emptySet()
+        greenMarkers = List(ROWS) { emptySet() }
         currentMovesText = ""
     }
 
@@ -336,8 +410,8 @@ fun PracticingMultiplicationYupanaScreen(
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 480f)
                         .onSizeChanged { canvasSize = Size(it.width.toFloat(), it.height.toFloat()) }
-                        .pointerInput(stepCompleted) {
-                            if (!stepCompleted) {
+                        .pointerInput(phase, rowCompleted) {
+                            if (!rowCompleted) {
                                 detectTapGestures { offset ->
                                     val margin = 3f / 860f * canvasSize.width
                                     val usableWidth = canvasSize.width - 2f * margin
@@ -347,8 +421,7 @@ fun PracticingMultiplicationYupanaScreen(
                                     val startY = 3f / 480f * canvasSize.height
                                     if (offset.x in startX..(startX + 4f * colW) && offset.y in startY..(startY + ROWS * rowHeight)) {
                                         val col = ((offset.x - startX) / colW).toInt().coerceIn(0, 3)
-                                        val row = ((offset.y - startY) / rowHeight).toInt().coerceIn(0, ROWS - 1)
-                                        toggleColumn(row, col + 1)
+                                        toggleColumn(col + 1)
                                     }
                                 }
                             }
@@ -366,13 +439,46 @@ fun PracticingMultiplicationYupanaScreen(
 
                         for (row in 0 until ROWS) {
                             val ry = startY + row * rowHeight
+                            val linkMarkers: Set<Int>
+                            val rinkMarkers: Set<Int>
+                            val resultMarkers: Set<Int>
+
+                            if (exercise.b == 1) {
+                                linkMarkers = emptySet()
+                                rinkMarkers = emptySet()
+                                resultMarkers = greenMarkers[row]
+                            } else if (phase == 2) {
+                                linkMarkers = emptySet()
+                                rinkMarkers = emptySet()
+                                resultMarkers = greenMarkers[row]
+                            } else if (phase == 0 && runningTotal == 0 && iteration == 0) {
+                                linkMarkers = redMarkers[row]
+                                rinkMarkers = emptySet()
+                                resultMarkers = emptySet()
+                            } else if (phase == 0 && (runningTotal > 0 || iteration > 0)) {
+                                linkMarkers = redMarkers[row]
+                                rinkMarkers = emptySet()
+                                resultMarkers = emptySet()
+                            } else if (phase == 1) {
+                                linkMarkers = redMarkers[row]
+                                rinkMarkers = blueColumns
+                                resultMarkers = emptySet()
+                            } else {
+                                linkMarkers = emptySet()
+                                rinkMarkers = emptySet()
+                                resultMarkers = emptySet()
+                            }
+
                             drawYpMultiplyRow(
                                 cellOriginX = startX,
                                 cellOriginY = ry,
                                 cellWidth = colW,
                                 cellHeight = rowHeight,
                                 canvasSize = size,
-                                markers = userMarkers.getOrElse(row) { emptySet() }
+                                leftMarkers = linkMarkers,
+                                rightMarkers = rinkMarkers,
+                                resultMarkers = resultMarkers,
+                                persistentMarkers = emptySet()
                             )
                         }
                     }
@@ -380,24 +486,24 @@ fun PracticingMultiplicationYupanaScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                if (currentStepIdx in steps.indices) {
-                    val target = steps[currentStepIdx]
+                if (!finalCongratsShown) {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = Color(0xFF2E241F),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
-                            val stepText = if (currentStepIdx == 0)
-                                s.yupana.ypMultiplyStepPlace.format(currentStepIdx + 1, steps.size, exercise.a)
-                            else
-                                s.yupana.ypMultiplyStepAdd.format(currentStepIdx + 1, steps.size, exercise.a, target)
+                            val stepDesc = when (phase) {
+                                0 -> s.yupana.ypMultiplyStepPlace.format(iteration + 1, exercise.b, exercise.a)
+                                1 -> s.yupana.ypMultiplyStepAdd.format(iteration + 1, exercise.b, exercise.a, runningTotal + exercise.a)
+                                else -> "${exercise.a} \u00D7 ${iteration + 1} = ${exercise.a * (iteration + 1)}"
+                            }
                             Text(
-                                text = stepText,
+                                text = stepDesc,
                                 color = Color(0xFFF2ECD8),
                                 style = MaterialTheme.typography.bodyMedium
                             )
-                            if (currentMovesText.isNotEmpty() && stepCompleted) {
+                            if (currentMovesText.isNotEmpty() && rowCompleted && (phase == 2 || exercise.b == 1)) {
                                 Spacer(Modifier.height(6.dp))
                                 Text(
                                     text = currentMovesText,
@@ -412,14 +518,13 @@ fun PracticingMultiplicationYupanaScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                if (currentStepIdx in steps.indices) {
-                    val target = steps[currentStepIdx]
+                if (!finalCongratsShown) {
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = Color(0xFF2E241F),
                     ) {
                         Text(
-                            text = "${s.common.value}: $target",
+                            text = "${exercise.a} \u00D7 ${iteration + 1} = ${exercise.a * (iteration + 1)}",
                             color = Color(0xFFF2ECD8),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
@@ -456,14 +561,11 @@ fun PracticingMultiplicationYupanaScreen(
                         }
                         FilledTonalButton(
                             onClick = {
-                                if (!finalCongratsShown && currentStepIdx < steps.lastIndex) {
-                                    currentStepIdx++
-                                    stepCompleted = false
-                                    feedbackMessage = ""
-                                    isFeedbackPositive = false
+                                if (!finalCongratsShown && rowCompleted) {
+                                    advancePhase()
                                 }
                             },
-                            enabled = stepCompleted,
+                            enabled = rowCompleted && !finalCongratsShown,
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = ButtonYellow,
@@ -651,7 +753,10 @@ private fun DrawScope.drawYpMultiplyRow(
     cellWidth: Float,
     cellHeight: Float,
     canvasSize: Size,
-    markers: Set<Int>,
+    leftMarkers: Set<Int> = emptySet(),
+    rightMarkers: Set<Int> = emptySet(),
+    resultMarkers: Set<Int> = emptySet(),
+    persistentMarkers: Set<Int> = emptySet(),
 ) {
     val cw = canvasSize.width
     val ch = canvasSize.height
@@ -720,30 +825,40 @@ private fun DrawScope.drawYpMultiplyRow(
         val colNum = col + 1
         val dotPositions = dotPositionsByCol[col]
 
-        val hasMarker = colNum in markers
+        val hasLeft = colNum in leftMarkers
+        val hasRight = colNum in rightMarkers
+        val hasResult = colNum in resultMarkers
+        val hasPersistent = colNum in persistentMarkers
 
         val topEdge = cellOriginY + cellHeight * 0.08f
         val bottomEdge = cellOriginY + cellHeight * 0.92f
         val topMarkerY = topEdge + markerGap
+        val bottomMarkerY = bottomEdge - markerGap
 
-        if (hasMarker) {
+        if (hasLeft) {
             val my = topMarkerY - extraPx
-            drawCircle(
-                color = Color(0xFF27AE60),
-                radius = markerRadius,
-                center = Offset(cx, my)
-            )
-            drawCircle(
-                color = Color(0xFFA8E6C1).copy(alpha = 0.4f),
-                radius = markerRadius * 0.7f,
-                center = Offset(cx, my)
-            )
-            drawCircle(
-                color = Color(0xFF000000).copy(alpha = 0.2f),
-                radius = markerRadius,
-                center = Offset(cx, my),
-                style = Stroke(width = 0.8f / 480f * ch)
-            )
+            drawCircle(color = Color(0xFFC0392B), radius = markerRadius, center = Offset(cx, my))
+            drawCircle(color = Color(0xFF000000).copy(alpha = 0.2f), radius = markerRadius, center = Offset(cx, my), style = Stroke(width = 0.8f / 480f * ch))
+        }
+
+        if (hasRight) {
+            val my = bottomMarkerY + extraPx
+            drawCircle(color = Color(0xFF2980B9), radius = markerRadius, center = Offset(cx, my))
+            drawCircle(color = Color(0xFF000000).copy(alpha = 0.2f), radius = markerRadius, center = Offset(cx, my), style = Stroke(width = 0.8f / 480f * ch))
+        }
+
+        if (hasResult) {
+            val my = topMarkerY - extraPx
+            drawCircle(color = Color(0xFF27AE60), radius = markerRadius, center = Offset(cx, my))
+            drawCircle(color = Color(0xFFA8E6C1).copy(alpha = 0.4f), radius = markerRadius * 0.7f, center = Offset(cx, my))
+            drawCircle(color = Color(0xFF000000).copy(alpha = 0.2f), radius = markerRadius, center = Offset(cx, my), style = Stroke(width = 0.8f / 480f * ch))
+        }
+
+        if (hasPersistent && !hasResult && !hasLeft && !hasRight) {
+            val my = topMarkerY - extraPx
+            drawCircle(color = Color(0xFF27AE60), radius = markerRadius * 0.8f, center = Offset(cx, my))
+            drawCircle(color = Color(0xFFA8E6C1).copy(alpha = 0.3f), radius = markerRadius * 0.5f, center = Offset(cx, my))
+            drawCircle(color = Color(0xFF000000).copy(alpha = 0.15f), radius = markerRadius * 0.8f, center = Offset(cx, my), style = Stroke(width = 0.6f / 480f * ch))
         }
 
         val dotColor = when (col) {
@@ -756,17 +871,8 @@ private fun DrawScope.drawYpMultiplyRow(
 
         for (pos in dotPositions) {
             val dotCenter = Offset(cx + pos.x, cy + pos.y)
-            drawCircle(
-                color = dotColor,
-                radius = dotRadius * 0.8f,
-                center = dotCenter
-            )
-            drawCircle(
-                color = Color(0xFF000000).copy(alpha = 0.15f),
-                radius = dotRadius * 0.8f,
-                center = dotCenter,
-                style = Stroke(width = 0.6f / 440f * ch)
-            )
+            drawCircle(color = dotColor, radius = dotRadius * 0.8f, center = dotCenter)
+            drawCircle(color = Color(0xFF000000).copy(alpha = 0.15f), radius = dotRadius * 0.8f, center = dotCenter, style = Stroke(width = 0.6f / 440f * ch))
         }
     }
 }
