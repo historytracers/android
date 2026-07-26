@@ -139,10 +139,10 @@ fun PracticingMultiplicationYupanaScreen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
                 scope.launch { preferences.recordLessonCompletion() }
-                feedbackMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${exercise.a} \u00D7 ${exercise.b} = ${exercise.expected}"
+                feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                 isFeedbackPositive = true
             } else {
-                feedbackMessage = "\u2705 ${s.common.correct}!"
+                feedbackMessage = s.yupana.ypCorrectMessage
                 isFeedbackPositive = true
             }
         }
