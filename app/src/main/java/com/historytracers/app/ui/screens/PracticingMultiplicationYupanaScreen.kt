@@ -59,18 +59,23 @@ private data class MypExercise(val a: Int, val b: Int) {
 
 private val placeLabels = listOf("thousands", "hundreds", "tens", "units")
 
-private fun computeMarkerValue(markersByRow: List<Set<Int>>): Int {
-    var total = 0
-    for (row in markersByRow.indices) {
-        var rowValue = 0
-        for (col in markersByRow[row]) {
-            rowValue += when (col) { 1 -> 5; 2 -> 3; 3 -> 2; 4 -> 1; else -> 0 }
-        }
-        if (rowValue > 9) return -1
-        val place = ROWS - 1 - row
-        total += rowValue * Math.pow(10.0, place.toDouble()).toInt()
-    }
-    return total
+private val ACT_KINKIN_PAIR = "KINKIN_PAIR"
+private val ACT_KINKIN_TRIPLE = "KINKIN_TRIPLE"
+private val ACT_ISKAY = "ISKAY"
+private val ACT_KIMSA = "KIMSA"
+private val ACT_PICHANA_ADD = "PICHANA_ADD"
+private val ACT_PICHANA_COMBINE = "PICHANA_COMBINE"
+private val ACT_PISQA = "PISQA"
+
+private fun movementDesc(name: String): String = when (name) {
+    ACT_KINKIN_PAIR -> "KINKIN (1 + 1 = 2)"
+    ACT_KINKIN_TRIPLE -> "KINKIN (1 + 1 + 1 = 3)"
+    ACT_ISKAY -> "ISKAY (2 + 2 = 1 + 3)"
+    ACT_KIMSA -> "KIMSA (3 + 3 = 1 + 5)"
+    ACT_PICHANA_ADD -> "PICHANA (1 + 2 = 3)"
+    ACT_PICHANA_COMBINE -> "PICHANA (2 + 3 = 5)"
+    ACT_PISQA -> "PISQA (5 + 5 = 10)"
+    else -> name
 }
 
 private fun getMarkersForDigit(digit: Int): Set<Int> {
@@ -82,6 +87,64 @@ private fun getMarkersForDigit(digit: Int): Set<Int> {
         if (col > 0) cols.add(col)
     }
     return cols
+}
+
+private fun writeSumOnYupana(withoutMoves: String, lValue: Int, rBase: Int, carryIn: Int): List<String> {
+    val m = mutableListOf<String>()
+    if (lValue == 0 && rBase == 0 && carryIn == 0) {
+        m.add(withoutMoves)
+        return m.map { movementDesc(it) }
+    }
+    val leftMarkers = getMarkersForDigit(lValue)
+    val rightMarkers = getMarkersForDigit(rBase)
+    val count = intArrayOf(0, 0, 0, 0)
+    for (c in leftMarkers) count[c - 1]++
+    for (c in rightMarkers) count[c - 1]++
+    count[3] += carryIn
+    while (true) {
+        var changed = false
+        while (count[3] >= 3) { count[3] -= 3; count[1]++; m.add(ACT_KINKIN_TRIPLE); changed = true }
+        while (count[2] >= 1 && count[3] >= 1) { count[2]--; count[3]--; count[1]++; m.add(ACT_PICHANA_ADD); changed = true }
+        while (count[3] >= 2) { count[3] -= 2; count[2]++; m.add(ACT_KINKIN_PAIR); changed = true }
+        while (count[2] >= 2) { count[2] -= 2; count[1]++; count[3]++; m.add(ACT_ISKAY); changed = true }
+        while (count[1] >= 2) { count[1] -= 2; count[0]++; count[3]++; m.add(ACT_KIMSA); changed = true }
+        while (count[1] >= 1 && count[2] >= 1) { count[1]--; count[2]--; count[0]++; m.add(ACT_PICHANA_COMBINE); changed = true }
+        while (count[0] >= 2) { count[0] -= 2; m.add(ACT_PISQA); changed = true }
+        if (!changed) break
+    }
+    if (m.isEmpty()) m.add(withoutMoves)
+    return m.map { movementDesc(it) }
+}
+
+private fun computeAddMovements(prevTotal: Int, addValue: Int, withoutMoves: String): List<String> {
+    val allMoves = mutableListOf<String>()
+    var carry = 0
+    for (row in ROWS - 1 downTo 0) {
+        val place = ROWS - 1 - row
+        val divisor = Math.pow(10.0, place.toDouble()).toInt()
+        val prevDigit = (prevTotal / divisor) % 10
+        val addDigit = (addValue / divisor) % 10
+        val rowMoves = writeSumOnYupana(withoutMoves, prevDigit, addDigit, carry)
+        val sum = prevDigit + addDigit + carry
+        carry = sum / 10
+        if (rowMoves.size == 1 && rowMoves[0] == withoutMoves && allMoves.isNotEmpty()) continue
+        allMoves.addAll(rowMoves)
+    }
+    if (allMoves.isEmpty()) allMoves.add(withoutMoves)
+    return allMoves.distinct()
+}
+
+private fun computeMarkerValue(markersByRow: List<Set<Int>>): Int {
+    var total = 0
+    for (row in markersByRow.indices) {
+        var rowValue = 0
+        for (col in markersByRow[row]) {
+            rowValue += when (col) { 1 -> 5; 2 -> 3; 3 -> 2; 4 -> 1; else -> 0 }
+        }
+        val place = ROWS - 1 - row
+        total += rowValue * Math.pow(10.0, place.toDouble()).toInt()
+    }
+    return total
 }
 
 private fun generateMypExercise(multiplier: Int): MypExercise {
@@ -129,6 +192,7 @@ fun PracticingMultiplicationYupanaScreen(
     var showDhavitPremSubmenu by remember { mutableStateOf(false) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     var userMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
+    var currentMovesText by remember { mutableStateOf("") }
 
     fun checkStep(): Boolean {
         val target = steps[currentStepIdx]
@@ -145,6 +209,12 @@ fun PracticingMultiplicationYupanaScreen(
         }
         if (checkStep()) {
             stepCompleted = true
+            val lang = context.resources.configuration.locales[0].toLanguageTag()
+            val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
+            val prevTotal = if (currentStepIdx == 0) 0 else steps[currentStepIdx - 1]
+            val addValue = exercise.a
+            val movements = computeAddMovements(prevTotal, addValue, wm)
+            currentMovesText = movements.joinToString("; ")
             if (currentStepIdx == steps.lastIndex) {
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
@@ -169,6 +239,7 @@ fun PracticingMultiplicationYupanaScreen(
         finalCongratsShown = false
         showLastLevelMessage = false
         userMarkers = List(ROWS) { emptySet() }
+        currentMovesText = ""
     }
 
     fun resetCurrentExercise() {
@@ -180,6 +251,7 @@ fun PracticingMultiplicationYupanaScreen(
         finalCongratsShown = false
         showLastLevelMessage = false
         userMarkers = List(ROWS) { emptySet() }
+        currentMovesText = ""
     }
 
     fun toggleLevel() {
@@ -315,16 +387,26 @@ fun PracticingMultiplicationYupanaScreen(
                         color = Color(0xFF2E241F),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        val stepText = if (currentStepIdx == 0)
-                            s.yupana.ypMultiplyStepPlace.format(currentStepIdx + 1, steps.size, exercise.a)
-                        else
-                            s.yupana.ypMultiplyStepAdd.format(currentStepIdx + 1, steps.size, exercise.a, target)
-                        Text(
-                            text = stepText,
-                            color = Color(0xFFF2ECD8),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(12.dp)
-                        )
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            val stepText = if (currentStepIdx == 0)
+                                s.yupana.ypMultiplyStepPlace.format(currentStepIdx + 1, steps.size, exercise.a)
+                            else
+                                s.yupana.ypMultiplyStepAdd.format(currentStepIdx + 1, steps.size, exercise.a, target)
+                            Text(
+                                text = stepText,
+                                color = Color(0xFFF2ECD8),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            if (currentMovesText.isNotEmpty() && stepCompleted) {
+                                Spacer(Modifier.height(6.dp))
+                                Text(
+                                    text = currentMovesText,
+                                    color = Color(0xFFA8E6C1),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
                     }
                 }
 
