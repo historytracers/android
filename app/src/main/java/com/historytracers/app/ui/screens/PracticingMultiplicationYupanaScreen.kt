@@ -190,10 +190,10 @@ fun PracticingMultiplicationYupanaScreen(
 
     fun startNextIteration() {
         computeRows()
-        completedRedMarkers = List(ROWS) { emptySet() }
+        completedRedMarkers = numberToDigits(runningTotal).map { getMarkersForDigit(it) }
         completedBlueMarkers = List(ROWS) { emptySet() }
         advanceToPhase(0)
-        if (exercise.second >= 2) { rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true }
+        rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true
     }
 
     fun finishIteration() {
