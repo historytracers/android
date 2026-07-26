@@ -50,16 +50,23 @@ fun YupanaScreen(
             completedSections
         )
     }
+    val controller2 = remember {
+        LevelGroupController(
+            listOf("moving_in_yupana", "practicing_addition"),
+            completedSections
+        )
+    }
     LaunchedEffect(completedSections) {
         controller.syncFromPersisted(completedSections)
+        controller2.syncFromPersisted(completedSections)
     }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
-    fun claimLevel() {
-        if ("yupana" in claimedLevels) return
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
         onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed("yupana") }
+        scope.launch { preferences.markLevelClaimed(levelId) }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -192,7 +199,7 @@ fun YupanaScreen(
 
                 FilledIconButton(
                     onClick = {
-                        claimLevel()
+                        claimLevel("yupana")
                         onNavigateToCongratulation()
                     },
                     enabled = controller.allCompleted,
@@ -225,11 +232,14 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { /* TODO */ },
+                    onClick = {
+                        controller2.markCompleted("moving_in_yupana")
+                        scope.launch { preferences.markYupanaSectionCompleted("moving_in_yupana") }
+                    },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("moving_in_yupana")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(
@@ -254,11 +264,15 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { onNavigateToPracticingAdditionYupana() },
+                    onClick = {
+                        controller2.markCompleted("practicing_addition")
+                        scope.launch { preferences.markYupanaSectionCompleted("practicing_addition") }
+                        onNavigateToPracticingAdditionYupana()
+                    },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(
@@ -273,6 +287,40 @@ fun YupanaScreen(
 
                 Text(
                     text = s.pa.practicingAddition,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("yupana_group2")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = controller2.allCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("yupana_group2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
