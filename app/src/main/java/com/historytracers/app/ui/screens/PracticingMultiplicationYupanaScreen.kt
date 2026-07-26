@@ -189,15 +189,14 @@ fun PracticingMultiplicationYupanaScreen(
     }
 
     fun startNextIteration() {
-        computeRows()
-        if (exercise.second >= 2) completedRedMarkers = numberToDigits(runningTotal).map { getMarkersForDigit(it) }
-        advanceToPhase(0)
+        computeRows(); advanceToPhase(0)
         if (exercise.second >= 2) { rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true }
     }
 
     fun finishIteration() {
         runningTotal += exercise.first; iteration++
-        if (iteration >= exercise.second) {
+        val totalIterations = if (exercise.second == 1) 1 else exercise.second - 1
+        if (iteration >= totalIterations) {
             rowCompleted = false; finalCongratsShown = true
             onScoreChanged(currentScore + 2)
             scope.launch { preferences.recordLessonCompletion() }
@@ -269,7 +268,7 @@ fun PracticingMultiplicationYupanaScreen(
         exerciseStarted = false; finalCongratsShown = false; showLastLevelMessage = false
         userRedColumns = emptySet(); userBlueColumns = emptySet(); greenColumns = emptySet()
         completedRedMarkers = List(ROWS) { emptySet() }; completedBlueMarkers = List(ROWS) { emptySet() }
-        if (exercise.second == 1) advanceToPhase(2) else startNextIteration()
+        if (exercise.second == 1) advanceToPhase(2) else advanceToPhase(0)
     }
 
     fun toggleLevel() {
