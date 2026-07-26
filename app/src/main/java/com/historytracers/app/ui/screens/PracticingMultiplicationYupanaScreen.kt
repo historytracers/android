@@ -59,6 +59,20 @@ private data class MypExercise(val a: Int, val b: Int) {
 
 private val placeLabels = listOf("thousands", "hundreds", "tens", "units")
 
+private fun computeMarkerValue(markersByRow: List<Set<Int>>): Int {
+    var total = 0
+    for (row in markersByRow.indices) {
+        var rowValue = 0
+        for (col in markersByRow[row]) {
+            rowValue += when (col) { 1 -> 5; 2 -> 3; 3 -> 2; 4 -> 1; else -> 0 }
+        }
+        if (rowValue > 9) return -1
+        val place = ROWS - 1 - row
+        total += rowValue * Math.pow(10.0, place.toDouble()).toInt()
+    }
+    return total
+}
+
 private fun getMarkersForDigit(digit: Int): Set<Int> {
     val cols = mutableSetOf<Int>()
     for (offset in 0..2) {
@@ -118,12 +132,8 @@ fun PracticingMultiplicationYupanaScreen(
 
     fun checkStep(): Boolean {
         val target = steps[currentStepIdx]
-        val targetDigits = numberToDigits(target)
-        for (row in 0 until ROWS) {
-            val expected = getMarkersForDigit(targetDigits[row])
-            if (userMarkers.getOrElse(row) { emptySet() } != expected) return false
-        }
-        return true
+        val currentValue = computeMarkerValue(userMarkers)
+        return currentValue == target
     }
 
     fun toggleColumn(row: Int, col: Int) {
@@ -369,7 +379,6 @@ fun PracticingMultiplicationYupanaScreen(
                                     stepCompleted = false
                                     feedbackMessage = ""
                                     isFeedbackPositive = false
-                                    userMarkers = List(ROWS) { emptySet() }
                                 }
                             },
                             enabled = stepCompleted,
