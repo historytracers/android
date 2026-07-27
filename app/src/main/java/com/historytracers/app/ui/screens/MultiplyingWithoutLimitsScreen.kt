@@ -90,12 +90,6 @@ private fun buildMwlSingleDigitSteps(
     val strA = a.toString()
     val numPlaces = strA.length
 
-    val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
-    val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
-    )
-
     val contribs = mutableListOf<Triple<Int, Int, Long>>()
     for (i in strA.indices) {
         val d = strA[i].digitToInt()
@@ -116,39 +110,15 @@ private fun buildMwlSingleDigitSteps(
     ))
 
     var currentValue = firstProduct
-    val maxMultPlace = multipliers.size - 1
 
     for (ci in 1 until contribs.size) {
         val (d, place, addValue) = contribs[ci]
         val digitPlaceValue = d * Math.pow(10.0, place.toDouble()).toLong()
-        val prefix = "$digitPlaceValue \u00D7 $digit = $addValue: "
-
-        val highPlace = minOf(place + addValue.toString().length - 1, maxMultPlace)
-        for (p in place..highPlace) {
-            val digitB = (addValue / multipliers[p] % 10).toInt()
-            if (digitB == 0 && p < highPlace) continue
-            if (digitB == 0) break
-
-            val digitA = (currentValue / multipliers[p] % 10).toInt()
-            val totalDigit = digitA + digitB
-
-            if (totalDigit < 10) {
-                currentValue += digitB * multipliers[p]
-                steps.add(MwlStepInfo(
-                    prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
-                    currentValue
-                ))
-            } else {
-                val complement = 10 - digitB
-                val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
-                steps.add(MwlStepInfo(
-                    prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
-                    newValue
-                ))
-                currentValue = newValue
-            }
-        }
+        currentValue += addValue
+        steps.add(MwlStepInfo(
+            "$digitPlaceValue \u00D7 $digit = $addValue. Set the abacus to show $currentValue.",
+            currentValue
+        ))
     }
 
     return Pair(steps, currentValue)
@@ -173,12 +143,6 @@ private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.Ui
         storedValue
     ))
 
-    val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
-    val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
-    )
-
     var currentValue = storedValue
     val strA = a.toString()
     val numPlaces = strA.length
@@ -189,34 +153,11 @@ private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.Ui
         val place = numPlaces - 1 - i
         val digitPlaceValue = d * Math.pow(10.0, place.toDouble()).toLong()
         val addValue = digitPlaceValue * onesDigit
-        val addStr = addValue.toString()
-        val highPlace = addStr.length - 1
-        val prefix = "$digitPlaceValue \u00D7 $onesDigit = $addValue: "
-
-        for (p in 0..highPlace) {
-            val digitB = (addValue / multipliers[p] % 10).toInt()
-            if (digitB == 0) continue
-
-            val digitA = (currentValue / multipliers[p] % 10).toInt()
-            val totalDigit = digitA + digitB
-
-            if (totalDigit < 10) {
-                currentValue += digitB * multipliers[p]
-                steps.add(MwlStepInfo(
-                    prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
-                    currentValue
-                ))
-            } else {
-                val complement = 10 - digitB
-                val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
-                steps.add(MwlStepInfo(
-                    prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
-                    newValue
-                ))
-                currentValue = newValue
-            }
-        }
+        currentValue += addValue
+        steps.add(MwlStepInfo(
+            "$digitPlaceValue \u00D7 $onesDigit = $addValue. Set the abacus to show $currentValue.",
+            currentValue
+        ))
     }
 
     steps.add(MwlStepInfo(
