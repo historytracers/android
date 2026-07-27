@@ -204,7 +204,7 @@ fun PracticingMultiplicationYupanaScreen(
             finalCongratsShown = true
             onScoreChanged(currentScore + 2)
             scope.launch { preferences.recordLessonCompletion() }
-            feedbackMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${exercise.first} \u00D7 ${exercise.second} = $runningTotal\n${s.yupana.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)}"
+            feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)
             isFeedbackPositive = true
         } else { startNextIteration() }
     }
@@ -301,9 +301,6 @@ fun PracticingMultiplicationYupanaScreen(
                 Text(text = s.yupana.ypMultiplyInstruction, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
                 Spacer(Modifier.height(4.dp))
                 Text(text = "${s.common.levelPrefix}$currentMultiplier", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(bottom = 4.dp))
-                Surface(shape = RoundedCornerShape(16.dp), color = Color(0xFF2E241F)) {
-                    Text(text = "${exercise.first} \u00D7 ${exercise.second} = ?", color = Color(0xFFF2ECD8), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
-                }
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp).aspectRatio(860f / 480f).onSizeChanged { canvasSize = Size(it.width.toFloat(), it.height.toFloat()) }.pointerInput(phase, stepRowIdx, rowCompleted) {
                     if (stepRowIdx in 0 until ROWS && !rowCompleted) {
