@@ -116,7 +116,7 @@ private fun buildMwlSingleDigitSteps(
         val digitPlaceValue = d * Math.pow(10.0, place.toDouble()).toLong()
         currentValue += addValue
         steps.add(MwlStepInfo(
-            "$digitPlaceValue \u00D7 $digit = $addValue. Set the abacus to show $currentValue.",
+            s.mw.mwStepAddContribution.format(digitPlaceValue, digit, addValue),
             currentValue
         ))
     }
@@ -155,7 +155,7 @@ private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.Ui
         val addValue = digitPlaceValue * onesDigit
         currentValue += addValue
         steps.add(MwlStepInfo(
-            "$digitPlaceValue \u00D7 $onesDigit = $addValue. Set the abacus to show $currentValue.",
+            s.mw.mwStepAddContribution.format(digitPlaceValue, onesDigit, addValue),
             currentValue
         ))
     }
@@ -269,9 +269,24 @@ fun MultiplyingWithoutLimitsScreen(
             isFeedbackPositive = true
         } else {
             currentStepIdx++
-            stepCompleted = false
-            feedbackMessage = ""
-            isFeedbackPositive = false
+            while (currentStepIdx < steps.size) {
+                if (MwlValue(state.value) != steps[currentStepIdx].targetValue) break
+                currentStepIdx++
+            }
+            if (currentStepIdx >= steps.size) {
+                currentStepIdx = steps.size - 1
+                if (!finalCongratsShown) {
+                    finalCongratsShown = true
+                    onScoreChanged(currentScore + 2)
+                }
+                feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.fullB, exercise.expected)
+                isFeedbackPositive = true
+                stepCompleted = true
+            } else {
+                stepCompleted = false
+                feedbackMessage = ""
+                isFeedbackPositive = false
+            }
         }
     }
 
