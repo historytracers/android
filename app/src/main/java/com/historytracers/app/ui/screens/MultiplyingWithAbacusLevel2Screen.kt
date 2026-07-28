@@ -257,9 +257,11 @@ fun MultiplyingWithAbacusLevel2Screen(
     }
 
     fun advanceStep() {
-        val currentVal = currentMw2Value()
-        val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
-        if (currentVal != currentStepTarget) return
+        if (!stepCompleted && currentStepIdx < steps.size) {
+            val currentVal = currentMw2Value()
+            val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
+            if (currentVal != currentStepTarget) return
+        }
         val isLastStep = currentStepIdx == steps.size - 1
 
         if (isLastStep) {
@@ -321,22 +323,14 @@ fun MultiplyingWithAbacusLevel2Screen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(2.dp))
 
                 Text(
                     text = s.mw.mw2Instruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
-
-                Text(
-                    text = "${s.common.levelPrefix}$currentDigitLevel",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                 )
 
                 Text(
@@ -580,20 +574,40 @@ fun MultiplyingWithAbacusLevel2Screen(
 
                 Spacer(Modifier.height(8.dp))
 
-                Surface(
-                    shape = RoundedCornerShape(40.dp),
-                    color = Color(0xFF2E241F),
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "${s.common.valuePrefix}${currentMw2Value()}",
-                        color = Color(0xFFF2ECD8),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(40.dp),
+                        color = Color(0xFF2E241F),
+                    ) {
+                        Text(
+                            text = "${s.common.valuePrefix}${currentMw2Value()}",
+                            color = Color(0xFFF2ECD8),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        )
+                    }
+
+                    if (steps.isNotEmpty()) {
+                        Surface(
+                            shape = RoundedCornerShape(40.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        ) {
+                            Text(
+                                text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(4.dp))
 
                 if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
                     Surface(
@@ -607,17 +621,6 @@ fun MultiplyingWithAbacusLevel2Screen(
                             modifier = Modifier.padding(12.dp)
                         )
                     }
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                if (steps.isNotEmpty()) {
-                    Text(
-                        text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
                 }
 
                 Spacer(Modifier.height(4.dp))
@@ -693,11 +696,11 @@ fun MultiplyingWithAbacusLevel2Screen(
                         fontWeight = FontWeight.Bold,
                         color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                     )
                 }
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(8.dp))
             }
         }
 
