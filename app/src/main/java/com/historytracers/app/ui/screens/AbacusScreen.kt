@@ -212,22 +212,22 @@ fun AbacusScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            FilledIconButton(
-                onClick = onNavigateToSchyotyWriting,
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow,
-                    contentColor = OnButtonYellow
-                )
-            ) {
-                Text(
-                    text = s.abacusWrite.schyoty,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
-            }
+                FilledIconButton(
+                    onClick = onNavigateToSchyotyWriting,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("schyoty_writing")) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = s.abacusWrite.schyoty,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
 
             Spacer(Modifier.height(12.dp))
 

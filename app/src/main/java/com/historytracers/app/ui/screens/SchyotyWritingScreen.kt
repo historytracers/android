@@ -437,11 +437,17 @@ if (totalValue() == targetValue.value.toLong() && !showCongrats.value && !showAl
     if (targetLevel.value == ROWS - 1) {
         showAllLevels.value = true
         onScoreChanged(currentScore + 5)
-        scope.launch { preferences.recordLessonCompletion() }
+        scope.launch {
+            preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("schyoty_writing")
+        }
     } else {
         showCongrats.value = true
         onScoreChanged(currentScore + 2)
-        scope.launch { preferences.recordLessonCompletion() }
+        scope.launch {
+            preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("schyoty_writing")
+        }
     }
 }
 }
