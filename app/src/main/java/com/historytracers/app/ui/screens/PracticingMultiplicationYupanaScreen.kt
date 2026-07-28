@@ -155,6 +155,7 @@ fun PracticingMultiplicationYupanaScreen(
     var completedRedMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
     var completedBlueMarkers by remember { mutableStateOf(List(ROWS) { emptySet<Int>() }) }
     var currentMovesText by remember { mutableStateOf("") }
+    var iterationComplete by remember { mutableStateOf(false) }
 
     val lastMeaningfulStepRowIdx = remember(rows) {
         val idx = (0 until ROWS).firstOrNull { rows[it].resultDigit != 0 } ?: ROWS
@@ -193,7 +194,7 @@ fun PracticingMultiplicationYupanaScreen(
         computeRows()
         completedRedMarkers = numberToDigits(runningTotal).map { getMarkersForDigit(it) }
         completedBlueMarkers = List(ROWS) { emptySet() }
-        advanceToPhase(0)
+        advanceToPhase(1)
     }
 
     fun finishIteration() {
@@ -205,7 +206,7 @@ fun PracticingMultiplicationYupanaScreen(
             scope.launch { preferences.recordLessonCompletion() }
             feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)
             isFeedbackPositive = true
-        } else { startNextIteration() }
+        } else { iterationComplete = true }
     }
 
     fun advanceToNextRow() {
@@ -270,7 +271,7 @@ fun PracticingMultiplicationYupanaScreen(
         exercise = generateExercise(currentMultiplier)
         runningTotal = if (exercise.second >= 2) exercise.first else 0; iteration = 0; computeRows()
         rowCompleted = false; feedbackMessage = ""; isFeedbackPositive = false; isNeutralFeedback = false
-        exerciseStarted = false; finalCongratsShown = false; showLastLevelMessage = false
+        exerciseStarted = false; finalCongratsShown = false; showLastLevelMessage = false; iterationComplete = false
         userRedColumns = emptySet(); userBlueColumns = emptySet(); greenColumns = emptySet(); currentMovesText = ""
         completedRedMarkers = List(ROWS) { emptySet() }; completedBlueMarkers = List(ROWS) { emptySet() }
         if (exercise.second == 1) advanceToPhase(2) else advanceToPhase(0)
@@ -371,7 +372,7 @@ fun PracticingMultiplicationYupanaScreen(
                         FilledTonalButton(onClick = { setupExercise() }, enabled = !exerciseStarted || finalCongratsShown, shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.filledTonalButtonColors(containerColor = ButtonYellow, contentColor = OnButtonYellow)) {
                             Text(text = s.common.newExercise, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
                         }
-                        FilledTonalButton(onClick = { if (!finalCongratsShown) { when (phase) { 0 -> if (stepRowIdx == -1) advanceToPhase(0) else advanceToNextRow(); 1 -> if (stepRowIdx == -1) advanceToPhase(1) else advanceToNextRow(); else -> advanceToNextRow() } } }, enabled = rowCompleted && !finalCongratsShown, shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.filledTonalButtonColors(containerColor = ButtonYellow, contentColor = OnButtonYellow)) {
+                        FilledTonalButton(onClick = { if (!finalCongratsShown) { if (iterationComplete) { iterationComplete = false; startNextIteration() } else { when (phase) { 0 -> if (stepRowIdx == -1) advanceToPhase(0) else advanceToNextRow(); 1 -> if (stepRowIdx == -1) advanceToPhase(1) else advanceToNextRow(); else -> advanceToNextRow() } } } }, enabled = rowCompleted && !finalCongratsShown, shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.filledTonalButtonColors(containerColor = ButtonYellow, contentColor = OnButtonYellow)) {
                             Text(text = s.common.nextStep, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
                         }
                     }
