@@ -87,6 +87,7 @@ data class AbacusWriteStrings(
     val largeNumbersWritingInstruction: String,
     val sorobanAbbr: String, val suanpanAbbr: String,
     val sorobanMode: String, val suanpanMode: String,
+    val schyoty: String, val writingToSchyoty: String,
 )
 
 data class PracticingAdditionStrings(

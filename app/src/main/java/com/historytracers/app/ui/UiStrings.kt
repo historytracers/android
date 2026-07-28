@@ -201,6 +201,8 @@ val EnStrings = UiStrings(
         suanpanAbbr = "S",
         sorobanMode = "Soroban (1\u00D74)",
         suanpanMode = "Suanpan (2\u00D75)",
+        schyoty = "\u0441\u0447\u0451\u0442\u044B",
+        writingToSchyoty = "Writing to \"schyoty\"",
     ),
     pa = PracticingAdditionStrings(
         practicingAddition = "Practicing Addition",
@@ -491,6 +493,8 @@ val PtStrings = UiStrings(
         suanpanAbbr = "S",
         sorobanMode = "Soroban (1\u00D74)",
         suanpanMode = "Suanpan (2\u00D75)",
+        schyoty = "\u0441\u0447\u0451\u0442\u044B",
+        writingToSchyoty = "Writing to \"schyoty\"",
     ),
     pa = PracticingAdditionStrings(
         practicingAddition = "Praticando Adi\u00e7\u00e3o",
@@ -781,6 +785,8 @@ val EsStrings = UiStrings(
         suanpanAbbr = "S",
         sorobanMode = "Soroban (1\u00D74)",
         suanpanMode = "Suanpan (2\u00D75)",
+        schyoty = "\u0441\u0447\u0451\u0442\u044B",
+        writingToSchyoty = "Writing to \"schyoty\"",
     ),
     pa = PracticingAdditionStrings(
         practicingAddition = "Practicando Suma",

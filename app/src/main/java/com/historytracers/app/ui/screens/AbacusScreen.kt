@@ -209,7 +209,37 @@ fun AbacusScreen(
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(16.dp))
+
+            FilledIconButton(
+                onClick = { },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Text(
+                    text = s.abacusWrite.schyoty,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = s.abacusWrite.writingToSchyoty,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(24.dp))
 
             FilledIconButton(
                 onClick = onNavigateToLargeNumbersWriting,
