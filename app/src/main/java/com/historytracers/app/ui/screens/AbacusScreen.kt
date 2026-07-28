@@ -39,6 +39,7 @@ fun AbacusScreen(
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
     onNavigateToSuanpanWriting: () -> Unit = {},
+    onNavigateToSchyotyWriting: () -> Unit = {},
     onNavigateToLargeNumbersWriting: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToMultiplicationTable: () -> Unit = {},
@@ -212,7 +213,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToSchyotyWriting,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

@@ -88,6 +88,8 @@ data class AbacusWriteStrings(
     val sorobanAbbr: String, val suanpanAbbr: String,
     val sorobanMode: String, val suanpanMode: String,
     val schyoty: String, val writingToSchyoty: String,
+    val schyotyWritingInstruction: String,
+    val schyotyAllLevelsComplete: String,
 )
 
 data class PracticingAdditionStrings(
