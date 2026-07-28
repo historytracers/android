@@ -67,7 +67,7 @@ private data class MwlExercise(val a: Int, val tensDigit: Int, val onesDigit: In
     val expected: Long get() = (a * fullB).toLong()
 }
 
-private data class MwlStepInfo(val instruction: String, val targetValue: Long, val isStoreStep: Boolean = false)
+private data class MwlStepInfo(val instruction: String, val targetValue: Long)
 
 private fun getLevelRange(level: Int): Pair<Int, Int> {
     if (level == 1) return Pair(1, 9)
@@ -90,12 +90,6 @@ private fun buildMwlSingleDigitSteps(
     val strA = a.toString()
     val numPlaces = strA.length
 
-    val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
-    val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
-    )
-
     val contribs = mutableListOf<Triple<Int, Int, Long>>()
     for (i in strA.indices) {
         val d = strA[i].digitToInt()
@@ -116,85 +110,18 @@ private fun buildMwlSingleDigitSteps(
     ))
 
     var currentValue = firstProduct
-    val maxMultPlace = multipliers.size - 1
 
     for (ci in 1 until contribs.size) {
         val (d, place, addValue) = contribs[ci]
         val digitPlaceValue = d * Math.pow(10.0, place.toDouble()).toLong()
-        val prefix = "$digitPlaceValue \u00D7 $digit = $addValue: "
-
-        val highPlace = minOf(place + addValue.toString().length - 1, maxMultPlace)
-        for (p in place..highPlace) {
-            val digitB = (addValue / multipliers[p] % 10).toInt()
-            if (digitB == 0 && p < highPlace) continue
-            if (digitB == 0) break
-
-            val digitA = (currentValue / multipliers[p] % 10).toInt()
-            val totalDigit = digitA + digitB
-
-            if (totalDigit < 10) {
-                currentValue += digitB * multipliers[p]
-                steps.add(MwlStepInfo(
-                    prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
-                    currentValue
-                ))
-            } else {
-                val complement = 10 - digitB
-                val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
-                steps.add(MwlStepInfo(
-                    prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
-                    newValue
-                ))
-                currentValue = newValue
-            }
-        }
+        currentValue += addValue
+        steps.add(MwlStepInfo(
+            s.mw.mwStepAddContribution.format(digitPlaceValue, digit, addValue),
+            currentValue
+        ))
     }
 
     return Pair(steps, currentValue)
-}
-
-private fun buildMwlAddSteps(
-    addValue: Long, startValue: Long, s: com.historytracers.app.ui.UiStrings, prefix: String
-): List<MwlStepInfo> {
-    val steps = mutableListOf<MwlStepInfo>()
-    var currentValue = startValue
-
-    val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
-    val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
-    )
-
-    val addStr = addValue.toString()
-    val highPlace = addStr.length - 1
-
-    for (p in 0..highPlace) {
-        val digitB = (addValue / multipliers[p] % 10).toInt()
-        if (digitB == 0) continue
-
-        val digitA = (currentValue / multipliers[p] % 10).toInt()
-        val totalDigit = digitA + digitB
-
-        if (totalDigit < 10) {
-            currentValue += digitB * multipliers[p]
-            steps.add(MwlStepInfo(
-                prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
-                currentValue
-            ))
-        } else {
-            val complement = 10 - digitB
-            val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
-            steps.add(MwlStepInfo(
-                prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
-                newValue
-            ))
-            currentValue = newValue
-        }
-    }
-
-    return steps
 }
 
 private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.UiStrings): List<MwlStepInfo> {
@@ -216,22 +143,22 @@ private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.Ui
         storedValue
     ))
 
-    steps.add(MwlStepInfo(
-        s.mw.mwlStoreInstruction.format(storedValue),
-        storedValue,
-        isStoreStep = true
-    ))
+    var currentValue = storedValue
+    val strA = a.toString()
+    val numPlaces = strA.length
 
-    steps.add(MwlStepInfo(
-        s.mw.mwlResetInstruction,
-        0L
-    ))
-
-    val (onesSteps, onesResult) = buildMwlSingleDigitSteps(a, onesDigit, s)
-    for (step in onesSteps) steps.add(step)
-
-    val addSteps = buildMwlAddSteps(storedValue, onesResult, s, s.mw.mwlAddStoredPrefix.format(storedValue))
-    for (step in addSteps) steps.add(step)
+    for (i in strA.indices) {
+        val d = strA[i].digitToInt()
+        if (d == 0) continue
+        val place = numPlaces - 1 - i
+        val digitPlaceValue = d * Math.pow(10.0, place.toDouble()).toLong()
+        val addValue = digitPlaceValue * onesDigit
+        currentValue += addValue
+        steps.add(MwlStepInfo(
+            s.mw.mwStepAddContribution.format(digitPlaceValue, onesDigit, addValue),
+            currentValue
+        ))
+    }
 
     steps.add(MwlStepInfo(
         s.mw.mwStepFinal.format(a, fullB, total),
@@ -264,8 +191,6 @@ fun MultiplyingWithoutLimitsScreen(
     var exerciseStarted by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
     var showLastLevelMessage by remember { mutableStateOf(false) }
-    var storedDisplay by remember { mutableStateOf("") }
-    var showResetButton by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     var showSourcesMenu by remember { mutableStateOf(false) }
@@ -283,8 +208,6 @@ fun MultiplyingWithoutLimitsScreen(
         exerciseStarted = false
         finalCongratsShown = false
         showLastLevelMessage = false
-        storedDisplay = ""
-        showResetButton = false
     }
 
     LaunchedEffect(finalCongratsShown) {
@@ -305,18 +228,12 @@ fun MultiplyingWithoutLimitsScreen(
         exerciseStarted = false
         finalCongratsShown = false
         showLastLevelMessage = false
-        storedDisplay = ""
-        showResetButton = steps.getOrNull(0)?.instruction == s.mw.mwlResetInstruction
     }
 
     fun checkStep() {
         if (currentStepIdx >= steps.size) return
         val currentVal = MwlValue(state.value)
         val step = steps[currentStepIdx]
-
-        if (step.isStoreStep) {
-            storedDisplay = s.mw.mwlStoreInstruction.format(steps[currentStepIdx - 1]?.targetValue ?: 0L)
-        }
 
         if (currentVal == step.targetValue) {
             if (!stepCompleted) {
@@ -337,12 +254,6 @@ fun MultiplyingWithoutLimitsScreen(
         }
     }
 
-    fun resetAbacus() {
-        state.value = List(COLUMNS) { MwlColumnState() }
-        showResetButton = false
-        checkStep()
-    }
-
     fun advanceStep() {
         val currentVal = MwlValue(state.value)
         val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
@@ -358,15 +269,23 @@ fun MultiplyingWithoutLimitsScreen(
             isFeedbackPositive = true
         } else {
             currentStepIdx++
-            stepCompleted = false
-            feedbackMessage = ""
-            isFeedbackPositive = false
-            val step = steps[currentStepIdx]
-            showResetButton = step.instruction == s.mw.mwlResetInstruction
-            if (step.isStoreStep) {
-                storedDisplay = s.mw.mwlStoreInstruction.format(
-                    steps.getOrNull(currentStepIdx - 1)?.targetValue ?: 0L
-                )
+            while (currentStepIdx < steps.size) {
+                if (MwlValue(state.value) != steps[currentStepIdx].targetValue) break
+                currentStepIdx++
+            }
+            if (currentStepIdx >= steps.size) {
+                currentStepIdx = steps.size - 1
+                if (!finalCongratsShown) {
+                    finalCongratsShown = true
+                    onScoreChanged(currentScore + 2)
+                }
+                feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.fullB, exercise.expected)
+                isFeedbackPositive = true
+                stepCompleted = true
+            } else {
+                stepCompleted = false
+                feedbackMessage = ""
+                isFeedbackPositive = false
             }
         }
     }
@@ -556,22 +475,6 @@ fun MultiplyingWithoutLimitsScreen(
                 )
             }
 
-            if (storedDisplay.isNotEmpty()) {
-                Spacer(Modifier.height(4.dp))
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color(0xFF3A6068),
-                ) {
-                    Text(
-                        text = storedDisplay,
-                        color = Color(0xFFFFECB3),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                    )
-                }
-            }
-
             Spacer(Modifier.height(12.dp))
 
             if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
@@ -584,25 +487,6 @@ fun MultiplyingWithoutLimitsScreen(
                         text = "${s.mw.mwStepPrefix}${steps[currentStepIdx].instruction}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(12.dp)
-                    )
-                }
-            }
-
-            if (showResetButton) {
-                Spacer(Modifier.height(8.dp))
-                FilledTonalButton(
-                    onClick = { resetAbacus() },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
-                ) {
-                    Text(
-                        text = s.common.resetToZero,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
             }
