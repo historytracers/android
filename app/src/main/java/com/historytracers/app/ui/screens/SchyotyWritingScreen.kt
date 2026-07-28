@@ -216,7 +216,7 @@ fun SchyotyWritingScreen(
                     }
                 }
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(28.dp))
 
                 Row(
                     modifier = Modifier.offset(y = (-120).dp),
