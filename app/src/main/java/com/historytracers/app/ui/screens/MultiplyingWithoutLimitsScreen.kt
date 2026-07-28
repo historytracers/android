@@ -334,29 +334,21 @@ fun MultiplyingWithoutLimitsScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(2.dp))
 
             Text(
                 text = s.mw.mwlInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-            )
-
-            Text(
-                text = "${s.common.levelPrefix}$currentDigitLevel",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
             )
 
             Text(
                 text = "${exercise.a} \u00D7 ${exercise.fullB} = ?",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 4.dp)
             )
 
             Row(
@@ -460,22 +452,42 @@ fun MultiplyingWithoutLimitsScreen(
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
 
-            Surface(
-                shape = RoundedCornerShape(40.dp),
-                color = Color(0xFF2E241F),
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "${s.common.valuePrefix}${MwlValue(state.value)}",
-                    color = Color(0xFFF2ECD8),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                )
+                Surface(
+                    shape = RoundedCornerShape(40.dp),
+                    color = Color(0xFF2E241F),
+                ) {
+                    Text(
+                        text = "${s.common.valuePrefix}${MwlValue(state.value)}",
+                        color = Color(0xFFF2ECD8),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    )
+                }
+
+                if (steps.isNotEmpty()) {
+                    Surface(
+                        shape = RoundedCornerShape(40.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                    ) {
+                        Text(
+                            text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                        )
+                    }
+                }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(4.dp))
 
             if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
                 Surface(
@@ -492,17 +504,6 @@ fun MultiplyingWithoutLimitsScreen(
             }
 
             Spacer(Modifier.height(4.dp))
-
-            if (steps.isNotEmpty()) {
-                Text(
-                    text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -575,11 +576,11 @@ fun MultiplyingWithoutLimitsScreen(
                     fontWeight = FontWeight.Bold,
                     color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                 )
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(8.dp))
         }
         }
 
@@ -587,7 +588,7 @@ fun MultiplyingWithoutLimitsScreen(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = 8.dp, start = 8.dp)
+                    .padding(bottom = 4.dp, start = 4.dp)
             ) {
                 val uriHandler = LocalUriHandler.current
 
