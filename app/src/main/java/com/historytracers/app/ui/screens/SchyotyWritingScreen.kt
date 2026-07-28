@@ -112,7 +112,7 @@ fun SchyotyWritingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 80.dp),
+                    .padding(top = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -129,6 +129,7 @@ fun SchyotyWritingScreen(
                         .padding(horizontal = 8.dp)
                         .weight(1f)
                         .aspectRatio(480f / 360f)
+                        .offset(y = (-60).dp)
                         .pointerInput(Unit) {
                             detectTapGestures { offset ->
                                 val cw = size.width.toFloat()
@@ -218,9 +219,9 @@ fun SchyotyWritingScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Row(
+                    modifier = Modifier.offset(y = (-120).dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Surface(
                         shape = RoundedCornerShape(40.dp),
@@ -252,6 +253,7 @@ fun SchyotyWritingScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Row(
+                    modifier = Modifier.offset(y = (-120).dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
