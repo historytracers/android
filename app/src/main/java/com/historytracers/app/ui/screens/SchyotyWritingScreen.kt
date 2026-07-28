@@ -87,263 +87,256 @@ fun SchyotyWritingScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                    }
+                    Text(
+                        text = s.abacusWrite.writingToSchyoty,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
-                Text(
-                    text = s.abacusWrite.writingToSchyoty,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
             }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(top = 100.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Spacer(Modifier.height(12.dp))
-
-            Text(
-                text = s.abacusWrite.schyotyWritingInstruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
-            )
-
-            Spacer(Modifier.height(12.dp))
 
             Column(
-                modifier = Modifier.offset(y = (-60).dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Canvas(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .aspectRatio(480f / 600f)
-                    .offset(y = (-20).dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures { offset ->
-                            val cw = size.width.toFloat()
-                            val ch = size.height.toFloat()
-                            val M = 14f
-                            val wireL = M / 480f * cw
-                            val wireR = (cw - M / 480f * cw)
-                            val areaH = ch - 2f * M / 480f * cw
-                            val rowSp = areaH / (ROWS + 1)
-                            val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 15f / 480f * cw)
-                            val beadStep = beadR * 2f + beadR * 0.3f
-                            val activeX0 = wireL + beadR
-                            val inactiveX0 = wireR - beadR
+                    .fillMaxSize()
+                    .padding(top = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Text(
+                    text = s.abacusWrite.schyotyWritingInstruction,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                )
 
-                            for (r in 0 until ROWS) {
-                                val y = M / 480f * cw + rowSp * (ROWS - r)
-                                if (abs(offset.y - y) > beadR + 10f / 480f * cw) continue
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                        .weight(1f)
+                        .aspectRatio(480f / 360f)
+                        .pointerInput(Unit) {
+                            detectTapGestures { offset ->
+                                val cw = size.width.toFloat()
+                                val ch = size.height.toFloat()
+                                val M = 14f
+                                val wireL = M / 480f * cw
+                                val wireR = (cw - M / 480f * cw)
+                                val areaH = ch - 2f * M / 480f * cw
+                                val rowSp = areaH / (ROWS + 1)
+                                val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 15f / 480f * cw)
+                                val beadStep = beadR * 2f + beadR * 0.3f
+                                val activeX0 = wireL + beadR
+                                val inactiveX0 = wireR - beadR
 
-                                val cnt = beads.value[r]
+                                for (r in 0 until ROWS) {
+                                    val y = M / 480f * cw + rowSp * (ROWS - r)
+                                    if (abs(offset.y - y) > beadR + 10f / 480f * cw) continue
 
-                                for (p in 0 until cnt) {
-                                    val x = activeX0 + p * beadStep
-                                    if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
-                                        beads.value = beads.value.toMutableList().also { it[r] = p }
-                                        return@detectTapGestures
+                                    val cnt = beads.value[r]
+
+                                    for (p in 0 until cnt) {
+                                        val x = activeX0 + p * beadStep
+                                        if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
+                                            beads.value = beads.value.toMutableList().also { it[r] = p }
+                                            return@detectTapGestures
+                                        }
                                     }
-                                }
 
-                                for (p in 0 until BEADS_PER_ROW - cnt) {
-                                    val x = inactiveX0 - p * beadStep
-                                    if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
-                                        beads.value = beads.value.toMutableList().also { it[r] = BEADS_PER_ROW - p }
-                                        return@detectTapGestures
+                                    for (p in 0 until BEADS_PER_ROW - cnt) {
+                                        val x = inactiveX0 - p * beadStep
+                                        if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
+                                            beads.value = beads.value.toMutableList().also { it[r] = BEADS_PER_ROW - p }
+                                            return@detectTapGestures
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-            ) {
-                val cw = size.width
-                val ch = size.height
-                val M = 14f / 480f * cw
-                val wireL = M
-                val wireR = cw - M
-                val areaH = ch - 2f * M
-                val rowSp = areaH / (ROWS + 1)
-                val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 15f / 480f * cw)
-                val beadGap = beadR * 0.3f
-                val beadStep = beadR * 2f + beadGap
-                val activeX0 = wireL + beadR
-                val inactiveX0 = wireR - beadR
-
-                drawRect(color = Color(0xFFFEF5E0), size = size)
-
-                drawRect(
-                    color = Color(0xFFB48B5A),
-                    topLeft = Offset(2f, 2f),
-                    size = androidx.compose.ui.geometry.Size(cw - 4f, ch - 4f),
-                    style = Stroke(width = 2f)
-                )
-                drawRect(
-                    color = Color(0xFFF9EEC7),
-                    topLeft = Offset(5f, 5f),
-                    size = androidx.compose.ui.geometry.Size(cw - 10f, ch - 10f),
-                    style = Stroke(width = 1.5f)
-                )
-
-                for (r in 0 until ROWS) {
-                    val y = M + rowSp * (ROWS - r)
-                    drawLine(color = Color(0xFFB08054), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 2f)
-                    drawLine(color = Color(0xFFE9C48B), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 1f)
-
-                    val cnt = beads.value[r]
-
-                    for (p in 0 until cnt) {
-                        val x = activeX0 + p * beadStep
-                        drawSchyotyBead(x, y, beadR, active = true, idx = p)
-                    }
-
-                    for (p in 0 until BEADS_PER_ROW - cnt) {
-                        val x = inactiveX0 - p * beadStep
-                        drawSchyotyBead(x, y, beadR, active = false, idx = 9 - p)
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(40.dp),
-                    color = Color(0xFF2E241F),
                 ) {
-                    Text(
-                        text = "${s.common.value}: ${totalValue()}",
-                        color = Color(0xFFF2ECD8),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    val cw = size.width
+                    val ch = size.height
+                    val M = 14f / 480f * cw
+                    val wireL = M
+                    val wireR = cw - M
+                    val areaH = ch - 2f * M
+                    val rowSp = areaH / (ROWS + 1)
+                    val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 15f / 480f * cw)
+                    val beadGap = beadR * 0.3f
+                    val beadStep = beadR * 2f + beadGap
+                    val activeX0 = wireL + beadR
+                    val inactiveX0 = wireR - beadR
+
+                    drawRect(color = Color(0xFFFEF5E0), size = size)
+
+                    drawRect(
+                        color = Color(0xFFB48B5A),
+                        topLeft = Offset(2f, 2f),
+                        size = androidx.compose.ui.geometry.Size(cw - 4f, ch - 4f),
+                        style = Stroke(width = 2f)
                     )
+                    drawRect(
+                        color = Color(0xFFF9EEC7),
+                        topLeft = Offset(5f, 5f),
+                        size = androidx.compose.ui.geometry.Size(cw - 10f, ch - 10f),
+                        style = Stroke(width = 1.5f)
+                    )
+
+                    for (r in 0 until ROWS) {
+                        val y = M + rowSp * (ROWS - r)
+                        drawLine(color = Color(0xFFB08054), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 2f)
+                        drawLine(color = Color(0xFFE9C48B), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 1f)
+
+                        val cnt = beads.value[r]
+
+                        for (p in 0 until cnt) {
+                            val x = activeX0 + p * beadStep
+                            drawSchyotyBead(x, y, beadR, active = true, idx = p)
+                        }
+
+                        for (p in 0 until BEADS_PER_ROW - cnt) {
+                            val x = inactiveX0 - p * beadStep
+                            drawSchyotyBead(x, y, beadR, active = false, idx = 9 - p)
+                        }
+                    }
                 }
 
-                Surface(
-                    shape = RoundedCornerShape(40.dp),
-                    color = Color(0xFFFFF9E6),
+                Spacer(Modifier.height(8.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    Text(
-                        text = "${s.common.write}: ${targetValue.value}",
+                    Surface(
+                        shape = RoundedCornerShape(40.dp),
                         color = Color(0xFF2E241F),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                    )
+                    ) {
+                        Text(
+                            text = "${s.common.value}: ${totalValue()}",
+                            color = Color(0xFFF2ECD8),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                        )
+                    }
+
+                    Surface(
+                        shape = RoundedCornerShape(40.dp),
+                        color = Color(0xFFFFF9E6),
+                    ) {
+                        Text(
+                            text = "${s.common.write}: ${targetValue.value}",
+                            color = Color(0xFF2E241F),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                        )
+                    }
                 }
+
+                Spacer(Modifier.height(8.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilledTonalButton(
+                        onClick = { newExercise() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.common.newExercise,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick = { nextLevel() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.common.nextLevel,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
             }
+        }
 
-            Spacer(Modifier.height(24.dp))
-
-            FilledTonalButton(
-                onClick = { newExercise() },
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
-                    contentColor = OnButtonYellow
-                )
+        if (showAllLevels.value) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = s.common.newExercise,
+                    text = s.abacusWrite.schyotyAllLevelsComplete,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 4.dp)
+                    color = Color(0xFF2E7D32),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
             }
-
-            Spacer(Modifier.height(12.dp))
-
-            FilledTonalButton(
-                onClick = { nextLevel() },
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
-                    contentColor = OnButtonYellow
-                )
+        } else if (showCongrats.value) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = s.common.nextLevel,
+                    text = "\u2705 ${s.common.correct}!",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 4.dp)
+                    color = Color(0xFF2E7D32),
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = s.common.resetHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF2E7D32),
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
             }
-
-            Spacer(Modifier.height(24.dp))
-            }
         }
-    }
 
-    if (showAllLevels.value) {
-        Column(
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 80.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
         ) {
-            Text(
-                text = s.abacusWrite.schyotyAllLevelsComplete,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF2E7D32),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-        }
-    } else if (showCongrats.value) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 80.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "\u2705 ${s.common.correct}!",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF2E7D32),
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = s.common.resetHint,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF2E7D32),
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .align(Alignment.BottomStart)
-            .padding(bottom = 8.dp, start = 8.dp)
-    ) {
         val uriHandler = LocalUriHandler.current
         val ctx = LocalContext.current
 
