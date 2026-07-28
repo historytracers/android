@@ -403,60 +403,64 @@ fun LargeNumbersWritingScreen(
                     }
                 }
 
-                Spacer(Modifier.height(16.dp))
+                val isSchyoty = abacusMode == "schyoty"
+
+                Spacer(Modifier.height(if (isSchyoty) 8.dp else 16.dp))
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(if (isSchyoty) 8.dp else 16.dp),
                     verticalAlignment = Alignment.Top,
-                    modifier = Modifier.padding(horizontal = 24.dp)
+                    modifier = Modifier.padding(horizontal = if (isSchyoty) 16.dp else 24.dp)
                 ) {
                     Surface(
-                        shape = RoundedCornerShape(40.dp),
+                        shape = RoundedCornerShape(if (isSchyoty) 24.dp else 40.dp),
                         color = Color(0xFF2E241F),
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = s.common.value,
                                 color = Color(0xFFF2ECD8),
-                                style = MaterialTheme.typography.titleSmall,
-                                modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 8.dp)
+                                style = if (isSchyoty) MaterialTheme.typography.labelSmall else MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.padding(start = if (isSchyoty) 12.dp else 24.dp, end = if (isSchyoty) 12.dp else 24.dp, top = if (isSchyoty) 4.dp else 8.dp)
                             )
                             Text(
                                 text = "$currentValue",
                                 color = Color(0xFFF2ECD8),
-                                style = MaterialTheme.typography.headlineSmall,
+                                style = if (isSchyoty) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 8.dp)
+                                modifier = Modifier.padding(start = if (isSchyoty) 12.dp else 24.dp, end = if (isSchyoty) 12.dp else 24.dp, bottom = if (isSchyoty) 4.dp else 8.dp)
                             )
                         }
                     }
 
                     Surface(
-                        shape = RoundedCornerShape(40.dp),
+                        shape = RoundedCornerShape(if (isSchyoty) 24.dp else 40.dp),
                         color = Color(0xFFFFF9E6),
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = s.common.write,
                                 color = Color(0xFF2E241F),
-                                style = MaterialTheme.typography.titleSmall,
-                                modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 8.dp)
+                                style = if (isSchyoty) MaterialTheme.typography.labelSmall else MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.padding(start = if (isSchyoty) 12.dp else 24.dp, end = if (isSchyoty) 12.dp else 24.dp, top = if (isSchyoty) 4.dp else 8.dp)
                             )
                             Text(
                                 text = "${targetValue.value}",
                                 color = Color(0xFF2E241F),
-                                style = MaterialTheme.typography.headlineSmall,
+                                style = if (isSchyoty) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 8.dp)
+                                modifier = Modifier.padding(start = if (isSchyoty) 12.dp else 24.dp, end = if (isSchyoty) 12.dp else 24.dp, bottom = if (isSchyoty) 4.dp else 8.dp)
                             )
                         }
                     }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(if (isSchyoty) 6.dp else 12.dp))
+                val btnTextStyle = if (isSchyoty) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium
+                val btnPadding = if (isSchyoty) Modifier.padding(horizontal = 2.dp) else Modifier.padding(horizontal = 4.dp)
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(if (isSchyoty) 8.dp else 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FilledTonalButton(
@@ -479,9 +483,9 @@ fun LargeNumbersWritingScreen(
                     ) {
                         Text(
                             text = s.common.reset,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = btnTextStyle,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            modifier = btnPadding
                         )
                     }
 
@@ -506,9 +510,9 @@ fun LargeNumbersWritingScreen(
                     ) {
                         Text(
                             text = s.common.newExercise,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = btnTextStyle,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            modifier = btnPadding
                         )
                     }
                 }
@@ -525,9 +529,43 @@ fun LargeNumbersWritingScreen(
                     ) {
                         Text(
                             text = s.common.nextLevel,
+                            style = btnTextStyle,
+                            fontWeight = FontWeight.Bold,
+                            modifier = btnPadding
+                        )
+                    }
+                }
+
+                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage || feedbackMessage.isNotEmpty()) {
+                    if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
+                        Text(
+                            text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            color = Color(0xFF2E7D32),
+                            modifier = Modifier.padding(horizontal = 32.dp)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        val levelText = if (completedLevel == 8) {
+                            s.common.levelCompleteMax
+                        } else {
+                            s.common.levelComplete.format(completedLevel)
+                        }
+                        Text(
+                            text = levelText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2E7D32),
+                            modifier = Modifier.padding(horizontal = 32.dp)
+                        )
+                    }
+                    if (feedbackMessage.isNotEmpty()) {
+                        Text(
+                            text = feedbackMessage,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
+                            modifier = Modifier.padding(horizontal = 32.dp)
                         )
                     }
                 }
@@ -545,47 +583,6 @@ fun LargeNumbersWritingScreen(
             scope.launch { preferences.markAbacusSectionCompleted("large_numbers_writing") }
             stepCompleted = true
             isFeedbackPositive = true
-        }
-
-        if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage || feedbackMessage.isNotEmpty()) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 80.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
-                    Text(
-                        text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32),
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    val levelText = if (completedLevel == 8) {
-                        s.common.levelCompleteMax
-                    } else {
-                        s.common.levelComplete.format(completedLevel)
-                    }
-                    Text(
-                        text = levelText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32),
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                }
-                if (feedbackMessage.isNotEmpty()) {
-                    Text(
-                        text = feedbackMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                }
-            }
         }
 
         Box(
