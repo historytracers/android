@@ -113,14 +113,15 @@ fun SchyotyWritingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(Modifier.height(8.dp))
+
                 Text(
                     text = s.abacusWrite.schyotyWritingInstruction,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                 )
 
@@ -128,9 +129,7 @@ fun SchyotyWritingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .weight(1f)
                         .aspectRatio(640f / 360f)
-                        .offset(y = (-60).dp)
                         .pointerInput(Unit) {
                             detectTapGestures { offset ->
                                 val cw = size.width.toFloat()
@@ -220,7 +219,6 @@ fun SchyotyWritingScreen(
                 Spacer(Modifier.height(28.dp))
 
                 Row(
-                    modifier = Modifier.offset(y = (-120).dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -251,10 +249,9 @@ fun SchyotyWritingScreen(
                     }
                 }
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(12.dp))
 
                 Row(
-                    modifier = Modifier.offset(y = (-120).dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -268,7 +265,7 @@ fun SchyotyWritingScreen(
                     ) {
                         Text(
                             text = s.common.newExercise,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
@@ -284,54 +281,42 @@ fun SchyotyWritingScreen(
                     ) {
                         Text(
                             text = s.common.nextLevel,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
                     }
                 }
 
-                Spacer(Modifier.height(8.dp))
-            }
-        }
+                if (showAllLevels.value) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = s.abacusWrite.schyotyAllLevelsComplete,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                } else if (showCongrats.value) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "\u2705 ${s.common.correct}!",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32),
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = s.common.resetHint,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF2E7D32),
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                }
 
-        if (showAllLevels.value) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 80.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = s.abacusWrite.schyotyAllLevelsComplete,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E7D32),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-            }
-        } else if (showCongrats.value) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 80.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "\u2705 ${s.common.correct}!",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E7D32),
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = s.common.resetHint,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF2E7D32),
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
+                Spacer(Modifier.height(24.dp))
             }
         }
 

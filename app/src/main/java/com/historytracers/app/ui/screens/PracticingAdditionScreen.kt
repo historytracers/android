@@ -341,11 +341,13 @@ fun PracticingAdditionScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
+                val modeEnabled = !exerciseStarted || finalCongratsShown
                 FilledIconButton(
                     onClick = {
                         abacusMode = "soroban"
                         state.value = List(COLUMNS) { PaColumnState() }
                     },
+                    enabled = modeEnabled,
                     modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(24),
                     colors = IconButtonDefaults.filledIconButtonColors(
@@ -369,6 +371,7 @@ fun PracticingAdditionScreen(
                         abacusMode = "suanpan"
                         state.value = List(COLUMNS) { PaColumnState() }
                     },
+                    enabled = modeEnabled,
                     modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(24),
                     colors = IconButtonDefaults.filledIconButtonColors(
@@ -392,6 +395,7 @@ fun PracticingAdditionScreen(
                         abacusMode = "schyoty"
                         schyotyBeads.value = List(9) { 0 }
                     },
+                    enabled = modeEnabled,
                     modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(24),
                     colors = IconButtonDefaults.filledIconButtonColors(
@@ -472,7 +476,6 @@ fun PracticingAdditionScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                         .aspectRatio(640f / 360f)
-                        .offset(y = (-24).dp)
                         .pointerInput(stepCompleted) {
                             detectTapGestures { offset ->
                                 if (stepCompleted) return@detectTapGestures

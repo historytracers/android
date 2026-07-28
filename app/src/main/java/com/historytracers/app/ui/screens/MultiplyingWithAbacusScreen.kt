@@ -327,6 +327,7 @@ fun MultiplyingWithAbacusScreen(
                 ) {
                     FilledIconButton(
                         onClick = { isSoroban = true },
+                        enabled = !exerciseStarted || finalCongratsShown,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -347,6 +348,7 @@ fun MultiplyingWithAbacusScreen(
                     )
                     FilledIconButton(
                         onClick = { isSoroban = false },
+                        enabled = !exerciseStarted || finalCongratsShown,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(

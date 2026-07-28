@@ -180,11 +180,13 @@ fun LargeNumbersWritingScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
+                    val modeEnabled = !hasInteracted || showCongrats.value
                     FilledIconButton(
                         onClick = {
                             abacusMode = "soroban"
                             state.value = List(COLUMNS) { LnColumnState() }
                         },
+                        enabled = modeEnabled,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -208,6 +210,7 @@ fun LargeNumbersWritingScreen(
                             abacusMode = "suanpan"
                             state.value = List(COLUMNS) { LnColumnState() }
                         },
+                        enabled = modeEnabled,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -231,6 +234,7 @@ fun LargeNumbersWritingScreen(
                             abacusMode = "schyoty"
                             schyotyBeads.value = List(9) { 0 }
                         },
+                        enabled = modeEnabled,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -313,7 +317,6 @@ fun LargeNumbersWritingScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp)
                             .aspectRatio(640f / 360f)
-                            .offset(y = (-24).dp)
                             .pointerInput(stepCompleted) {
                                 detectTapGestures { offset ->
                                     if (stepCompleted) return@detectTapGestures
