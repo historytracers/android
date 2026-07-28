@@ -371,12 +371,20 @@ fun AbacusScreen(
                     containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
                 )
             ) {
-                Text(
-                    text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "\u7B97\u76E4",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                    Text(
+                        text = "\u0441\u0447\u0451\u0442\u044B",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
             }
 
             Spacer(Modifier.height(24.dp))
