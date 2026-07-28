@@ -409,8 +409,8 @@ fun MultiplyingWithAbacusLevel2Screen(
                     val beamY = size.height / 2f - 30f / 400f * size.height
                     val ballRadius = minOf(
                         colWidth * 0.38f,
-                        11f / 400f * size.height,
-                        11f / 860f * size.width
+                        14f / 400f * size.height,
+                        14f / 860f * size.width
                     )
                     val dtt = beamY - 28f / 400f * size.height
                     val dtb = beamY + 28f / 400f * size.height
@@ -640,7 +640,7 @@ private fun handleMw2AbacusTap(
     val colW = usableWidth / columns
     val startX = margin + colW / 2f
     val beamY = ch / 2f - 30f / 400f * ch
-    val bR = minOf(colW * 0.38f, 11f / 400f * ch, 11f / 860f * cw)
+    val bR = minOf(colW * 0.38f, 14f / 400f * ch, 14f / 860f * cw)
     val dtt = beamY - 28f / 400f * ch
     val dtb = beamY + 28f / 400f * ch
 
@@ -658,7 +658,7 @@ private fun handleMw2AbacusTap(
 
     for (bi in 0 until upperMax) {
         val activeY = dtt - 6f / 400f * ch - bi * 22f / 400f * ch
-        val inactiveY = dtt - 108f / 400f * ch - bi * 22f / 400f * ch
+        val inactiveY = dtt - 100f / 400f * ch - bi * 22f / 400f * ch
         val beadY = if (bi < state.value[colHit].upper) activeY else inactiveY
         if (sqrt((x - cx) * (x - cx) + (y - beadY) * (y - beadY)) < bR + 8f / 400f * ch && y < dtt - 2f / 400f * ch) {
             val cur = state.value[colHit].upper
@@ -674,7 +674,7 @@ private fun handleMw2AbacusTap(
     if (!handled) {
         for (bi in 0 until lowerMax) {
             val activeY = dtb + 8f / 400f * ch + bi * 22f / 400f * ch
-            val inactiveY = activeY + 95f / 400f * ch
+            val inactiveY = activeY + 87f / 400f * ch
             val beadY = if (bi < state.value[colHit].lower) activeY else inactiveY
             if (sqrt((x - cx) * (x - cx) + (y - beadY) * (y - beadY)) < bR + 8f / 400f * ch && y > dtb + 2f / 400f * ch) {
                 val cur = state.value[colHit].lower
@@ -791,7 +791,7 @@ private fun DrawScope.drawMw2ColumnBeads(
 ) {
     for (i in 0 until upperMax) {
         val activeY = decimalTrackTop - 6f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
-        val inactiveY = decimalTrackTop - 108f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
+        val inactiveY = decimalTrackTop - 100f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
         val beadActive = i < upperCount
         val by = if (beadActive) activeY else inactiveY
 
@@ -803,7 +803,7 @@ private fun DrawScope.drawMw2ColumnBeads(
 
     for (i in 0 until lowerMax) {
         val activeY = decimalTrackBottom + 8f / 400f * canvasHeight + i * 22f / 400f * canvasHeight
-        val inactiveY = activeY + 95f / 400f * canvasHeight
+        val inactiveY = activeY + 87f / 400f * canvasHeight
         val beadActive = i < lowerCount
         val by = if (beadActive) activeY else inactiveY
 

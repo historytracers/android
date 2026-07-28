@@ -140,7 +140,7 @@ fun SchyotyWritingScreen(
                                 val wireR = (cw - M / 480f * cw)
                                 val areaH = ch - 2f * M / 480f * cw
                                 val rowSp = areaH / (ROWS + 1)
-                                val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 6f / 480f * cw)
+                                val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
                                 val beadStep = beadR * 2f + beadR * 0.3f
                                 val activeX0 = wireL + beadR
                                 val inactiveX0 = wireR - beadR
@@ -177,7 +177,7 @@ fun SchyotyWritingScreen(
                     val wireR = cw - M
                     val areaH = ch - 2f * M
                     val rowSp = areaH / (ROWS + 1)
-                    val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 6f / 480f * cw)
+                    val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
                     val beadGap = beadR * 0.3f
                     val beadStep = beadR * 2f + beadGap
                     val activeX0 = wireL + beadR
