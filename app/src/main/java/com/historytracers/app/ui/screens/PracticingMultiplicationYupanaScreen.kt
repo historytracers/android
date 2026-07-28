@@ -194,7 +194,6 @@ fun PracticingMultiplicationYupanaScreen(
         completedRedMarkers = numberToDigits(runningTotal).map { getMarkersForDigit(it) }
         completedBlueMarkers = List(ROWS) { emptySet() }
         advanceToPhase(0)
-        rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true
     }
 
     fun finishIteration() {
