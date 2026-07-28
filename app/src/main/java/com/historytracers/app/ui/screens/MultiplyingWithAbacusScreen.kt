@@ -243,9 +243,11 @@ fun MultiplyingWithAbacusScreen(
     }
 
     fun advanceStep() {
-        val currentVal = currentMwValue()
-        val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
-        if (currentVal != currentStepTarget) return
+        if (!stepCompleted && currentStepIdx < steps.size) {
+            val currentVal = currentMwValue()
+            val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
+            if (currentVal != currentStepTarget) return
+        }
         val isLastStep = currentStepIdx == steps.size - 1
 
         if (isLastStep) {
@@ -307,22 +309,14 @@ fun MultiplyingWithAbacusScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(2.dp))
 
                 Text(
                     text = s.mw.multiplyingWithAbacusInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
-
-                Text(
-                    text = "\u00D7 $currentMultiplier",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                 )
 
                 Text(
@@ -566,20 +560,40 @@ fun MultiplyingWithAbacusScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                Surface(
-                    shape = RoundedCornerShape(40.dp),
-                    color = Color(0xFF2E241F),
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "${s.common.valuePrefix}${currentMwValue()}",
-                        color = Color(0xFFF2ECD8),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(40.dp),
+                        color = Color(0xFF2E241F),
+                    ) {
+                        Text(
+                            text = "${s.common.valuePrefix}${currentMwValue()}",
+                            color = Color(0xFFF2ECD8),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        )
+                    }
+
+                    if (steps.isNotEmpty()) {
+                        Surface(
+                            shape = RoundedCornerShape(40.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        ) {
+                            Text(
+                                text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(4.dp))
 
                 if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
                     Surface(
@@ -596,17 +610,6 @@ fun MultiplyingWithAbacusScreen(
                 }
 
                 Spacer(Modifier.height(4.dp))
-
-                if (steps.isNotEmpty()) {
-                    Text(
-                        text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                                Spacer(Modifier.height(12.dp))
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -678,19 +681,18 @@ fun MultiplyingWithAbacusScreen(
                         color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 4.dp)
-                            .offset(y = (-10).dp)
+                            .padding(horizontal = 24.dp, vertical = 2.dp)
                     )
                 }
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(8.dp))
             }
         }
 
         Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(bottom = 8.dp, start = 8.dp)
+                .padding(bottom = 4.dp, start = 4.dp)
         ) {
             val uriHandler = LocalUriHandler.current
 
