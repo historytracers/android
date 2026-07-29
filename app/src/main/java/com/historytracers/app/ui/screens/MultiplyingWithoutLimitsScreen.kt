@@ -136,22 +136,41 @@ private fun buildMwlSumSteps(
     if (storedValue == 0L) return emptyList()
     val steps = mutableListOf<MwlStepInfo>()
     var currentValue = onesResult
-    val strVal = storedValue.toString()
-    val numPlaces = strVal.length
 
+    val maxDigits = maxOf(storedValue.toString().length, onesResult.toString().length) + 1
+    val maxDigitsClamped = maxDigits.coerceAtMost(9)
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
+    val pn = listOf(
+        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds,
+        s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands,
+        s.place.placeMillions, s.place.placeTenMillions
+    )
 
-    for (i in strVal.indices) {
-        val d = strVal[i].digitToInt()
-        if (d == 0) continue
-        val place = numPlaces - 1 - i
-        val addValue = d * multipliers[place]
-        currentValue += addValue
-        steps.add(MwlStepInfo(
-            s.mw.mwlAddStoredPrefix.format(storedValue) + "+$addValue → $currentValue",
-            currentValue,
-            isSumPhase = true
-        ))
+    for (p in 0 until maxDigitsClamped) {
+        val digitB = ((storedValue / multipliers[p]) % 10).toInt()
+        if (digitB == 0) continue
+
+        val digitA = ((currentValue / multipliers[p]) % 10).toInt()
+        val total = digitA + digitB
+
+        if (total < 10) {
+            currentValue += digitB * multipliers[p]
+            steps.add(MwlStepInfo(
+                s.mw.mwlAddDigitTo.format(pn[p], digitB, pn[p], currentValue),
+                currentValue,
+                isSumPhase = true
+            ))
+        } else {
+            val complement = 10 - digitB
+            val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
+            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.place.placeNext
+            steps.add(MwlStepInfo(
+                s.mw.mwlAddCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue),
+                newValue,
+                isSumPhase = true
+            ))
+            currentValue = newValue
+        }
     }
 
     return steps
@@ -700,13 +719,18 @@ fun MultiplyingWithoutLimitsScreen(
                     )
                 }
             } else if (currentStep?.isResetPhase == true) {
-                Text(
-                    text = s.mw.mwlResetInstruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = s.mw.mwlResetInstruction,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
             } else if (currentStep != null && currentStep.instruction.isNotEmpty()) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
