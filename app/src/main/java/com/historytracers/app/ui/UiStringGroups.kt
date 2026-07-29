@@ -42,6 +42,7 @@ data class HubTitleStrings(
     val history: String, val naturalFamiliesPart2: String,
     val goingToInfinity: String, val whereAreWeFrom: String,
     val returning: String, val tomokoHoult: String, val aPal: String,
+    val jessicaAmarteifio: String,
     val langEnUs: String, val langPtBr: String, val langEsEs: String,
     val congratulationTitle: String, val congratulationMessage: String,
     val whoWalkFirst: String, val whoWalkFirstButton: String,
@@ -87,6 +88,9 @@ data class AbacusWriteStrings(
     val largeNumbersWritingInstruction: String,
     val sorobanAbbr: String, val suanpanAbbr: String,
     val sorobanMode: String, val suanpanMode: String,
+    val schyoty: String, val writingToSchyoty: String,
+    val schyotyWritingInstruction: String,
+    val schyotyAllLevelsComplete: String,
 )
 
 data class PracticingAdditionStrings(
@@ -113,6 +117,8 @@ data class MwStrings(
     val mwlInstruction: String, val mwlShiftInstruction: String,
     val mwlStoreInstruction: String, val mwlResetInstruction: String,
     val mwlAddStoredPrefix: String, val mwlLastLevelMessage: String,
+    val mwlAddDigitTo: String, val mwlAddCarrying: String,
+    val mwlStoredLabel: String,
     val mw2Instruction: String, val mw2StepWriteFirst: String,
     val mw2LastLevelMessage: String,
 )

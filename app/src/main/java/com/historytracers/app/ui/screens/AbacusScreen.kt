@@ -39,6 +39,7 @@ fun AbacusScreen(
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
     onNavigateToSuanpanWriting: () -> Unit = {},
+    onNavigateToSchyotyWriting: () -> Unit = {},
     onNavigateToLargeNumbersWriting: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToMultiplicationTable: () -> Unit = {},
@@ -209,7 +210,37 @@ fun AbacusScreen(
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(16.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSchyotyWriting,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("schyoty_writing")) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = s.abacusWrite.schyoty,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = s.abacusWrite.writingToSchyoty,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(24.dp))
 
             FilledIconButton(
                 onClick = onNavigateToLargeNumbersWriting,
@@ -340,12 +371,20 @@ fun AbacusScreen(
                     containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
                 )
             ) {
-                Text(
-                    text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "\u7B97\u76E4",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                    Text(
+                        text = "\u0441\u0447\u0451\u0442\u044B",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
             }
 
             Spacer(Modifier.height(24.dp))

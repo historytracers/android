@@ -166,9 +166,10 @@ fun MultiplyingWithAbacusLevel2Screen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
-    var isSoroban by remember { mutableStateOf(true) }
-    val upperMax = if (isSoroban) SOROBAN_UPPER else SUANPAN_UPPER
-    val lowerMax = if (isSoroban) SOROBAN_LOWER else SUANPAN_LOWER
+    var abacusMode by remember { mutableStateOf("soroban") }
+    val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
+    val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
+    val lowerMax = if (abacusMode == "soroban") SOROBAN_LOWER else SUANPAN_LOWER
 
     val state = remember { mutableStateOf(List(COLUMNS) { Mw2ColumnState() }) }
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
@@ -185,6 +186,7 @@ fun MultiplyingWithAbacusLevel2Screen(
     val preferences = remember { UserPreferences(context) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showJessicaSubmenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         currentDigitLevel = MIN_DIGIT_LEVEL
@@ -207,8 +209,19 @@ fun MultiplyingWithAbacusLevel2Screen(
         }
     }
 
+    fun currentMw2Value(): Long = if (abacusMode == "schyoty") {
+        var v = 0L
+        for (r in 0 until 9) {
+            v += schyotyBeads.value[r] * Math.pow(10.0, r.toDouble()).toLong()
+        }
+        v
+    } else {
+        Mw2Value(state.value)
+    }
+
     fun resetExercise() {
         state.value = List(COLUMNS) { Mw2ColumnState() }
+        schyotyBeads.value = List(9) { 0 }
         exercise = generateMw2Exercise(currentDigitLevel)
         steps = buildMw2Steps(exercise, s)
         currentStepIdx = 0
@@ -222,7 +235,7 @@ fun MultiplyingWithAbacusLevel2Screen(
 
     fun checkStep() {
         if (currentStepIdx >= steps.size) return
-        val currentVal = Mw2Value(state.value)
+        val currentVal = currentMw2Value()
         val step = steps[currentStepIdx]
 
         if (currentVal == step.targetValue) {
@@ -245,9 +258,11 @@ fun MultiplyingWithAbacusLevel2Screen(
     }
 
     fun advanceStep() {
-        val currentVal = Mw2Value(state.value)
-        val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
-        if (currentVal != currentStepTarget) return
+        if (!stepCompleted && currentStepIdx < steps.size) {
+            val currentVal = currentMw2Value()
+            val currentStepTarget = steps.getOrNull(currentStepIdx)?.targetValue
+            if (currentVal != currentStepTarget) return
+        }
         val isLastStep = currentStepIdx == steps.size - 1
 
         if (isLastStep) {
@@ -309,22 +324,14 @@ fun MultiplyingWithAbacusLevel2Screen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(2.dp))
 
                 Text(
                     text = s.mw.mw2Instruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
-
-                Text(
-                    text = "${s.common.levelPrefix}$currentDigitLevel",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                 )
 
                 Text(
@@ -339,19 +346,24 @@ fun MultiplyingWithAbacusLevel2Screen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
+                    val modeEnabled = !exerciseStarted || finalCongratsShown
                     FilledIconButton(
-                        onClick = { isSoroban = true },
+                        onClick = {
+                            abacusMode = "soroban"
+                            state.value = List(COLUMNS) { Mw2ColumnState() }
+                        },
+                        enabled = modeEnabled,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = if (isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = if (abacusMode == "soroban") ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         Text(
                             text = "S",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
+                            color = if (abacusMode == "soroban") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     Text(
@@ -360,18 +372,22 @@ fun MultiplyingWithAbacusLevel2Screen(
                         fontWeight = FontWeight.Bold
                     )
                     FilledIconButton(
-                        onClick = { isSoroban = false },
+                        onClick = {
+                            abacusMode = "suanpan"
+                            state.value = List(COLUMNS) { Mw2ColumnState() }
+                        },
+                        enabled = modeEnabled,
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = if (!isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = if (abacusMode == "suanpan") ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         Text(
                             text = "S",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
+                            color = if (abacusMode == "suanpan") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     Text(
@@ -379,8 +395,33 @@ fun MultiplyingWithAbacusLevel2Screen(
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
+                    FilledIconButton(
+                        onClick = {
+                            abacusMode = "schyoty"
+                            schyotyBeads.value = List(9) { 0 }
+                        },
+                        enabled = modeEnabled,
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (abacusMode == "schyoty") ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Text(
+                            text = "Sc",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (abacusMode == "schyoty") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = s.abacusWrite.schyoty,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
+                if (abacusMode in listOf("soroban", "suanpan")) {
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -406,11 +447,11 @@ fun MultiplyingWithAbacusLevel2Screen(
                     val usableWidth = size.width - 2f * margin
                     val colWidth = usableWidth / COLUMNS
                     val startX = margin + colWidth / 2f
-                    val beamY = size.height / 2f
+                    val beamY = size.height / 2f - 30f / 400f * size.height
                     val ballRadius = minOf(
                         colWidth * 0.38f,
-                        10f / 400f * size.height,
-                        10f / 860f * size.width
+                        14f / 400f * size.height,
+                        14f / 860f * size.width
                     )
                     val dtt = beamY - 28f / 400f * size.height
                     val dtb = beamY + 28f / 400f * size.height
@@ -434,23 +475,140 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     }
                 }
+                } else {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
+                            .aspectRatio(640f / 360f)
+                            .pointerInput(stepCompleted) {
+                                detectTapGestures { offset ->
+                                    if (stepCompleted) return@detectTapGestures
+                                    val cw = size.width.toFloat()
+                                    val ch = size.height.toFloat()
+                                    val M = 14f
+                                    val wireL = M / 480f * cw
+                                    val wireR = (cw - M / 480f * cw)
+                                    val areaH = ch - 2f * M / 480f * cw
+                                    val rowSp = areaH / (9 + 1)
+                                    val beadR = minOf((wireR - wireL) / (10 * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
+                                    val beadStep = beadR * 2f + beadR * 0.3f
+                                    val activeX0 = wireL + beadR
+                                    val inactiveX0 = wireR - beadR
+
+                                    for (r in 0 until 9) {
+                                        val y = M / 480f * cw + rowSp * (9 - r)
+                                        if (abs(offset.y - y) > beadR + 10f / 480f * cw) continue
+
+                                        val cnt = schyotyBeads.value[r]
+
+                                        for (p in 0 until cnt) {
+                                            val x = activeX0 + p * beadStep
+                                            if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
+                                                schyotyBeads.value = schyotyBeads.value.toMutableList().also { it[r] = p }
+                                                if (!exerciseStarted) exerciseStarted = true
+                                                checkStep()
+                                                return@detectTapGestures
+                                            }
+                                        }
+
+                                        for (p in 0 until 10 - cnt) {
+                                            val x = inactiveX0 - p * beadStep
+                                            if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
+                                                schyotyBeads.value = schyotyBeads.value.toMutableList().also { it[r] = 10 - p }
+                                                if (!exerciseStarted) exerciseStarted = true
+                                                checkStep()
+                                                return@detectTapGestures
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    ) {
+                        val cw = size.width
+                        val ch = size.height
+                        val M = 14f / 480f * cw
+                        val wireL = M
+                        val wireR = cw - M
+                        val areaH = ch - 2f * M
+                        val rowSp = areaH / (9 + 1)
+                        val beadR = minOf((wireR - wireL) / (10 * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
+                        val beadGap = beadR * 0.3f
+                        val beadStep = beadR * 2f + beadGap
+                        val activeX0 = wireL + beadR
+                        val inactiveX0 = wireR - beadR
+
+                        drawRect(color = Color(0xFFFEF5E0), size = size)
+
+                        drawRect(
+                            color = Color(0xFFB48B5A),
+                            topLeft = Offset(2f, 2f),
+                            size = androidx.compose.ui.geometry.Size(cw - 4f, ch - 4f),
+                            style = Stroke(width = 2f)
+                        )
+                        drawRect(
+                            color = Color(0xFFF9EEC7),
+                            topLeft = Offset(5f, 5f),
+                            size = androidx.compose.ui.geometry.Size(cw - 10f, ch - 10f),
+                            style = Stroke(width = 1.5f)
+                        )
+
+                        for (r in 0 until 9) {
+                            val y = M + rowSp * (9 - r)
+                            drawLine(color = Color(0xFFB08054), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 2f)
+                            drawLine(color = Color(0xFFE9C48B), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 1f)
+
+                            val cnt = schyotyBeads.value[r]
+
+                            for (p in 0 until cnt) {
+                                val x = activeX0 + p * beadStep
+                                drawMw2SchyotyBead(x, y, beadR, active = true, idx = p)
+                            }
+
+                            for (p in 0 until 10 - cnt) {
+                                val x = inactiveX0 - p * beadStep
+                                drawMw2SchyotyBead(x, y, beadR, active = false, idx = 9 - p)
+                            }
+                        }
+                    }
+                }
 
                 Spacer(Modifier.height(8.dp))
 
-                Surface(
-                    shape = RoundedCornerShape(40.dp),
-                    color = Color(0xFF2E241F),
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "${s.common.valuePrefix}${Mw2Value(state.value)}",
-                        color = Color(0xFFF2ECD8),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(40.dp),
+                        color = Color(0xFF2E241F),
+                    ) {
+                        Text(
+                            text = "${s.common.valuePrefix}${currentMw2Value()}",
+                            color = Color(0xFFF2ECD8),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        )
+                    }
+
+                    if (steps.isNotEmpty()) {
+                        Surface(
+                            shape = RoundedCornerShape(40.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                        ) {
+                            Text(
+                                text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(4.dp))
 
                 if (steps.isNotEmpty() && currentStepIdx < steps.size && !showLastLevelMessage) {
                     Surface(
@@ -464,17 +622,6 @@ fun MultiplyingWithAbacusLevel2Screen(
                             modifier = Modifier.padding(12.dp)
                         )
                     }
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                if (steps.isNotEmpty()) {
-                    Text(
-                        text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
                 }
 
                 Spacer(Modifier.height(4.dp))
@@ -550,11 +697,11 @@ fun MultiplyingWithAbacusLevel2Screen(
                         fontWeight = FontWeight.Bold,
                         color = if (isFeedbackPositive) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                     )
                 }
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(8.dp))
             }
         }
 
@@ -587,9 +734,16 @@ fun MultiplyingWithAbacusLevel2Screen(
                 }
 
                 DropdownMenu(
-                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    expanded = showSourcesMenu && !showMainTextSubmenu && !showJessicaSubmenu,
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text(s.titles.jessicaAmarteifio) },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showJessicaSubmenu = true }
+                    )
                     DropdownMenuItem(
                         text = { Text(s.common.originalText) },
                         trailingIcon = {
@@ -622,6 +776,30 @@ fun MultiplyingWithAbacusLevel2Screen(
                         }
                     )
                 }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showJessicaSubmenu,
+                    onDismissRequest = { showJessicaSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showJessicaSubmenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS"))
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showJessicaSubmenu = false
+                            uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                        }
+                    )
+                }
             }
         }
     }
@@ -639,8 +817,8 @@ private fun handleMw2AbacusTap(
     val usableWidth = cw - 2f * margin
     val colW = usableWidth / columns
     val startX = margin + colW / 2f
-    val beamY = ch / 2f
-    val bR = minOf(colW * 0.38f, 10f / 400f * ch, 10f / 860f * cw)
+    val beamY = ch / 2f - 30f / 400f * ch
+    val bR = minOf(colW * 0.38f, 14f / 400f * ch, 14f / 860f * cw)
     val dtt = beamY - 28f / 400f * ch
     val dtb = beamY + 28f / 400f * ch
 
@@ -658,7 +836,7 @@ private fun handleMw2AbacusTap(
 
     for (bi in 0 until upperMax) {
         val activeY = dtt - 6f / 400f * ch - bi * 22f / 400f * ch
-        val inactiveY = dtt - 38f / 400f * ch - bi * 22f / 400f * ch
+        val inactiveY = dtt - 100f / 400f * ch - bi * 22f / 400f * ch
         val beadY = if (bi < state.value[colHit].upper) activeY else inactiveY
         if (sqrt((x - cx) * (x - cx) + (y - beadY) * (y - beadY)) < bR + 8f / 400f * ch && y < dtt - 2f / 400f * ch) {
             val cur = state.value[colHit].upper
@@ -674,7 +852,7 @@ private fun handleMw2AbacusTap(
     if (!handled) {
         for (bi in 0 until lowerMax) {
             val activeY = dtb + 8f / 400f * ch + bi * 22f / 400f * ch
-            val inactiveY = activeY + 28f / 400f * ch
+            val inactiveY = activeY + 87f / 400f * ch
             val beadY = if (bi < state.value[colHit].lower) activeY else inactiveY
             if (sqrt((x - cx) * (x - cx) + (y - beadY) * (y - beadY)) < bR + 8f / 400f * ch && y > dtb + 2f / 400f * ch) {
                 val cur = state.value[colHit].lower
@@ -692,7 +870,7 @@ private fun handleMw2AbacusTap(
 
 private fun DrawScope.drawMw2AbacusBackground(size: androidx.compose.ui.geometry.Size) {
     drawRect(color = Color(0xFFFEF5E0), size = size)
-    val beamY = size.height / 2f
+    val beamY = size.height / 2f - 30f / 400f * size.height
     val decimalTrackTop = beamY - 28f / 400f * size.height
     val decimalTrackBottom = beamY + 28f / 400f * size.height
 
@@ -753,7 +931,7 @@ private fun DrawScope.drawMw2AbacusFrame(size: androidx.compose.ui.geometry.Size
         topLeft = Offset(5f / 860f * size.width, 5f / 400f * size.height),
         size = androidx.compose.ui.geometry.Size(
             size.width - 10f / 860f * size.width,
-            size.height - 10f / 400f * size.height
+            size.height - 30f / 400f * size.height
         ),
         style = Stroke(width = 2.5f / 400f * size.height)
     )
@@ -791,7 +969,7 @@ private fun DrawScope.drawMw2ColumnBeads(
 ) {
     for (i in 0 until upperMax) {
         val activeY = decimalTrackTop - 6f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
-        val inactiveY = decimalTrackTop - 38f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
+        val inactiveY = decimalTrackTop - 100f / 400f * canvasHeight - i * 22f / 400f * canvasHeight
         val beadActive = i < upperCount
         val by = if (beadActive) activeY else inactiveY
 
@@ -803,7 +981,7 @@ private fun DrawScope.drawMw2ColumnBeads(
 
     for (i in 0 until lowerMax) {
         val activeY = decimalTrackBottom + 8f / 400f * canvasHeight + i * 22f / 400f * canvasHeight
-        val inactiveY = activeY + 28f / 400f * canvasHeight
+        val inactiveY = activeY + 87f / 400f * canvasHeight
         val beadActive = i < lowerCount
         val by = if (beadActive) activeY else inactiveY
 
@@ -812,4 +990,32 @@ private fun DrawScope.drawMw2ColumnBeads(
         drawCircle(color = Color(0xFF1A3A3A), radius = ballRadius - 0.5f / 400f * canvasHeight, center = Offset(cx, by), style = Stroke(width = 1.2f / 400f * canvasHeight))
         drawCircle(color = Color(0xFFC8E2EC), radius = 2.5f / 860f * canvasWidth, center = Offset(cx - 2.5f / 860f * canvasWidth, by - 2.5f / 400f * canvasHeight))
     }
+}
+
+private fun DrawScope.drawMw2SchyotyBead(x: Float, y: Float, r: Float, active: Boolean, idx: Int) {
+    val isSpecial = idx == 4 || idx == 5
+    val baseColor = if (isSpecial) {
+        if (active) Color(0xFF808080) else Color(0xFF606060)
+    } else {
+        if (active) Color(0xFFB08030) else Color(0xFF8A7050)
+    }
+    val highlightColor = if (isSpecial) {
+        if (active) Color(0xFFD0D0D0) else Color(0xFFA0A0A0)
+    } else {
+        if (active) Color(0xFFF5C860) else Color(0xFFD4BC98)
+    }
+    val strokeColor = if (isSpecial) {
+        if (active) Color(0xFF3A3A3A) else Color(0xFF2A2A2A)
+    } else {
+        if (active) Color(0xFF6A4A1A) else Color(0xFF5A4030)
+    }
+
+    drawCircle(color = baseColor, radius = r, center = Offset(x, y))
+    drawCircle(color = highlightColor, radius = r * 0.85f, center = Offset(x, y))
+    drawCircle(color = strokeColor, radius = r, center = Offset(x, y), style = Stroke(width = if (active) 1.5f else 1f))
+    drawCircle(
+        color = if (isSpecial) Color(0x99E6E6E6) else Color(0x99FFEBBE),
+        radius = r * 0.25f,
+        center = Offset(x - r * 0.25f, y - r * 0.25f)
+    )
 }

@@ -57,17 +57,33 @@ private fun MtValue(state: List<MtColumnState>): Long {
     return result
 }
 
-private fun setAbacusValue(state: MutableState<List<MtColumnState>>, value: Long) {
-    val numStr = value.toString()
-    val newState = MutableList(COLUMNS) { MtColumnState() }
-    var colIdx = COLUMNS - 1
-    for (i in numStr.length - 1 downTo 0) {
-        if (colIdx < 0) break
-        val digit = numStr[i] - '0'
-        newState[colIdx] = MtColumnState(upper = digit / 5, lower = digit % 5)
-        colIdx--
+private fun setMtAbacusValue(
+    state: MutableState<List<MtColumnState>>,
+    schyotyBeads: MutableState<List<Int>>,
+    abacusMode: String,
+    value: Long
+) {
+    if (abacusMode == "schyoty") {
+        val numStr = value.toString()
+        val newBeads = MutableList(9) { 0 }
+        for (i in numStr.length - 1 downTo 0) {
+            val idx = numStr.length - 1 - i
+            if (idx >= 9) break
+            newBeads[idx] = numStr[i] - '0'
+        }
+        schyotyBeads.value = newBeads
+    } else {
+        val numStr = value.toString()
+        val newState = MutableList(COLUMNS) { MtColumnState() }
+        var colIdx = COLUMNS - 1
+        for (i in numStr.length - 1 downTo 0) {
+            if (colIdx < 0) break
+            val digit = numStr[i] - '0'
+            newState[colIdx] = MtColumnState(upper = digit / 5, lower = digit % 5)
+            colIdx--
+        }
+        state.value = newState
     }
-    state.value = newState
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,9 +94,10 @@ fun MultiplicationTableScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
-    var isSoroban by remember { mutableStateOf(true) }
-    val upperMax = if (isSoroban) SOROBAN_UPPER else SUANPAN_UPPER
-    val lowerMax = if (isSoroban) SOROBAN_LOWER else SUANPAN_LOWER
+    var abacusMode by remember { mutableStateOf("soroban") }
+    val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
+    val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
+    val lowerMax = if (abacusMode == "soroban") SOROBAN_LOWER else SUANPAN_LOWER
 
     val state = remember { mutableStateOf(List(COLUMNS) { MtColumnState() }) }
     var selectedNumber by remember { mutableIntStateOf(1) }
@@ -91,6 +108,7 @@ fun MultiplicationTableScreen(
     val preferences = remember { UserPreferences(context) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showJessicaSubmenu by remember { mutableStateOf(false) }
 
     val currentResult = selectedNumber.toLong() * currentStep.toLong()
     val equationText = if (currentStep > 0) "$currentStep \u00D7 $selectedNumber = $currentResult" else ""
@@ -99,18 +117,28 @@ fun MultiplicationTableScreen(
         currentStep = 0
         isAutoPlaying = false
         finalCongratsShown = false
-        setAbacusValue(state, 0L)
+        setMtAbacusValue(state, schyotyBeads, abacusMode, 0L)
     }
 
     fun stepForward() {
         if (currentStep < MAX_STEPS) {
             currentStep++
             val result = selectedNumber.toLong() * currentStep.toLong()
-            setAbacusValue(state, result)
+            setMtAbacusValue(state, schyotyBeads, abacusMode, result)
             if (currentStep >= MAX_STEPS) {
                 finalCongratsShown = true
             }
         }
+    }
+
+    fun currentMtValue(): Long = if (abacusMode == "schyoty") {
+        var v = 0L
+        for (r in 0 until 9) {
+            v += schyotyBeads.value[r] * Math.pow(10.0, r.toDouble()).toLong()
+        }
+        v
+    } else {
+        MtValue(state.value)
     }
 
     LaunchedEffect(finalCongratsShown) {
@@ -179,40 +207,63 @@ fun MultiplicationTableScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     FilledIconButton(
-                        onClick = { isSoroban = true },
+                        onClick = {
+                            abacusMode = "soroban"
+                            state.value = List(COLUMNS) { MtColumnState() }
+                        },
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = if (isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = if (abacusMode == "soroban") ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                            color = if (isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
+                            color = if (abacusMode == "soroban") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text(s.abacusWrite.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
 
                     FilledIconButton(
-                        onClick = { isSoroban = false },
+                        onClick = {
+                            abacusMode = "suanpan"
+                            state.value = List(COLUMNS) { MtColumnState() }
+                        },
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(24),
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = if (!isSoroban) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = if (abacusMode == "suanpan") ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                            color = if (!isSoroban) OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
+                            color = if (abacusMode == "suanpan") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text(s.abacusWrite.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+
+                    FilledIconButton(
+                        onClick = {
+                            abacusMode = "schyoty"
+                            schyotyBeads.value = List(9) { 0 }
+                        },
+                        modifier = Modifier.size(48.dp),
+                        shape = RoundedCornerShape(24),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (abacusMode == "schyoty") ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Text("Sc", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                            color = if (abacusMode == "schyoty") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Text(s.abacusWrite.schyoty, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 }
 
+                if (abacusMode in listOf("soroban", "suanpan")) {
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                         .aspectRatio(860f / 400f)
                 ) {
-                    drawPaAbacusBackground(size)
-                    drawPaAbacusFrame(size)
+                    drawMtAbacusBackground(size)
+                    drawMtAbacusFrame(size)
                     val margin = 28f / 860f * size.width
                     val usableWidth = size.width - 2f * margin
                     val colWidth = usableWidth / COLUMNS
@@ -226,7 +277,7 @@ fun MultiplicationTableScreen(
                     val dtt = beamY - 28f / 400f * size.height
                     val dtb = beamY + 28f / 400f * size.height
                     for (col in 0 until COLUMNS) {
-                        drawPaAbacusRod(
+                        drawMtAbacusRod(
                             cx = startX + col * colWidth,
                             canvasWidth = size.width,
                             canvasHeight = size.height
@@ -245,6 +296,60 @@ fun MultiplicationTableScreen(
                         )
                     }
                 }
+                } else {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
+                            .aspectRatio(640f / 360f)
+                    ) {
+                        val cw = size.width
+                        val ch = size.height
+                        val M = 14f / 480f * cw
+                        val wireL = M
+                        val wireR = cw - M
+                        val areaH = ch - 2f * M
+                        val rowSp = areaH / (9 + 1)
+                        val beadR = minOf((wireR - wireL) / (10 * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
+                        val beadGap = beadR * 0.3f
+                        val beadStep = beadR * 2f + beadGap
+                        val activeX0 = wireL + beadR
+                        val inactiveX0 = wireR - beadR
+
+                        drawRect(color = Color(0xFFFEF5E0), size = size)
+
+                        drawRect(
+                            color = Color(0xFFB48B5A),
+                            topLeft = Offset(2f, 2f),
+                            size = androidx.compose.ui.geometry.Size(cw - 4f, ch - 4f),
+                            style = Stroke(width = 2f)
+                        )
+                        drawRect(
+                            color = Color(0xFFF9EEC7),
+                            topLeft = Offset(5f, 5f),
+                            size = androidx.compose.ui.geometry.Size(cw - 10f, ch - 10f),
+                            style = Stroke(width = 1.5f)
+                        )
+
+                        for (r in 0 until 9) {
+                            val y = M + rowSp * (9 - r)
+                            drawLine(color = Color(0xFFB08054), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 2f)
+                            drawLine(color = Color(0xFFE9C48B), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 1f)
+
+                            val cnt = schyotyBeads.value[r]
+
+                            for (p in 0 until cnt) {
+                                val x = activeX0 + p * beadStep
+                                drawMtSchyotyBead(x, y, beadR, active = true, idx = p)
+                            }
+
+                            for (p in 0 until 10 - cnt) {
+                                val x = inactiveX0 - p * beadStep
+                                drawMtSchyotyBead(x, y, beadR, active = false, idx = 9 - p)
+                            }
+                        }
+                    }
+                }
 
                 Spacer(Modifier.height(8.dp))
 
@@ -253,7 +358,7 @@ fun MultiplicationTableScreen(
                     color = Color(0xFF2E241F),
                 ) {
                     Text(
-                        text = "${s.common.valuePrefix}${MtValue(state.value)}",
+                        text = "${s.common.valuePrefix}${currentMtValue()}",
                         color = Color(0xFFF2ECD8),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -433,9 +538,16 @@ fun MultiplicationTableScreen(
             }
 
             DropdownMenu(
-                expanded = showSourcesMenu && !showMainTextSubmenu,
+                expanded = showSourcesMenu && !showMainTextSubmenu && !showJessicaSubmenu,
                 onDismissRequest = { showSourcesMenu = false }
             ) {
+                DropdownMenuItem(
+                    text = { Text(s.titles.jessicaAmarteifio) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showJessicaSubmenu = true }
+                )
                 DropdownMenuItem(
                     text = { Text(s.common.originalText) },
                     trailingIcon = {
@@ -468,11 +580,35 @@ fun MultiplicationTableScreen(
                     }
                 )
             }
+
+            DropdownMenu(
+                expanded = showSourcesMenu && showJessicaSubmenu,
+                onDismissRequest = { showJessicaSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.common.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showJessicaSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS"))
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.common.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showJessicaSubmenu = false
+                        uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                    }
+                )
+            }
         }
     }
 }
 
-private fun DrawScope.drawPaAbacusBackground(size: androidx.compose.ui.geometry.Size) {
+private fun DrawScope.drawMtAbacusBackground(size: androidx.compose.ui.geometry.Size) {
     drawRect(color = Color(0xFFFEF5E0), size = size)
     val beamY = size.height / 2f
     val decimalTrackTop = beamY - 28f / 400f * size.height
@@ -529,7 +665,7 @@ private fun DrawScope.drawPaAbacusBackground(size: androidx.compose.ui.geometry.
     )
 }
 
-private fun DrawScope.drawPaAbacusFrame(size: androidx.compose.ui.geometry.Size) {
+private fun DrawScope.drawMtAbacusFrame(size: androidx.compose.ui.geometry.Size) {
     drawRect(
         color = Color(0xFFF9EEC7),
         topLeft = Offset(5f / 860f * size.width, 5f / 400f * size.height),
@@ -550,7 +686,7 @@ private fun DrawScope.drawPaAbacusFrame(size: androidx.compose.ui.geometry.Size)
     )
 }
 
-private fun DrawScope.drawPaAbacusRod(cx: Float, canvasWidth: Float, canvasHeight: Float) {
+private fun DrawScope.drawMtAbacusRod(cx: Float, canvasWidth: Float, canvasHeight: Float) {
     drawLine(
         color = Color(0xFFB08054),
         start = Offset(cx, 8f / 860f * canvasWidth),
@@ -594,4 +730,32 @@ private fun DrawScope.drawMtColumnBeads(
         drawCircle(color = Color(0xFF1A3A3A), radius = ballRadius - 0.5f / 400f * canvasHeight, center = Offset(cx, by), style = Stroke(width = 1.2f / 400f * canvasHeight))
         drawCircle(color = Color(0xFFC8E2EC), radius = 2.5f / 860f * canvasWidth, center = Offset(cx - 2.5f / 860f * canvasWidth, by - 2.5f / 400f * canvasHeight))
     }
+}
+
+private fun DrawScope.drawMtSchyotyBead(x: Float, y: Float, r: Float, active: Boolean, idx: Int) {
+    val isSpecial = idx == 4 || idx == 5
+    val baseColor = if (isSpecial) {
+        if (active) Color(0xFF808080) else Color(0xFF606060)
+    } else {
+        if (active) Color(0xFFB08030) else Color(0xFF8A7050)
+    }
+    val highlightColor = if (isSpecial) {
+        if (active) Color(0xFFD0D0D0) else Color(0xFFA0A0A0)
+    } else {
+        if (active) Color(0xFFF5C860) else Color(0xFFD4BC98)
+    }
+    val strokeColor = if (isSpecial) {
+        if (active) Color(0xFF3A3A3A) else Color(0xFF2A2A2A)
+    } else {
+        if (active) Color(0xFF6A4A1A) else Color(0xFF5A4030)
+    }
+
+    drawCircle(color = baseColor, radius = r, center = Offset(x, y))
+    drawCircle(color = highlightColor, radius = r * 0.85f, center = Offset(x, y))
+    drawCircle(color = strokeColor, radius = r, center = Offset(x, y), style = Stroke(width = if (active) 1.5f else 1f))
+    drawCircle(
+        color = if (isSpecial) Color(0x99E6E6E6) else Color(0x99FFEBBE),
+        radius = r * 0.25f,
+        center = Offset(x - r * 0.25f, y - r * 0.25f)
+    )
 }
