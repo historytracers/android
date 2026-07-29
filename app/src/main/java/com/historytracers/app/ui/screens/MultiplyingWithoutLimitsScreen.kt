@@ -314,7 +314,7 @@ fun MultiplyingWithoutLimitsScreen(
     fun advanceStep() {
         if (currentStepIdx >= steps.size) return
         val step = steps[currentStepIdx]
-        if (!stepCompleted && !step.isStorePhase && !step.isResetPhase) {
+        if (!stepCompleted && !step.isStorePhase) {
             val currentVal = currentMwlValue()
             if (currentVal != step.targetValue) return
         }
@@ -333,7 +333,6 @@ fun MultiplyingWithoutLimitsScreen(
             feedbackMessage = ""
             isFeedbackPositive = false
             if (currentStepIdx - 1 >= 0 && currentStepIdx - 1 < steps.size && steps[currentStepIdx - 1].isStorePhase) showStoredValue = true
-            if (currentStepIdx < steps.size && steps[currentStepIdx].isResetPhase) clearAbacus()
         }
     }
 
