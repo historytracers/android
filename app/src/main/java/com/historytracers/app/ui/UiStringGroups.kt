@@ -117,6 +117,7 @@ data class MwStrings(
     val mwlStoreInstruction: String, val mwlResetInstruction: String,
     val mwlAddStoredPrefix: String, val mwlLastLevelMessage: String,
     val mwlAddDigitTo: String, val mwlAddCarrying: String,
+    val mwlStoredLabel: String,
     val mw2Instruction: String, val mw2StepWriteFirst: String,
     val mw2LastLevelMessage: String,
 )

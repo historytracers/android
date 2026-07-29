@@ -689,13 +689,12 @@ fun MultiplyingWithoutLimitsScreen(
                 if (showStoredValue) {
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
                         Text(
-                            text = s.mw.mwlStoreInstruction.format(storedValue),
+                            text = s.mw.mwlStoredLabel.format(storedValue),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )
                     }
@@ -707,15 +706,14 @@ fun MultiplyingWithoutLimitsScreen(
             if (currentStep?.isStorePhase == true) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
                         text = s.mw.mwlStoreInstruction.format(storedValue),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                        modifier = Modifier.padding(12.dp)
                     )
                 }
             } else if (currentStep?.isResetPhase == true) {
