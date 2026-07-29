@@ -188,6 +188,7 @@ fun SubtractingWithAbacusScreen(
     val preferences = remember { UserPreferences(context) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showJessicaSubmenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         currentDigitLevel = MIN_DIGIT_LEVEL
@@ -725,9 +726,16 @@ fun SubtractingWithAbacusScreen(
                 }
 
                 DropdownMenu(
-                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    expanded = showSourcesMenu && !showMainTextSubmenu && !showJessicaSubmenu,
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text(s.titles.jessicaAmarteifio) },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showJessicaSubmenu = true }
+                    )
                     DropdownMenuItem(
                         text = { Text(s.common.originalText) },
                         trailingIcon = {
@@ -757,6 +765,30 @@ fun SubtractingWithAbacusScreen(
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=e4103f19-1efb-469f-bd69-d44d43e0d3a3")
+                        }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showJessicaSubmenu,
+                    onDismissRequest = { showJessicaSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showJessicaSubmenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS"))
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showJessicaSubmenu = false
+                            uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                         }
                     )
                 }

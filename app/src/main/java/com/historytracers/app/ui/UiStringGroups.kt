@@ -42,6 +42,7 @@ data class HubTitleStrings(
     val history: String, val naturalFamiliesPart2: String,
     val goingToInfinity: String, val whereAreWeFrom: String,
     val returning: String, val tomokoHoult: String, val aPal: String,
+    val jessicaAmarteifio: String,
     val langEnUs: String, val langPtBr: String, val langEsEs: String,
     val congratulationTitle: String, val congratulationMessage: String,
     val whoWalkFirst: String, val whoWalkFirstButton: String,

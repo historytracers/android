@@ -250,6 +250,7 @@ fun MultiplyingWithoutLimitsScreen(
     val preferences = remember { UserPreferences(context) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showJessicaSubmenu by remember { mutableStateOf(false) }
     var showStoredValue by remember { mutableStateOf(false) }
 
     val tensResult = exercise.a * exercise.tensDigit.toLong()
@@ -873,9 +874,16 @@ fun MultiplyingWithoutLimitsScreen(
                 }
 
                 DropdownMenu(
-                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    expanded = showSourcesMenu && !showMainTextSubmenu && !showJessicaSubmenu,
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text(s.titles.jessicaAmarteifio) },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showJessicaSubmenu = true }
+                    )
                     DropdownMenuItem(
                         text = { Text(s.common.originalText) },
                         trailingIcon = {
@@ -905,6 +913,30 @@ fun MultiplyingWithoutLimitsScreen(
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=052bd667-eb38-4e87-8c05-439cfd9c4178")
+                        }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showJessicaSubmenu,
+                    onDismissRequest = { showJessicaSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showJessicaSubmenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS"))
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showJessicaSubmenu = false
+                            uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                         }
                     )
                 }
