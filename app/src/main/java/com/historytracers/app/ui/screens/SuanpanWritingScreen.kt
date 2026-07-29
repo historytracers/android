@@ -380,18 +380,18 @@ fun SuanpanWritingScreen(
             onDismissRequest = { showSourcesMenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.common.originalText) },
-                trailingIcon = {
-                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                },
-                onClick = { showMainTextSubmenu = true }
-            )
-            DropdownMenuItem(
                 text = { Text(s.titles.aPal) },
                 trailingIcon = {
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                 },
                 onClick = { showAPalSubmenu = true }
+            )
+            DropdownMenuItem(
+                text = { Text(s.common.originalText) },
+                trailingIcon = {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                },
+                onClick = { showMainTextSubmenu = true }
             )
         }
 

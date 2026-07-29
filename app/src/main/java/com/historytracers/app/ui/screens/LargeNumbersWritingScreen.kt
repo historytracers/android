@@ -629,13 +629,6 @@ fun LargeNumbersWritingScreen(
                     onClick = { showJessicaSubmenu = true }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.common.originalText) },
-                    trailingIcon = {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                    },
-                    onClick = { showMainTextSubmenu = true }
-                )
-                DropdownMenuItem(
                     text = { Text(s.titles.aPal) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
@@ -648,6 +641,13 @@ fun LargeNumbersWritingScreen(
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
                     onClick = { showTomokoSubmenu = true }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.common.originalText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
                 )
             }
 

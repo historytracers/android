@@ -16,6 +16,7 @@
 
 - Every exercise screen (Clap, FeetAndHands, ExercisingAddition, ExercisingMultiplication, etc.) can have a Sources menu in the bottom-left corner.
 - The Sources menu has a book icon + "Sources" label. When tapped, it shows a cascading submenu: "Main Text" (with arrow icon) → Copy URL / Go to URL.
+- **"Original Text" must always be the first option from bottom to top** — i.e., the last item at the bottom of the first-level menu. Author/person entries (Jessica, APal, Tomoko, DhavitPrem, etc.) come before it.
 - To add a Sources menu to a screen:
   1. Add these imports if not present: `ClipData`, `ClipboardManager`, `Context`, `Toast`, `clickable`, `KeyboardArrowRight`, `Book`, `LocalUriHandler`
   2. Add state vars: `showSourcesMenu` and `showMainTextSubmenu` (both `mutableStateOf(false)`)
