@@ -103,14 +103,11 @@ fun YupanaScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 FilledIconButton(
-                    onClick = {
-                        controller.markCompleted("quipu")
-                        scope.launch { preferences.markYupanaSectionCompleted("quipu") }
-                    },
+                    onClick = { },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("quipu")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow
                     )
                 ) {
                     Icon(
@@ -135,14 +132,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller.markCompleted("hands_on_yupana")
-                        scope.launch { preferences.markYupanaSectionCompleted("hands_on_yupana") }
-                    },
+                    onClick = { },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("hands_on_yupana")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow
                     )
                 ) {
                     Icon(
@@ -167,14 +161,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller.markCompleted("large_numbers")
-                        scope.launch { preferences.markYupanaSectionCompleted("large_numbers") }
-                    },
+                    onClick = { },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("large_numbers")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow
                     )
                 ) {
                     Icon(
@@ -233,14 +224,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller2.markCompleted("moving_in_yupana")
-                        scope.launch { preferences.markYupanaSectionCompleted("moving_in_yupana") }
-                    },
+                    onClick = { },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("moving_in_yupana")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow
                     )
                 ) {
                     Icon(
@@ -265,11 +253,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller2.markCompleted("practicing_addition")
-                        scope.launch { preferences.markYupanaSectionCompleted("practicing_addition") }
-                        onNavigateToPracticingAdditionYupana()
-                    },
+                    onClick = { onNavigateToPracticingAdditionYupana() },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(

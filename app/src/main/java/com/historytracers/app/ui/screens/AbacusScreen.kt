@@ -130,7 +130,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("history")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Icon(
@@ -310,7 +310,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("adding_two_numbers")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Text(
@@ -339,7 +339,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("adding_large_numbers")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Text(
@@ -468,7 +468,7 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("abacus_in_rereading")) ButtonYellowDark else ButtonYellow
+                    containerColor = ButtonYellow
                 )
             ) {
                 Text(
