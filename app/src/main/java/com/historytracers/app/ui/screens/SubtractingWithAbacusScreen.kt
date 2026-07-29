@@ -323,35 +323,27 @@ fun SubtractingWithAbacusScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(4.dp))
 
                 Text(
                     text = s.sbw.sbwInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
-
-                Text(
-                    text = "${s.common.levelPrefix}$currentDigitLevel",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
                 )
 
                 Text(
                     text = "${exercise.a} \u2212 ${exercise.b} = ?",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 4.dp)
                 ) {
                     val modeEnabled = !exerciseStarted || finalCongratsShown
                     FilledIconButton(
