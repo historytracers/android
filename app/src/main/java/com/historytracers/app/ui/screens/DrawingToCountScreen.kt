@@ -176,12 +176,11 @@ fun DrawingToCountScreen(
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .weight(0.26f)
+                                .weight(0.07f)
                                 .fillMaxHeight()
                                 .padding(2.dp)
                         ) {
@@ -195,23 +194,32 @@ fun DrawingToCountScreen(
 
                         Box(
                             modifier = Modifier
-                                .weight(0.48f)
+                                .weight(0.86f)
                                 .fillMaxHeight()
-                                .padding(2.dp),
+                                .padding(horizontal = 8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Canvas(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.55f)
-                            ) {
-                                drawYupanaColumn(size, markers = getMarkersForDigit(counter))
+                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                val margin = 3f / 860f * size.width
+                                val usableWidth = size.width - 2f * margin
+                                val colW = usableWidth / 4f
+                                val startX = margin
+                                val rowHeight = (size.height - 6f / 480f * size.height) / 4f
+                                val startY = 3f / 480f * size.height
+                                drawYupanaRow(
+                                    cellOriginX = startX,
+                                    cellOriginY = startY,
+                                    cellWidth = colW,
+                                    cellHeight = rowHeight,
+                                    canvasSize = size,
+                                    markers = getMarkersForDigit(counter)
+                                )
                             }
                         }
 
                         Box(
                             modifier = Modifier
-                                .weight(0.26f)
+                                .weight(0.07f)
                                 .fillMaxHeight()
                                 .padding(2.dp)
                         ) {
@@ -372,46 +380,52 @@ private fun DrawScope.drawOneHand(
     drawContext.canvas.nativeCanvas.drawPath(hp, fillPaint)
 }
 
-private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
-    val cw = size.width
-    val ch = size.height
-    val margin = cw * 0.04f
-    val usableWidth = cw - 2f * margin
-    val colW = usableWidth / 4f
-    val startX = margin
-    val startY = ch * 0.04f
-    val rowHeight = ch - 2f * startY
+private fun DrawScope.drawYupanaRow(
+    cellOriginX: Float,
+    cellOriginY: Float,
+    cellWidth: Float,
+    cellHeight: Float,
+    canvasSize: Size,
+    markers: Set<Int>,
+) {
+    val cw = canvasSize.width
+    val ch = canvasSize.height
 
-    val cornerRadius = CornerRadius(cw * 0.008f)
-    val shadowOffset = ch * 0.008f
+    val cornerRadius = CornerRadius(6f / 860f * cw)
+    val borderWidth = 1.2f / 480f * ch
+    val shadowOffset = 2f / 480f * ch
 
     for (col in 0..3) {
-        val cellLeft = startX + col * colW
-        val cellTop = startY
+        val cellLeft = cellOriginX + col * cellWidth
+        val cellTop = cellOriginY
 
         drawRoundRect(
             color = Color(0xFF000000).copy(alpha = 0.1f),
             topLeft = Offset(cellLeft + shadowOffset, cellTop + shadowOffset),
-            size = Size(colW, rowHeight),
+            size = Size(cellWidth, cellHeight),
             cornerRadius = cornerRadius
         )
+
         drawRoundRect(
             color = Color(0xFFFEF8E8),
             topLeft = Offset(cellLeft, cellTop),
-            size = Size(colW, rowHeight),
+            size = Size(cellWidth, cellHeight),
             cornerRadius = cornerRadius
         )
+
         drawRoundRect(
             color = Color(0xFFB48B5A),
             topLeft = Offset(cellLeft, cellTop),
-            size = Size(colW, rowHeight),
+            size = Size(cellWidth, cellHeight),
             cornerRadius = cornerRadius,
-            style = Stroke(width = cw * 0.003f)
+            style = Stroke(width = borderWidth)
         )
     }
 
-    val dotRadius = min(colW * 0.15f, rowHeight * 0.15f)
-    val coloredDotRadius = dotRadius * 0.9f
+    val dotRadius = minOf(cellWidth * 0.18f, cellHeight * 0.18f, 9f / 860f * cw)
+    val markerRadius = dotRadius * 0.9f
+    val markerGap = cellHeight * 0.12f
+    val extraPx = with(density) { 3.dp.toPx() }
     val gapOffset = with(density) { 2.5.dp.toPx() }
 
     val dotPositionsByCol = listOf(
@@ -437,24 +451,27 @@ private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
     )
 
     for (col in 0..3) {
-        val cx = startX + col * colW + colW / 2f
-        val cy = startY + rowHeight / 2f
+        val cx = cellOriginX + col * cellWidth + cellWidth / 2f
+        val cy = cellOriginY + cellHeight / 2f
         val colNum = col + 1
         val hasMarker = colNum in markers
         val drawPositions = dotPositionsByCol[col]
 
+        val topEdge = cellOriginY + cellHeight * 0.08f
+        val topMarkerY = topEdge + markerGap
+
         if (hasMarker) {
-            val my = cy - rowHeight * 0.26f
+            val my = topMarkerY - extraPx
             drawCircle(
                 color = Color(0xFFC0392B),
-                radius = coloredDotRadius,
+                radius = markerRadius,
                 center = Offset(cx, my)
             )
             drawCircle(
                 color = Color(0xFF000000).copy(alpha = 0.2f),
-                radius = coloredDotRadius,
+                radius = markerRadius,
                 center = Offset(cx, my),
-                style = Stroke(width = cw * 0.002f)
+                style = Stroke(width = 0.8f / 480f * ch)
             )
         }
 
@@ -477,7 +494,7 @@ private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
                 color = Color(0xFF000000).copy(alpha = 0.15f),
                 radius = dotRadius * 0.8f,
                 center = dotCenter,
-                style = Stroke(width = cw * 0.0015f)
+                style = Stroke(width = 0.6f / 440f * ch)
             )
         }
     }
