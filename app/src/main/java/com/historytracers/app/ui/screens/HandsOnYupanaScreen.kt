@@ -1,0 +1,172 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+package com.historytracers.app.ui.screens
+
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalUiStrings
+
+private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire//mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HandsOnYupanaScreen(
+    onNavigateBack: () -> Unit = {}
+) {
+    val s = LocalUiStrings.current
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var imageFailed by remember { mutableStateOf(false) }
+    val uriHandler = LocalUriHandler.current
+
+    LaunchedEffect(Unit) {
+        preferences.markYupanaSectionCompleted("hands_on_yupana")
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(s.yupana.handsOnYupana) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = s.yupana.handsOnYupanaDescription,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                if (imageFailed) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 200.dp)
+                                .padding(24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = s.yupana.handsOnYupanaOfflineMessage,
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                } else {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(IMAGE_URL)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = s.yupana.handsOnYupana,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        contentScale = ContentScale.Fit,
+                        onError = { imageFailed = true }
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = 8.dp, start = 8.dp)
+            ) {
+                Column {
+                    IconButton(onClick = { showSourcesMenu = true }) {
+                        Icon(
+                            Icons.Filled.Book,
+                            contentDescription = s.common.sources,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                    Text(
+                        text = s.common.sources,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu,
+                    onDismissRequest = { showSourcesMenu = false; showMainTextSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.originalText) },
+                        trailingIcon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
+                        onClick = { showMainTextSubmenu = true }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showMainTextSubmenu,
+                    onDismissRequest = { showMainTextSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", IMAGE_URL))
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                            showMainTextSubmenu = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            uriHandler.openUri(IMAGE_URL)
+                            showMainTextSubmenu = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}

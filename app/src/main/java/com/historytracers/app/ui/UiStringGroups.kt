@@ -157,6 +157,8 @@ data class YupanaStrings(
     val ypMultiplyStepAdd: String,
     val ypMultiplyPerfectMessage: String,
     val ypMultiplyCongratsMessage: String,
+    val handsOnYupanaDescription: String,
+    val handsOnYupanaOfflineMessage: String,
 )
 
 data class MiscStrings(
