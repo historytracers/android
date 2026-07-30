@@ -159,6 +159,7 @@ data class YupanaStrings(
     val ypMultiplyCongratsMessage: String,
     val handsOnYupanaDescription: String,
     val handsOnYupanaOfflineMessage: String,
+    val mapswire: String,
 )
 
 data class MiscStrings(

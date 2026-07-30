@@ -307,6 +307,7 @@ val EnStrings = UiStrings(
         ypMultiplyCongratsMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 CONGRATULATIONS! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nYou calculated %d \u00D7 %d = %d\nClick 'New exercise' to practice more!",
         handsOnYupanaDescription = "In the Tawantinsuyu region highlighted on the map, the Incas created a system that represents numerical growth in relation to our hands.",
         handsOnYupanaOfflineMessage = "The Tawantinsuyu map covers the modern-day regions of Ecuador, Peru, Bolivia, Argentina, and Chile.",
+        mapswire = "Mapswire",
     ),
     misc = MiscStrings(
         multiplicationTable = "Multiplication Table",
@@ -607,6 +608,7 @@ val PtStrings = UiStrings(
         ypMultiplyCongratsMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PARAB\u00c9NS! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nVoc\u00ea calculou %d \u00D7 %d = %d\nClique em 'Novo exerc\u00edcio' para praticar mais!",
         handsOnYupanaDescription = "Na regi\u00e3o de Tawantinsuyu destacada no mapa, os Incas criaram um sistema que representa o crescimento num\u00e9rico em rela\u00e7\u00e3o \u00e0s nossas m\u00e3os.",
         handsOnYupanaOfflineMessage = "O mapa de Tawantinsuyu cobre as regi\u00f5es atuais do Equador, Peru, Bol\u00edvia, Argentina e Chile.",
+        mapswire = "Mapswire",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabela de Multiplica\u00e7\u00e3o",
@@ -907,6 +909,7 @@ val EsStrings = UiStrings(
         ypMultiplyCongratsMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1FELICITACIONES! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nHas calculado %d \u00D7 %d = %d\n\u00a1Haz clic en 'Nuevo ejercicio' para practicar m\u00e1s!",
         handsOnYupanaDescription = "En la regi\u00f3n de Tawantinsuyu resaltada en el mapa, los Incas crearon un sistema que representa el crecimiento num\u00e9rico en relaci\u00f3n con nuestras manos.",
         handsOnYupanaOfflineMessage = "El mapa de Tawantinsuyu cubre las regiones actuales de Ecuador, Per\u00fa, Bolivia, Argentina y Chile.",
+        mapswire = "Mapswire",
     ),
     misc = MiscStrings(
         multiplicationTable = "Tabla de Multiplicar",

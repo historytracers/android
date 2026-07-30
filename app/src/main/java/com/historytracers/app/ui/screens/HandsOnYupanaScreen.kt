@@ -27,6 +27,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalUiStrings
 
 private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire//mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
+private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=ea01ab6c-26af-4c7a-ba06-5c1731c83d4d"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +40,7 @@ fun HandsOnYupanaScreen(
 
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showMapswireSubmenu by remember { mutableStateOf(false) }
     var imageFailed by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
 
@@ -136,8 +138,13 @@ fun HandsOnYupanaScreen(
 
                 DropdownMenu(
                     expanded = showSourcesMenu,
-                    onDismissRequest = { showSourcesMenu = false; showMainTextSubmenu = false }
+                    onDismissRequest = { showSourcesMenu = false; showMainTextSubmenu = false; showMapswireSubmenu = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text(s.yupana.mapswire) },
+                        trailingIcon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
+                        onClick = { showMapswireSubmenu = true }
+                    )
                     DropdownMenuItem(
                         text = { Text(s.common.originalText) },
                         trailingIcon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
@@ -153,7 +160,7 @@ fun HandsOnYupanaScreen(
                         text = { Text(s.common.copyUrl) },
                         onClick = {
                             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", IMAGE_URL))
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", ORIGINAL_TEXT_URL))
                             Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
                             showMainTextSubmenu = false
                         }
@@ -161,8 +168,30 @@ fun HandsOnYupanaScreen(
                     DropdownMenuItem(
                         text = { Text(s.common.goToUrl) },
                         onClick = {
-                            uriHandler.openUri(IMAGE_URL)
+                            uriHandler.openUri(ORIGINAL_TEXT_URL)
                             showMainTextSubmenu = false
+                        }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showMapswireSubmenu,
+                    onDismissRequest = { showMapswireSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://mapswire.com/"))
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                            showMapswireSubmenu = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            uriHandler.openUri("https://mapswire.com/")
+                            showMapswireSubmenu = false
                         }
                     )
                 }
