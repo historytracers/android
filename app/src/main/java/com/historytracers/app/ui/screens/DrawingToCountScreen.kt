@@ -174,14 +174,35 @@ fun DrawingToCountScreen(
                         .fillMaxWidth()
                         .aspectRatio(1.5f)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
+                    Box(
+                        modifier = Modifier.fillMaxSize()
                     ) {
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp)
+                        ) {
+                            val margin = 3f / 860f * size.width
+                            val usableWidth = size.width - 2f * margin
+                            val colW = usableWidth / 4f
+                            val startX = margin
+                            val rowHeight = (size.height - 6f / 480f * size.height) / 4f
+                            val startY = 3f / 480f * size.height
+                            drawYupanaRow(
+                                cellOriginX = startX,
+                                cellOriginY = startY,
+                                cellWidth = colW,
+                                cellHeight = rowHeight,
+                                canvasSize = size,
+                                markers = getMarkersForDigit(counter)
+                            )
+                        }
+
                         Box(
                             modifier = Modifier
-                                .weight(0.07f)
                                 .fillMaxHeight()
+                                .fillMaxWidth(0.26f)
+                                .align(Alignment.CenterStart)
                                 .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -194,33 +215,9 @@ fun DrawingToCountScreen(
 
                         Box(
                             modifier = Modifier
-                                .weight(0.86f)
                                 .fillMaxHeight()
-                                .padding(horizontal = 8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Canvas(modifier = Modifier.fillMaxSize()) {
-                                val margin = 3f / 860f * size.width
-                                val usableWidth = size.width - 2f * margin
-                                val colW = usableWidth / 4f
-                                val startX = margin
-                                val rowHeight = (size.height - 6f / 480f * size.height) / 4f
-                                val startY = 3f / 480f * size.height
-                                drawYupanaRow(
-                                    cellOriginX = startX,
-                                    cellOriginY = startY,
-                                    cellWidth = colW,
-                                    cellHeight = rowHeight,
-                                    canvasSize = size,
-                                    markers = getMarkersForDigit(counter)
-                                )
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .weight(0.07f)
-                                .fillMaxHeight()
+                                .fillMaxWidth(0.26f)
+                                .align(Alignment.CenterEnd)
                                 .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
