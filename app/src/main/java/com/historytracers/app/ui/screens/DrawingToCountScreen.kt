@@ -169,11 +169,14 @@ fun DrawingToCountScreen(
                     }
                 }
 
-                Box(
+                BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1.5f)
                 ) {
+                    val rowBottomRatio = 3f / 480f + (1f - 6f / 480f) / 4f
+                    val contentOffset = maxHeight * rowBottomRatio + 50.dp
+
                     Box(
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -229,56 +232,62 @@ fun DrawingToCountScreen(
                                 drawOneHand(cx, cy, s, isLeft = false, paint, handPath)
                             }
                         }
-                    }
-                }
 
-                Spacer(Modifier.height(20.dp))
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .offset(y = contentOffset)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "${s.common.number} $counter",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
 
-                Text(
-                    text = "${s.common.number} $counter",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                            Spacer(Modifier.height(8.dp))
 
-                Spacer(Modifier.height(8.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                FilledIconButton(
+                                    onClick = { updateCounter(counter + 1) },
+                                    enabled = counter < 9,
+                                    modifier = Modifier.size(56.dp),
+                                    shape = CircleShape,
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        containerColor = ButtonYellow
+                                    )
+                                ) {
+                                    Icon(
+                                        Icons.Filled.KeyboardArrowUp,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(36.dp),
+                                        tint = OnButtonYellow
+                                    )
+                                }
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FilledIconButton(
-                        onClick = { updateCounter(counter + 1) },
-                        enabled = counter < 9,
-                        modifier = Modifier.size(56.dp),
-                        shape = CircleShape,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ButtonYellow
-                        )
-                    ) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowUp,
-                            contentDescription = null,
-                            modifier = Modifier.size(36.dp),
-                            tint = OnButtonYellow
-                        )
-                    }
-
-                    FilledIconButton(
-                        onClick = { updateCounter(counter - 1) },
-                        enabled = counter > 0,
-                        modifier = Modifier.size(56.dp),
-                        shape = CircleShape,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ButtonYellow
-                        )
-                    ) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowDown,
-                            contentDescription = null,
-                            modifier = Modifier.size(36.dp),
-                            tint = OnButtonYellow
-                        )
+                                FilledIconButton(
+                                    onClick = { updateCounter(counter - 1) },
+                                    enabled = counter > 0,
+                                    modifier = Modifier.size(56.dp),
+                                    shape = CircleShape,
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        containerColor = ButtonYellow
+                                    )
+                                ) {
+                                    Icon(
+                                        Icons.Filled.KeyboardArrowDown,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(36.dp),
+                                        tint = OnButtonYellow
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
