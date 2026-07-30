@@ -4,6 +4,9 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Matrix
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -25,9 +28,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import com.historytracers.app.ui.theme.parseHexColor
 import kotlin.math.min
 
 private val yupanaSelectors = listOf(
@@ -55,9 +59,51 @@ private fun getMarkersForDigit(digit: Int): Set<Int> {
     return cols
 }
 
+private fun buildHandPath(): Path {
+    return Path().apply {
+        moveTo(-268.1f, 338f)
+        rLineTo(21.7f, -21.7f)
+        rCubicTo(2.3f, -2.3f, 3.5f, -5.3f, 3.5f, -8.5f)
+        rLineTo(0f, -55.7f)
+        rCubicTo(0f, -5.6f, 2.2f, -10.9f, 6.2f, -14.9f)
+        rLineTo(32.4f, -32.4f)
+        rCubicTo(2.1f, -2.1f, 5.8f, -1.8f, 7.4f, 0.8f)
+        rCubicTo(2.8f, 4.4f, 5f, 11.4f, -1.4f, 18.9f)
+        rCubicTo(-5.1f, 5.9f, -10.3f, 10.9f, -13.7f, 14.1f)
+        rCubicTo(-2.2f, 2f, -2.2f, 5.4f, -0.1f, 7.5f)
+        rCubicTo(2f, 2f, 5.3f, 2f, 7.3f, 0f)
+        rLineTo(87.6f, -87.6f)
+        rCubicTo(4.6f, -4.6f, 12.2f, -4.6f, 16.8f, 0f)
+        rCubicTo(4.6f, 4.6f, 4.6f, 12.2f, 0f, 16.8f)
+        rLineTo(-66.2f, 66.2f)
+        rCubicTo(-2.4f, 2.4f, -2.4f, 6.4f, 0f, 8.8f)
+        rCubicTo(2.4f, 2.4f, 6.4f, 2.4f, 8.8f, 0f)
+        rLineTo(74.5f, -75.3f)
+        rCubicTo(4.6f, -4.7f, 12.2f, -4.7f, 16.9f, 0f)
+        rLineTo(1.8f, 1.8f)
+        rCubicTo(4.6f, 4.6f, 4.6f, 12.1f, 0.1f, 16.8f)
+        rLineTo(-70.4f, 71.3f)
+        rCubicTo(-2.2f, 2.3f, -2.2f, 5.9f, 0f, 8.2f)
+        rCubicTo(2.3f, 2.3f, 5.9f, 2.3f, 8.2f, 0f)
+        rLineTo(61.2f, -61.2f)
+        rCubicTo(4.6f, -4.6f, 12.2f, -4.6f, 16.8f, 0f)
+        rLineTo(0.2f, 0.2f)
+        rCubicTo(4.6f, 4.6f, 4.6f, 12.2f, 0f, 16.8f)
+        rLineTo(-67.1f, 67.1f)
+        rCubicTo(-1.7f, 1.7f, -1.7f, 4.6f, 0f, 6.3f)
+        rCubicTo(1.7f, 1.7f, 4.6f, 1.7f, 6.3f, 0f)
+        rLineTo(50.7f, -50.7f)
+        rCubicTo(3.9f, -3.9f, 10.1f, -3.9f, 13.9f, 0f)
+        rCubicTo(3.9f, 3.9f, 3.9f, 10.1f, 0f, 13.9f)
+        rLineTo(-98.2f, 98.2f)
+        close()
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawingToCountScreen(
+    skinColor: String = "#A5672C",
     onNavigateBack: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -66,6 +112,8 @@ fun DrawingToCountScreen(
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
+    val handColor = remember(skinColor) { parseHexColor(skinColor) }
+    val handPath = remember { buildHandPath() }
 
     fun updateCounter(newValue: Int) {
         counter = newValue.coerceIn(0, 9)
@@ -113,12 +161,31 @@ fun DrawingToCountScreen(
 
                 val leftFingers = counter / 5
                 val rightFingers = counter % 5
-                val skinColor = Color(0xFFC68642)
+                val paint = remember(handColor) {
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = handColor.hashCode()
+                        style = Paint.Style.FILL
+                        strokeJoin = Paint.Join.ROUND
+                    }
+                }
+                val dotPaint = remember {
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.argb(200, 200, 50, 50)
+                        style = Paint.Style.FILL
+                    }
+                }
+                val emptyDotPaint = remember {
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.argb(80, 150, 150, 150)
+                        style = Paint.Style.STROKE
+                        strokeWidth = 3f
+                    }
+                }
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(2.2f)
+                        .aspectRatio(2.5f)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -127,7 +194,21 @@ fun DrawingToCountScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .weight(0.4f)
+                                .weight(0.35f)
+                                .fillMaxHeight()
+                                .padding(4.dp)
+                        ) {
+                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                val s = minOf(size.width / 350f, size.height / 480f) * 1.6f
+                                val cx = size.width * 0.5f
+                                val cy = size.height * 0.5f + 40f * s
+                                drawOneHand(cx, cy, s, isLeft = true, raisedFingers = leftFingers, paint, dotPaint, emptyDotPaint, handPath)
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .weight(0.30f)
                                 .fillMaxHeight()
                                 .padding(4.dp)
                         ) {
@@ -138,23 +219,15 @@ fun DrawingToCountScreen(
 
                         Box(
                             modifier = Modifier
-                                .weight(0.3f)
+                                .weight(0.35f)
                                 .fillMaxHeight()
                                 .padding(4.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                drawHand(leftFingers, isLeft = true, handColor = skinColor, canvasSize = size)
-                            }
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .weight(0.3f)
-                                .fillMaxHeight()
-                                .padding(4.dp)
-                        ) {
-                            Canvas(modifier = Modifier.fillMaxSize()) {
-                                drawHand(rightFingers, isLeft = false, handColor = skinColor, canvasSize = size)
+                                val s = minOf(size.width / 350f, size.height / 480f) * 1.6f
+                                val cx = size.width * 0.5f
+                                val cy = size.height * 0.5f + 40f * s
+                                drawOneHand(cx, cy, s, isLeft = false, raisedFingers = rightFingers, paint, dotPaint, emptyDotPaint, handPath)
                             }
                         }
                     }
@@ -287,6 +360,49 @@ fun DrawingToCountScreen(
     }
 }
 
+private fun DrawScope.drawOneHand(
+    cx: Float, cy: Float, scale: Float,
+    isLeft: Boolean, raisedFingers: Int,
+    fillPaint: Paint, dotPaint: Paint, emptyDotPaint: Paint,
+    handPath: Path
+) {
+    val mirror = if (isLeft) -1f else 1f
+    val matrix = Matrix()
+    matrix.setTranslate(cx, cy)
+    matrix.preScale(mirror * scale, scale)
+
+    val hp = Path()
+    hp.addPath(handPath, matrix)
+    drawContext.canvas.nativeCanvas.drawPath(hp, fillPaint)
+
+    val fingerTips = listOf(
+        Pair(-110f, -150f),
+        Pair(-40f, -180f),
+        Pair(30f, -185f),
+        Pair(100f, -160f),
+    )
+    for (i in fingerTips.indices) {
+        val (fx, fy) = fingerTips[i]
+        val fx2 = cx + fx * scale * mirror
+        val fy2 = cy + fy * scale
+        val isRaised = i < raisedFingers
+        if (isRaised) {
+            drawContext.canvas.nativeCanvas.drawCircle(fx2, fy2, 12f * scale, dotPaint)
+        } else {
+            drawContext.canvas.nativeCanvas.drawCircle(fx2, fy2, 12f * scale, emptyDotPaint)
+        }
+    }
+
+    val thumbTip = if (isLeft) Pair(200f, -10f) else Pair(-200f, -10f)
+    val tx = cx + thumbTip.first * scale * mirror
+    val ty = cy + thumbTip.second * scale
+    if (raisedFingers >= 1) {
+        drawContext.canvas.nativeCanvas.drawCircle(tx, ty, 14f * scale, dotPaint)
+    } else {
+        drawContext.canvas.nativeCanvas.drawCircle(tx, ty, 14f * scale, emptyDotPaint)
+    }
+}
+
 private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
     val cw = size.width
     val ch = size.height
@@ -395,99 +511,4 @@ private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
             )
         }
     }
-}
-
-private fun DrawScope.drawHand(
-    raisedFingers: Int,
-    isLeft: Boolean,
-    handColor: Color,
-    canvasSize: Size
-) {
-    val cw = canvasSize.width
-    val ch = canvasSize.height
-    val outlineColor = handColor.copy(alpha = 0.7f)
-    val palmWidth = cw * 0.55f
-    val palmHeight = ch * 0.55f
-    val palmCx = cw / 2f
-    val palmTop = ch * 0.50f
-    val fingerWidth = cw * 0.12f
-    val fingerRaisedLen = ch * 0.38f
-    val fingerLoweredLen = ch * 0.08f
-    val cornerR = cw * 0.04f
-
-    val palmPath = Path().apply {
-        val left = palmCx - palmWidth / 2f
-        val right = palmCx + palmWidth / 2f
-        val top = palmTop
-        val bottom = palmTop + palmHeight
-        addRoundRect(
-            androidx.compose.ui.geometry.RoundRect(
-                left, top, right, bottom,
-                topLeftCornerRadius = CornerRadius(cornerR),
-                topRightCornerRadius = CornerRadius(cornerR),
-                bottomRightCornerRadius = CornerRadius(cornerR * 1.5f),
-                bottomLeftCornerRadius = CornerRadius(cornerR * 1.5f)
-            )
-        )
-    }
-    drawPath(palmPath, handColor)
-    drawPath(palmPath, outlineColor, style = Stroke(width = cw * 0.01f))
-
-    val fingerXs: List<Float>
-    if (isLeft) {
-        fingerXs = listOf(
-            palmCx + palmWidth * 0.35f,
-            palmCx + palmWidth * 0.12f,
-            palmCx - palmWidth * 0.08f,
-            palmCx - palmWidth * 0.28f,
-        )
-    } else {
-        fingerXs = listOf(
-            palmCx - palmWidth * 0.35f,
-            palmCx - palmWidth * 0.12f,
-            palmCx + palmWidth * 0.08f,
-            palmCx + palmWidth * 0.28f,
-        )
-    }
-
-    for (i in 0..3) {
-        val isRaised = i < raisedFingers
-        val len = if (isRaised) fingerRaisedLen else fingerLoweredLen
-        val fingerTop = palmTop - len
-        val fw = fingerWidth * (1f - i * 0.08f)
-        val fx = fingerXs[i] - fw / 2f
-
-        val fingerPath = Path().apply {
-            addRoundRect(
-                androidx.compose.ui.geometry.RoundRect(
-                    fx, fingerTop, fx + fw, palmTop,
-                    topLeftCornerRadius = CornerRadius(cornerR * 0.6f),
-                    topRightCornerRadius = CornerRadius(cornerR * 0.6f),
-                    bottomLeftCornerRadius = CornerRadius(0f),
-                    bottomRightCornerRadius = CornerRadius(0f)
-                )
-            )
-        }
-        drawPath(fingerPath, handColor)
-        drawPath(fingerPath, outlineColor, style = Stroke(width = cw * 0.01f))
-    }
-
-    val thumbRaised = raisedFingers >= 1
-    val thumbLen = if (thumbRaised) ch * 0.30f else ch * 0.10f
-    val thumbDir = if (isLeft) 1f else -1f
-    val thumbX = palmCx + thumbDir * (palmWidth / 2f)
-    val thumbW = cw * 0.13f
-    val thumbPath = Path().apply {
-        val tx = thumbX + thumbDir * (if (thumbRaised) -thumbLen * 0.35f else 0f)
-        val ty = palmTop + palmHeight * 0.25f
-        addRoundRect(
-            androidx.compose.ui.geometry.RoundRect(
-                minOf(thumbX, tx), ty,
-                maxOf(thumbX, tx) + thumbW, ty + thumbW * 1.3f,
-                cornerRadius = CornerRadius(cornerR * 0.5f)
-            )
-        )
-    }
-    drawPath(thumbPath, handColor)
-    drawPath(thumbPath, outlineColor, style = Stroke(width = cw * 0.01f))
 }
