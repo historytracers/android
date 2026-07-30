@@ -181,7 +181,7 @@ fun DrawingToCountScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .weight(0.38f)
+                                .weight(0.26f)
                                 .fillMaxHeight()
                                 .padding(2.dp)
                         ) {
@@ -195,18 +195,23 @@ fun DrawingToCountScreen(
 
                         Box(
                             modifier = Modifier
-                                .weight(0.24f)
+                                .weight(0.48f)
                                 .fillMaxHeight()
-                                .padding(2.dp)
+                                .padding(2.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Canvas(modifier = Modifier.fillMaxSize()) {
+                            Canvas(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.55f)
+                            ) {
                                 drawYupanaColumn(size, markers = getMarkersForDigit(counter))
                             }
                         }
 
                         Box(
                             modifier = Modifier
-                                .weight(0.38f)
+                                .weight(0.26f)
                                 .fillMaxHeight()
                                 .padding(2.dp)
                         ) {
