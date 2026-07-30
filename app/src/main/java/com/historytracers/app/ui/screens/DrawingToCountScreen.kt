@@ -412,14 +412,15 @@ private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
 
     val dotRadius = min(colW * 0.15f, rowHeight * 0.15f)
     val coloredDotRadius = dotRadius * 0.9f
+    val gapOffset = with(density) { 2.5.dp.toPx() }
 
     val dotPositionsByCol = listOf(
         listOf(
             Offset(-dotRadius * 1.5f, -dotRadius * 2f),
             Offset(-dotRadius * 1.5f, 0f),
             Offset(-dotRadius * 1.5f, dotRadius * 2f),
-            Offset(dotRadius * 1.5f, -dotRadius * 0.8f),
-            Offset(dotRadius * 1.5f, dotRadius * 0.8f),
+            Offset(dotRadius * 1.5f, -dotRadius * 0.8f - gapOffset),
+            Offset(dotRadius * 1.5f, dotRadius * 0.8f + gapOffset),
         ),
         listOf(
             Offset(0f, -dotRadius * 1.8f),
