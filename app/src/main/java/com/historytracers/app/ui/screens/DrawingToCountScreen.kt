@@ -208,7 +208,8 @@ fun DrawingToCountScreen(
                             Canvas(modifier = Modifier.fillMaxSize()) {
                                 val s = minOf(size.width / 500f, size.height / 500f) * 2.4f
                                 val cx = size.width * 0.42f
-                                val cy = size.height * 0.58f + 40f * s
+                                val ypRowCenter = 3f / 480f * size.height + ((size.height - 6f / 480f * size.height) / 4f) / 2f
+                                val cy = ypRowCenter
                                 drawOneHand(cx, cy, s, isLeft = true, paint, handPath)
                             }
                         }
@@ -223,32 +224,22 @@ fun DrawingToCountScreen(
                             Canvas(modifier = Modifier.fillMaxSize()) {
                                 val s = minOf(size.width / 500f, size.height / 500f) * 2.4f
                                 val cx = size.width * 0.58f
-                                val cy = size.height * 0.58f + 40f * s
+                                val ypRowCenter = 3f / 480f * size.height + ((size.height - 6f / 480f * size.height) / 4f) / 2f
+                                val cy = ypRowCenter
                                 drawOneHand(cx, cy, s, isLeft = false, paint, handPath)
                             }
                         }
                     }
                 }
 
-                Spacer(Modifier.height(42.dp))
+                Spacer(Modifier.height(20.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "${s.common.number} $counter",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    Text(
-                        text = s.common.valuePrefix + counter.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Text(
+                    text = "${s.common.number} $counter",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
                 Spacer(Modifier.height(8.dp))
 
@@ -290,8 +281,6 @@ fun DrawingToCountScreen(
                         )
                     }
                 }
-
-                Spacer(Modifier.height(48.dp))
             }
 
             Box(
