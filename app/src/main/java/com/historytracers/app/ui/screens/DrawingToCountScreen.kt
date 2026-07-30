@@ -186,7 +186,7 @@ fun DrawingToCountScreen(
                                 .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                val s = minOf(size.width / 500f, size.height / 500f) * 1.2f
+                                val s = minOf(size.width / 500f, size.height / 500f) * 2.4f
                                 val cx = size.width * 0.42f
                                 val cy = size.height * 0.58f + 40f * s
                                 drawOneHand(cx, cy, s, isLeft = true, paint, handPath)
@@ -216,7 +216,7 @@ fun DrawingToCountScreen(
                                 .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                val s = minOf(size.width / 500f, size.height / 500f) * 1.2f
+                                val s = minOf(size.width / 500f, size.height / 500f) * 2.4f
                                 val cx = size.width * 0.58f
                                 val cy = size.height * 0.58f + 40f * s
                                 drawOneHand(cx, cy, s, isLeft = false, paint, handPath)
@@ -225,7 +225,7 @@ fun DrawingToCountScreen(
                     }
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(42.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
