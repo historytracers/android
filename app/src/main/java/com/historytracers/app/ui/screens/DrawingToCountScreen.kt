@@ -48,6 +48,14 @@ private val yupanaSelectors = listOf(
     -1, -1, -1, -1, -1, -1, -1, -1, -1, 4
 )
 
+private val fingerTips = listOf(
+    Offset(-240f, 243f),
+    Offset(-170f, 233f),
+    Offset(-100f, 228f),
+    Offset(-35f, 233f),
+    Offset(50f, 258f),
+)
+
 private fun getMarkersForDigit(digit: Int): Set<Int> {
     val cols = mutableSetOf<Int>()
     for (offset in 0..2) {
@@ -168,6 +176,21 @@ fun DrawingToCountScreen(
                         strokeJoin = Paint.Join.ROUND
                     }
                 }
+                val numberPaint = remember {
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.WHITE
+                        textAlign = Paint.Align.CENTER
+                        style = Paint.Style.FILL
+                    }
+                }
+                val numberStrokePaint = remember {
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.BLACK
+                        textAlign = Paint.Align.CENTER
+                        style = Paint.Style.STROKE
+                        strokeWidth = 3f
+                    }
+                }
 
                 BoxWithConstraints(
                     modifier = Modifier
@@ -214,6 +237,11 @@ fun DrawingToCountScreen(
                                 val ypRowCenter = 3f / 480f * size.height + ((size.height - 6f / 480f * size.height) / 4f) / 2f
                                 val cy = ypRowCenter
                                 drawOneHand(cx, cy, s, isLeft = true, paint, handPath)
+                                drawHandNumbers(
+                                    numbers = listOf(6 to 0, 7 to 1, 8 to 2, 9 to 3).filter { (n, _) -> n <= counter },
+                                    cx = cx, cy = cy, handScale = s, isLeft = true,
+                                    textPaint = numberPaint, strokePaint = numberStrokePaint
+                                )
                             }
                         }
 
@@ -230,6 +258,11 @@ fun DrawingToCountScreen(
                                 val ypRowCenter = 3f / 480f * size.height + ((size.height - 6f / 480f * size.height) / 4f) / 2f
                                 val cy = ypRowCenter
                                 drawOneHand(cx, cy, s, isLeft = false, paint, handPath)
+                                drawHandNumbers(
+                                    numbers = listOf(1 to 4, 2 to 3, 3 to 2, 4 to 1, 5 to 0).filter { (n, _) -> n <= counter },
+                                    cx = cx, cy = cy, handScale = s, isLeft = false,
+                                    textPaint = numberPaint, strokePaint = numberStrokePaint
+                                )
                             }
                         }
 
@@ -373,6 +406,34 @@ private fun DrawScope.drawOneHand(
     val hp = Path()
     hp.addPath(handPath, m)
     drawContext.canvas.nativeCanvas.drawPath(hp, fillPaint)
+}
+
+private fun DrawScope.drawHandNumbers(
+    numbers: List<Pair<Int, Int>>,
+    cx: Float, cy: Float, handScale: Float,
+    isLeft: Boolean,
+    textPaint: Paint, strokePaint: Paint,
+) {
+    val s = handScale * 0.7f
+    val textSize = 28f * handScale
+    textPaint.textSize = textSize
+    strokePaint.textSize = textSize
+    val numberOffsets = mapOf(
+        1 to Offset(-40f, 5f),
+        2 to Offset(-5f, 0f),
+        3 to Offset(0f, -5f),
+        5 to Offset(0f, -5f),
+    )
+    for ((num, fi) in numbers) {
+        val f = fingerTips[fi]
+        val off = numberOffsets[num]
+        val dx = if (off != null) with(density) { off.x.dp.toPx() } else 0f
+        val dy = if (off != null) with(density) { off.y.dp.toPx() } else 0f
+        val x = cx + (if (isLeft) -f.x else f.x) * s + dx
+        val y = cy + f.y * s + textSize * 0.35f + dy
+        drawContext.canvas.nativeCanvas.drawText(num.toString(), x, y, strokePaint)
+        drawContext.canvas.nativeCanvas.drawText(num.toString(), x, y, textPaint)
+    }
 }
 
 private fun DrawScope.drawYupanaRow(
