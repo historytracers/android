@@ -419,10 +419,11 @@ private fun DrawScope.drawHandNumbers(
     textPaint.textSize = textSize
     strokePaint.textSize = textSize
     val numberOffsets = mapOf(
-        1 to Offset(-40f, 5f),
-        2 to Offset(-5f, 0f),
-        3 to Offset(0f, -5f),
-        5 to Offset(0f, -5f),
+        1 to Offset(-24f, 0f),
+        2 to Offset(-5f, -15f),
+        3 to Offset(7f, -28f),
+        4 to Offset(14f, -31f),
+        5 to Offset(11f, -19f),
     )
     for ((num, fi) in numbers) {
         val f = fingerTips[fi]
