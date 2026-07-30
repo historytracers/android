@@ -168,24 +168,11 @@ fun DrawingToCountScreen(
                         strokeJoin = Paint.Join.ROUND
                     }
                 }
-                val dotPaint = remember {
-                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = android.graphics.Color.argb(200, 200, 50, 50)
-                        style = Paint.Style.FILL
-                    }
-                }
-                val emptyDotPaint = remember {
-                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = android.graphics.Color.argb(80, 150, 150, 150)
-                        style = Paint.Style.STROKE
-                        strokeWidth = 3f
-                    }
-                }
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(2.5f)
+                        .aspectRatio(1.5f)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -194,23 +181,23 @@ fun DrawingToCountScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .weight(0.35f)
+                                .weight(0.38f)
                                 .fillMaxHeight()
-                                .padding(4.dp)
+                                .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                val s = minOf(size.width / 350f, size.height / 480f) * 1.6f
-                                val cx = size.width * 0.5f
-                                val cy = size.height * 0.5f + 40f * s
-                                drawOneHand(cx, cy, s, isLeft = true, raisedFingers = leftFingers, paint, dotPaint, emptyDotPaint, handPath)
+                                val s = minOf(size.width / 500f, size.height / 500f) * 1.2f
+                                val cx = size.width * 0.42f
+                                val cy = size.height * 0.58f + 40f * s
+                                drawOneHand(cx, cy, s, isLeft = true, paint, handPath)
                             }
                         }
 
                         Box(
                             modifier = Modifier
-                                .weight(0.30f)
+                                .weight(0.24f)
                                 .fillMaxHeight()
-                                .padding(4.dp)
+                                .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
                                 drawYupanaColumn(size, markers = getMarkersForDigit(counter))
@@ -219,28 +206,39 @@ fun DrawingToCountScreen(
 
                         Box(
                             modifier = Modifier
-                                .weight(0.35f)
+                                .weight(0.38f)
                                 .fillMaxHeight()
-                                .padding(4.dp)
+                                .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                val s = minOf(size.width / 350f, size.height / 480f) * 1.6f
-                                val cx = size.width * 0.5f
-                                val cy = size.height * 0.5f + 40f * s
-                                drawOneHand(cx, cy, s, isLeft = false, raisedFingers = rightFingers, paint, dotPaint, emptyDotPaint, handPath)
+                                val s = minOf(size.width / 500f, size.height / 500f) * 1.2f
+                                val cx = size.width * 0.58f
+                                val cy = size.height * 0.58f + 40f * s
+                                drawOneHand(cx, cy, s, isLeft = false, paint, handPath)
                             }
                         }
                     }
                 }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
 
-                Text(
-                    text = "${s.common.number} $counter",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${s.common.number} $counter",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        text = s.common.valuePrefix + counter.toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
                 Spacer(Modifier.height(8.dp))
 
@@ -251,7 +249,7 @@ fun DrawingToCountScreen(
                     FilledIconButton(
                         onClick = { updateCounter(counter + 1) },
                         enabled = counter < 9,
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.size(56.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = ButtonYellow
@@ -260,7 +258,7 @@ fun DrawingToCountScreen(
                         Icon(
                             Icons.Filled.KeyboardArrowUp,
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp),
+                            modifier = Modifier.size(36.dp),
                             tint = OnButtonYellow
                         )
                     }
@@ -268,7 +266,7 @@ fun DrawingToCountScreen(
                     FilledIconButton(
                         onClick = { updateCounter(counter - 1) },
                         enabled = counter > 0,
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.size(56.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = ButtonYellow
@@ -277,19 +275,11 @@ fun DrawingToCountScreen(
                         Icon(
                             Icons.Filled.KeyboardArrowDown,
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp),
+                            modifier = Modifier.size(36.dp),
                             tint = OnButtonYellow
                         )
                     }
                 }
-
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    text = "${s.common.valuePrefix} $counter",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
 
                 Spacer(Modifier.height(48.dp))
             }
@@ -362,45 +352,19 @@ fun DrawingToCountScreen(
 
 private fun DrawScope.drawOneHand(
     cx: Float, cy: Float, scale: Float,
-    isLeft: Boolean, raisedFingers: Int,
-    fillPaint: Paint, dotPaint: Paint, emptyDotPaint: Paint,
-    handPath: Path
+    isLeft: Boolean, fillPaint: Paint, handPath: Path
 ) {
     val mirror = if (isLeft) -1f else 1f
-    val matrix = Matrix()
-    matrix.setTranslate(cx, cy)
-    matrix.preScale(mirror * scale, scale)
-
-    val hp = Path()
-    hp.addPath(handPath, matrix)
-    drawContext.canvas.nativeCanvas.drawPath(hp, fillPaint)
-
-    val fingerTips = listOf(
-        Pair(-110f, -150f),
-        Pair(-40f, -180f),
-        Pair(30f, -185f),
-        Pair(100f, -160f),
-    )
-    for (i in fingerTips.indices) {
-        val (fx, fy) = fingerTips[i]
-        val fx2 = cx + fx * scale * mirror
-        val fy2 = cy + fy * scale
-        val isRaised = i < raisedFingers
-        if (isRaised) {
-            drawContext.canvas.nativeCanvas.drawCircle(fx2, fy2, 12f * scale, dotPaint)
-        } else {
-            drawContext.canvas.nativeCanvas.drawCircle(fx2, fy2, 12f * scale, emptyDotPaint)
-        }
-    }
-
-    val thumbTip = if (isLeft) Pair(200f, -10f) else Pair(-200f, -10f)
-    val tx = cx + thumbTip.first * scale * mirror
-    val ty = cy + thumbTip.second * scale
-    if (raisedFingers >= 1) {
-        drawContext.canvas.nativeCanvas.drawCircle(tx, ty, 14f * scale, dotPaint)
+    val m = Matrix()
+    m.setTranslate(cx, cy)
+    if (isLeft) {
+        m.preScale(-scale * 0.7f, scale * 0.7f)
     } else {
-        drawContext.canvas.nativeCanvas.drawCircle(tx, ty, 14f * scale, emptyDotPaint)
+        m.preScale(scale * 0.7f, scale * 0.7f)
     }
+    val hp = Path()
+    hp.addPath(handPath, m)
+    drawContext.canvas.nativeCanvas.drawPath(hp, fillPaint)
 }
 
 private fun DrawScope.drawYupanaColumn(size: Size, markers: Set<Int>) {
