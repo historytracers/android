@@ -26,8 +26,9 @@ data class AppCommonStrings(
     val stepPrefix: String, val newExercise: String, val doExercise: String,
     val nextStep: String, val number: String, val auto: String, val stop: String,
     val complete: String, val patreon: String, val paypal: String,
-    val thinking: String, val randomly: String, val sources: String,
+    val thinking: String, val randomly: String,     val sources: String,
     val originalText: String, val slowly: String, val fast: String,
+    val drawToCount: String,
 )
 
 data class HubTitleStrings(

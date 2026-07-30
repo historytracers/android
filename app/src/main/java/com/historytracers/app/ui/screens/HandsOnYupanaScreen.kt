@@ -5,17 +5,20 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -32,7 +35,8 @@ private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HandsOnYupanaScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToDrawingToCount: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
@@ -114,6 +118,27 @@ fun HandsOnYupanaScreen(
                         onError = { imageFailed = true }
                     )
                 }
+
+                Spacer(Modifier.height(16.dp))
+
+                FilledTonalButton(
+                    onClick = onNavigateToDrawingToCount,
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = s.common.drawToCount,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    )
+                }
             }
 
             Box(
@@ -121,23 +146,28 @@ fun HandsOnYupanaScreen(
                     .align(Alignment.BottomStart)
                     .padding(bottom = 8.dp, start = 8.dp)
             ) {
-                Column {
-                    IconButton(onClick = { showSourcesMenu = true }) {
-                        Icon(
-                            Icons.Filled.Book,
-                            contentDescription = s.common.sources,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { showSourcesMenu = true }
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Book,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(4.dp))
                     Text(
                         text = s.common.sources,
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(start = 8.dp)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
                 DropdownMenu(
-                    expanded = showSourcesMenu,
+                    expanded = showSourcesMenu && !showMainTextSubmenu && !showMapswireSubmenu,
                     onDismissRequest = { showSourcesMenu = false; showMainTextSubmenu = false; showMapswireSubmenu = false }
                 ) {
                     DropdownMenuItem(

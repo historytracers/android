@@ -99,6 +99,7 @@ val EnStrings = UiStrings(
         originalText = "Original Text",
         slowly = "Slowly",
         fast = "Fast",
+        drawToCount = "Draw to Count",
     ),
     titles = HubTitleStrings(
         aRoadToSomewhere = "A road to somewhere",
@@ -400,6 +401,7 @@ val PtStrings = UiStrings(
         originalText = "Texto Original",
         slowly = "Devagar",
         fast = "R\u00e1pido",
+        drawToCount = "Desenhar para Contar",
     ),
     titles = HubTitleStrings(
         aRoadToSomewhere = "Uma estrada para algum lugar",
@@ -701,6 +703,7 @@ val EsStrings = UiStrings(
         originalText = "Texto Original",
         slowly = "Despacio",
         fast = "R\u00e1pido",
+        drawToCount = "Dibujar para Contar",
     ),
     titles = HubTitleStrings(
         aRoadToSomewhere = "Un camino a alg\u00fan lugar",
