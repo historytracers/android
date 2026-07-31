@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.drawingToCountScreenStringsForLanguage
@@ -44,6 +45,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlin.math.min
+import kotlinx.coroutines.launch
 
 private val yupanaSelectors = listOf(
     -1, 4, 3, 2, 4, 1, 1, 1, 1, 1,
@@ -116,13 +118,18 @@ private fun buildHandPath(): Path {
 fun DrawingToCountScreen(
     skinColor: String = "#A5672C",
     onNavigateBack: () -> Unit = {},
-    onNavigateToHandsOnYupana: () -> Unit = {}
+    onNavigateToHandsOnYupana: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = drawingToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
     var counter by remember { mutableIntStateOf(0) }
+    var nineReached by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showDhavitPremSubmenu by remember { mutableStateOf(false) }
@@ -132,6 +139,13 @@ fun DrawingToCountScreen(
 
     fun updateCounter(newValue: Int) {
         counter = newValue.coerceIn(0, 9)
+        if (counter == 9 && !nineReached) {
+            nineReached = true
+            onScoreChanged(currentScore + 1)
+            scope.launch { preferences.recordLessonCompletion() }
+        } else if (counter == 0) {
+            nineReached = false
+        }
     }
 
     Scaffold(

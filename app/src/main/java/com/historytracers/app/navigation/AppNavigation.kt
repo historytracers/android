@@ -410,7 +410,9 @@ fun AppNavigation() {
                                         launchSingleTop = true
                                     }
                                 }
-                            }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.PracticingAdditionYupana.route) {
