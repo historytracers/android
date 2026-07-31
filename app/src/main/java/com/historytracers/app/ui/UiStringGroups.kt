@@ -139,6 +139,7 @@ data class SbwStrings(
 data class YupanaStrings(
     val yupana: String, val quipu: String,
     val handsOnYupana: String, val movingInYupana: String,
+    val tawantsuyu: String,
     val multiplyingWithYupana: String,
     val practicingMultiplicationYupana: String,
     val practicingWithYupana: String,

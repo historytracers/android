@@ -399,9 +399,10 @@ fun AppNavigation() {
                     composable(Screen.DrawingToCount.route) {
                         DrawingToCountScreen(
                             skinColor = skinColor,
+                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.HandsOnYupana.route, false)) {
-                                    navController.navigate(Screen.HandsOnYupana.route) {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }

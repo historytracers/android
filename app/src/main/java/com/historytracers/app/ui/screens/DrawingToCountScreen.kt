@@ -112,7 +112,8 @@ private fun buildHandPath(): Path {
 @Composable
 fun DrawingToCountScreen(
     skinColor: String = "#A5672C",
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToHandsOnYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
@@ -322,6 +323,27 @@ fun DrawingToCountScreen(
                             }
                         }
                     }
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                FilledTonalButton(
+                    onClick = onNavigateToHandsOnYupana,
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = s.yupana.tawantsuyu,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
 
