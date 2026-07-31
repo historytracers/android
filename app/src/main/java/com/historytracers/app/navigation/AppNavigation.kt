@@ -60,6 +60,11 @@ import com.historytracers.app.ui.screens.PracticingAdditionYupanaScreen
 import com.historytracers.app.ui.screens.PracticingMultiplicationYupanaScreen
 import com.historytracers.app.ui.screens.HandsOnYupanaScreen
 import com.historytracers.app.ui.screens.DrawingToCountScreen
+import com.historytracers.app.ui.screens.IskayMovementScreen
+import com.historytracers.app.ui.screens.KimsaMovementScreen
+import com.historytracers.app.ui.screens.PisqaMovementScreen
+import com.historytracers.app.ui.screens.PichanaMovementScreen
+import com.historytracers.app.ui.screens.KinkinMovementScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -74,7 +79,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -383,7 +388,8 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToPracticingAdditionYupana = { navController.navigate(Screen.PracticingAdditionYupana.route) },
                             onNavigateToPracticingMultiplicationYupana = { navController.navigate(Screen.PracticingMultiplicationYupana.route) },
-                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } }
+                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } },
+                            onNavigateToMovingInYupana = { navController.navigate(Screen.IskayMovement.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.HandsOnYupana.route) {
@@ -413,6 +419,79 @@ fun AppNavigation() {
                             },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.IskayMovement.route) {
+                        IskayMovementScreen(
+                            skinColor = skinColor,
+                            onNavigateToKimsa = { navController.navigate(Screen.KimsaMovement.route) { launchSingleTop = true } },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.KimsaMovement.route) {
+                        KimsaMovementScreen(
+                            skinColor = skinColor,
+                            onNavigateToIskay = { navController.navigate(Screen.IskayMovement.route) { launchSingleTop = true } },
+                            onNavigateToPisqa = { navController.navigate(Screen.PisqaMovement.route) { launchSingleTop = true } },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.PisqaMovement.route) {
+                        PisqaMovementScreen(
+                            skinColor = skinColor,
+                            onNavigateToKimsa = { navController.navigate(Screen.KimsaMovement.route) { launchSingleTop = true } },
+                            onNavigateToPichana = { navController.navigate(Screen.PichanaMovement.route) { launchSingleTop = true } },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.PichanaMovement.route) {
+                        PichanaMovementScreen(
+                            skinColor = skinColor,
+                            onNavigateToPisqa = { navController.navigate(Screen.PisqaMovement.route) { launchSingleTop = true } },
+                            onNavigateToKinkin = { navController.navigate(Screen.KinkinMovement.route) { launchSingleTop = true } },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.KinkinMovement.route) {
+                        KinkinMovementScreen(
+                            skinColor = skinColor,
+                            onNavigateToPichana = { navController.navigate(Screen.PichanaMovement.route) { launchSingleTop = true } },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.PracticingAdditionYupana.route) {
