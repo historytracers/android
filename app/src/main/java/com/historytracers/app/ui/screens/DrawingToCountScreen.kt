@@ -125,6 +125,7 @@ fun DrawingToCountScreen(
     var counter by remember { mutableIntStateOf(0) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var showDhavitPremSubmenu by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
@@ -378,9 +379,16 @@ fun DrawingToCountScreen(
                 }
 
                 DropdownMenu(
-                    expanded = showSourcesMenu && !showMainTextSubmenu,
+                    expanded = showSourcesMenu && !showMainTextSubmenu && !showDhavitPremSubmenu,
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
+                    DropdownMenuItem(
+                        text = { Text("Dhavit Prem") },
+                        trailingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        },
+                        onClick = { showDhavitPremSubmenu = true }
+                    )
                     DropdownMenuItem(
                         text = { Text(s.common.originalText) },
                         trailingIcon = {
@@ -410,6 +418,30 @@ fun DrawingToCountScreen(
                             showSourcesMenu = false
                             showMainTextSubmenu = false
                             uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=687ee328-19bb-4a65-ab46-7d707a2e11dc")
+                        }
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showSourcesMenu && showDhavitPremSubmenu,
+                    onDismissRequest = { showDhavitPremSubmenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(s.common.copyUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showDhavitPremSubmenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("URL", "https://www.youtube.com/watch?v=qynAx9YBO1Y"))
+                            Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(s.common.goToUrl) },
+                        onClick = {
+                            showSourcesMenu = false
+                            showDhavitPremSubmenu = false
+                            uriHandler.openUri("https://www.youtube.com/watch?v=qynAx9YBO1Y")
                         }
                     )
                 }
