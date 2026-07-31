@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,7 +17,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +58,7 @@ fun FirstStepsScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("i_dont_know", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity"),
+            listOf("i_dont_know", "learning_in_shells", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity"),
             completedSections
         )
     }
@@ -122,6 +126,47 @@ fun FirstStepsScreen(
 
             Text(
                 text = hts.iDontKnow,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    controller.markCompleted("learning_in_shells")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("learning_in_shells") }
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("learning_in_shells")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Canvas(modifier = Modifier.size(52.dp)) {
+                    val strokeWidth = size.width * 0.06f
+                    val center = this.center
+                    val half = size.minDimension / 2f
+                    val spacing = size.width * 0.12f
+                    listOf(0f, spacing, 2 * spacing).forEach { inset ->
+                        val h = half - inset
+                        drawRect(
+                            color = OnButtonYellow,
+                            topLeft = Offset(center.x - h, center.y - h),
+                            size = Size(2 * h, 2 * h),
+                            style = Stroke(width = strokeWidth)
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.learningInLayers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
