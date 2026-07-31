@@ -424,6 +424,10 @@ private fun DrawScope.drawHandNumbers(
         3 to Offset(7f, -28f),
         4 to Offset(14f, -31f),
         5 to Offset(11f, -19f),
+        6 to Offset(-10f, -18f),
+        7 to Offset(-20f, -30f),
+        8 to Offset(-9f, -25f),
+        9 to Offset(0f, -15f),
     )
     for ((num, fi) in numbers) {
         val f = fingerTips[fi]
