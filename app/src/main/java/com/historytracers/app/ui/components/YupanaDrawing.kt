@@ -102,6 +102,7 @@ internal fun DrawScope.drawHandNumbers(
     cx: Float, cy: Float, handScale: Float,
     isLeft: Boolean,
     textPaint: Paint, strokePaint: Paint,
+    extraOffsets: Map<Int, Offset> = emptyMap(),
 ) {
     val s = handScale * 0.7f
     val textSize = 28f * handScale
@@ -123,8 +124,11 @@ internal fun DrawScope.drawHandNumbers(
         val off = numberOffsets[num]
         val dx = if (off != null) with(density) { off.x.dp.toPx() } else 0f
         val dy = if (off != null) with(density) { off.y.dp.toPx() } else 0f
-        val x = cx + (if (isLeft) -f.x else f.x) * s + dx
-        val y = cy + f.y * s + textSize * 0.35f + dy
+        val extra = extraOffsets[num]
+        val ex = if (extra != null) with(density) { extra.x.dp.toPx() } else 0f
+        val ey = if (extra != null) with(density) { extra.y.dp.toPx() } else 0f
+        val x = cx + (if (isLeft) -f.x else f.x) * s + dx + ex
+        val y = cy + f.y * s + textSize * 0.35f + dy + ey
         drawContext.canvas.nativeCanvas.drawText(num.toString(), x, y, strokePaint)
         drawContext.canvas.nativeCanvas.drawText(num.toString(), x, y, textPaint)
     }
