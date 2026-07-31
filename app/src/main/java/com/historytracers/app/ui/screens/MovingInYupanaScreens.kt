@@ -50,6 +50,8 @@ private const val DHAVIT_PREM_URL = "https://www.researchgate.net/publication/33
 @Composable
 fun IskayMovementScreen(
     skinColor: String = "#A5672C",
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToKimsa: () -> Unit = {}
 ) {
@@ -70,6 +72,8 @@ fun IskayMovementScreen(
         movedRightValue = 3,
         skinColor = skinColor,
         onNavigateBack = onNavigateBack,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
         nextLabel = xs.kimsaTitle,
         onNavigateNext = onNavigateToKimsa,
         leftNumberExtraOffsets = mapOf(1 to Offset(50f, 0f))
@@ -80,6 +84,8 @@ fun IskayMovementScreen(
 @Composable
 fun KimsaMovementScreen(
     skinColor: String = "#A5672C",
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToIskay: () -> Unit = {},
     onNavigateToPisqa: () -> Unit = {}
@@ -101,6 +107,8 @@ fun KimsaMovementScreen(
         movedRightValue = 1,
         skinColor = skinColor,
         onNavigateBack = onNavigateBack,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
         prevLabel = xs.iskayTitle,
         nextLabel = xs.pisqaTitle,
         onNavigatePrev = onNavigateToIskay,
@@ -113,6 +121,8 @@ fun KimsaMovementScreen(
 @Composable
 fun PisqaMovementScreen(
     skinColor: String = "#A5672C",
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToKimsa: () -> Unit = {},
     onNavigateToPichana: () -> Unit = {}
@@ -134,6 +144,8 @@ fun PisqaMovementScreen(
         movedRightValue = 5,
         skinColor = skinColor,
         onNavigateBack = onNavigateBack,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
         prevLabel = xs.kimsaTitle,
         nextLabel = xs.pichanaTitle,
         onNavigatePrev = onNavigateToKimsa,
@@ -148,6 +160,8 @@ fun PisqaMovementScreen(
 @Composable
 fun PichanaMovementScreen(
     skinColor: String = "#A5672C",
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToPisqa: () -> Unit = {},
     onNavigateToKinkin: () -> Unit = {}
@@ -178,6 +192,8 @@ fun PichanaMovementScreen(
         movedRightValue = 0,
         skinColor = skinColor,
         onNavigateBack = onNavigateBack,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
         prevLabel = xs.pisqaTitle,
         nextLabel = xs.kinkinTitle,
         onNavigatePrev = onNavigateToPisqa,
@@ -204,6 +220,8 @@ fun PichanaMovementScreen(
 @Composable
 fun KinkinMovementScreen(
     skinColor: String = "#A5672C",
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToPichana: () -> Unit = {}
 ) {
@@ -224,6 +242,8 @@ fun KinkinMovementScreen(
         movedRightValue = 2,
         skinColor = skinColor,
         onNavigateBack = onNavigateBack,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
         prevLabel = xs.pichanaTitle,
         onNavigatePrev = onNavigateToPichana,
         leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f))
@@ -248,6 +268,8 @@ private fun YupanaMovementContent(
     movedRightValue: Int,
     skinColor: String,
     onNavigateBack: () -> Unit,
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     prevLabel: String? = null,
     nextLabel: String? = null,
     onNavigatePrev: (() -> Unit)? = null,
@@ -271,6 +293,7 @@ private fun YupanaMovementContent(
 
     LaunchedEffect(Unit) {
         preferences.markYupanaSectionCompleted("moving_in_yupana")
+        onScoreChanged(currentScore + 1)
     }
 
     val leftMarkers = if (moved) movedLeftMarkers else originalLeftMarkers
@@ -480,16 +503,19 @@ private fun YupanaMovementContent(
                         horizontalArrangement = Arrangement.spacedBy(24.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        FilledIconButton(
-                            onClick = { moved = true },
-                            enabled = !moved,
-                            modifier = Modifier.size(64.dp),
-                            shape = CircleShape,
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = Color(0xFF4CAF50),
-                                disabledContainerColor = Color(0xFF4CAF50).copy(alpha = 0.4f)
-                            )
-                        ) {
+                    FilledIconButton(
+                        onClick = {
+                            moved = true
+                            onScoreChanged(currentScore + 1)
+                        },
+                        enabled = !moved,
+                        modifier = Modifier.size(64.dp),
+                        shape = CircleShape,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            disabledContainerColor = Color(0xFF4CAF50).copy(alpha = 0.4f)
+                        )
+                    ) {
                             Icon(
                                 Icons.Filled.SwapHoriz,
                                 contentDescription = null,
@@ -498,16 +524,19 @@ private fun YupanaMovementContent(
                             )
                         }
 
-                        FilledIconButton(
-                            onClick = { moved = false },
-                            enabled = moved,
-                            modifier = Modifier.size(64.dp),
-                            shape = CircleShape,
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = Color(0xFF2980B9),
-                                disabledContainerColor = Color(0xFF2980B9).copy(alpha = 0.4f)
-                            )
-                        ) {
+                    FilledIconButton(
+                        onClick = {
+                            moved = false
+                            onScoreChanged(currentScore + 1)
+                        },
+                        enabled = moved,
+                        modifier = Modifier.size(64.dp),
+                        shape = CircleShape,
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = Color(0xFF2980B9),
+                            disabledContainerColor = Color(0xFF2980B9).copy(alpha = 0.4f)
+                        )
+                    ) {
                             Icon(
                                 Icons.Filled.Restore,
                                 contentDescription = null,

@@ -424,6 +424,8 @@ fun AppNavigation() {
                     composable(Screen.IskayMovement.route) {
                         IskayMovementScreen(
                             skinColor = skinColor,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToKimsa = { navController.navigate(Screen.KimsaMovement.route) { launchSingleTop = true } },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Yupana.route, false)) {
@@ -438,6 +440,8 @@ fun AppNavigation() {
                     composable(Screen.KimsaMovement.route) {
                         KimsaMovementScreen(
                             skinColor = skinColor,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToIskay = { navController.navigate(Screen.IskayMovement.route) { launchSingleTop = true } },
                             onNavigateToPisqa = { navController.navigate(Screen.PisqaMovement.route) { launchSingleTop = true } },
                             onNavigateBack = {
@@ -453,6 +457,8 @@ fun AppNavigation() {
                     composable(Screen.PisqaMovement.route) {
                         PisqaMovementScreen(
                             skinColor = skinColor,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToKimsa = { navController.navigate(Screen.KimsaMovement.route) { launchSingleTop = true } },
                             onNavigateToPichana = { navController.navigate(Screen.PichanaMovement.route) { launchSingleTop = true } },
                             onNavigateBack = {
@@ -468,6 +474,8 @@ fun AppNavigation() {
                     composable(Screen.PichanaMovement.route) {
                         PichanaMovementScreen(
                             skinColor = skinColor,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToPisqa = { navController.navigate(Screen.PisqaMovement.route) { launchSingleTop = true } },
                             onNavigateToKinkin = { navController.navigate(Screen.KinkinMovement.route) { launchSingleTop = true } },
                             onNavigateBack = {
@@ -483,6 +491,8 @@ fun AppNavigation() {
                     composable(Screen.KinkinMovement.route) {
                         KinkinMovementScreen(
                             skinColor = skinColor,
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToPichana = { navController.navigate(Screen.PichanaMovement.route) { launchSingleTop = true } },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Yupana.route, false)) {
