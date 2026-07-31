@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
@@ -136,7 +137,10 @@ fun PisqaMovementScreen(
         prevLabel = xs.kimsaTitle,
         nextLabel = xs.pichanaTitle,
         onNavigatePrev = onNavigateToKimsa,
-        onNavigateNext = onNavigateToPichana
+        onNavigateNext = onNavigateToPichana,
+        belowContentOffset = (-20).dp,
+        handOffsetY = 20.dp,
+        leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f), 3 to Offset(-15f, 0f), 4 to Offset(-20f, 0f), 5 to Offset(-15f, 0f))
     )
 }
 
@@ -247,7 +251,9 @@ private fun YupanaMovementContent(
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
     optionSelector: (@Composable () -> Unit)? = null,
-    leftNumberExtraOffsets: Map<Int, Offset> = emptyMap()
+    leftNumberExtraOffsets: Map<Int, Offset> = emptyMap(),
+    belowContentOffset: Dp = (-70).dp,
+    handOffsetY: Dp = 0.dp
 ) {
     val s = LocalUiStrings.current
     val xs = movingInYupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -409,6 +415,7 @@ private fun YupanaMovementContent(
                                 .fillMaxHeight()
                                 .fillMaxWidth(0.26f)
                                 .align(Alignment.CenterStart)
+                                .offset(y = handOffsetY)
                                 .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -432,6 +439,7 @@ private fun YupanaMovementContent(
                                 .fillMaxHeight()
                                 .fillMaxWidth(0.26f)
                                 .align(Alignment.CenterEnd)
+                                .offset(y = handOffsetY)
                                 .padding(2.dp)
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -452,7 +460,7 @@ private fun YupanaMovementContent(
                 }
 
                 Column(
-                    modifier = Modifier.offset(y = (-70).dp),
+                    modifier = Modifier.offset(y = belowContentOffset),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(Modifier.height(8.dp))
