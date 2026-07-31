@@ -103,7 +103,8 @@ fun KimsaMovementScreen(
         prevLabel = xs.iskayTitle,
         nextLabel = xs.pisqaTitle,
         onNavigatePrev = onNavigateToIskay,
-        onNavigateNext = onNavigateToPisqa
+        onNavigateNext = onNavigateToPisqa,
+        leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f), 3 to Offset(-20f, 0f), 4 to Offset(-30f, 0f), 5 to Offset(-30f, 0f))
     )
 }
 
