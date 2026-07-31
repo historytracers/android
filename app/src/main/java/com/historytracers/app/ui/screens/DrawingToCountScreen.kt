@@ -130,7 +130,7 @@ fun DrawingToCountScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(s.common.drawToCount) },
+                title = { Text(s.yupana.handsOnYupana) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
@@ -152,7 +152,7 @@ fun DrawingToCountScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = s.common.drawToCount,
+                    text = s.yupana.handsOnYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
