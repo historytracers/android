@@ -182,6 +182,7 @@ fun PichanaMovementScreen(
         nextLabel = xs.kinkinTitle,
         onNavigatePrev = onNavigateToPisqa,
         onNavigateNext = onNavigateToKinkin,
+        leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f), 3 to Offset(-15f, 0f), 4 to Offset(-20f, 0f), 5 to Offset(-15f, 0f)),
         optionSelector = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 FilterChip(
@@ -224,7 +225,8 @@ fun KinkinMovementScreen(
         skinColor = skinColor,
         onNavigateBack = onNavigateBack,
         prevLabel = xs.pichanaTitle,
-        onNavigatePrev = onNavigateToPichana
+        onNavigatePrev = onNavigateToPichana,
+        leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f))
     )
 }
 
