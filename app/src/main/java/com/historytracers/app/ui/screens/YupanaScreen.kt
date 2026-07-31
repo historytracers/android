@@ -43,7 +43,8 @@ fun YupanaScreen(
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToPracticingAdditionYupana: () -> Unit = {},
     onNavigateToPracticingMultiplicationYupana: () -> Unit = {},
-    onNavigateToHandsOnYupana: () -> Unit = {}
+    onNavigateToHandsOnYupana: () -> Unit = {},
+    onNavigateToMovingInYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -234,11 +235,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = { onNavigateToMovingInYupana() },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("moving_in_yupana")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(

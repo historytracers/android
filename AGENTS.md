@@ -1,3 +1,7 @@
+## Line Ending Rules
+
+- Always use LF line endings when creating or editing files. Never use CRLF. The repo enforces this via `.gitattributes` (`* text=auto eol=lf`); a CRLF working copy triggers git warnings and creates diff noise.
+
 ## Score Rules
 
 - Never create a local score variable. Always update the global score via `onScoreChanged(currentScore + N)` (the `currentScore` / `onScoreChanged` pattern wired through `AppNavigation.kt`), which persists to DataStore and displays in the top app bar across all screens.

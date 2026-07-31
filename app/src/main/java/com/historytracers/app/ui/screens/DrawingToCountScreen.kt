@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Matrix
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -24,13 +23,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -39,79 +32,17 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.buildHandPath
+import com.historytracers.app.ui.components.drawHandNumbers
+import com.historytracers.app.ui.components.drawOneHand
+import com.historytracers.app.ui.components.drawYupanaRow
+import com.historytracers.app.ui.components.getMarkersForDigit
 import com.historytracers.app.ui.features.drawingToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
-import kotlin.math.min
 import kotlinx.coroutines.launch
-
-private val yupanaSelectors = listOf(
-    -1, 4, 3, 2, 4, 1, 1, 1, 1, 1,
-    -1, -1, -1, -1, 2, -1, 4, 3, 2, 2,
-    -1, -1, -1, -1, -1, -1, -1, -1, -1, 4
-)
-
-private val fingerTips = listOf(
-    Offset(-240f, 243f),
-    Offset(-170f, 233f),
-    Offset(-100f, 228f),
-    Offset(-35f, 233f),
-    Offset(50f, 258f),
-)
-
-private fun getMarkersForDigit(digit: Int): Set<Int> {
-    val cols = mutableSetOf<Int>()
-    for (offset in 0..2) {
-        val idx = digit + offset * 10
-        if (idx >= yupanaSelectors.size) break
-        val col = yupanaSelectors[idx]
-        if (col > 0) cols.add(col)
-    }
-    return cols
-}
-
-private fun buildHandPath(): Path {
-    return Path().apply {
-        moveTo(-268.1f, 338f)
-        rLineTo(21.7f, -21.7f)
-        rCubicTo(2.3f, -2.3f, 3.5f, -5.3f, 3.5f, -8.5f)
-        rLineTo(0f, -55.7f)
-        rCubicTo(0f, -5.6f, 2.2f, -10.9f, 6.2f, -14.9f)
-        rLineTo(32.4f, -32.4f)
-        rCubicTo(2.1f, -2.1f, 5.8f, -1.8f, 7.4f, 0.8f)
-        rCubicTo(2.8f, 4.4f, 5f, 11.4f, -1.4f, 18.9f)
-        rCubicTo(-5.1f, 5.9f, -10.3f, 10.9f, -13.7f, 14.1f)
-        rCubicTo(-2.2f, 2f, -2.2f, 5.4f, -0.1f, 7.5f)
-        rCubicTo(2f, 2f, 5.3f, 2f, 7.3f, 0f)
-        rLineTo(87.6f, -87.6f)
-        rCubicTo(4.6f, -4.6f, 12.2f, -4.6f, 16.8f, 0f)
-        rCubicTo(4.6f, 4.6f, 4.6f, 12.2f, 0f, 16.8f)
-        rLineTo(-66.2f, 66.2f)
-        rCubicTo(-2.4f, 2.4f, -2.4f, 6.4f, 0f, 8.8f)
-        rCubicTo(2.4f, 2.4f, 6.4f, 2.4f, 8.8f, 0f)
-        rLineTo(74.5f, -75.3f)
-        rCubicTo(4.6f, -4.7f, 12.2f, -4.7f, 16.9f, 0f)
-        rLineTo(1.8f, 1.8f)
-        rCubicTo(4.6f, 4.6f, 4.6f, 12.1f, 0.1f, 16.8f)
-        rLineTo(-70.4f, 71.3f)
-        rCubicTo(-2.2f, 2.3f, -2.2f, 5.9f, 0f, 8.2f)
-        rCubicTo(2.3f, 2.3f, 5.9f, 2.3f, 8.2f, 0f)
-        rLineTo(61.2f, -61.2f)
-        rCubicTo(4.6f, -4.6f, 12.2f, -4.6f, 16.8f, 0f)
-        rLineTo(0.2f, 0.2f)
-        rCubicTo(4.6f, 4.6f, 4.6f, 12.2f, 0f, 16.8f)
-        rLineTo(-67.1f, 67.1f)
-        rCubicTo(-1.7f, 1.7f, -1.7f, 4.6f, 0f, 6.3f)
-        rCubicTo(1.7f, 1.7f, 4.6f, 1.7f, 6.3f, 0f)
-        rLineTo(50.7f, -50.7f)
-        rCubicTo(3.9f, -3.9f, 10.1f, -3.9f, 13.9f, 0f)
-        rCubicTo(3.9f, 3.9f, 3.9f, 10.1f, 0f, 13.9f)
-        rLineTo(-98.2f, 98.2f)
-        close()
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -241,7 +172,7 @@ fun DrawingToCountScreen(
                                 cellWidth = colW,
                                 cellHeight = rowHeight,
                                 canvasSize = size,
-                                markers = getMarkersForDigit(counter)
+                                leftMarkers = getMarkersForDigit(counter)
                             )
                         }
 
@@ -460,176 +391,6 @@ fun DrawingToCountScreen(
                     )
                 }
             }
-        }
-    }
-}
-
-private fun DrawScope.drawOneHand(
-    cx: Float, cy: Float, scale: Float,
-    isLeft: Boolean, fillPaint: Paint, handPath: Path
-) {
-    val mirror = if (isLeft) -1f else 1f
-    val m = Matrix()
-    m.setTranslate(cx, cy)
-    if (isLeft) {
-        m.preScale(-scale * 0.7f, scale * 0.7f)
-    } else {
-        m.preScale(scale * 0.7f, scale * 0.7f)
-    }
-    val hp = Path()
-    hp.addPath(handPath, m)
-    drawContext.canvas.nativeCanvas.drawPath(hp, fillPaint)
-}
-
-private fun DrawScope.drawHandNumbers(
-    numbers: List<Pair<Int, Int>>,
-    cx: Float, cy: Float, handScale: Float,
-    isLeft: Boolean,
-    textPaint: Paint, strokePaint: Paint,
-) {
-    val s = handScale * 0.7f
-    val textSize = 28f * handScale
-    textPaint.textSize = textSize
-    strokePaint.textSize = textSize
-    val numberOffsets = mapOf(
-        1 to Offset(-24f, 0f),
-        2 to Offset(-5f, -15f),
-        3 to Offset(7f, -28f),
-        4 to Offset(14f, -31f),
-        5 to Offset(11f, -19f),
-        6 to Offset(-10f, -18f),
-        7 to Offset(-20f, -30f),
-        8 to Offset(-9f, -25f),
-        9 to Offset(0f, -15f),
-    )
-    for ((num, fi) in numbers) {
-        val f = fingerTips[fi]
-        val off = numberOffsets[num]
-        val dx = if (off != null) with(density) { off.x.dp.toPx() } else 0f
-        val dy = if (off != null) with(density) { off.y.dp.toPx() } else 0f
-        val x = cx + (if (isLeft) -f.x else f.x) * s + dx
-        val y = cy + f.y * s + textSize * 0.35f + dy
-        drawContext.canvas.nativeCanvas.drawText(num.toString(), x, y, strokePaint)
-        drawContext.canvas.nativeCanvas.drawText(num.toString(), x, y, textPaint)
-    }
-}
-
-private fun DrawScope.drawYupanaRow(
-    cellOriginX: Float,
-    cellOriginY: Float,
-    cellWidth: Float,
-    cellHeight: Float,
-    canvasSize: Size,
-    markers: Set<Int>,
-) {
-    val cw = canvasSize.width
-    val ch = canvasSize.height
-
-    val cornerRadius = CornerRadius(6f / 860f * cw)
-    val borderWidth = 1.2f / 480f * ch
-    val shadowOffset = 2f / 480f * ch
-
-    for (col in 0..3) {
-        val cellLeft = cellOriginX + col * cellWidth
-        val cellTop = cellOriginY
-
-        drawRoundRect(
-            color = Color(0xFF000000).copy(alpha = 0.1f),
-            topLeft = Offset(cellLeft + shadowOffset, cellTop + shadowOffset),
-            size = Size(cellWidth, cellHeight),
-            cornerRadius = cornerRadius
-        )
-
-        drawRoundRect(
-            color = Color(0xFFFEF8E8),
-            topLeft = Offset(cellLeft, cellTop),
-            size = Size(cellWidth, cellHeight),
-            cornerRadius = cornerRadius
-        )
-
-        drawRoundRect(
-            color = Color(0xFFB48B5A),
-            topLeft = Offset(cellLeft, cellTop),
-            size = Size(cellWidth, cellHeight),
-            cornerRadius = cornerRadius,
-            style = Stroke(width = borderWidth)
-        )
-    }
-
-    val dotRadius = minOf(cellWidth * 0.18f, cellHeight * 0.18f, 9f / 860f * cw)
-    val markerRadius = dotRadius * 0.9f
-    val markerGap = cellHeight * 0.12f
-    val extraPx = with(density) { 3.dp.toPx() }
-    val gapOffset = with(density) { 2.5.dp.toPx() }
-
-    val dotPositionsByCol = listOf(
-        listOf(
-            Offset(-dotRadius * 1.5f, -dotRadius * 2f),
-            Offset(-dotRadius * 1.5f, 0f),
-            Offset(-dotRadius * 1.5f, dotRadius * 2f),
-            Offset(dotRadius * 1.5f, -dotRadius * 0.8f - gapOffset),
-            Offset(dotRadius * 1.5f, dotRadius * 0.8f + gapOffset),
-        ),
-        listOf(
-            Offset(0f, -dotRadius * 1.8f),
-            Offset(0f, 0f),
-            Offset(0f, dotRadius * 1.8f),
-        ),
-        listOf(
-            Offset(0f, -dotRadius * 1.2f),
-            Offset(0f, dotRadius * 1.2f),
-        ),
-        listOf(
-            Offset(0f, 0f),
-        ),
-    )
-
-    for (col in 0..3) {
-        val cx = cellOriginX + col * cellWidth + cellWidth / 2f
-        val cy = cellOriginY + cellHeight / 2f
-        val colNum = col + 1
-        val hasMarker = colNum in markers
-        val drawPositions = dotPositionsByCol[col]
-
-        val topEdge = cellOriginY + cellHeight * 0.08f
-        val topMarkerY = topEdge + markerGap
-
-        if (hasMarker) {
-            val my = topMarkerY - extraPx
-            drawCircle(
-                color = Color(0xFFC0392B),
-                radius = markerRadius,
-                center = Offset(cx, my)
-            )
-            drawCircle(
-                color = Color(0xFF000000).copy(alpha = 0.2f),
-                radius = markerRadius,
-                center = Offset(cx, my),
-                style = Stroke(width = 0.8f / 480f * ch)
-            )
-        }
-
-        val dotColor = when (col) {
-            0 -> Color(0xFF6B3A1A)
-            1 -> Color(0xFF5B2E12)
-            2 -> Color(0xFF4A2210)
-            3 -> Color(0xFF3A1808)
-            else -> Color.Gray
-        }
-
-        for (pos in drawPositions) {
-            val dotCenter = Offset(cx + pos.x, cy + pos.y)
-            drawCircle(
-                color = dotColor,
-                radius = dotRadius * 0.8f,
-                center = dotCenter
-            )
-            drawCircle(
-                color = Color(0xFF000000).copy(alpha = 0.15f),
-                radius = dotRadius * 0.8f,
-                center = dotCenter,
-                style = Stroke(width = 0.6f / 440f * ch)
-            )
         }
     }
 }
