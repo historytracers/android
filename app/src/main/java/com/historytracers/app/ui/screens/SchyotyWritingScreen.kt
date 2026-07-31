@@ -31,7 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.schyotyWritingScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -49,6 +52,8 @@ fun SchyotyWritingScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val xs = schyotyWritingScreenStringsForLanguage(LocalAppLanguage.current)
     val beads = remember { mutableStateOf(List(ROWS) { 0 }) }
     val targetLevel = remember { mutableStateOf(0) }
     val targetValue = remember { mutableStateOf(targetNumber(0)) }
@@ -103,7 +108,7 @@ fun SchyotyWritingScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.abacusWrite.writingToSchyoty,
+                        text = aws.writingToSchyoty,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -119,7 +124,7 @@ fun SchyotyWritingScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.abacusWrite.schyotyWritingInstruction,
+                    text = xs.schyotyWritingInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
@@ -291,7 +296,7 @@ fun SchyotyWritingScreen(
                 if (showAllLevels.value) {
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        text = s.abacusWrite.schyotyAllLevelsComplete,
+                        text = xs.schyotyAllLevelsComplete,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2E7D32),

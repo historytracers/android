@@ -36,7 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.practicingAdditionYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -209,6 +212,8 @@ fun PracticingAdditionYupanaScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val xs = practicingAdditionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -271,7 +276,7 @@ fun PracticingAdditionYupanaScreen(
                 if (userRedColumns == expected) {
                     completedRedMarkers = completedRedMarkers.toMutableList().also { it[activeIdx] = userRedColumns }
                     rowCompleted = true
-                    feedbackMessage = s.yupana.ypCorrectMessage
+                    feedbackMessage = ys.ypCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -282,7 +287,7 @@ fun PracticingAdditionYupanaScreen(
                 if (userBlueColumns == expected) {
                     completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[activeIdx] = userBlueColumns }
                     rowCompleted = true
-                    feedbackMessage = s.yupana.ypCorrectMessage
+                    feedbackMessage = ys.ypCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -296,12 +301,12 @@ fun PracticingAdditionYupanaScreen(
                         rowCompleted = true
                         if (stepRowIdx == lastMeaningfulStepRowIdx) {
                             stepCompleted = true
-                            feedbackMessage = s.yupana.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
+                            feedbackMessage = ys.ypPerfectMessage.format(exercise.left, exercise.right, exercise.left + exercise.right)
                             finalCongratsShown = true
                             onScoreChanged(currentScore + 2)
                             scope.launch { preferences.recordLessonCompletion() }
                         } else {
-                            feedbackMessage = s.yupana.ypCorrectMessage
+                            feedbackMessage = ys.ypCorrectMessage
                         }
                         isFeedbackPositive = true
                     }
@@ -366,16 +371,16 @@ fun PracticingAdditionYupanaScreen(
     fun zeroDigitMessage(idx: Int): String {
         val placeLabel = placeLabels[idx]
         return when (phase) {
-            0 -> s.yupana.ypNothingLeft.format(placeLabel)
-            1 -> s.yupana.ypNothingRight.format(placeLabel)
+            0 -> ys.ypNothingLeft.format(placeLabel)
+            1 -> ys.ypNothingRight.format(placeLabel)
             else -> {
                 val carryIn = carryIntoRow[idx]
                 val total = rows[idx].leftDigit + rows[idx].rightDigit + carryIn
                 if (carryIn > 0 || total >= 10) {
                     val carryOut = total / 10
-                    s.yupana.ypSumTen.format(rows[idx].leftDigit, rows[idx].rightDigit, carryIn, total, placeLabel, carryOut)
+                    ys.ypSumTen.format(rows[idx].leftDigit, rows[idx].rightDigit, carryIn, total, placeLabel, carryOut)
                 } else {
-                    s.yupana.ypNothingResult.format(placeLabel)
+                    ys.ypNothingResult.format(placeLabel)
                 }
             }
         }
@@ -465,7 +470,7 @@ fun PracticingAdditionYupanaScreen(
     fun toggleLevel() {
         if (currentDigitLevel == MAX_DIGIT_LEVEL && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.yupana.ypLastLevelMessage
+            feedbackMessage = ys.ypLastLevelMessage
             return
         }
         showLastLevelMessage = false
@@ -490,7 +495,7 @@ fun PracticingAdditionYupanaScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.yupana.practicingWithYupana,
+                        text = xs.practicingWithYupana,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -506,7 +511,7 @@ fun PracticingAdditionYupanaScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.yupana.ypButtonInstruction,
+                    text = ys.ypButtonInstruction,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -675,8 +680,8 @@ fun PracticingAdditionYupanaScreen(
                     ) {
                     Text(
                         text = when (phase) {
-                            0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else s.yupana.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
-                            1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else s.yupana.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
+                            0 -> if (rowCompleted) "${rows[placeIdx].leftDigit} (${placeLabels[placeIdx]})" else ys.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
+                            1 -> if (rowCompleted) "${rows[placeIdx].rightDigit} (${placeLabels[placeIdx]})" else ys.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
                                else -> if (rowCompleted) {
                                           val lv = rows[placeIdx].leftDigit
                                           val rBase = rows[placeIdx].rightDigit
@@ -686,7 +691,7 @@ fun PracticingAdditionYupanaScreen(
                                           val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
                                           val moves = writeSumOnYupana(wm, lv, rBase, carryIn)
                                           if (carryIn > 0)
-                                              "$lv + $rBase + $carryIn ${s.yupana.ypCarry} = $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
+                                              "$lv + $rBase + $carryIn ${ys.ypCarry} = $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
                                           else
                                               "$lv + $rBase = $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
                                     } else {
@@ -697,14 +702,14 @@ fun PracticingAdditionYupanaScreen(
                                        if (curCarry > 0) {
                                            val nextPlace = if (placeIdx > 0) placeLabels[placeIdx - 1] else ""
                                            if (carryFromPrev > 0)
-                                               s.yupana.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
+                                               ys.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace)
                                            else
-                                               s.yupana.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
+                                               ys.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
                                        } else {
                                            if (carryFromPrev > 0)
-                                               s.yupana.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
+                                               ys.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target)
                                            else
-                                               s.yupana.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
+                                               ys.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target)
                                        }
                                    }
                         },

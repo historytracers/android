@@ -30,7 +30,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.aboutScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.R
 
 private data class SocialLink(
@@ -53,6 +56,7 @@ private val socialLinks = listOf(
 @Composable
 fun AboutScreen() {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
 
     Column(
         modifier = Modifier
@@ -72,7 +76,7 @@ fun AboutScreen() {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = s.titles.aboutDescription,
+            text = hts.aboutDescription,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
@@ -100,6 +104,7 @@ fun AboutScreen() {
 @Composable
 private fun SocialIconButton(link: SocialLink) {
     val s = LocalUiStrings.current
+    val xs = aboutScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     var showMenu by remember { mutableStateOf(false) }
@@ -144,7 +149,7 @@ private fun SocialIconButton(link: SocialLink) {
                 }
             )
             DropdownMenuItem(
-                text = { Text(s.common.openApp) },
+                text = { Text(xs.openApp) },
                 onClick = {
                     showMenu = false
                     try {
@@ -156,7 +161,7 @@ private fun SocialIconButton(link: SocialLink) {
                         }
                         context.startActivity(intent)
                     } catch (_: ActivityNotFoundException) {
-                        Toast.makeText(context, s.common.appNotInstalled, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, xs.appNotInstalled, Toast.LENGTH_SHORT).show()
                     }
                 }
             )

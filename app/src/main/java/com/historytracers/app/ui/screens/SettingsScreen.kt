@@ -17,15 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.UiStrings
+import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.SkinColorPalette
 import com.historytracers.app.ui.theme.parseHexColor
 
-private fun availableLanguages(s: UiStrings) = listOf(
-    "en-US" to s.titles.langEnUs,
-    "pt-BR" to s.titles.langPtBr,
-    "es-ES" to s.titles.langEsEs
+private fun availableLanguages(hts: HubTitleStrings) = listOf(
+    "en-US" to hts.langEnUs,
+    "pt-BR" to hts.langPtBr,
+    "es-ES" to hts.langEsEs
 )
 
 private val availableBreakTimes = listOf(15, 25, 30, 35, 45, 50, 60)
@@ -42,10 +44,11 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     var languageExpanded by remember { mutableStateOf(false) }
     var breakTimeExpanded by remember { mutableStateOf(false) }
 
-    val selectedLangLabel = availableLanguages(s).firstOrNull { it.first == currentLanguage }?.second
+    val selectedLangLabel = availableLanguages(hts).firstOrNull { it.first == currentLanguage }?.second
         ?: currentLanguage
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -99,7 +102,7 @@ fun SettingsScreen(
                     expanded = languageExpanded,
                     onDismissRequest = { languageExpanded = false }
                 ) {
-                    availableLanguages(s).forEach { (code, label) ->
+                    availableLanguages(hts).forEach { (code, label) ->
                         DropdownMenuItem(
                             text = { Text(label) },
                             onClick = {

@@ -31,8 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.UiStrings
+import com.historytracers.app.ui.features.AbacusWriteStrings
+import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.MwStrings
+import com.historytracers.app.ui.features.PlaceValueStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.mwStringsForLanguage
+import com.historytracers.app.ui.features.placeValueStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -74,7 +82,7 @@ private fun generateMwExercise(multiplier: Int): MwExercise {
     return MwExercise(a, multiplier)
 }
 
-private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
+private fun buildMwSteps(exercise: MwExercise, ms: MwStrings, ps: PlaceValueStrings): List<MwStepInfo> {
     val steps = mutableListOf<MwStepInfo>()
 
     val a = exercise.a
@@ -88,12 +96,12 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
 
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
+        ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands,
+        ps.placeTenThousands, ps.placeHundredThousands, ps.placeMillions, ps.placeTenMillions
     )
 
     steps.add(MwStepInfo(
-        s.mw.mwStepWriteFirst.format(tensDigit, b, tensMult, b, tensProduct, tensProduct),
+        ms.mwStepWriteFirst.format(tensDigit, b, tensMult, b, tensProduct, tensProduct),
         tensProduct.toLong()
     ))
 
@@ -111,7 +119,7 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
 
         var prefix = ""
         if (firstAddStep) {
-            prefix = s.mw.mwUnitsProductHeader.format(unitsDigit, b, unitsProduct)
+            prefix = ms.mwUnitsProductHeader.format(unitsDigit, b, unitsProduct)
             firstAddStep = false
         }
 
@@ -121,15 +129,15 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
         if (totalDigit < 10) {
             currentValue += digitB * multipliers[p].toInt()
             steps.add(MwStepInfo(
-                prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
+                prefix + ms.mwStepAdd.format(digitB, placeNames[p], currentValue),
                 currentValue.toLong()
             ))
         } else {
             val complement = 10 - digitB
             val newValue = currentValue + (multipliers[p].toInt() * 10) - (complement * multipliers[p].toInt())
-            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
+            val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else ps.placeNext
             steps.add(MwStepInfo(
-                prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
+                prefix + ms.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
                 newValue.toLong()
             ))
             currentValue = newValue
@@ -137,7 +145,7 @@ private fun buildMwSteps(exercise: MwExercise, s: UiStrings): List<MwStepInfo> {
     }
 
     steps.add(MwStepInfo(
-        s.mw.mwStepFinal.format(a, b, total),
+        ms.mwStepFinal.format(a, b, total),
         total.toLong()
     ))
 
@@ -152,6 +160,10 @@ fun MultiplyingWithAbacusScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val ms = mwStringsForLanguage(LocalAppLanguage.current)
+    val ps = placeValueStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -160,7 +172,7 @@ fun MultiplyingWithAbacusScreen(
     val state = remember { mutableStateOf(List(COLUMNS) { MwColumnState() }) }
     var currentMultiplier by remember { mutableIntStateOf(MIN_MULTIPLIER) }
     var exercise by remember { mutableStateOf(generateMwExercise(currentMultiplier)) }
-    var steps by remember { mutableStateOf(buildMwSteps(exercise, s)) }
+    var steps by remember { mutableStateOf(buildMwSteps(exercise, ms, ps)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
@@ -178,7 +190,7 @@ fun MultiplyingWithAbacusScreen(
         currentMultiplier = MIN_MULTIPLIER
         state.value = List(COLUMNS) { MwColumnState() }
         exercise = generateMwExercise(currentMultiplier)
-        steps = buildMwSteps(exercise, s)
+        steps = buildMwSteps(exercise, ms, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -209,7 +221,7 @@ fun MultiplyingWithAbacusScreen(
         state.value = List(COLUMNS) { MwColumnState() }
         schyotyBeads.value = List(9) { 0 }
         exercise = generateMwExercise(currentMultiplier)
-        steps = buildMwSteps(exercise, s)
+        steps = buildMwSteps(exercise, ms, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -228,10 +240,10 @@ fun MultiplyingWithAbacusScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.mw.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = ms.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.mw.mwCorrectMessage
+                    feedbackMessage = ms.mwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -256,7 +268,7 @@ fun MultiplyingWithAbacusScreen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = ms.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -271,7 +283,7 @@ fun MultiplyingWithAbacusScreen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mw.mwLastLevelMessage.format(currentMultiplier)
+            feedbackMessage = ms.mwLastLevelMessage.format(currentMultiplier)
             isFeedbackPositive = true
             return
         }
@@ -297,7 +309,7 @@ fun MultiplyingWithAbacusScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.mw.multiplyingWithAbacusDescription,
+                        text = ms.multiplyingWithAbacusDescription,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -313,7 +325,7 @@ fun MultiplyingWithAbacusScreen(
                 Spacer(Modifier.height(2.dp))
 
                 Text(
-                    text = s.mw.multiplyingWithAbacusInstruction,
+                    text = ms.multiplyingWithAbacusInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -353,7 +365,7 @@ fun MultiplyingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.sorobanMode,
+                        text = aws.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -377,7 +389,7 @@ fun MultiplyingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.suanpanMode,
+                        text = aws.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -401,7 +413,7 @@ fun MultiplyingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.schyoty,
+                        text = aws.schyoty,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -584,7 +596,7 @@ fun MultiplyingWithAbacusScreen(
                             color = MaterialTheme.colorScheme.surfaceVariant,
                         ) {
                             Text(
-                                text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                                text = ms.mwStepStatus.format(currentStepIdx + 1, steps.size),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary,
@@ -603,7 +615,7 @@ fun MultiplyingWithAbacusScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${s.mw.mwStepPrefix}${steps[currentStepIdx].instruction}",
+                            text = "${ms.mwStepPrefix}${steps[currentStepIdx].instruction}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -722,7 +734,7 @@ fun MultiplyingWithAbacusScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.titles.jessicaAmarteifio) },
+                    text = { Text(hts.jessicaAmarteifio) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },

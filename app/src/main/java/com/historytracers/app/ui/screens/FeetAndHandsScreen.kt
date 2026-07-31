@@ -39,7 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -182,6 +184,7 @@ fun FeetAndHandsScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
     val footPathResult = remember { buildFootPath() }
@@ -242,7 +245,7 @@ fun FeetAndHandsScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.body.exercisingFeetAndHands,
+                    text = bs.exercisingFeetAndHands,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -250,7 +253,7 @@ fun FeetAndHandsScreen(
         }
 
         Text(
-            text = s.body.feetAndHandsReinforce,
+            text = bs.feetAndHandsReinforce,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -258,7 +261,7 @@ fun FeetAndHandsScreen(
         )
 
         Text(
-            text = s.body.feetAndHandsInstructions,
+            text = bs.feetAndHandsInstructions,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -266,7 +269,7 @@ fun FeetAndHandsScreen(
         )
 
         Text(
-            text = s.body.feetAndHandsSkinColorHint,
+            text = bs.feetAndHandsSkinColorHint,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
@@ -314,7 +317,7 @@ fun FeetAndHandsScreen(
             ) {
                 Icon(
                     Icons.Default.PanTool,
-                    contentDescription = s.body.clap,
+                    contentDescription = bs.clap,
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -352,7 +355,7 @@ fun FeetAndHandsScreen(
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.DirectionsRun,
-                    contentDescription = s.body.steps,
+                    contentDescription = bs.steps,
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -391,7 +394,7 @@ fun FeetAndHandsScreen(
             ) {
                 Icon(
                     Icons.Default.Accessibility,
-                    contentDescription = s.body.jumps,
+                    contentDescription = bs.jumps,
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -516,16 +519,16 @@ fun FeetAndHandsScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("${s.body.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                        Text("${s.body.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
-                        Text("${s.body.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${bs.clapCounter} $clapCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${bs.stepsCounter} $stepsCompleted / $count", style = MaterialTheme.typography.bodySmall)
+                        Text("${bs.jumpsCounter} $jumpsCompleted / $count", style = MaterialTheme.typography.bodySmall)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(s.common.slowly, style = MaterialTheme.typography.bodySmall)
+                        Text(bs.slowly, style = MaterialTheme.typography.bodySmall)
                         Slider(
                             value = sliderPos,
                             onValueChange = { if (!isPlaying) sliderPos = it },
@@ -533,14 +536,14 @@ fun FeetAndHandsScreen(
                             modifier = Modifier.width(180.dp),
                             enabled = !isPlaying
                         )
-                        Text(s.common.fast, style = MaterialTheme.typography.bodySmall)
+                        Text(bs.fast, style = MaterialTheme.typography.bodySmall)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("${s.body.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
+                        Text("${bs.numberOfClapsStepsJumps} ", style = MaterialTheme.typography.bodySmall)
                         FilledIconButton(
                             onClick = { if (!isPlaying && count > 1) count-- },
                             modifier = Modifier.size(32.dp),
@@ -571,7 +574,7 @@ fun FeetAndHandsScreen(
 
         if (showCompletionMessage) {
             Text(
-                text = s.body.exercisingFeetAndHandsCompletionMessage,
+                text = bs.exercisingFeetAndHandsCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),

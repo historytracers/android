@@ -8,9 +8,16 @@
 
 ## Translation Rules
 
-- Never hardcode user-facing strings in composables. Always use `s.` from `LocalUiStrings.current` (the `UiStrings` data class).
-- When adding new UI text, add a new field to `UiStrings` in `app/src/main/java/com/historytracers/app/ui/UiStrings.kt` and provide translations for all three locales: English (`EnStrings`), Portuguese (`PtStrings`), and Spanish (`EsStrings`).
-- Brand names that are identical across languages (e.g., "Patreon", "PayPal") still need entries in `UiStrings` for consistency — use the same name in all three locales.
+- Never hardcode user-facing strings in composables.
+- **Always create a per-screen strings file.** Every screen must own its strings in `app/src/main/java/com/historytracers/app/ui/features/<Screen>ScreenStrings.kt` (e.g. `ClapScreenStrings`, `HandsOnYupanaScreenStrings`). This is mandatory for every new or modified screen — even screens with only a few strings. Never add screen-specific strings to the global `UiStrings.kt`/`UiStringGroups.kt` or to a shared feature file.
+- **Global texts** (back, next, score, sources, originalText, copyUrl, goToUrl, newExercise, nextStep, nextLevel, number, value, write, etc.) are declared in `AppCommonStrings` (`app/src/main/java/com/historytracers/app/ui/UiStringGroups.kt`) with translations in `UiStrings.kt` (`EnStrings`/`PtStrings`/`EsStrings`). Access them via `s.common.*` from `LocalUiStrings.current`.
+- **Feature-shared strings** (used by 2+ screens of one feature) live in `app/src/main/java/com/historytracers/app/ui/features/*Strings.kt` (e.g. `HubTitleStrings`, `YupanaSharedStrings`, `BodyExerciseStrings`, `AbacusWriteStrings`, `PracticingAdditionStrings`, `MwStrings`, `SbwStrings`, `PlaceValueStrings`, `MiscStrings`). Each file defines a data class, `En/Pt/Es` objects, `LocalXxxStrings`, and `xxxStringsForLanguage(language)`.
+- **Screen-specific strings** (used by exactly one screen) go in the screen's own `<Screen>ScreenStrings.kt`, never into a shared file or `UiStrings.kt`.
+- Each screen's strings file must follow the same structure: a data class, `En/Pt/Es` value objects, `LocalXxxScreenStrings` (staticCompositionLocalOf defaulting to the `En` object), and `xxxScreenStringsForLanguage(language)`.
+- In a screen composable, resolve strings with e.g. `val s = LocalUiStrings.current`, `val xs = clapScreenStringsForLanguage(LocalAppLanguage.current)`, `val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)`. Use `LocalAppLanguage.current` (provided by `AppNavigation.kt`) to get the active language.
+- When adding new UI text, always provide translations for all three locales: English (`En*`), Portuguese (`Pt*`), and Spanish (`Es*`).
+- Brand names that are identical across languages (e.g., "Patreon", "PayPal") still need entries in all three locales for consistency — use the same name in all three.
+- Use `%d` / `%s` format specifiers (Kotlin style) for interpolated values.
 
 ## Sources Menu
 
@@ -23,10 +30,10 @@
   3. If the screen uses a root `Column` instead of a `Box`, wrap the entire content in `Box(modifier = Modifier.fillMaxSize())` — place the existing `Column` inside, then add overlays after it
   4. The completion message overlay (if any) should use `.align(Alignment.BottomCenter)` inside the Box
   5. Add the Sources overlay Box at `Alignment.BottomStart` with `padding(bottom = 8.dp, start = 8.dp)` containing:
-     - A clickable Column with `Icons.Filled.Book` (32.dp) and `s.sources` label below
-     - A first-level `DropdownMenu` showing `s.originalText` with `KeyboardArrowRight` trailing icon, sets `showMainTextSubmenu = true`
-     - A second-level `DropdownMenu` showing `s.copyUrl` and `s.goToUrl` items, each copying or opening the link
-  6. Use `s.copyUrl` and `s.goToUrl` from the existing `UiStrings` (no new strings needed beyond `sources` and `mainText` if not already present)
+     - A clickable Column with `Icons.Filled.Book` (32.dp) and `s.common.sources` label below
+     - A first-level `DropdownMenu` showing `s.common.originalText` with `KeyboardArrowRight` trailing icon, sets `showMainTextSubmenu = true`
+     - A second-level `DropdownMenu` showing `s.common.copyUrl` and `s.common.goToUrl` items, each copying or opening the link
+  6. Use `s.common.copyUrl` and `s.common.goToUrl` from the global `AppCommonStrings` (no new strings needed beyond `sources` and `mainText` if not already present)
 
 ## Level Group Controllers
 
@@ -47,10 +54,11 @@ When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `
 - Map each `txt_*` id to a Kotlin string field using the pattern `sbw*` (or whatever prefix matches the screen name, e.g. `mw*` for multiplication).
 - Preserve all emojis and formatting exactly as in the JS source.
 
-### 2. Add strings to `UiStrings.kt`
-- Add new fields to the `UiStrings` data class.
-- Add values for all three locales (`EnStrings`, `PtStrings`, `EsStrings`).
+### 2. Add strings to a screen string file
+- Create `app/src/main/java/com/historytracers/app/ui/features/<Screen>ScreenStrings.kt` with a data class, `En/Pt/Es` value objects, `LocalXxxScreenStrings`, and `xxxScreenStringsForLanguage(language)` (model after an existing screen string file).
+- Add values for all three locales.
 - Use `%d` / `%s` format specifiers (Kotlin style) instead of JS `{placeholder}` syntax.
+- In the screen composable, resolve them with `val xs = xxxScreenStringsForLanguage(LocalAppLanguage.current)`.
 
 ### 3. Create the screen file
 - Model after an existing similar screen (e.g. `MultiplyingWithAbacusLevel2Screen.kt` or `MultiplyingWithoutLimitsScreen.kt`).

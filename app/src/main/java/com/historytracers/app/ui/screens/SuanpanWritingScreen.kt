@@ -31,7 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.suanpanWritingScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -62,6 +66,9 @@ fun SuanpanWritingScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val xs = suanpanWritingScreenStringsForLanguage(LocalAppLanguage.current)
     val state = remember { mutableStateOf<List<SuanpanColumnState>>(List(COLUMNS) { SuanpanColumnState() }) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
@@ -90,7 +97,7 @@ fun SuanpanWritingScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.abacusWrite.writingToSuanpan,
+                    text = aws.writingToSuanpan,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -108,7 +115,7 @@ fun SuanpanWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.abacusWrite.suanpanWritingInstruction,
+                text = xs.suanpanWritingInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
@@ -331,7 +338,7 @@ fun SuanpanWritingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
+                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
@@ -380,7 +387,7 @@ fun SuanpanWritingScreen(
             onDismissRequest = { showSourcesMenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.titles.aPal) },
+                text = { Text(hts.aPal) },
                 trailingIcon = {
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                 },

@@ -31,8 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.UiStrings
+import com.historytracers.app.ui.features.AbacusWriteStrings
+import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.PlaceValueStrings
+import com.historytracers.app.ui.features.PracticingAdditionStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.placeValueStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -79,26 +87,26 @@ private sealed class Level(val maxDigits: Int) {
     data object TenMillions : Level(8)
 }
 
-private fun levelName(level: Level, s: UiStrings): String = when (level) {
-    Level.Units -> s.place.levelUnits
-    Level.Tens -> s.place.levelTens
-    Level.Hundreds -> s.place.levelHundreds
-    Level.Thousands -> s.place.levelThousands
-    Level.TenThousands -> s.place.levelTenThousands
-    Level.HundredThousands -> s.place.levelHundredThousands
-    Level.Millions -> s.place.levelMillions
-    Level.TenMillions -> s.place.levelTenMillions
+private fun levelName(level: Level, ps: PlaceValueStrings): String = when (level) {
+    Level.Units -> ps.levelUnits
+    Level.Tens -> ps.levelTens
+    Level.Hundreds -> ps.levelHundreds
+    Level.Thousands -> ps.levelThousands
+    Level.TenThousands -> ps.levelTenThousands
+    Level.HundredThousands -> ps.levelHundredThousands
+    Level.Millions -> ps.levelMillions
+    Level.TenMillions -> ps.levelTenMillions
 }
 
-private fun placeNames(level: Level, s: UiStrings): List<String> = when (level) {
-    Level.Units -> listOf(s.place.placeUnits)
-    Level.Tens -> listOf(s.place.placeUnits, s.place.placeTens)
-    Level.Hundreds -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds)
-    Level.Thousands -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands)
-    Level.TenThousands -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands)
-    Level.HundredThousands -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands)
-    Level.Millions -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions)
-    Level.TenMillions -> listOf(s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions)
+private fun placeNames(level: Level, ps: PlaceValueStrings): List<String> = when (level) {
+    Level.Units -> listOf(ps.placeUnits)
+    Level.Tens -> listOf(ps.placeUnits, ps.placeTens)
+    Level.Hundreds -> listOf(ps.placeUnits, ps.placeTens, ps.placeHundreds)
+    Level.Thousands -> listOf(ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands)
+    Level.TenThousands -> listOf(ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands, ps.placeTenThousands)
+    Level.HundredThousands -> listOf(ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands, ps.placeTenThousands, ps.placeHundredThousands)
+    Level.Millions -> listOf(ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands, ps.placeTenThousands, ps.placeHundredThousands, ps.placeMillions)
+    Level.TenMillions -> listOf(ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands, ps.placeTenThousands, ps.placeHundredThousands, ps.placeMillions, ps.placeTenMillions)
 }
 
 private val levels = listOf(
@@ -121,7 +129,7 @@ private fun generateNumbers(level: Level): Exercise {
     return Exercise(Random.nextLong(min, max + 1), Random.nextLong(min, max + 1))
 }
 
-private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<StepInfo> {
+private fun buildSteps(exercise: Exercise, level: Level, pas: PracticingAdditionStrings, ps: PlaceValueStrings): List<StepInfo> {
     val steps = mutableListOf<StepInfo>()
     val multiplier = when (level) {
         Level.Units -> listOf(1L)
@@ -133,10 +141,10 @@ private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<Ste
         Level.Millions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L)
         Level.TenMillions -> listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L)
     }
-    val pn = placeNames(level, s)
+    val pn = placeNames(level, ps)
     val placeDescription = pn.reversed().joinToString(", ")
 
-    steps.add(StepInfo(s.pa.stepWriteFirst.format(exercise.a, placeDescription), exercise.a))
+    steps.add(StepInfo(pas.stepWriteFirst.format(exercise.a, placeDescription), exercise.a))
 
     var currentValue = exercise.a
 
@@ -149,17 +157,17 @@ private fun buildSteps(exercise: Exercise, level: Level, s: UiStrings): List<Ste
 
         if (total < 10) {
             currentValue += digitB * multiplier[p]
-            steps.add(StepInfo(s.pa.stepAddTo.format(pn[p], digitB, pn[p], currentValue), currentValue))
+            steps.add(StepInfo(pas.stepAddTo.format(pn[p], digitB, pn[p], currentValue), currentValue))
         } else {
             val complement = 10 - digitB
             val newValue = currentValue + (multiplier[p] * 10) - (complement * multiplier[p])
-            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.place.placeNext
-            steps.add(StepInfo(s.pa.stepCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue), newValue))
+            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else ps.placeNext
+            steps.add(StepInfo(pas.stepCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue), newValue))
             currentValue = newValue
         }
     }
 
-    steps.add(StepInfo(s.pa.stepFinal.format(exercise.a, exercise.b, exercise.expected), exercise.expected))
+    steps.add(StepInfo(pas.stepFinal.format(exercise.a, exercise.b, exercise.expected), exercise.expected))
     return steps
 }
 
@@ -170,6 +178,10 @@ fun PracticingAdditionScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val ps = placeValueStringsForLanguage(LocalAppLanguage.current)
+    val pas = practicingAdditionStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -178,7 +190,7 @@ fun PracticingAdditionScreen(
     val state = remember { mutableStateOf(List(COLUMNS) { PaColumnState() }) }
     var currentLevelIdx by remember { mutableIntStateOf(0) }
     var exercise by remember { mutableStateOf(generateNumbers(levels[0])) }
-    var steps by remember { mutableStateOf(buildSteps(exercise, levels[0], s)) }
+    var steps by remember { mutableStateOf(buildSteps(exercise, levels[0], pas, ps)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
@@ -204,7 +216,7 @@ fun PracticingAdditionScreen(
         state.value = List(COLUMNS) { PaColumnState() }
         schyotyBeads.value = List(9) { 0 }
         exercise = generateNumbers(levels[currentLevelIdx])
-        steps = buildSteps(exercise, levels[currentLevelIdx], s)
+        steps = buildSteps(exercise, levels[currentLevelIdx], pas, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -233,10 +245,10 @@ fun PracticingAdditionScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.pa.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = pas.feedbackPerfect.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.pa.feedbackCorrect
+                    feedbackMessage = pas.feedbackCorrect
                     isFeedbackPositive = true
                 }
             }
@@ -258,7 +270,7 @@ fun PracticingAdditionScreen(
             if (!finalCongratsShown) {
                 finalCongratsShown = true
             }
-            feedbackMessage = s.pa.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = pas.feedbackCongratulations.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -299,7 +311,7 @@ fun PracticingAdditionScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.pa.practicingAddition,
+                        text = pas.practicingAddition,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -315,7 +327,7 @@ fun PracticingAdditionScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.pa.practicingAdditionInstruction,
+                text = pas.practicingAdditionInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -323,7 +335,7 @@ fun PracticingAdditionScreen(
             )
 
             Text(
-                text = "${s.common.levelPrefix}${levelName(levels[currentLevelIdx], s)}",
+                text = "${s.common.levelPrefix}${levelName(levels[currentLevelIdx], ps)}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -363,7 +375,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = s.abacusWrite.sorobanMode,
+                    text = aws.sorobanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -387,7 +399,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = s.abacusWrite.suanpanMode,
+                    text = aws.suanpanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -411,7 +423,7 @@ fun PracticingAdditionScreen(
                     )
                 }
                 Text(
-                    text = s.abacusWrite.schyoty,
+                    text = aws.schyoty,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -723,7 +735,7 @@ fun PracticingAdditionScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.titles.jessicaAmarteifio) },
+                    text = { Text(hts.jessicaAmarteifio) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },

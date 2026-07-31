@@ -16,7 +16,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.indexScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 
@@ -28,6 +32,9 @@ fun IndexScreen(
     onNavigateToYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val xs = indexScreenStringsForLanguage(LocalAppLanguage.current)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -53,7 +60,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.firstSteps,
+                    text = hts.firstSteps,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -77,7 +84,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.iAmNotLikeYou,
+                    text = hts.iAmNotLikeYou,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -101,7 +108,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.aRoadToSomewhere,
+                    text = hts.aRoadToSomewhere,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -125,7 +132,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.common.runningAndGrowing,
+                    text = xs.runningAndGrowing,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -149,7 +156,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.whereAreWeFrom,
+                    text = hts.whereAreWeFrom,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -173,7 +180,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.returning,
+                    text = hts.returning,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -197,7 +204,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.workout,
+                    text = hts.workout,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -221,7 +228,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.yupana.yupana,
+                    text = ys.yupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -245,7 +252,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = s.titles.abacus,
+                    text = hts.abacus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

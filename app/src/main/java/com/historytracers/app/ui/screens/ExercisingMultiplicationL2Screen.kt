@@ -31,7 +31,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
+import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
@@ -101,6 +104,8 @@ fun ExercisingMultiplicationL2Screen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
+    val mcs = miscStringsForLanguage(LocalAppLanguage.current)
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
 
@@ -199,7 +204,7 @@ fun ExercisingMultiplicationL2Screen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.body.exercisingMultiplicationL2,
+                    text = bs.exercisingMultiplicationL2,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -211,7 +216,7 @@ fun ExercisingMultiplicationL2Screen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = s.body.exercisingMultiplicationL2Description,
+                text = bs.exercisingMultiplicationL2Description,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
             )
@@ -332,7 +337,7 @@ fun ExercisingMultiplicationL2Screen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.offset(y = (-40).dp)
             ) {
-                Text("${s.misc.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
+                Text("${mcs.multiplicationTable}:", style = MaterialTheme.typography.bodySmall)
 
                 var expanded by remember { mutableStateOf(false) }
                 ExposedDropdownMenuBox(
@@ -340,7 +345,7 @@ fun ExercisingMultiplicationL2Screen(
                     onExpandedChange = { if (!isPlaying) expanded = !expanded }
                 ) {
                     OutlinedTextField(
-                        value = if (selectedTable == -1) s.common.randomly else "${selectedTable}",
+                        value = if (selectedTable == -1) bs.randomly else "${selectedTable}",
                         onValueChange = {},
                         readOnly = true,
                         enabled = !isPlaying,
@@ -354,7 +359,7 @@ fun ExercisingMultiplicationL2Screen(
                         onDismissRequest = { expanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(s.common.randomly) },
+                            text = { Text(bs.randomly) },
                             onClick = { selectedTable = -1; expanded = false; newMultiplication() }
                         )
                         DropdownMenuItem(
@@ -374,7 +379,7 @@ fun ExercisingMultiplicationL2Screen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.offset(y = (-40).dp)
             ) {
-                Text(s.common.slowly, style = MaterialTheme.typography.bodySmall)
+                Text(bs.slowly, style = MaterialTheme.typography.bodySmall)
                 Slider(
                     value = sliderPos,
                     onValueChange = { if (!isPlaying) sliderPos = it },
@@ -382,7 +387,7 @@ fun ExercisingMultiplicationL2Screen(
                     modifier = Modifier.width(150.dp),
                     enabled = !isPlaying
                 )
-                Text(s.common.fast, style = MaterialTheme.typography.bodySmall)
+                Text(bs.fast, style = MaterialTheme.typography.bodySmall)
             }
 
             Row(
@@ -417,7 +422,7 @@ fun ExercisingMultiplicationL2Screen(
                     enabled = !isPlaying
                 ) {
                     Text(
-                        text = s.common.doExercise,
+                        text = bs.doExercise,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 4.dp)
@@ -429,7 +434,7 @@ fun ExercisingMultiplicationL2Screen(
 
         if (isDone && !isPlaying) {
             Text(
-                text = s.body.exercisingAdditionCompletionMessage,
+                text = bs.exercisingAdditionCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),

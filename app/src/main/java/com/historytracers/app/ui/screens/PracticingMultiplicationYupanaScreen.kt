@@ -35,7 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.practicingMultiplicationYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -127,6 +130,8 @@ fun PracticingMultiplicationYupanaScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val xs = practicingMultiplicationYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -204,7 +209,7 @@ fun PracticingMultiplicationYupanaScreen(
             finalCongratsShown = true
             onScoreChanged(currentScore + 2)
             scope.launch { preferences.recordLessonCompletion() }
-            feedbackMessage = s.yupana.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)
+            feedbackMessage = xs.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)
             isFeedbackPositive = true
         } else { iterationComplete = true }
     }
@@ -220,7 +225,7 @@ fun PracticingMultiplicationYupanaScreen(
         val digit = when (phase) { 0 -> rows[idx].leftDigit; 1 -> rows[idx].rightDigit; else -> rows[idx].resultDigit }
         if (getMarkersForDigit(digit).isEmpty()) {
             val wm = if (context.resources.configuration.locales[0].toLanguageTag() == "pt-BR") "Sem movimentos" else if (context.resources.configuration.locales[0].toLanguageTag() == "es-ES") "Sin movimiento" else "Without moves"
-            feedbackMessage = when (phase) { 0 -> s.yupana.ypNothingLeft.format(placeLabels[idx]); 1 -> s.yupana.ypNothingRight.format(placeLabels[idx]); else -> s.yupana.ypNothingResult.format(placeLabels[idx]) }
+            feedbackMessage = when (phase) { 0 -> ys.ypNothingLeft.format(placeLabels[idx]); 1 -> ys.ypNothingRight.format(placeLabels[idx]); else -> ys.ypNothingResult.format(placeLabels[idx]) }
             isNeutralFeedback = true; rowCompleted = true
         }
     }
@@ -234,14 +239,14 @@ fun PracticingMultiplicationYupanaScreen(
                 userRedColumns = if (col in userRedColumns) userRedColumns - col else userRedColumns + col
                 if (userRedColumns == getMarkersForDigit(rows[activeIdx].leftDigit)) {
                     completedRedMarkers = completedRedMarkers.toMutableList().also { it[activeIdx] = userRedColumns }
-                    rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true
+                    rowCompleted = true; feedbackMessage = ys.ypCorrectMessage; isFeedbackPositive = true
                 }
             }
             1 -> {
                 userBlueColumns = if (col in userBlueColumns) userBlueColumns - col else userBlueColumns + col
                 if (userBlueColumns == getMarkersForDigit(rows[activeIdx].rightDigit)) {
                     completedBlueMarkers = completedBlueMarkers.toMutableList().also { it[activeIdx] = userBlueColumns }
-                    rowCompleted = true; feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true
+                    rowCompleted = true; feedbackMessage = ys.ypCorrectMessage; isFeedbackPositive = true
                 }
             }
             2 -> {
@@ -256,11 +261,11 @@ fun PracticingMultiplicationYupanaScreen(
                     val carryLabel = if (lang == "pt-BR") "transporte" else if (lang == "es-ES") "llevada" else "carry"
                     currentMovesText = if (moves.size == 1 && moves[0] == wm && carryIn > 0) "$carryLabel 1" else moves.joinToString(", ")
                     if (stepRowIdx == lastMeaningfulStepRowIdx) {
-                        feedbackMessage = s.yupana.ypCorrectMessage
+                        feedbackMessage = ys.ypCorrectMessage
                         isFeedbackPositive = true
                         finishIteration()
                     } else {
-                        feedbackMessage = s.yupana.ypCorrectMessage; isFeedbackPositive = true
+                        feedbackMessage = ys.ypCorrectMessage; isFeedbackPositive = true
                     }
                 }
             }
@@ -279,7 +284,7 @@ fun PracticingMultiplicationYupanaScreen(
 
     fun toggleLevel() {
         if (currentMultiplier == MAX_MULTIPLIER && !showLastLevelMessage) {
-            showLastLevelMessage = true; feedbackMessage = s.yupana.ypLastLevelMessage; return
+            showLastLevelMessage = true; feedbackMessage = ys.ypLastLevelMessage; return
         }
         showLastLevelMessage = false
         currentMultiplier = if (currentMultiplier >= MAX_MULTIPLIER) MIN_MULTIPLIER else currentMultiplier + 1
@@ -293,12 +298,12 @@ fun PracticingMultiplicationYupanaScreen(
             Surface(tonalElevation = 3.dp, modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onNavigateBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back) }
-                    Text(text = s.yupana.multiplyingWithYupana, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 8.dp))
+                    Text(text = ys.multiplyingWithYupana, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 8.dp))
                 }
             }
             Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
                 Spacer(Modifier.height(8.dp))
-                Text(text = s.yupana.ypMultiplyInstruction, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
+                Text(text = xs.ypMultiplyInstruction, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
                 Spacer(Modifier.height(4.dp))
                 Text(text = "${s.common.levelPrefix}$currentMultiplier", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(bottom = 4.dp))
                 Surface(shape = RoundedCornerShape(16.dp), color = Color(0xFF2E241F)) {
@@ -310,7 +315,7 @@ fun PracticingMultiplicationYupanaScreen(
                         val activeIdx = ROWS - 1 - stepRowIdx; val digit = when (phase) { 0 -> rows[activeIdx].leftDigit; 1 -> rows[activeIdx].rightDigit; else -> rows[activeIdx].resultDigit }
                         if (getMarkersForDigit(digit).isEmpty()) {
                             val wm = if (context.resources.configuration.locales[0].toLanguageTag() == "pt-BR") "Sem movimentos" else if (context.resources.configuration.locales[0].toLanguageTag() == "es-ES") "Sin movimiento" else "Without moves"
-                            feedbackMessage = when (phase) { 0 -> s.yupana.ypNothingLeft.format(placeLabels[activeIdx]); 1 -> s.yupana.ypNothingRight.format(placeLabels[activeIdx]); else -> s.yupana.ypNothingResult.format(placeLabels[activeIdx]) }
+                            feedbackMessage = when (phase) { 0 -> ys.ypNothingLeft.format(placeLabels[activeIdx]); 1 -> ys.ypNothingRight.format(placeLabels[activeIdx]); else -> ys.ypNothingResult.format(placeLabels[activeIdx]) }
                             isNeutralFeedback = true; rowCompleted = true; return@pointerInput
                         }
                         detectTapGestures { offset ->
@@ -347,18 +352,18 @@ fun PracticingMultiplicationYupanaScreen(
                         Column(modifier = Modifier.padding(12.dp)) {
                             val target = rows[placeIdx].resultDigit
                             val instruction = when (phase) {
-                                0 -> s.yupana.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
-                                1 -> s.yupana.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
+                                0 -> ys.ypRedPhase.format(rows[placeIdx].leftDigit, placeLabels[placeIdx])
+                                1 -> ys.ypBluePhase.format(rows[placeIdx].rightDigit, placeLabels[placeIdx])
                                 else -> if (rowCompleted) {
                                     val lv = rows[placeIdx].leftDigit; val rBase = rows[placeIdx].rightDigit; val carryIn = carryIntoRow[placeIdx]; val total = lv + rBase + carryIn
                                     val lang = context.resources.configuration.locales[0].toLanguageTag()
                                     val wm = if (lang == "pt-BR") "Sem movimentos" else if (lang == "es-ES") "Sin movimiento" else "Without moves"
                                     val moves = writeSumOnYupana(wm, lv, rBase, carryIn)
-                                    "$lv + $rBase ${if (carryIn > 0) "+ $carryIn (${s.yupana.ypCarry}) " else ""}= $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
+                                    "$lv + $rBase ${if (carryIn > 0) "+ $carryIn (${ys.ypCarry}) " else ""}= $total (${placeLabels[placeIdx]}): ${moves.joinToString(", ")}"
                                 } else {
                                     val rawSum = rows[placeIdx].leftDigit + rows[placeIdx].rightDigit; val carryFromPrev = carryIntoRow[placeIdx]; val totalWithCarry = rawSum + carryFromPrev; val curCarry = totalWithCarry / 10; val nextPlace = if (placeIdx > 0) placeLabels[placeIdx - 1] else ""
-                                    when { curCarry > 0 -> if (carryFromPrev > 0) s.yupana.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace) else s.yupana.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
-                                        else -> if (carryFromPrev > 0) s.yupana.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target) else s.yupana.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target) }
+                                    when { curCarry > 0 -> if (carryFromPrev > 0) ys.ypCarryingCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target, nextPlace) else ys.ypCarrying.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, totalWithCarry, target, nextPlace)
+                                        else -> if (carryFromPrev > 0) ys.ypAddToCarry.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, carryFromPrev, totalWithCarry, target) else ys.ypAddTo.format(placeLabels[placeIdx], rows[placeIdx].leftDigit, rows[placeIdx].rightDigit, rawSum, target) }
                                 }
                             }
                             Text(text = instruction, style = MaterialTheme.typography.bodyMedium)

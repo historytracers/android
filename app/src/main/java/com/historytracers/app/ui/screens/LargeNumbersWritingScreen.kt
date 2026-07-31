@@ -29,7 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.mwStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -72,6 +76,9 @@ fun LargeNumbersWritingScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val ms = mwStringsForLanguage(LocalAppLanguage.current)
     var currentLevel by remember { mutableStateOf(1) }
     val state = remember { mutableStateOf(List(COLUMNS) { LnColumnState() }) }
     val targetValue = remember { mutableStateOf(getLevelRange(1).random()) }
@@ -105,7 +112,7 @@ fun LargeNumbersWritingScreen(
     fun advanceLevel() {
         if (currentLevel == 8 && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mw.mw2LastLevelMessage
+            feedbackMessage = ms.mw2LastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -139,7 +146,7 @@ fun LargeNumbersWritingScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.abacusWrite.writingLargeNumbers,
+                        text = aws.writingLargeNumbers,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -155,7 +162,7 @@ fun LargeNumbersWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.abacusWrite.largeNumbersWritingInstruction,
+                text = aws.largeNumbersWritingInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
@@ -202,7 +209,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.sorobanMode,
+                        text = aws.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -226,7 +233,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.suanpanMode,
+                        text = aws.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -250,7 +257,7 @@ fun LargeNumbersWritingScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.schyoty,
+                        text = aws.schyoty,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -543,7 +550,7 @@ fun LargeNumbersWritingScreen(
                 if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage || feedbackMessage.isNotEmpty()) {
                     if (showCongrats.value && completedLevel > 0 && !showLastLevelMessage) {
                         Text(
-                            text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
+                            text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF2E7D32),
@@ -622,21 +629,21 @@ fun LargeNumbersWritingScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.titles.jessicaAmarteifio) },
+                    text = { Text(hts.jessicaAmarteifio) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
                     onClick = { showJessicaSubmenu = true }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.titles.aPal) },
+                    text = { Text(hts.aPal) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
                     onClick = { showAPalSubmenu = true }
                 )
                 DropdownMenuItem(
-                    text = { Text(s.titles.tomokoHoult) },
+                    text = { Text(hts.tomokoHoult) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },

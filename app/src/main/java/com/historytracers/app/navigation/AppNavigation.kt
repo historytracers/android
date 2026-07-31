@@ -26,7 +26,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.uiStringsForLanguage
 import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.ContentScreen
@@ -56,6 +58,8 @@ import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
 import com.historytracers.app.ui.screens.YupanaScreen
 import com.historytracers.app.ui.screens.PracticingAdditionYupanaScreen
 import com.historytracers.app.ui.screens.PracticingMultiplicationYupanaScreen
+import com.historytracers.app.ui.screens.HandsOnYupanaScreen
+import com.historytracers.app.ui.screens.DrawingToCountScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -70,7 +74,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -111,6 +115,7 @@ fun AppNavigation() {
     val reminderMinute by preferences.reminderMinute.collectAsState(initial = 0)
 
     val uiStrings = uiStringsForLanguage(language)
+    val hts = hubTitleStringsForLanguage(language)
 
     val startDestination = startDest!!
 
@@ -174,7 +179,7 @@ fun AppNavigation() {
         )
     }
 
-    CompositionLocalProvider(LocalUiStrings provides uiStrings) {
+    CompositionLocalProvider(LocalUiStrings provides uiStrings, LocalAppLanguage provides language) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -218,7 +223,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text(uiStrings.titles.isItFree) },
+                        label = { Text(hts.isItFree) },
                         selected = currentRoute == Screen.IsItFree.route,
                         onClick = {
                             navController.navigate(Screen.IsItFree.route)
@@ -227,7 +232,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Info, contentDescription = null) },
-                        label = { Text(uiStrings.titles.aboutUs) },
+                        label = { Text(hts.aboutUs) },
                         selected = currentRoute == Screen.About.route,
                         onClick = {
                             navController.navigate(Screen.About.route)
@@ -377,7 +382,37 @@ fun AppNavigation() {
                             },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToPracticingAdditionYupana = { navController.navigate(Screen.PracticingAdditionYupana.route) },
-                            onNavigateToPracticingMultiplicationYupana = { navController.navigate(Screen.PracticingMultiplicationYupana.route) }
+                            onNavigateToPracticingMultiplicationYupana = { navController.navigate(Screen.PracticingMultiplicationYupana.route) },
+                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HandsOnYupana.route) {
+                        HandsOnYupanaScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToDrawingToCount = { navController.navigate(Screen.DrawingToCount.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingToCount.route) {
+                        DrawingToCountScreen(
+                            skinColor = skinColor,
+                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.PracticingAdditionYupana.route) {
