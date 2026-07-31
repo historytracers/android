@@ -23,9 +23,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
@@ -58,7 +62,7 @@ fun FirstStepsScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("i_dont_know", "learning_in_shells", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity"),
+            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity"),
             completedSections
         )
     }
@@ -167,6 +171,86 @@ fun FirstStepsScreen(
 
             Text(
                 text = xs.learningInLayers,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    controller.markCompleted("how_do_i_learn")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("how_do_i_learn") }
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("how_do_i_learn")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                val textMeasurer = rememberTextMeasurer()
+                Canvas(modifier = Modifier.size(52.dp)) {
+                    val strokeWidth = size.width * 0.06f
+                    val headRadius = size.width * 0.26f
+                    val headCenter = Offset(center.x, center.y + size.height * 0.10f)
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = headRadius,
+                        center = headCenter,
+                        style = Stroke(width = strokeWidth)
+                    )
+                    val eyeRadius = size.width * 0.045f
+                    val eyeY = headCenter.y - headRadius * 0.25f
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = eyeRadius,
+                        center = Offset(headCenter.x - headRadius * 0.4f, eyeY)
+                    )
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = eyeRadius,
+                        center = Offset(headCenter.x + headRadius * 0.4f, eyeY)
+                    )
+                    drawArc(
+                        color = OnButtonYellow,
+                        startAngle = 15f,
+                        sweepAngle = 150f,
+                        useCenter = false,
+                        topLeft = Offset(headCenter.x - headRadius * 0.3f, headCenter.y + headRadius * 0.15f),
+                        size = Size(headRadius * 0.6f, headRadius * 0.45f),
+                        style = Stroke(width = strokeWidth)
+                    )
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = size.width * 0.04f,
+                        center = Offset(center.x - size.width * 0.12f, center.y - size.height * 0.18f)
+                    )
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = size.width * 0.06f,
+                        center = Offset(center.x - size.width * 0.02f, center.y - size.height * 0.30f)
+                    )
+                    val qm = textMeasurer.measure(
+                        text = "?",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = OnButtonYellow)
+                    )
+                    drawText(
+                        textLayoutResult = qm,
+                        topLeft = Offset(
+                            center.x + size.width * 0.10f - qm.size.width / 2f,
+                            center.y - size.height * 0.42f - qm.size.height / 2f
+                        )
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.howDoILearn,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
