@@ -159,6 +159,7 @@ data class YupanaStrings(
     val ypMultiplyPerfectMessage: String,
     val ypMultiplyCongratsMessage: String,
     val handsOnYupanaDescription: String,
+    val drawingToCountDescription: String,
     val handsOnYupanaOfflineMessage: String,
     val mapswire: String,
 )

@@ -160,7 +160,7 @@ fun DrawingToCountScreen(
                 )
 
                 Text(
-                    text = s.yupana.handsOnYupanaDescription,
+                    text = s.yupana.drawingToCountDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
