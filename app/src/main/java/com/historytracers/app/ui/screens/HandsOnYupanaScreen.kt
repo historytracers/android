@@ -28,7 +28,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.handsOnYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 
 private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire//mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=ea01ab6c-26af-4c7a-ba06-5c1731c83d4d"
@@ -40,6 +43,8 @@ fun HandsOnYupanaScreen(
     onNavigateToDrawingToCount: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val xs = handsOnYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
 
@@ -56,7 +61,7 @@ fun HandsOnYupanaScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(s.yupana.handsOnYupana) },
+                title = { Text(ys.handsOnYupana) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
@@ -78,7 +83,7 @@ fun HandsOnYupanaScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = s.yupana.tawantsuyu,
+                    text = ys.tawantsuyu,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -87,7 +92,7 @@ fun HandsOnYupanaScreen(
                 )
 
                 Text(
-                    text = s.yupana.handsOnYupanaDescription,
+                    text = xs.handsOnYupanaDescription,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -108,7 +113,7 @@ fun HandsOnYupanaScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = s.yupana.handsOnYupanaOfflineMessage,
+                                text = xs.handsOnYupanaOfflineMessage,
                                 style = MaterialTheme.typography.bodyMedium,
                                 textAlign = TextAlign.Center
                             )
@@ -120,7 +125,7 @@ fun HandsOnYupanaScreen(
                             .data(IMAGE_URL)
                             .crossfade(true)
                             .build(),
-                        contentDescription = s.yupana.handsOnYupana,
+                        contentDescription = ys.handsOnYupana,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp),
@@ -145,7 +150,7 @@ fun HandsOnYupanaScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = s.common.drawToCount,
+                        text = xs.drawToCount,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                     )
                 }
@@ -181,7 +186,7 @@ fun HandsOnYupanaScreen(
                     onDismissRequest = { showSourcesMenu = false; showMainTextSubmenu = false; showMapswireSubmenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.yupana.mapswire) },
+                        text = { Text(xs.mapswire) },
                         trailingIcon = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
                         onClick = { showMapswireSubmenu = true }
                     )

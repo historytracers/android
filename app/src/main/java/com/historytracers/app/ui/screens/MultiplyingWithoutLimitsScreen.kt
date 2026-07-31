@@ -31,7 +31,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.AbacusWriteStrings
+import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.MultiplyingWithoutLimitsScreenStrings
+import com.historytracers.app.ui.features.MwStrings
+import com.historytracers.app.ui.features.PlaceValueStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithoutLimitsScreenStringsForLanguage
+import com.historytracers.app.ui.features.mwStringsForLanguage
+import com.historytracers.app.ui.features.placeValueStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -90,7 +101,7 @@ private fun generateMwlExercise(level: Int): MwlExercise {
 }
 
 private fun buildMwlSingleDigitSteps(
-    a: Int, digit: Int, s: com.historytracers.app.ui.UiStrings
+    a: Int, digit: Int, ms: MwStrings
 ): Pair<List<MwlStepInfo>, Long> {
     val steps = mutableListOf<MwlStepInfo>()
     val strA = a.toString()
@@ -111,7 +122,7 @@ private fun buildMwlSingleDigitSteps(
     val firstDigitValue = first.first * Math.pow(10.0, first.second.toDouble()).toLong()
     val firstProduct = first.third
     steps.add(MwlStepInfo(
-        s.mw.mw2StepWriteFirst.format(firstDigitValue, digit, firstProduct, firstProduct),
+        ms.mw2StepWriteFirst.format(firstDigitValue, digit, firstProduct, firstProduct),
         firstProduct
     ))
 
@@ -122,7 +133,7 @@ private fun buildMwlSingleDigitSteps(
         val digitPlaceValue = d * Math.pow(10.0, place.toDouble()).toLong()
         currentValue += addValue
         steps.add(MwlStepInfo(
-            s.mw.mwStepAddContribution.format(digitPlaceValue, digit, addValue),
+            ms.mwStepAddContribution.format(digitPlaceValue, digit, addValue),
             currentValue
         ))
     }
@@ -131,7 +142,7 @@ private fun buildMwlSingleDigitSteps(
 }
 
 private fun buildMwlSumSteps(
-    storedValue: Long, onesResult: Long, s: com.historytracers.app.ui.UiStrings
+    storedValue: Long, onesResult: Long, ms: MwStrings, ps: PlaceValueStrings
 ): List<MwlStepInfo> {
     if (storedValue == 0L) return emptyList()
     val steps = mutableListOf<MwlStepInfo>()
@@ -141,9 +152,9 @@ private fun buildMwlSumSteps(
     val maxDigitsClamped = maxDigits.coerceAtMost(9)
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val pn = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds,
-        s.place.placeThousands, s.place.placeTenThousands, s.place.placeHundredThousands,
-        s.place.placeMillions, s.place.placeTenMillions
+        ps.placeUnits, ps.placeTens, ps.placeHundreds,
+        ps.placeThousands, ps.placeTenThousands, ps.placeHundredThousands,
+        ps.placeMillions, ps.placeTenMillions
     )
 
     for (p in 0 until maxDigitsClamped) {
@@ -156,16 +167,16 @@ private fun buildMwlSumSteps(
         if (total < 10) {
             currentValue += digitB * multipliers[p]
             steps.add(MwlStepInfo(
-                s.mw.mwlAddDigitTo.format(pn[p], digitB, pn[p], currentValue),
+                ms.mwlAddDigitTo.format(pn[p], digitB, pn[p], currentValue),
                 currentValue,
                 isSumPhase = true
             ))
         } else {
             val complement = 10 - digitB
             val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else s.place.placeNext
+            val nextPlace = if (p + 1 < pn.size) pn[p + 1] else ps.placeNext
             steps.add(MwlStepInfo(
-                s.mw.mwlAddCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue),
+                ms.mwlAddCarrying.format(digitB, pn[p], digitA, digitB, total, complement, pn[p], nextPlace, newValue),
                 newValue,
                 isSumPhase = true
             ))
@@ -176,7 +187,7 @@ private fun buildMwlSumSteps(
     return steps
 }
 
-private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.UiStrings): List<MwlStepInfo> {
+private fun buildMwlSteps(exercise: MwlExercise, ms: MwStrings, ps: PlaceValueStrings): List<MwlStepInfo> {
     val steps = mutableListOf<MwlStepInfo>()
     val a = exercise.a
     val tensDigit = exercise.tensDigit
@@ -187,35 +198,35 @@ private fun buildMwlSteps(exercise: MwlExercise, s: com.historytracers.app.ui.Ui
     val tensResult = a * tensDigit.toLong()
     val storedValue = tensResult * 10
 
-    val (tensSteps, _) = buildMwlSingleDigitSteps(a, tensDigit, s)
+    val (tensSteps, _) = buildMwlSingleDigitSteps(a, tensDigit, ms)
     for (step in tensSteps) steps.add(step)
 
     steps.add(MwlStepInfo(
-        s.mw.mwlShiftInstruction.format(tensResult, storedValue),
+        ms.mwlShiftInstruction.format(tensResult, storedValue),
         storedValue
     ))
 
     steps.add(MwlStepInfo(
-        s.mw.mwlStoreInstruction.format(storedValue),
+        ms.mwlStoreInstruction.format(storedValue),
         0L,
         isStorePhase = true
     ))
 
     steps.add(MwlStepInfo(
-        s.mw.mwlResetInstruction,
+        ms.mwlResetInstruction,
         0L,
         isResetPhase = true
     ))
 
     val onesResult = a * onesDigit.toLong()
-    val (onesSteps, _) = buildMwlSingleDigitSteps(a, onesDigit, s)
+    val (onesSteps, _) = buildMwlSingleDigitSteps(a, onesDigit, ms)
     for (step in onesSteps) steps.add(step)
 
-    val sumSteps = buildMwlSumSteps(storedValue, onesResult, s)
+    val sumSteps = buildMwlSumSteps(storedValue, onesResult, ms, ps)
     for (step in sumSteps) steps.add(step)
 
     steps.add(MwlStepInfo(
-        s.mw.mwStepFinal.format(a, fullB, total),
+        ms.mwStepFinal.format(a, fullB, total),
         total.toLong()
     ))
 
@@ -230,6 +241,11 @@ fun MultiplyingWithoutLimitsScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val ms = mwStringsForLanguage(LocalAppLanguage.current)
+    val ps = placeValueStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplyingWithoutLimitsScreenStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -238,7 +254,7 @@ fun MultiplyingWithoutLimitsScreen(
     val state = remember { mutableStateOf(List(COLUMNS) { MwlColumnState() }) }
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
     var exercise by remember { mutableStateOf(generateMwlExercise(currentDigitLevel)) }
-    var steps by remember { mutableStateOf(buildMwlSteps(exercise, s)) }
+    var steps by remember { mutableStateOf(buildMwlSteps(exercise, ms, ps)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
@@ -260,7 +276,7 @@ fun MultiplyingWithoutLimitsScreen(
         currentDigitLevel = MIN_DIGIT_LEVEL
         state.value = List(COLUMNS) { MwlColumnState() }
         exercise = generateMwlExercise(currentDigitLevel)
-        steps = buildMwlSteps(exercise, s)
+        steps = buildMwlSteps(exercise, ms, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -297,7 +313,7 @@ fun MultiplyingWithoutLimitsScreen(
         clearAbacus()
         showStoredValue = false
         exercise = generateMwlExercise(currentDigitLevel)
-        steps = buildMwlSteps(exercise, s)
+        steps = buildMwlSteps(exercise, ms, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -316,10 +332,10 @@ fun MultiplyingWithoutLimitsScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.mw.mwPerfectMessage.format(exercise.a, exercise.fullB, exercise.expected)
+                    feedbackMessage = ms.mwPerfectMessage.format(exercise.a, exercise.fullB, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.mw.mwCorrectMessage
+                    feedbackMessage = ms.mwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -345,7 +361,7 @@ fun MultiplyingWithoutLimitsScreen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.fullB, exercise.expected)
+            feedbackMessage = ms.mwCongratulations.format(exercise.a, exercise.fullB, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -361,7 +377,7 @@ fun MultiplyingWithoutLimitsScreen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mw.mwlLastLevelMessage
+            feedbackMessage = ms.mwlLastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -389,7 +405,7 @@ fun MultiplyingWithoutLimitsScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.mw.mw3Title,
+                    text = ms.mw3Title,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -405,7 +421,7 @@ fun MultiplyingWithoutLimitsScreen(
             Spacer(Modifier.height(2.dp))
 
             Text(
-                text = s.mw.mwlInstruction,
+                text = ms.mwlInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -445,7 +461,7 @@ fun MultiplyingWithoutLimitsScreen(
                     )
                 }
                 Text(
-                    text = s.abacusWrite.sorobanMode,
+                    text = aws.sorobanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -469,7 +485,7 @@ fun MultiplyingWithoutLimitsScreen(
                     )
                 }
                 Text(
-                    text = s.abacusWrite.suanpanMode,
+                    text = aws.suanpanMode,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -493,7 +509,7 @@ fun MultiplyingWithoutLimitsScreen(
                     )
                 }
                 Text(
-                    text = s.abacusWrite.schyoty,
+                    text = aws.schyoty,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -678,7 +694,7 @@ fun MultiplyingWithoutLimitsScreen(
                         color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
                         Text(
-                            text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                            text = ms.mwStepStatus.format(currentStepIdx + 1, steps.size),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
@@ -693,7 +709,7 @@ fun MultiplyingWithoutLimitsScreen(
                         color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
                         Text(
-                            text = s.mw.mwlStoredLabel.format(storedValue),
+                            text = ms.mwlStoredLabel.format(storedValue),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -711,7 +727,7 @@ fun MultiplyingWithoutLimitsScreen(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = s.mw.mwlStoreInstruction.format(storedValue),
+                        text = ms.mwlStoreInstruction.format(storedValue),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(12.dp)
@@ -724,7 +740,7 @@ fun MultiplyingWithoutLimitsScreen(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = s.mw.mwlResetInstruction,
+                        text = ms.mwlResetInstruction,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(12.dp)
@@ -785,7 +801,7 @@ fun MultiplyingWithoutLimitsScreen(
                             )
                         ) {
                             Text(
-                                text = s.common.resetToZero,
+                                text = xs.resetToZero,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -878,7 +894,7 @@ fun MultiplyingWithoutLimitsScreen(
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.titles.jessicaAmarteifio) },
+                        text = { Text(hts.jessicaAmarteifio) },
                         trailingIcon = {
                             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                         },

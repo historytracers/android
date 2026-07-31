@@ -12,11 +12,16 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.isItFreeScreenStringsForLanguage
 
 @Composable
 fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val xs = isItFreeScreenStringsForLanguage(LocalAppLanguage.current)
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -29,7 +34,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = s.titles.isItFreeContent,
+            text = hts.isItFreeContent,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -38,7 +43,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(16.dp))
 
         Text(
-            text = s.titles.isItFreeDonateCall,
+            text = hts.isItFreeDonateCall,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -49,7 +54,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Button(onClick = {
             uriHandler.openUri("https://www.patreon.com/bePatron?u=104667333")
         }) {
-            Text(s.common.patreon)
+            Text(xs.patreon)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -57,13 +62,13 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Button(onClick = {
             uriHandler.openUri("https://www.paypal.com/donate/?hosted_button_id=F9SD36K5M3BW6")
         }) {
-            Text(s.common.paypal)
+            Text(xs.paypal)
         }
 
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = s.titles.isItFreeFollowPrefix,
+            text = hts.isItFreeFollowPrefix,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
@@ -71,7 +76,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(12.dp))
 
         Button(onClick = onNavigateToAbout) {
-            Text(s.titles.aboutUs)
+            Text(hts.aboutUs)
         }
 
         Spacer(Modifier.height(32.dp))

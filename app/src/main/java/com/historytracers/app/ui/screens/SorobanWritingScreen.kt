@@ -32,7 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import com.historytracers.app.data.UserPreferences
 import kotlinx.coroutines.launch
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.sorobanWritingScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -62,6 +66,9 @@ fun SorobanWritingScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val xs = sorobanWritingScreenStringsForLanguage(LocalAppLanguage.current)
     val state = remember { mutableStateOf(List(COLUMNS) { ColumnState() }) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
@@ -90,7 +97,7 @@ fun SorobanWritingScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.abacusWrite.writingToSoroban,
+                    text = aws.writingToSoroban,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -108,7 +115,7 @@ fun SorobanWritingScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.abacusWrite.sorobanWritingInstruction,
+                text = xs.sorobanWritingInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
@@ -331,7 +338,7 @@ fun SorobanWritingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${s.titles.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
+                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),
@@ -380,7 +387,7 @@ fun SorobanWritingScreen(
             onDismissRequest = { showSourcesMenu = false }
         ) {
             DropdownMenuItem(
-                text = { Text(s.titles.tomokoHoult) },
+                text = { Text(hts.tomokoHoult) },
                 trailingIcon = {
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                 },

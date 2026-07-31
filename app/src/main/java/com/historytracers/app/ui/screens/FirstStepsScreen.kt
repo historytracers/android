@@ -25,7 +25,10 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.firstStepsScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
@@ -42,6 +45,8 @@ fun FirstStepsScreen(
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val xs = firstStepsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
@@ -81,7 +86,7 @@ fun FirstStepsScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.titles.firstSteps,
+                    text = hts.firstSteps,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -116,7 +121,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.iDontKnow,
+                text = hts.iDontKnow,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -145,7 +150,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.myHands,
+                text = hts.myHands,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -177,7 +182,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.myBody,
+                text = hts.myBody,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -209,7 +214,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.drawing,
+                text = hts.drawing,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -241,7 +246,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.numbers,
+                text = hts.numbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -273,7 +278,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.sequenceGame,
+                text = hts.sequenceGame,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -305,7 +310,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.familyPart1,
+                text = hts.familyPart1,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -337,7 +342,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.common.building,
+                text = xs.building,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -369,7 +374,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.naturalFamiliesPart2,
+                text = hts.naturalFamiliesPart2,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -401,7 +406,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.goingToInfinity,
+                text = hts.goingToInfinity,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

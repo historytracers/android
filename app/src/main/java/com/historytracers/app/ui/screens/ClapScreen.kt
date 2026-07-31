@@ -32,7 +32,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
+import com.historytracers.app.ui.features.clapScreenStringsForLanguage
 import com.historytracers.app.ui.theme.parseHexColor
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
@@ -89,6 +92,8 @@ fun ClapScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
+    val xs = clapScreenStringsForLanguage(LocalAppLanguage.current)
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
 
     val handPath = remember { buildAndroidPath() }
@@ -141,7 +146,7 @@ fun ClapScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.body.exercisingHands,
+                        text = bs.exercisingHands,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -157,19 +162,19 @@ fun ClapScreen(
             ) {
 
                 Text(
-                    text = s.body.clapReinforce,
+                    text = bs.clapReinforce,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 Text(
-                    text = s.body.clapInstructions,
+                    text = bs.clapInstructions,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 Text(
-                    text = s.body.clapSkinColorHint,
+                    text = bs.clapSkinColorHint,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
@@ -219,7 +224,7 @@ fun ClapScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(s.common.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
+                    Text(xs.numberOfClaps, style = MaterialTheme.typography.bodyLarge)
 
                     FilledIconButton(
                         onClick = { if (!isPlaying && clapCount > 1) clapCount-- },
@@ -250,7 +255,7 @@ fun ClapScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(s.body.speedSlow, style = MaterialTheme.typography.bodySmall)
+                    Text(bs.speedSlow, style = MaterialTheme.typography.bodySmall)
                     Slider(
                         value = sliderPos,
                         onValueChange = { if (!isPlaying) sliderPos = it },
@@ -258,7 +263,7 @@ fun ClapScreen(
                         modifier = Modifier.width(200.dp),
                         enabled = !isPlaying
                     )
-                    Text(s.body.speedFast, style = MaterialTheme.typography.bodySmall)
+                    Text(bs.speedFast, style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
@@ -327,7 +332,7 @@ fun ClapScreen(
 
         if (showCompletionMessage) {
             Text(
-                text = s.body.exercisingHandsCompletionMessage,
+                text = bs.exercisingHandsCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),

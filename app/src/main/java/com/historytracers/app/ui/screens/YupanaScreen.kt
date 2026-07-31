@@ -21,7 +21,12 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionStringsForLanguage
+import com.historytracers.app.ui.features.yupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
@@ -41,6 +46,10 @@ fun YupanaScreen(
     onNavigateToHandsOnYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val pas = practicingAdditionStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedYupanaSections.collectAsState(initial = emptySet())
@@ -87,7 +96,7 @@ fun YupanaScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.yupana.yupana,
+                    text = ys.yupana,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -122,7 +131,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.yupana.quipu,
+                    text = xs.quipu,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -151,7 +160,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.yupana.handsOnYupana,
+                    text = ys.handsOnYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -180,7 +189,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.abacusWrite.largeNumbers,
+                    text = aws.largeNumbers,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -243,7 +252,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.yupana.movingInYupana,
+                    text = xs.movingInYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -272,7 +281,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.pa.practicingAddition,
+                    text = pas.practicingAddition,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -335,7 +344,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.yupana.multiplyingWithYupana,
+                    text = ys.multiplyingWithYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
@@ -364,7 +373,7 @@ fun YupanaScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = s.yupana.practicingMultiplicationYupana,
+                    text = xs.practicingMultiplicationYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

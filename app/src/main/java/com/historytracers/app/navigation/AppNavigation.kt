@@ -26,7 +26,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.uiStringsForLanguage
 import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.ContentScreen
@@ -113,6 +115,7 @@ fun AppNavigation() {
     val reminderMinute by preferences.reminderMinute.collectAsState(initial = 0)
 
     val uiStrings = uiStringsForLanguage(language)
+    val hts = hubTitleStringsForLanguage(language)
 
     val startDestination = startDest!!
 
@@ -176,7 +179,7 @@ fun AppNavigation() {
         )
     }
 
-    CompositionLocalProvider(LocalUiStrings provides uiStrings) {
+    CompositionLocalProvider(LocalUiStrings provides uiStrings, LocalAppLanguage provides language) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -220,7 +223,7 @@ fun AppNavigation() {
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text(uiStrings.titles.isItFree) },
+                        label = { Text(hts.isItFree) },
                         selected = currentRoute == Screen.IsItFree.route,
                         onClick = {
                             navController.navigate(Screen.IsItFree.route)
@@ -229,7 +232,7 @@ fun AppNavigation() {
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Info, contentDescription = null) },
-                        label = { Text(uiStrings.titles.aboutUs) },
+                        label = { Text(hts.aboutUs) },
                         selected = currentRoute == Screen.About.route,
                         onClick = {
                             navController.navigate(Screen.About.route)

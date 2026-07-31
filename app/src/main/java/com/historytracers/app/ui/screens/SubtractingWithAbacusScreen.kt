@@ -31,7 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.AbacusWriteStrings
+import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.PlaceValueStrings
+import com.historytracers.app.ui.features.SbwStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.placeValueStringsForLanguage
+import com.historytracers.app.ui.features.sbwStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -86,7 +95,7 @@ private fun generateSbwExercise(level: Int): SbwExercise {
     return SbwExercise(a, b)
 }
 
-private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.UiStrings): List<SbwStepInfo> {
+private fun buildSbwSteps(exercise: SbwExercise, sbws: SbwStrings, ps: PlaceValueStrings): List<SbwStepInfo> {
     val steps = mutableListOf<SbwStepInfo>()
     val a = exercise.a
     val b = exercise.b
@@ -94,11 +103,11 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
 
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
+        ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands,
+        ps.placeTenThousands, ps.placeHundredThousands, ps.placeMillions, ps.placeTenMillions
     )
 
-    steps.add(SbwStepInfo(s.sbw.sbwSetupInstruction.format(a), a.toLong()))
+    steps.add(SbwStepInfo(sbws.sbwSetupInstruction.format(a), a.toLong()))
 
     var currentValue = a.toLong()
     val bDigitCount = b.toString().length
@@ -112,9 +121,9 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
 
         if (currentDigit >= bDigit) {
             currentValue -= bDigit * multipliers[pos]
-            val desc = s.sbw.sbwSubStepDesc.format(bDigit, placeNames[pos])
+            val desc = sbws.sbwSubStepDesc.format(bDigit, placeNames[pos])
             steps.add(SbwStepInfo(
-                prefix + s.sbw.sbwSubStepInstruction.format(desc, currentValue),
+                prefix + sbws.sbwSubStepInstruction.format(desc, currentValue),
                 currentValue
             ))
         } else {
@@ -128,9 +137,9 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
                 val pDigit = (currentValue / multipliers[p] % 10).toInt()
                 if (pDigit == 0) {
                     currentValue += 9 * multipliers[p]
-                    val desc = s.sbw.sbwBorrowSetNine.format(placeNames[p], placeNames[borrowFrom], placeNames[p])
+                    val desc = sbws.sbwBorrowSetNine.format(placeNames[p], placeNames[borrowFrom], placeNames[p])
                     steps.add(SbwStepInfo(
-                        prefix + s.sbw.sbwSubStepInstruction.format(desc, currentValue),
+                        prefix + sbws.sbwSubStepInstruction.format(desc, currentValue),
                         currentValue
                     ))
                 }
@@ -139,18 +148,18 @@ private fun buildSbwSteps(exercise: SbwExercise, s: com.historytracers.app.ui.Ui
             if (borrowFrom <= maxPos) {
                 val borrowDigit = (currentValue / multipliers[borrowFrom] % 10).toInt()
                 currentValue -= 1 * multipliers[borrowFrom]
-                val desc = s.sbw.sbwBorrowReduce.format(placeNames[borrowFrom], borrowDigit, borrowDigit - 1)
+                val desc = sbws.sbwBorrowReduce.format(placeNames[borrowFrom], borrowDigit, borrowDigit - 1)
                 steps.add(SbwStepInfo(
-                    prefix + s.sbw.sbwSubStepInstruction.format(desc, currentValue),
+                    prefix + sbws.sbwSubStepInstruction.format(desc, currentValue),
                     currentValue
                 ))
 
                 val complement = 10 - bDigit
                 currentValue += complement * multipliers[pos]
                 val newDigit = (currentValue / multipliers[pos] % 10).toInt()
-                val descAdd = s.sbw.sbwBorrowSubUnits.format(complement, bDigit, complement, placeNames[pos], placeNames[pos], newDigit)
+                val descAdd = sbws.sbwBorrowSubUnits.format(complement, bDigit, complement, placeNames[pos], placeNames[pos], newDigit)
                 steps.add(SbwStepInfo(
-                    prefix + s.sbw.sbwSubStepInstruction.format(descAdd, currentValue),
+                    prefix + sbws.sbwSubStepInstruction.format(descAdd, currentValue),
                     currentValue
                 ))
             }
@@ -168,6 +177,10 @@ fun SubtractingWithAbacusScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val sbws = sbwStringsForLanguage(LocalAppLanguage.current)
+    val ps = placeValueStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -176,7 +189,7 @@ fun SubtractingWithAbacusScreen(
     val state = remember { mutableStateOf(List(COLUMNS) { SbwColumnState() }) }
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
     var exercise by remember { mutableStateOf(generateSbwExercise(currentDigitLevel)) }
-    var steps by remember { mutableStateOf(buildSbwSteps(exercise, s)) }
+    var steps by remember { mutableStateOf(buildSbwSteps(exercise, sbws, ps)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
@@ -194,7 +207,7 @@ fun SubtractingWithAbacusScreen(
         currentDigitLevel = MIN_DIGIT_LEVEL
         state.value = List(COLUMNS) { SbwColumnState() }
         exercise = generateSbwExercise(currentDigitLevel)
-        steps = buildSbwSteps(exercise, s)
+        steps = buildSbwSteps(exercise, sbws, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -225,7 +238,7 @@ fun SubtractingWithAbacusScreen(
         state.value = List(COLUMNS) { SbwColumnState() }
         schyotyBeads.value = List(9) { 0 }
         exercise = generateSbwExercise(currentDigitLevel)
-        steps = buildSbwSteps(exercise, s)
+        steps = buildSbwSteps(exercise, sbws, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -244,10 +257,10 @@ fun SubtractingWithAbacusScreen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.sbw.sbwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = sbws.sbwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.sbw.sbwCorrectMessage
+                    feedbackMessage = sbws.sbwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -270,7 +283,7 @@ fun SubtractingWithAbacusScreen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.sbw.sbwCongratsMessage.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = sbws.sbwCongratsMessage.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -285,7 +298,7 @@ fun SubtractingWithAbacusScreen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.sbw.sbwLastLevelMessage
+            feedbackMessage = sbws.sbwLastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -311,7 +324,7 @@ fun SubtractingWithAbacusScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.sbw.sbwTitle,
+                        text = sbws.sbwTitle,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -327,7 +340,7 @@ fun SubtractingWithAbacusScreen(
                 Spacer(Modifier.height(4.dp))
 
                 Text(
-                    text = s.sbw.sbwInstruction,
+                    text = sbws.sbwInstruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -367,7 +380,7 @@ fun SubtractingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.sorobanMode,
+                        text = aws.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -391,7 +404,7 @@ fun SubtractingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.suanpanMode,
+                        text = aws.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -415,7 +428,7 @@ fun SubtractingWithAbacusScreen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.schyoty,
+                        text = aws.schyoty,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -598,7 +611,7 @@ fun SubtractingWithAbacusScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${s.sbw.sbwStepPrefix}${steps[currentStepIdx].instruction}",
+                            text = "${sbws.sbwStepPrefix}${steps[currentStepIdx].instruction}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -609,7 +622,7 @@ fun SubtractingWithAbacusScreen(
 
                 if (steps.isNotEmpty()) {
                     Text(
-                        text = s.sbw.sbwStepStatus.format(currentStepIdx + 1, steps.size),
+                        text = sbws.sbwStepStatus.format(currentStepIdx + 1, steps.size),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -730,7 +743,7 @@ fun SubtractingWithAbacusScreen(
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.titles.jessicaAmarteifio) },
+                        text = { Text(hts.jessicaAmarteifio) },
                         trailingIcon = {
                             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                         },

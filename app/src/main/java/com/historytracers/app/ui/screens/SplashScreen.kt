@@ -13,11 +13,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.splashScreenStringsForLanguage
 
 @Composable
 fun SplashScreen() {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val xs = splashScreenStringsForLanguage(LocalAppLanguage.current)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,13 +34,13 @@ fun SplashScreen() {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = s.titles.history,
+                text = hts.history,
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = s.common.tracers,
+                text = xs.tracers,
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

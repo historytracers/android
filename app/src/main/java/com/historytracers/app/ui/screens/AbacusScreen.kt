@@ -22,7 +22,15 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.miscStringsForLanguage
+import com.historytracers.app.ui.features.mwStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionStringsForLanguage
+import com.historytracers.app.ui.features.sbwStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
@@ -49,6 +57,13 @@ fun AbacusScreen(
     onNavigateToSubtractingWithAbacus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
+    val pas = practicingAdditionStringsForLanguage(LocalAppLanguage.current)
+    val mcs = miscStringsForLanguage(LocalAppLanguage.current)
+    val ms = mwStringsForLanguage(LocalAppLanguage.current)
+    val sbws = sbwStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedAbacusSections.collectAsState(initial = emptySet())
@@ -109,7 +124,7 @@ fun AbacusScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.titles.abacus,
+                    text = hts.abacus,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -144,7 +159,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.titles.history,
+                text = hts.history,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -173,7 +188,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.abacusWrite.writingToSoroban,
+                text = aws.writingToSoroban,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -202,7 +217,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.abacusWrite.writingToSuanpan,
+                text = aws.writingToSuanpan,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -222,7 +237,7 @@ fun AbacusScreen(
                     )
                 ) {
                     Text(
-                        text = s.abacusWrite.schyoty,
+                        text = aws.schyoty,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = OnButtonYellow
@@ -232,7 +247,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = s.abacusWrite.writingToSchyoty,
+                text = aws.writingToSchyoty,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -261,7 +276,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.abacusWrite.writingLargeNumbers,
+                text = aws.writingLargeNumbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -324,7 +339,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.body.addingTwoNumbers,
+                text = bs.addingTwoNumbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -353,7 +368,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.body.addingLargeNumbers,
+                text = bs.addingLargeNumbers,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -390,7 +405,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.pa.practicingAddition,
+                text = pas.practicingAddition,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -453,7 +468,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.misc.multiplicationTable,
+                text = mcs.multiplicationTable,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -472,7 +487,7 @@ fun AbacusScreen(
                 )
             ) {
                 Text(
-                    text = s.misc.abacusInOrdersReading,
+                    text = mcs.abacusInOrdersReading,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
@@ -482,7 +497,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.misc.abacusInRereading,
+                text = mcs.abacusInRereading,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -501,7 +516,7 @@ fun AbacusScreen(
                 )
             ) {
                 Text(
-                    text = s.mw.multiplyingWithAbacus,
+                    text = ms.multiplyingWithAbacus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow
@@ -511,7 +526,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.mw.multiplyingWithAbacusDescription,
+                text = ms.multiplyingWithAbacusDescription,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -540,7 +555,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.mw.mw2Title,
+                text = ms.mw2Title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -569,7 +584,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.mw.mw3Title,
+                text = ms.mw3Title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -633,7 +648,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.sbw.returningWithAbacus,
+                text = sbws.returningWithAbacus,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -663,7 +678,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = s.sbw.subtractingWithAbacus,
+                text = sbws.subtractingWithAbacus,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

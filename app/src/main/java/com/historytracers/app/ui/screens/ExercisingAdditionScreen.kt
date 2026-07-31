@@ -35,7 +35,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
@@ -200,6 +202,7 @@ fun ExercisingAdditionScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
     val handColor = remember(skinColor) { parseHexColor(skinColor) }
     val handPath = remember { buildHandPath() }
     val footPathResult = remember { buildFootPath() }
@@ -341,7 +344,7 @@ fun ExercisingAdditionScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.body.exercisingAddition,
+                        text = bs.exercisingAddition,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -349,7 +352,7 @@ fun ExercisingAdditionScreen(
             }
 
             Text(
-                text = s.body.exercisingAdditionInstruction,
+                text = bs.exercisingAdditionInstruction,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -538,16 +541,16 @@ fun ExercisingAdditionScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("${s.body.clapCounter} $clapCompleted", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.body.stepsCounter} $stepsCompleted", style = MaterialTheme.typography.bodySmall)
-                    Text("${s.body.jumpsCounter} $jumpsCompleted", style = MaterialTheme.typography.bodySmall)
+                    Text("${bs.clapCounter} $clapCompleted", style = MaterialTheme.typography.bodySmall)
+                    Text("${bs.stepsCounter} $stepsCompleted", style = MaterialTheme.typography.bodySmall)
+                    Text("${bs.jumpsCounter} $jumpsCompleted", style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(s.common.slowly, style = MaterialTheme.typography.bodySmall)
+                    Text(bs.slowly, style = MaterialTheme.typography.bodySmall)
                     Slider(
                         value = sliderPos,
                         onValueChange = { if (!isPlaying) sliderPos = it },
@@ -555,7 +558,7 @@ fun ExercisingAdditionScreen(
                         modifier = Modifier.width(180.dp),
                         enabled = !isPlaying
                     )
-                    Text(s.common.fast, style = MaterialTheme.typography.bodySmall)
+                    Text(bs.fast, style = MaterialTheme.typography.bodySmall)
                 }
 
                 Row(
@@ -589,7 +592,7 @@ fun ExercisingAdditionScreen(
                         enabled = !isPlaying
                     ) {
                         Text(
-                            text = s.common.doExercise,
+                            text = bs.doExercise,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 4.dp)
@@ -601,7 +604,7 @@ fun ExercisingAdditionScreen(
 
         if (phase == ExercisePhase.DONE && !isPlaying) {
             Text(
-                text = s.body.exercisingAdditionCompletionMessage,
+                text = bs.exercisingAdditionCompletionMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2E7D32),

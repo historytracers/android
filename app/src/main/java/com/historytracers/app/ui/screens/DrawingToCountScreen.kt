@@ -36,7 +36,10 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.drawingToCountScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
@@ -116,6 +119,8 @@ fun DrawingToCountScreen(
     onNavigateToHandsOnYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val xs = drawingToCountScreenStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     var counter by remember { mutableIntStateOf(0) }
     var showSourcesMenu by remember { mutableStateOf(false) }
@@ -131,7 +136,7 @@ fun DrawingToCountScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(s.yupana.handsOnYupana) },
+                title = { Text(ys.handsOnYupana) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
@@ -153,7 +158,7 @@ fun DrawingToCountScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = s.yupana.handsOnYupana,
+                    text = ys.handsOnYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -161,7 +166,7 @@ fun DrawingToCountScreen(
                 )
 
                 Text(
-                    text = s.yupana.drawingToCountDescription,
+                    text = xs.drawingToCountDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -341,7 +346,7 @@ fun DrawingToCountScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = s.yupana.tawantsuyu,
+                        text = ys.tawantsuyu,
                         fontWeight = FontWeight.Bold
                     )
                 }

@@ -31,7 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.AbacusWriteStrings
+import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.MwStrings
+import com.historytracers.app.ui.features.PlaceValueStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.mwStringsForLanguage
+import com.historytracers.app.ui.features.placeValueStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
@@ -81,7 +90,7 @@ private fun generateMw2Exercise(level: Int): Mw2Exercise {
     return Mw2Exercise(a, b)
 }
 
-private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.UiStrings): List<Mw2StepInfo> {
+private fun buildMw2Steps(exercise: Mw2Exercise, ms: MwStrings, ps: PlaceValueStrings): List<Mw2StepInfo> {
     val steps = mutableListOf<Mw2StepInfo>()
     val a = exercise.a
     val b = exercise.b
@@ -90,8 +99,8 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
 
     val multipliers = listOf(1L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L)
     val placeNames = listOf(
-        s.place.placeUnits, s.place.placeTens, s.place.placeHundreds, s.place.placeThousands,
-        s.place.placeTenThousands, s.place.placeHundredThousands, s.place.placeMillions, s.place.placeTenMillions
+        ps.placeUnits, ps.placeTens, ps.placeHundreds, ps.placeThousands,
+        ps.placeTenThousands, ps.placeHundredThousands, ps.placeMillions, ps.placeTenMillions
     )
 
     val numPlaces = strA.length
@@ -110,7 +119,7 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
     val firstDigitValue = first.first * Math.pow(10.0, first.second.toDouble()).toLong()
     val firstProduct = first.third
     steps.add(Mw2StepInfo(
-        s.mw.mw2StepWriteFirst.format(firstDigitValue, b, firstProduct, firstProduct),
+        ms.mw2StepWriteFirst.format(firstDigitValue, b, firstProduct, firstProduct),
         firstProduct
     ))
 
@@ -134,15 +143,15 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
             if (totalDigit < 10) {
                 currentValue += digitB * multipliers[p]
                 steps.add(Mw2StepInfo(
-                    prefix + s.mw.mwStepAdd.format(digitB, placeNames[p], currentValue),
+                    prefix + ms.mwStepAdd.format(digitB, placeNames[p], currentValue),
                     currentValue
                 ))
             } else {
                 val complement = 10 - digitB
                 val newValue = currentValue + (multipliers[p] * 10) - (complement * multipliers[p])
-                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else s.place.placeNext
+                val nextPlace = if (p + 1 < placeNames.size) placeNames[p + 1] else ps.placeNext
                 steps.add(Mw2StepInfo(
-                    prefix + s.mw.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
+                    prefix + ms.mwStepCarry.format(digitB, placeNames[p], digitA, digitB, totalDigit, complement, placeNames[p], nextPlace, newValue),
                     newValue
                 ))
                 currentValue = newValue
@@ -151,7 +160,7 @@ private fun buildMw2Steps(exercise: Mw2Exercise, s: com.historytracers.app.ui.Ui
     }
 
     steps.add(Mw2StepInfo(
-        s.mw.mwStepFinal.format(a, b, total),
+        ms.mwStepFinal.format(a, b, total),
         total.toLong()
     ))
 
@@ -166,6 +175,10 @@ fun MultiplyingWithAbacusLevel2Screen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val ms = mwStringsForLanguage(LocalAppLanguage.current)
+    val ps = placeValueStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -174,7 +187,7 @@ fun MultiplyingWithAbacusLevel2Screen(
     val state = remember { mutableStateOf(List(COLUMNS) { Mw2ColumnState() }) }
     var currentDigitLevel by remember { mutableIntStateOf(MIN_DIGIT_LEVEL) }
     var exercise by remember { mutableStateOf(generateMw2Exercise(currentDigitLevel)) }
-    var steps by remember { mutableStateOf(buildMw2Steps(exercise, s)) }
+    var steps by remember { mutableStateOf(buildMw2Steps(exercise, ms, ps)) }
     var isFeedbackPositive by remember { mutableStateOf(false) }
     var currentStepIdx by remember { mutableIntStateOf(0) }
     var stepCompleted by remember { mutableStateOf(false) }
@@ -192,7 +205,7 @@ fun MultiplyingWithAbacusLevel2Screen(
         currentDigitLevel = MIN_DIGIT_LEVEL
         state.value = List(COLUMNS) { Mw2ColumnState() }
         exercise = generateMw2Exercise(currentDigitLevel)
-        steps = buildMw2Steps(exercise, s)
+        steps = buildMw2Steps(exercise, ms, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -223,7 +236,7 @@ fun MultiplyingWithAbacusLevel2Screen(
         state.value = List(COLUMNS) { Mw2ColumnState() }
         schyotyBeads.value = List(9) { 0 }
         exercise = generateMw2Exercise(currentDigitLevel)
-        steps = buildMw2Steps(exercise, s)
+        steps = buildMw2Steps(exercise, ms, ps)
         currentStepIdx = 0
         stepCompleted = false
         feedbackMessage = ""
@@ -242,10 +255,10 @@ fun MultiplyingWithAbacusLevel2Screen(
             if (!stepCompleted) {
                 stepCompleted = true
                 if (currentStepIdx == steps.size - 1) {
-                    feedbackMessage = s.mw.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
+                    feedbackMessage = ms.mwPerfectMessage.format(exercise.a, exercise.b, exercise.expected)
                     isFeedbackPositive = true
                 } else {
-                    feedbackMessage = s.mw.mwCorrectMessage
+                    feedbackMessage = ms.mwCorrectMessage
                     isFeedbackPositive = true
                 }
             }
@@ -270,7 +283,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                 finalCongratsShown = true
                 onScoreChanged(currentScore + 2)
             }
-            feedbackMessage = s.mw.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
+            feedbackMessage = ms.mwCongratulations.format(exercise.a, exercise.b, exercise.expected)
             isFeedbackPositive = true
         } else {
             currentStepIdx++
@@ -285,7 +298,7 @@ fun MultiplyingWithAbacusLevel2Screen(
         val completed = wasLastLevel && finalCongratsShown
         if (completed && !showLastLevelMessage) {
             showLastLevelMessage = true
-            feedbackMessage = s.mw.mw2LastLevelMessage
+            feedbackMessage = ms.mw2LastLevelMessage
             isFeedbackPositive = true
             return
         }
@@ -311,7 +324,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.mw.mw2Title,
+                        text = ms.mw2Title,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -327,7 +340,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                 Spacer(Modifier.height(2.dp))
 
                 Text(
-                    text = s.mw.mw2Instruction,
+                    text = ms.mw2Instruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -367,7 +380,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.sorobanMode,
+                        text = aws.sorobanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -391,7 +404,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.suanpanMode,
+                        text = aws.suanpanMode,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -415,7 +428,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         )
                     }
                     Text(
-                        text = s.abacusWrite.schyoty,
+                        text = aws.schyoty,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -598,7 +611,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                             color = MaterialTheme.colorScheme.surfaceVariant,
                         ) {
                             Text(
-                                text = s.mw.mwStepStatus.format(currentStepIdx + 1, steps.size),
+                                text = ms.mwStepStatus.format(currentStepIdx + 1, steps.size),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary,
@@ -617,7 +630,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
-                            text = "${s.mw.mwStepPrefix}${steps[currentStepIdx].instruction}",
+                            text = "${ms.mwStepPrefix}${steps[currentStepIdx].instruction}",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -738,7 +751,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                     onDismissRequest = { showSourcesMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(s.titles.jessicaAmarteifio) },
+                        text = { Text(hts.jessicaAmarteifio) },
                         trailingIcon = {
                             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                         },

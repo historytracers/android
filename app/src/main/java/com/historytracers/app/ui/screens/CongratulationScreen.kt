@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,6 +21,7 @@ fun CongratulationScreen(
     onNavigateBack: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -36,7 +39,7 @@ fun CongratulationScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = s.titles.congratulationTitle,
+                    text = hts.congratulationTitle,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -48,7 +51,7 @@ fun CongratulationScreen(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = s.titles.congratulationMessage,
+                text = hts.congratulationMessage,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 24.dp)

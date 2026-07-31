@@ -29,7 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.delay
@@ -94,6 +98,9 @@ fun MultiplicationTableScreen(
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val mcs = miscStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -178,7 +185,7 @@ fun MultiplicationTableScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = s.misc.multiplicationTable,
+                        text = mcs.multiplicationTable,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -194,7 +201,7 @@ fun MultiplicationTableScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = s.misc.multiplicationTableDescription,
+                    text = mcs.multiplicationTableDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -220,7 +227,7 @@ fun MultiplicationTableScreen(
                         Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                             color = if (abacusMode == "soroban") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Text(s.abacusWrite.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(aws.sorobanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
 
                     FilledIconButton(
                         onClick = {
@@ -236,7 +243,7 @@ fun MultiplicationTableScreen(
                         Text("S", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                             color = if (abacusMode == "suanpan") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Text(s.abacusWrite.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(aws.suanpanMode, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
 
                     FilledIconButton(
                         onClick = {
@@ -252,7 +259,7 @@ fun MultiplicationTableScreen(
                         Text("Sc", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                             color = if (abacusMode == "schyoty") OnButtonYellow else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Text(s.abacusWrite.schyoty, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(aws.schyoty, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 }
 
                 if (abacusMode in listOf("soroban", "suanpan")) {
@@ -542,7 +549,7 @@ fun MultiplicationTableScreen(
                 onDismissRequest = { showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(s.titles.jessicaAmarteifio) },
+                    text = { Text(hts.jessicaAmarteifio) },
                     trailingIcon = {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
                     },
