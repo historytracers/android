@@ -3,7 +3,7 @@ package com.historytracers.app.ui.features
 
 import androidx.compose.runtime.staticCompositionLocalOf
 
-data class AbacusInRereadingScreenStrings(
+data class CarryingScreenStrings(
     val title: String,
     val introMessage: String,
     val instruction: String,
@@ -17,8 +17,8 @@ data class AbacusInRereadingScreenStrings(
     val carryHint: String,
 )
 
-val EnAbacusInRereadingScreenStrings = AbacusInRereadingScreenStrings(
-    title = "Abacus in rereading",
+val EnCarryingScreenStrings = CarryingScreenStrings(
+    title = "Carrying",
     introMessage = "When adding numbers, sometimes we need to carry 1 to another order. This always happens when the value is bigger than the complement of a number, as we will see in this exercise.",
     instruction = "In this exercise, the value Y is fixed and X is controlled by the arrows. The result Z = Y + X is always shown. When X reaches 9, the largest value of the units order, the exercise is complete.",
     yLabel = "Y",
@@ -31,8 +31,8 @@ val EnAbacusInRereadingScreenStrings = AbacusInRereadingScreenStrings(
     carryHint = "%d + %d = %d. When the result is 10 or more, on the abacus we need the next column (carrying over).",
 )
 
-val PtAbacusInRereadingScreenStrings = AbacusInRereadingScreenStrings(
-    title = "\u00c1baco na releitura",
+val PtCarryingScreenStrings = CarryingScreenStrings(
+    title = "Levando 1",
     introMessage = "Quando somamos n\u00fameros, \u00e0s vezes precisamos levar 1 para outra ordem. Isso sempre acontece quando o valor \u00e9 maior que o complemento de um n\u00famero, como veremos neste exerc\u00edcio.",
     instruction = "Neste exerc\u00edcio, o valor Y \u00e9 fixo e X \u00e9 controlado pelas setas. O resultado Z = Y + X \u00e9 sempre mostrado. Quando X chegar a 9, o maior valor da ordem das unidades, o exerc\u00edcio est\u00e1 completo.",
     yLabel = "Y",
@@ -45,8 +45,8 @@ val PtAbacusInRereadingScreenStrings = AbacusInRereadingScreenStrings(
     carryHint = "%d + %d = %d. Quando o resultado \u00e9 10 ou mais, no \u00e1baco precisamos da pr\u00f3xima coluna (indo para a pr\u00f3xima casa).",
 )
 
-val EsAbacusInRereadingScreenStrings = AbacusInRereadingScreenStrings(
-    title = "\u00c1baco en relectura",
+val EsCarryingScreenStrings = CarryingScreenStrings(
+    title = "Llevando 1",
     introMessage = "Cuando sumamos n\u00fameros, a veces necesitamos llevar 1 a otro orden. Esto siempre sucede cuando el valor es mayor que el complemento de un n\u00famero, como veremos en este ejercicio.",
     instruction = "En este ejercicio, el valor Y es fijo y X se controla con las flechas. El resultado Z = Y + X siempre se muestra. Cuando X llegue a 9, el valor m\u00e1s grande del orden de las unidades, el ejercicio est\u00e1 completo.",
     yLabel = "Y",
@@ -59,10 +59,10 @@ val EsAbacusInRereadingScreenStrings = AbacusInRereadingScreenStrings(
     carryHint = "%d + %d = %d. Cuando el resultado es 10 o m\u00e1s, en el \u00e1baco necesitamos la siguiente columna (llevando a la siguiente posici\u00f3n).",
 )
 
-val LocalAbacusInRereadingScreenStrings = staticCompositionLocalOf { EnAbacusInRereadingScreenStrings }
+val LocalCarryingScreenStrings = staticCompositionLocalOf { EnCarryingScreenStrings }
 
-fun abacusInRereadingScreenStringsForLanguage(language: String): AbacusInRereadingScreenStrings = when (language) {
-    "pt-BR" -> PtAbacusInRereadingScreenStrings
-    "es-ES" -> EsAbacusInRereadingScreenStrings
-    else -> EnAbacusInRereadingScreenStrings
+fun carryingScreenStringsForLanguage(language: String): CarryingScreenStrings = when (language) {
+    "pt-BR" -> PtCarryingScreenStrings
+    "es-ES" -> EsCarryingScreenStrings
+    else -> EnCarryingScreenStrings
 }

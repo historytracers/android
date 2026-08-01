@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
 import android.content.ClipData
@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.abacusInRereadingScreenStringsForLanguage
+import com.historytracers.app.ui.features.carryingScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -40,16 +40,17 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AbacusInRereadingScreen(
+fun CarryingScreen(
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
-    val rs = abacusInRereadingScreenStringsForLanguage(LocalAppLanguage.current)
+    val rs = carryingScreenStringsForLanguage(LocalAppLanguage.current)
     var y by remember { mutableIntStateOf(Random.nextInt(1, 10)) }
     var x by remember { mutableIntStateOf(0) }
     val z = y + x
+    var started by remember { mutableStateOf(false) }
     var completed by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
@@ -59,7 +60,7 @@ fun AbacusInRereadingScreen(
     LaunchedEffect(completed) {
         if (completed) {
             preferences.recordLessonCompletion()
-            preferences.markAbacusSectionCompleted("abacus_in_rereading")
+            preferences.markAbacusSectionCompleted("carrying")
             onScoreChanged(currentScore + 2)
         }
     }
@@ -67,6 +68,7 @@ fun AbacusInRereadingScreen(
     fun newExercise() {
         y = Random.nextInt(1, 10)
         x = 0
+        started = false
         completed = false
     }
 
@@ -213,7 +215,7 @@ fun AbacusInRereadingScreen(
                 ) {
                     val downColors = arrowButtonColors(x <= 0)
                     FilledIconButton(
-                        onClick = { if (x > 0 && !completed) x-- },
+                        onClick = { if (x > 0 && !completed) { started = true; x-- } },
                         modifier = Modifier.size(64.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -230,7 +232,8 @@ fun AbacusInRereadingScreen(
                     val upColors = arrowButtonColors(x >= 9)
                     FilledIconButton(
                         onClick = {
-                            if (x < 9) {
+                            if (x < 9 && !completed) {
+                                started = true
                                 x++
                                 if (x == 9) completed = true
                             }
@@ -271,6 +274,7 @@ fun AbacusInRereadingScreen(
 
                 FilledTonalButton(
                     onClick = { newExercise() },
+                    enabled = !started || completed,
                     shape = RoundedCornerShape(24.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = ButtonYellow,
