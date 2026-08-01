@@ -10,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -51,6 +50,8 @@ fun ComplementToTenScreen(
     val y = 10 - x
     var visitedX by remember { mutableStateOf(setOf(0)) }
     var completed by remember { mutableStateOf(false) }
+    var showCongrats by remember { mutableStateOf(false) }
+    var wasAtExtreme by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -60,8 +61,21 @@ fun ComplementToTenScreen(
     LaunchedEffect(visitedX) {
         if (!completed && visitedX.size == 11) {
             completed = true
+            showCongrats = true
             preferences.recordLessonCompletion()
             preferences.markAbacusSectionCompleted("complement_to_ten")
+            onScoreChanged(currentScore + 2)
+        }
+    }
+
+    fun moveTo(nx: Int) {
+        x = nx
+        visitedX = visitedX + nx
+        if (completed) showCongrats = false
+        if (nx == 10) wasAtExtreme = true
+        if (nx == 0 && wasAtExtreme) {
+            wasAtExtreme = false
+            showCongrats = true
             onScoreChanged(currentScore + 2)
         }
     }
@@ -200,13 +214,7 @@ fun ComplementToTenScreen(
                 ) {
                     val downColors = arrowButtonColors(x <= 0)
                     FilledIconButton(
-                        onClick = {
-                            if (x > 0) {
-                                val nx = x - 1
-                                x = nx
-                                visitedX = visitedX + nx
-                            }
-                        },
+                        onClick = { if (x > 0) moveTo(x - 1) },
                         modifier = Modifier.size(64.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -222,13 +230,7 @@ fun ComplementToTenScreen(
                     }
                     val upColors = arrowButtonColors(x >= 10)
                     FilledIconButton(
-                        onClick = {
-                            if (x < 10) {
-                                val nx = x + 1
-                                x = nx
-                                visitedX = visitedX + nx
-                            }
-                        },
+                        onClick = { if (x < 10) moveTo(x + 1) },
                         modifier = Modifier.size(64.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -256,23 +258,7 @@ fun ComplementToTenScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                FilledTonalButton(
-                    onClick = { x = 0 },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = ButtonYellow,
-                        contentColor = OnButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = s.common.reset,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
-
-                if (completed) {
+                if (showCongrats) {
                     Text(
                         text = cs.completionMessage,
                         style = MaterialTheme.typography.bodyMedium,
