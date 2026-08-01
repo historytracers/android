@@ -97,3 +97,56 @@ When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `
 ### 5. Build & verify
 - Run the build script to ensure compilation succeeds.
 - Fix any unresolved references (missing strings or imports).
+
+## Creating Screens from Smartphone Game JSON (sm_game)
+
+When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` files (parsed by `SMGameFile`/`SMGameContent` in the `common` module, `type = "sm_game"`), follow this checklist:
+
+### 1. Understand the data model
+- `SMGameFile` has `title` and `content` (list of `SMGameContent`). Each `SMGameContent` is one screen, identified by its `id`.
+- Fields to handle per content: `text` (list of `HTText`), `answer` (expected Yes/No answer or null), `smile` (`"thinking"`/`"happy"`), `source_menu` (list of `HTSource`), `score`, and the position in the `content` vector drives next/prev navigation.
+- `HTText.format` is `"markdown"` or `"html"` — render markdown text with `MarkdownText` (`#### heading` → bold title, `===x===`/`**x**` → bold, `*x*` → italic); other formats use `TextRenderer`.
+- `HTSource` has `text` (menu label) and `page` (URL). When `page` starts with `"index.html"`, prefix it with `"https://www.historytracers.org/"`.
+
+### 2. Copy the JSON into Android assets
+- Copy `historytracers/lang/{en-US,pt-BR,es-ES}/smartphone/<uuid>.json` to `app/src/main/assets/lang/{lang}/smartphone/<uuid>.json` (LF line endings).
+- Load with `ContentRepository.loadAndParse("${LocalAppLanguage.current}/smartphone/<uuid>")` and handle `ContentResult.SMGame` / `ContentResult.Error`.
+- After the user edits translations in the `historytracers` repo, re-copy the files into assets and rebuild.
+
+### 3. Keep Gson mapping in sync (common module)
+- JSON uses snake_case (`source_menu`); Java fields need matching annotations — `SMGameContent.sourceMenu` requires `@SerializedName("source_menu")`. When editing `common/src/android/.../com/historytracers/common/*.java`, update the Go counterpart in `common/src/go/data-type.go` in sync.
+
+### 4. Create the feature strings file
+- Create `app/src/main/java/com/historytracers/app/ui/features/<Feature>ScreenStrings.kt` (shared across the feature's screens): data class, `En/Pt/Es` objects, `LocalXxxScreenStrings`, `xxxScreenStringsForLanguage(language)`, translations in all three locales.
+- Lesson text comes from the JSON; only UI chrome strings (title, wrong-answer feedback, etc.) go in the strings file.
+
+### 5. Create the screens file
+- Create one file with a public composable per `SMGameContent` delegating to a shared private loader composable keyed by `contentId`.
+- Each screen must include:
+  - Top bar (back arrow + title) using `s.common.*`.
+  - Text rendered via `MarkdownText` when `format == "markdown"`, else `TextRenderer`.
+  - Green buttons (`#4CAF50` container, `Color.White` content) everywhere buttons act on the game flow:
+    - Previous/Next use `ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`.
+    - Previous shows `Icons.AutoMirrored.Filled.ArrowBack` before the label, Next shows `Icons.AutoMirrored.Filled.ArrowForward` after the label. Show them according to the `content` vector position (first screen: only Next; middle screens: both; last screen: only Previous).
+  - When `answer != null`: green Yes/No buttons (`ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`) — both buttons green, no selected-color switching. On submit show the result once (no retry):
+    - Correct → `🎉 Correct! 🎉` (`s.common.correct` wrapped in `\uD83C\uDF89`) in green (`Color(0xFF2E7D32)`).
+    - Wrong → the localized wrong-answer message (`xs.wrongAnswerMessage`) in red (`MaterialTheme.colorScheme.error`).
+  - When `smile` is non-empty: smile emoji at `Alignment.BottomEnd` (`"thinking"` → 🤔, `"happy"` → 😊).
+  - When `source_menu` is non-empty: a Sources menu at `Alignment.BottomStart` — one first-level `DropdownMenuItem` per source (label = `source.text`) each opening a Copy URL / Go to URL submenu using the (prefixed) `source.page`.
+
+### 6. Scoring
+- Award each screen's default `score` as soon as the user reaches it (arrival award) — every screen, including question screens.
+- For question screens, additionally award based on the user's answer:
+  - Correct answer → the full `score` value.
+  - Wrong answer → half of it (`score / 2`).
+  - Example: a question with `score = 2` gives +2 on arrival, then +2 on a correct answer or +1 on a wrong answer.
+- `onScoreChanged` sets an absolute value, so accumulate awards per screen: `val initialScore = remember { currentScore }`, keep a `totalAwarded` counter, and call `onScoreChanged(initialScore + totalAwarded)` for every award (arrival and answer).
+
+### 7. Wire navigation
+- Add one `data object` route per content in `Screen.kt`.
+- Add imports and composable blocks in `AppNavigation.kt`; wire back → hub and `onNavigatePrev`/`onNavigateNext` between the screens. Add the routes to the `simpleRoutes` set.
+- In the hub screen add an `onNavigateTo*` parameter and call it from the exercise button's `onClick`, marking the section complete there too.
+
+### 8. Build & verify
+- Run `.\gradlew.bat assembleDebug` and fix unresolved references.
+- Confirm the JSON was bundled under `app/build/intermediates/assets/debug/mergeDebugAssets/lang/<lang>/smartphone/`.
