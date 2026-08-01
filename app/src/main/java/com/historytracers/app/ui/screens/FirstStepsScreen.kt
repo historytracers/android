@@ -50,7 +50,8 @@ fun FirstStepsScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    onNavigateToCongratulation: () -> Unit = {}
+    onNavigateToCongratulation: () -> Unit = {},
+    onNavigateToSocrates: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -111,7 +112,11 @@ fun FirstStepsScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    controller.markCompleted("i_dont_know")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("i_dont_know") }
+                    onNavigateToSocrates()
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

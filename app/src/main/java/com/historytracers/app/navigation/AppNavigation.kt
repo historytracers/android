@@ -42,6 +42,10 @@ import com.historytracers.app.ui.screens.ClapScreen
 import com.historytracers.app.ui.screens.CongratulationScreen
 import com.historytracers.app.ui.screens.ExercisingAdditionScreen
 import com.historytracers.app.ui.screens.FeetAndHandsScreen
+import com.historytracers.app.ui.screens.SocratesConclusionScreen
+import com.historytracers.app.ui.screens.SocratesMotivationScreen
+import com.historytracers.app.ui.screens.SocratesPhilosophyScreen
+import com.historytracers.app.ui.screens.SocratesQuestionScreen
 import com.historytracers.app.ui.screens.StreakScreen
 import com.historytracers.app.ui.screens.SorobanWritingScreen
 import com.historytracers.app.ui.screens.SuanpanWritingScreen
@@ -83,7 +87,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
+    val simpleRoutes = setOf("index", "first_steps", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -326,7 +330,70 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) }
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
+                            onNavigateToSocrates = { navController.navigate(Screen.Socrates.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.Socrates.route) {
+                        SocratesPhilosophyScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SocratesQuestion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SocratesQuestion.route) {
+                        SocratesQuestionScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.Socrates.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.SocratesMotivation.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SocratesMotivation.route) {
+                        SocratesMotivationScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.SocratesQuestion.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.SocratesConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.SocratesConclusion.route) {
+                        SocratesConclusionScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.SocratesMotivation.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.Workout.route) {

@@ -8,6 +8,10 @@ sealed class Screen(val route: String) {
     }
     data object Sources : Screen("sources")
     data object FirstSteps : Screen("first_steps")
+    data object Socrates : Screen("socrates")
+    data object SocratesQuestion : Screen("socrates_question")
+    data object SocratesMotivation : Screen("socrates_motivation")
+    data object SocratesConclusion : Screen("socrates_conclusion")
     data object Workout : Screen("workout")
     data object Abacus : Screen("abacus")
     data object Settings : Screen("settings")
