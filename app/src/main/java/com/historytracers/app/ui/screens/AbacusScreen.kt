@@ -54,7 +54,8 @@ fun AbacusScreen(
     onNavigateToMultiplyingWithAbacus: () -> Unit = {},
     onNavigateToMultiplyingWithAbacusLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithoutLimits: () -> Unit = {},
-    onNavigateToSubtractingWithAbacus: () -> Unit = {}
+    onNavigateToSubtractingWithAbacus: () -> Unit = {},
+    onNavigateToAddingWithAbacus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
@@ -77,7 +78,7 @@ fun AbacusScreen(
     }
     val group2Controller = remember {
         LevelGroupController(
-            listOf("practicing_addition"),
+            listOf("adding_with_abacus", "practicing_addition"),
             completedSections
         )
     }
@@ -321,11 +322,11 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToAddingWithAbacus,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("adding_with_abacus")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
