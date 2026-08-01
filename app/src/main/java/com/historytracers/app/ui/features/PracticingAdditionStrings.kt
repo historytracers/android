@@ -5,6 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 data class PracticingAdditionStrings(
     val practicingAddition: String,
+    val complementToTen: String,
     val practicingAdditionInstruction: String,
     val stepWriteFirst: String,
     val stepAddTo: String,
@@ -17,6 +18,7 @@ data class PracticingAdditionStrings(
 
 val EnPracticingAdditionStrings = PracticingAdditionStrings(
     practicingAddition = "Practicing Addition",
+    complementToTen = "Complement to 10",
     practicingAdditionInstruction = "Set the value shown in each step by tapping the beads on the abacus above. Complete all steps to finish the exercise.",
     stepWriteFirst = "Step 1: Write the first number %d in the abacus column(s) (%s).",
     stepAddTo = "Add to the %s: Add %d to the %s column. After this addition, the abacus should show %d.",
@@ -29,6 +31,7 @@ val EnPracticingAdditionStrings = PracticingAdditionStrings(
 
 val PtPracticingAdditionStrings = PracticingAdditionStrings(
     practicingAddition = "Praticando Adi\u00e7\u00e3o",
+    complementToTen = "Complemento de 10",
     practicingAdditionInstruction = "Defina o valor mostrado em cada passo tocando nas contas do \u00e1baco acima. Complete todos os passos para finalizar o exerc\u00edcio.",
     stepWriteFirst = "Passo 1: Escreva o primeiro n\u00famero %d na(s) coluna(s) do \u00e1baco (%s).",
     stepAddTo = "Adicione \u00e0 %s: Adicione %d \u00e0 coluna %s. Ap\u00f3s esta adi\u00e7\u00e3o, o \u00e1baco deve mostrar %d.",
@@ -41,6 +44,7 @@ val PtPracticingAdditionStrings = PracticingAdditionStrings(
 
 val EsPracticingAdditionStrings = PracticingAdditionStrings(
     practicingAddition = "Practicando Suma",
+    complementToTen = "Complemento de 10",
     practicingAdditionInstruction = "Establece el valor mostrado en cada paso tocando las cuentas del \u00e1baco de arriba. Completa todos los pasos para finalizar el ejercicio.",
     stepWriteFirst = "Paso 1: Escribe el primer n\u00famero %d en la(s) columna(s) del \u00e1baco (%s).",
     stepAddTo = "Agrega a %s: Agrega %d a la columna %s. Despu\u00e9s de esta suma, el \u00e1baco debe mostrar %d.",
