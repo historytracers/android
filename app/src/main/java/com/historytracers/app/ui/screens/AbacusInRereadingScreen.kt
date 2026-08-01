@@ -113,6 +113,14 @@ fun AbacusInRereadingScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
+                    text = rs.introMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+                )
+
+                Text(
                     text = rs.instruction,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
