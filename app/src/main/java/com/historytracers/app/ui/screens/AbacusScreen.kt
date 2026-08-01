@@ -80,7 +80,7 @@ fun AbacusScreen(
     }
     val group2Controller = remember {
         LevelGroupController(
-            listOf("adding_with_abacus", "adding_large_numbers", "practicing_addition"),
+            listOf("adding_with_abacus", "complement_to_ten", "adding_large_numbers", "practicing_addition"),
             completedSections
         )
     }
@@ -357,11 +357,11 @@ fun AbacusScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("complement_to_ten")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
-                    text = "10 - 1",
+                    text = "10 + x = 10",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnButtonYellow

@@ -13,6 +13,7 @@ data class ComplementToTenScreenStrings(
     val complementText: String,
     val upArrow: String,
     val downArrow: String,
+    val completionMessage: String,
 )
 
 val EnComplementToTenScreenStrings = ComplementToTenScreenStrings(
@@ -25,6 +26,7 @@ val EnComplementToTenScreenStrings = ComplementToTenScreenStrings(
     complementText = "The complement of %d to 10 is %d.",
     upArrow = "Increase X and decrease Y",
     downArrow = "Decrease X and increase Y",
+    completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PERFECT! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nYou explored every combination of Y + X = 10!\nGreat job!",
 )
 
 val PtComplementToTenScreenStrings = ComplementToTenScreenStrings(
@@ -37,6 +39,7 @@ val PtComplementToTenScreenStrings = ComplementToTenScreenStrings(
     complementText = "O complemento de %d para 10 \u00e9 %d.",
     upArrow = "Aumentar X e diminuir Y",
     downArrow = "Diminuir X e aumentar Y",
+    completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PERFEITO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nVoc\u00ea explorou todas as combina\u00e7\u00f5es de Y + X = 10!\n\u00d3timo trabalho!",
 )
 
 val EsComplementToTenScreenStrings = ComplementToTenScreenStrings(
@@ -49,6 +52,7 @@ val EsComplementToTenScreenStrings = ComplementToTenScreenStrings(
     complementText = "El complemento de %d para 10 es %d.",
     upArrow = "Aumentar X y disminuir Y",
     downArrow = "Disminuir X y aumentar Y",
+    completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1PERFECTO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\n\u00a1Exploraste todas las combinaciones de Y + X = 10!\n\u00a1Gran trabajo!",
 )
 
 val LocalComplementToTenScreenStrings = staticCompositionLocalOf { EnComplementToTenScreenStrings }

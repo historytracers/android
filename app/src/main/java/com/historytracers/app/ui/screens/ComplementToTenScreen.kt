@@ -29,24 +29,51 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.complementToTenScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ComplementToTenScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val cs = complementToTenScreenStringsForLanguage(LocalAppLanguage.current)
     var x by remember { mutableIntStateOf(0) }
     val y = 10 - x
+    var visitedX by remember { mutableStateOf(setOf(0)) }
+    var completed by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(visitedX) {
+        if (!completed && visitedX.size == 11) {
+            completed = true
+            preferences.recordLessonCompletion()
+            preferences.markAbacusSectionCompleted("complement_to_ten")
+            onScoreChanged(currentScore + 2)
+        }
+    }
+
+    @Composable
+    fun arrowButtonColors(
+        atLimit: Boolean
+    ): Pair<Color, Color> = when {
+        completed -> ButtonYellowDark to OnButtonYellow
+        atLimit -> MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
+        else -> ButtonYellow to OnButtonYellow
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -171,13 +198,20 @@ fun ComplementToTenScreen(
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val downColors = arrowButtonColors(x <= 0)
                     FilledIconButton(
-                        onClick = { if (x > 0) x-- },
+                        onClick = {
+                            if (x > 0) {
+                                val nx = x - 1
+                                x = nx
+                                visitedX = visitedX + nx
+                            }
+                        },
                         modifier = Modifier.size(64.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
+                            containerColor = downColors.first,
+                            contentColor = downColors.second
                         )
                     ) {
                         Icon(
@@ -186,13 +220,20 @@ fun ComplementToTenScreen(
                             modifier = Modifier.size(36.dp)
                         )
                     }
+                    val upColors = arrowButtonColors(x >= 10)
                     FilledIconButton(
-                        onClick = { if (x < 10) x++ },
+                        onClick = {
+                            if (x < 10) {
+                                val nx = x + 1
+                                x = nx
+                                visitedX = visitedX + nx
+                            }
+                        },
                         modifier = Modifier.size(64.dp),
                         shape = CircleShape,
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
+                            containerColor = upColors.first,
+                            contentColor = upColors.second
                         )
                     ) {
                         Icon(
@@ -228,6 +269,17 @@ fun ComplementToTenScreen(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                }
+
+                if (completed) {
+                    Text(
+                        text = cs.completionMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                     )
                 }
 
