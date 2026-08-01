@@ -55,7 +55,9 @@ fun AbacusScreen(
     onNavigateToMultiplyingWithAbacusLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithoutLimits: () -> Unit = {},
     onNavigateToSubtractingWithAbacus: () -> Unit = {},
-    onNavigateToAddingWithAbacus: () -> Unit = {}
+    onNavigateToAddingWithAbacus: () -> Unit = {},
+    onNavigateToComplementToTen: () -> Unit = {},
+    onNavigateToAddingLargeNumbers: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
@@ -78,7 +80,7 @@ fun AbacusScreen(
     }
     val group2Controller = remember {
         LevelGroupController(
-            listOf("adding_with_abacus", "practicing_addition"),
+            listOf("adding_with_abacus", "adding_large_numbers", "practicing_addition"),
             completedSections
         )
     }
@@ -351,11 +353,40 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToComplementToTen,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "10 - 1",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = pas.complementToTen,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = onNavigateToAddingLargeNumbers,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("adding_large_numbers")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(

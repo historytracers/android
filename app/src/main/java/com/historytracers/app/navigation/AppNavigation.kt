@@ -54,6 +54,8 @@ import com.historytracers.app.ui.screens.MultiplyingWithAbacusLevel2Screen
 import com.historytracers.app.ui.screens.MultiplyingWithoutLimitsScreen
 import com.historytracers.app.ui.screens.SubtractingWithAbacusScreen
 import com.historytracers.app.ui.screens.AddingWithAbacusScreen
+import com.historytracers.app.ui.screens.ComplementToTenScreen
+import com.historytracers.app.ui.screens.AddingLargeNumbersScreen
 import com.historytracers.app.ui.screens.RelationshipScreen
 import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
 import com.historytracers.app.ui.screens.YupanaScreen
@@ -80,7 +82,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "subtracting_with_abacus", "adding_with_abacus", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
+    val simpleRoutes = setOf("index", "first_steps", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -371,7 +373,9 @@ fun AppNavigation() {
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
                             onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
                             onNavigateToSubtractingWithAbacus = { navController.navigate(Screen.SubtractingWithAbacus.route) },
-                            onNavigateToAddingWithAbacus = { navController.navigate(Screen.AddingWithAbacus.route) }
+                            onNavigateToAddingWithAbacus = { navController.navigate(Screen.AddingWithAbacus.route) },
+                            onNavigateToComplementToTen = { navController.navigate(Screen.ComplementToTen.route) },
+                            onNavigateToAddingLargeNumbers = { navController.navigate(Screen.AddingLargeNumbers.route) }
                         )
                     }
                     composable(Screen.Yupana.route) {
@@ -812,6 +816,32 @@ fun AppNavigation() {
                     }
                     composable(Screen.AddingWithAbacus.route) {
                         AddingWithAbacusScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.ComplementToTen.route) {
+                        ComplementToTenScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    navController.navigate(Screen.Abacus.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.AddingLargeNumbers.route) {
+                        AddingLargeNumbersScreen(
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Abacus.route, false)) {
                                     navController.navigate(Screen.Abacus.route) {
