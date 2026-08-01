@@ -54,6 +54,7 @@ fun AbacusScreen(
     onNavigateToMultiplyingWithAbacus: () -> Unit = {},
     onNavigateToMultiplyingWithAbacusLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithoutLimits: () -> Unit = {},
+    onNavigateToAbacusInRereading: () -> Unit = {},
     onNavigateToSubtractingWithAbacus: () -> Unit = {},
     onNavigateToAddingWithAbacus: () -> Unit = {},
     onNavigateToComplementToTen: () -> Unit = {},
@@ -86,7 +87,7 @@ fun AbacusScreen(
     }
     val group3Controller = remember {
         LevelGroupController(
-            listOf("multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_l2", "multiplying_without_limits"),
+            listOf("multiplication_table", "abacus_in_rereading", "multiplying_with_abacus", "multiplying_with_abacus_l2", "multiplying_without_limits"),
             completedSections
         )
     }
@@ -511,11 +512,11 @@ fun AbacusScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToAbacusInRereading,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("abacus_in_rereading")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
