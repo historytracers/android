@@ -51,7 +51,8 @@ fun FirstStepsScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
-    onNavigateToSocrates: () -> Unit = {}
+    onNavigateToSocrates: () -> Unit = {},
+    onNavigateToLearningInLayers: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -148,6 +149,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("learning_in_shells")
                     scope.launch { preferences.markFirstStepsSectionCompleted("learning_in_shells") }
+                    onNavigateToLearningInLayers()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
