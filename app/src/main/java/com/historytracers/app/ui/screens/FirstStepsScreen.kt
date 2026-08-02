@@ -54,6 +54,7 @@ fun FirstStepsScreen(
     onNavigateToSocrates: () -> Unit = {},
     onNavigateToLearningInLayers: () -> Unit = {},
     onNavigateToHowDoILearn: () -> Unit = {},
+    onNavigateToMyHands: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
     onNavigateToSequenceGameOrders: () -> Unit = {}
 ) {
@@ -272,7 +273,11 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    controller.markCompleted("my_hands")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("my_hands") }
+                    onNavigateToMyHands()
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
