@@ -54,7 +54,8 @@ fun FirstStepsScreen(
     onNavigateToSocrates: () -> Unit = {},
     onNavigateToLearningInLayers: () -> Unit = {},
     onNavigateToHowDoILearn: () -> Unit = {},
-    onNavigateToSequenceGame: () -> Unit = {}
+    onNavigateToSequenceGame: () -> Unit = {},
+    onNavigateToSequenceGameOrders: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -525,7 +526,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = { onNavigateToSequenceGameOrders() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
