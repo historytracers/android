@@ -152,6 +152,7 @@ private fun isSvgStyle(text: String?): Boolean =
 private fun HandsTogether(
     gapBetweenHands: Dp = 0.dp,
     countingCircles: Boolean = false,
+    leftHandVowels: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val handPath = remember { buildHandPath() }
@@ -168,12 +169,16 @@ private fun HandsTogether(
         val s = size.height / 320f
         val gap = gapBetweenHands.toPx() / 2f
 
+        val leftCx = size.width * 0.28f - gap
+        val rightCx = size.width * 0.72f + gap
+        val cy = size.height - 338f * s
+
         val leftMatrix = Matrix().apply {
-            setTranslate(size.width * 0.28f - gap, size.height - 338f * s)
+            setTranslate(leftCx, cy)
             preScale(-s, s)
         }
         val rightMatrix = Matrix().apply {
-            setTranslate(size.width * 0.72f + gap, size.height - 338f * s)
+            setTranslate(rightCx, cy)
             preScale(s, s)
         }
 
@@ -181,6 +186,38 @@ private fun HandsTogether(
         val right = Path().apply { addPath(handPath, rightMatrix) }
         drawContext.canvas.nativeCanvas.drawPath(left, paint)
         drawContext.canvas.nativeCanvas.drawPath(right, paint)
+
+        if (leftHandVowels) {
+            val vowels = listOf("a", "e", "i", "o", "u")
+            val tips = listOf(
+                Offset(-240f, 243f),
+                Offset(-170f, 233f),
+                Offset(-100f, 228f),
+                Offset(-35f, 233f),
+                Offset(50f, 258f)
+            )
+            val offsets = listOf(
+                Offset(-82.dp.toPx(), 10.dp.toPx()),
+                Offset(-50.dp.toPx(), -10.dp.toPx()),
+                Offset(-10.dp.toPx(), -20.dp.toPx()),
+                Offset(30.dp.toPx(), -27.dp.toPx()),
+                Offset(100.dp.toPx(), -20.dp.toPx())
+            )
+            val letterSize = 34f * s
+            val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color(0xFF2E3A46).hashCode()
+                textSize = letterSize
+                textAlign = Paint.Align.CENTER
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+            }
+            vowels.forEachIndexed { index, letter ->
+                val tip = tips[index]
+                val off = offsets[index]
+                val x = leftCx - tip.x * s + off.x
+                val y = cy + tip.y * s - letterSize * 0.4f + off.y
+                drawContext.canvas.nativeCanvas.drawText(letter, x, y, textPaint)
+            }
+        }
 
         if (countingCircles) {
             val colors = listOf(
@@ -198,15 +235,13 @@ private fun HandsTogether(
                 Offset(2.dp.toPx(), -40.dp.toPx()),
                 Offset(-4.dp.toPx(), -35.dp.toPx())
             )
-            val cx = size.width * 0.72f + gap
-            val cy = size.height - 338f * s
             val radius = 26f * s
             tips.forEachIndexed { index, tip ->
                 val off = offsets[index]
                 drawCircle(
                     color = colors[index],
                     radius = radius,
-                    center = Offset(cx + tip.x * s + off.x, cy + tip.y * s + off.y)
+                    center = Offset(rightCx + tip.x * s + off.x, cy + tip.y * s + off.y)
                 )
             }
         }
@@ -310,12 +345,24 @@ private fun MyHandsGameContent(
                             isHandsSvg(text.text) -> HandsTogether(
                                 gapBetweenHands = 50.dp,
                                 countingCircles = content.id == "0c7b5aab-525b-4c0f-9b06-d0df38e9282c",
+                                leftHandVowels = content.id == "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204",
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                             isSvgStyle(text.text) -> Unit
                             else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
+                    }
+
+                    if (content.id == "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204") {
+                        xs.fingerNameLabels.forEach { label ->
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(vertical = 2.dp)
+                            )
+                        }
                     }
 
                     if (content.answer != null) {
