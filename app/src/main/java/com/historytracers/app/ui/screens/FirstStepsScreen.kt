@@ -53,7 +53,9 @@ fun FirstStepsScreen(
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToSocrates: () -> Unit = {},
     onNavigateToLearningInLayers: () -> Unit = {},
-    onNavigateToHowDoILearn: () -> Unit = {}
+    onNavigateToHowDoILearn: () -> Unit = {},
+    onNavigateToSequenceGame: () -> Unit = {},
+    onNavigateToSequenceGameOrders: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -398,6 +400,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("sequence_game")
                     scope.launch { preferences.markFirstStepsSectionCompleted("sequence_game") }
+                    onNavigateToSequenceGame()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -513,6 +516,35 @@ fun FirstStepsScreen(
 
             Text(
                 text = hts.naturalFamiliesPart2,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = { onNavigateToSequenceGameOrders() },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("sequence_game_orders")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "${xs.ordersUnits}\n${xs.ordersTens}\n${xs.ordersMore}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = OnButtonYellow,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.sequenceGameOrders,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
