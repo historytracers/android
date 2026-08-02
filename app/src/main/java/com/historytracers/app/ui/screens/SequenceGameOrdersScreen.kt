@@ -120,6 +120,7 @@ fun SequenceGameOrdersScreen(
                 onScoreChanged(initialScore + totalAwarded)
                 scope.launch {
                     preferences.recordLessonCompletion()
+                    preferences.markFirstStepsSectionCompleted("sequence_game_orders")
                 }
             }
         } else {

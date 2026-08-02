@@ -530,7 +530,7 @@ fun FirstStepsScreen(
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("sequence_game_orders")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Text(
