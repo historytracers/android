@@ -42,6 +42,7 @@ import com.historytracers.app.ui.screens.LearningInLayersQuestionScreen
 import com.historytracers.app.ui.screens.LearningInLayersStagesScreen
 import com.historytracers.app.ui.screens.LearningInLayersToyScreen
 import com.historytracers.app.ui.screens.SettingsScreen
+import com.historytracers.app.ui.screens.SequenceGameScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
 import com.historytracers.app.ui.screens.ClapScreen
@@ -100,7 +101,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
+    val simpleRoutes = setOf("index", "first_steps", "sequence_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -346,7 +347,22 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToSocrates = { navController.navigate(Screen.Socrates.route) { launchSingleTop = true } },
                             onNavigateToLearningInLayers = { navController.navigate(Screen.LearningInLayersIntro.route) { launchSingleTop = true } },
-                            onNavigateToHowDoILearn = { navController.navigate(Screen.HowDoILearnIntro.route) { launchSingleTop = true } }
+                            onNavigateToHowDoILearn = { navController.navigate(Screen.HowDoILearnIntro.route) { launchSingleTop = true } },
+                            onNavigateToSequenceGame = { navController.navigate(Screen.SequenceGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SequenceGame.route) {
+                        SequenceGameScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.Socrates.route) {
