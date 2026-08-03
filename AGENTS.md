@@ -119,6 +119,8 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 - `SMGameFile` has `title` and `content` (list of `SMGameContent`). Each `SMGameContent` is one screen, identified by its `id`.
 - Fields to handle per content: `text` (list of `HTText`), `answer` (expected Yes/No answer or null), `smile` (`"thinking"`/`"happy"`), `source_menu` (list of `HTSource`), `score`, and the position in the `content` vector drives next/prev navigation.
 - `HTText.format` is `"markdown"` or `"html"` — render markdown text with `MarkdownText` (`#### heading` → bold title, `===x===`/`**x**` → bold, `*x*` → italic); other formats use `TextRenderer`.
+- **`<img>` tags must be rendered as actual images, never shown as raw text.** `HTText` with `format == "html"` may contain `<img src="...">` tags. `TextRenderer` handles this automatically: it splits the HTML, renders non-tag segments as `Text`, and renders each `<img>` with Coil's `AsyncImage` (`ContentScale.Fit`, `HTText.imgdesc` as content description). When a screen renders HTML, always route it through `TextRenderer` (do not pass `<img>` blocks to a plain `Text`).
+- **Image captions** (the text block that follows an `<img>`): a markdown line starting with a single `*` and no closing `*` (e.g. `*Image taken during a visit to ...`) is an image caption. `MarkdownText` renders it centered (`TextAlign.Center`), italic (`FontStyle.Italic`), and smaller than the normal body text (`bodySmall`), stripping the leading `*`. Keep this convention in the JSON: captions must start with a single `*`.
 - `HTSource` has `text` (menu label) and `page` (URL). When `page` starts with `"index.html"`, prefix it with `"https://www.historytracers.org/"`.
 
 ### 2. Copy the JSON into Android assets
@@ -137,7 +139,7 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 - Create one file with a public composable per `SMGameContent` delegating to a shared private loader composable keyed by `contentId`.
 - Each screen must include:
   - Top bar (back arrow + title) using `s.common.*`.
-  - Text rendered via `MarkdownText` when `format == "markdown"`, else `TextRenderer`.
+  - Text rendered via `MarkdownText` when `format == "markdown"`, else `TextRenderer` (this renders any `<img>` tags as images). Markdown lines starting with a single `*` are image captions and are automatically styled centered/italic/smaller by `MarkdownText`.
   - Green buttons (`#4CAF50` container, `Color.White` content) everywhere buttons act on the game flow:
     - Previous/Next use `ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`.
     - Previous shows `Icons.AutoMirrored.Filled.ArrowBack` before the label, Next shows `Icons.AutoMirrored.Filled.ArrowForward` after the label. Show them according to the `content` vector position (first screen: only Next; middle screens: both; last screen: only Previous).
