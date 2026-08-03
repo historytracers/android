@@ -48,6 +48,19 @@
 - In the hub screen: collect the flow, create controllers via `remember { LevelGroupController(sectionIds, completedSections) }`, sync via `LaunchedEffect(completedSections)`, and add `enabled = controller.allCompleted` to the flag button.
 - Each section's `onClick` must call `controller.markCompleted(id)` and `scope.launch { preferences.mark[Screen]SectionCompleted(id) }`.
 
+## Return-to-Hub Buttons
+
+- **Every multi-screen group launched from a hub (principal/main screen) must end with a button on its last screen that returns directly to that hub.** Groups with a single screen do not need this button.
+- **First Steps (Counting):** always add this button to the last screen of each multi-screen group launched from it (e.g. Socrates Conclusion, Learning in Layers Conclusion, How Do I Learn Decision, My Hands Conclusion).
+- **Generic rule (any hub):** the same applies to groups launched from Workout, Abacus, Yupana, or any other hub — whenever a group has 2+ screens, add the return-to-hub button to its last screen.
+- Implementation pattern (used in `SocratesScreens.kt`, `LearningInLayersScreens.kt`, `HowDoILearnScreens.kt`, `MyHandsScreens.kt`):
+  1. Add an optional `onNavigateTo<Hub>` callback (e.g. `onNavigateToFirstSteps: (() -> Unit)? = null`) to the shared loader composable and to its last-screen wrapper, passing it through. Non-last screens leave it unset so the button does not render.
+  2. In the loader, below the Previous/Next `Row`, render the button only when the callback is non-null:
+     - A green `FilledTonalButton` using `ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)` (same style as Previous/Next).
+     - Label it with the hub's localized title (e.g. `val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)` then `Text(hts.firstSteps)`). Reuse the existing hub title string; do not create a new string for the label.
+     - Precede it with `Spacer(Modifier.height(16.dp))`.
+  3. In `AppNavigation.kt`, wire the callback to pop back to the hub route: `if (!navController.popBackStack(Screen.<Hub>.route, false)) { navController.navigate(Screen.<Hub>.route) { popUpTo(0) { inclusive = true }; launchSingleTop = true } }`.
+
 ## Porting a JS Abacus App to Android
 
 When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `historytracers/lang/*/` repos to an Android Compose screen, follow this checklist:
