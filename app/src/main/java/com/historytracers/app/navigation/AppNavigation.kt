@@ -459,6 +459,14 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = { navController.navigate(Screen.SocratesMotivation.route) { launchSingleTop = true } },
+                            onNavigateToFirstSteps = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -553,6 +561,14 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = { navController.navigate(Screen.LearningInLayersPlaying.route) { launchSingleTop = true } },
+                            onNavigateToFirstSteps = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -663,6 +679,14 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = { navController.navigate(Screen.HowDoILearnChartUnderstanding.route) { launchSingleTop = true } },
+                            onNavigateToFirstSteps = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -741,6 +765,14 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = { navController.navigate(Screen.MyHandsFingers.route) { launchSingleTop = true } },
+                            onNavigateToFirstSteps = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )

@@ -39,6 +39,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.components.buildHandPath
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.myHandsScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
@@ -122,14 +123,16 @@ fun MyHandsConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    onNavigatePrev: () -> Unit = {}
+    onNavigatePrev: () -> Unit = {},
+    onNavigateToFirstSteps: () -> Unit = {}
 ) {
     MyHandsGameContent(
         contentId = "882e0095-9126-4626-b98d-01153aece2f9",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
-        onNavigatePrev = onNavigatePrev
+        onNavigatePrev = onNavigatePrev,
+        onNavigateToFirstSteps = onNavigateToFirstSteps
     )
 }
 
@@ -255,10 +258,12 @@ private fun MyHandsGameContent(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
-    onNavigateNext: (() -> Unit)? = null
+    onNavigateNext: (() -> Unit)? = null,
+    onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val xs = myHandsScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
@@ -411,6 +416,19 @@ private fun MyHandsGameContent(
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
+                        }
+                    }
+
+                    if (onNavigateToFirstSteps != null) {
+                        Spacer(Modifier.height(16.dp))
+                        FilledTonalButton(
+                            onClick = onNavigateToFirstSteps,
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(hts.firstSteps, fontWeight = FontWeight.Bold)
                         }
                     }
 
