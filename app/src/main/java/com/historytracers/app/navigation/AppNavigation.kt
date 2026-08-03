@@ -34,6 +34,7 @@ import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.ContentScreen
 import com.historytracers.app.ui.screens.FirstStepsScreen
 import com.historytracers.app.ui.screens.IndexScreen
+import com.historytracers.app.ui.screens.IAmNotLikeYouScreen
 import com.historytracers.app.ui.screens.IsItFreeScreen
 import com.historytracers.app.ui.screens.LearningInLayersConclusionScreen
 import com.historytracers.app.ui.screens.LearningInLayersIntroScreen
@@ -107,7 +108,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "first_steps", "sequence_game", "sequence_game_orders", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
+    val simpleRoutes = setOf("index", "i_am_not_like_you", "first_steps", "sequence_game", "sequence_game_orders", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -332,9 +333,22 @@ fun AppNavigation() {
                     composable(Screen.Index.route) {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
+                            onNavigateToIAmNotLikeYou = { navController.navigate(Screen.IAmNotLikeYou.route) { launchSingleTop = true } },
                             onNavigateToWorkout = { navController.navigate(Screen.Workout.route) { launchSingleTop = true } },
                             onNavigateToAbacus = { navController.navigate(Screen.Abacus.route) { launchSingleTop = true } },
                             onNavigateToYupana = { navController.navigate(Screen.Yupana.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.IAmNotLikeYou.route) {
+                        IAmNotLikeYouScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.FirstSteps.route) {

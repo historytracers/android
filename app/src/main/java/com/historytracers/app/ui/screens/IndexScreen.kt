@@ -27,6 +27,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 @Composable
 fun IndexScreen(
     onNavigateToFirstSteps: () -> Unit = {},
+    onNavigateToIAmNotLikeYou: () -> Unit = {},
     onNavigateToWorkout: () -> Unit = {},
     onNavigateToAbacus: () -> Unit = {},
     onNavigateToYupana: () -> Unit = {}
@@ -69,7 +70,7 @@ fun IndexScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledTonalButton(
-                onClick = { /* TODO */ },
+                onClick = onNavigateToIAmNotLikeYou,
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = ButtonYellow,
