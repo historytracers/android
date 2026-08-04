@@ -31,24 +31,24 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
+import com.historytracers.app.ui.features.firstHandsScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.socratesScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "smartphone/20c8240d-6ddf-4949-88c7-c8964e1cf92d"
+private const val SMARTPHONE_GAME_FILE = "smartphone/ab80ffd7-1940-482d-981b-ab5872697523"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun SocratesPhilosophyScreen(
+fun FirstHandsIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "c69673be-0a59-4235-a83e-0f2d26e13ede",
+    FirstHandsGameContent(
+        contentId = "5ea578d6-7f67-43f8-82b7-320a3f8c14e3",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -57,15 +57,15 @@ fun SocratesPhilosophyScreen(
 }
 
 @Composable
-fun SocratesQuestionScreen(
+fun FirstHandsQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "cb8d0c30-1698-430d-9023-0a52aca7dc52",
+    FirstHandsGameContent(
+        contentId = "7aa8a22b-cc43-443e-bd1a-45ac98346264",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -75,15 +75,15 @@ fun SocratesQuestionScreen(
 }
 
 @Composable
-fun SocratesMotivationScreen(
+fun FirstHandsKnowledgeScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "7ca84a61-9912-4004-b07e-f44a19fbdaa4",
+    FirstHandsGameContent(
+        contentId = "93c341e9-1aa0-4433-8747-029f96f11d9a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -93,15 +93,69 @@ fun SocratesMotivationScreen(
 }
 
 @Composable
-fun SocratesConclusionScreen(
+fun FirstHandsHabilisScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    FirstHandsGameContent(
+        contentId = "5c8e1349-2f29-4b3e-80d4-76eb8d7e9786",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun FirstHandsReflectionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    FirstHandsGameContent(
+        contentId = "f6d79260-e367-4313-94c7-3b1aaa2bf6f1",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun FirstHandsCountingScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    FirstHandsGameContent(
+        contentId = "4af50451-d77e-4285-83c7-7a228fe1a50e",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun FirstHandsConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "5153a22b-f6a5-4ba1-a174-2fdad118c60e",
+    FirstHandsGameContent(
+        contentId = "922797ba-64d5-4ebe-b5e1-a85ff21a4df0",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -111,7 +165,7 @@ fun SocratesConclusionScreen(
 }
 
 private fun smileEmoji(smile: String): String = when (smile) {
-    "thinking" -> "\uD83E\uDD14"
+    "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
     else -> "\uD83D\uDE0A"
 }
@@ -120,7 +174,7 @@ private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
 @Composable
-private fun SocratesGameContent(
+private fun FirstHandsGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -130,7 +184,7 @@ private fun SocratesGameContent(
     onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = firstHandsScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -212,7 +266,8 @@ private fun SocratesGameContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     content.text?.forEach { text ->
-                        if (text.format == "markdown") {
+                        if (text == null) return@forEach
+                        if (text.format?.contains("markdown") == true) {
                             MarkdownText(text = text.text ?: "")
                         } else {
                             TextRenderer(text = text, repo = repo)
@@ -312,7 +367,7 @@ private fun AnswerSection(
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = firstHandsScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }

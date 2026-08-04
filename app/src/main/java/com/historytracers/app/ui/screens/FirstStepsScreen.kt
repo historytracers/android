@@ -54,6 +54,10 @@ fun FirstStepsScreen(
     onNavigateToSocrates: () -> Unit = {},
     onNavigateToLearningInLayers: () -> Unit = {},
     onNavigateToHowDoILearn: () -> Unit = {},
+    onNavigateToMyHands: () -> Unit = {},
+    onNavigateToMyBody: () -> Unit = {},
+    onNavigateToFirstHands: () -> Unit = {},
+    onNavigateToFirstVoice: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
     onNavigateToSequenceGameOrders: () -> Unit = {}
 ) {
@@ -272,7 +276,11 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = { },
+                onClick = {
+                    controller.markCompleted("my_hands")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("my_hands") }
+                    onNavigateToMyHands()
+                },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -302,8 +310,98 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = {
+                    controller.markCompleted("first_hands")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("first_hands") }
+                    onNavigateToFirstHands()
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("first_hands")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_hand_bones),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.firstHands,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    controller.markCompleted("first_voice")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("first_voice") }
+                    onNavigateToFirstVoice()
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("first_voice")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Canvas(modifier = Modifier.size(52.dp)) {
+                    val strokeWidth = size.width * 0.06f
+                    val headRadius = size.width * 0.26f
+                    val headCenter = Offset(center.x, center.y + size.height * 0.10f)
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = headRadius,
+                        center = headCenter,
+                        style = Stroke(width = strokeWidth)
+                    )
+                    val eyeRadius = size.width * 0.045f
+                    val eyeY = headCenter.y - headRadius * 0.25f
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = eyeRadius,
+                        center = Offset(headCenter.x - headRadius * 0.4f, eyeY)
+                    )
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = eyeRadius,
+                        center = Offset(headCenter.x + headRadius * 0.4f, eyeY)
+                    )
+                    drawCircle(
+                        color = OnButtonYellow,
+                        radius = headRadius * 0.14f,
+                        center = Offset(headCenter.x, headCenter.y + headRadius * 0.35f),
+                        style = Stroke(width = strokeWidth)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.firstVoice,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
                     controller.markCompleted("my_body")
                     scope.launch { preferences.markFirstStepsSectionCompleted("my_body") }
+                    onNavigateToMyBody()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

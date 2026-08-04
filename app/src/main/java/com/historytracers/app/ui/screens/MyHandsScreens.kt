@@ -4,7 +4,11 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.Path
 import android.widget.Toast
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,11 +22,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
@@ -31,24 +38,25 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
+import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.socratesScreenStringsForLanguage
+import com.historytracers.app.ui.features.myHandsScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "smartphone/20c8240d-6ddf-4949-88c7-c8964e1cf92d"
+private const val SMARTPHONE_GAME_FILE = "smartphone/8afa1bd2-2d16-4224-a7c2-d02cb31dc69f"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun SocratesPhilosophyScreen(
+fun MyHandsIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "c69673be-0a59-4235-a83e-0f2d26e13ede",
+    MyHandsGameContent(
+        contentId = "0ca93769-32f7-4492-a049-5d3530eb3d8b",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -57,15 +65,15 @@ fun SocratesPhilosophyScreen(
 }
 
 @Composable
-fun SocratesQuestionScreen(
+fun MyHandsQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "cb8d0c30-1698-430d-9023-0a52aca7dc52",
+    MyHandsGameContent(
+        contentId = "6880b03c-65b8-441c-bac1-c9a07ddce3e9",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -75,15 +83,15 @@ fun SocratesQuestionScreen(
 }
 
 @Composable
-fun SocratesMotivationScreen(
+fun MyHandsCountingScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "7ca84a61-9912-4004-b07e-f44a19fbdaa4",
+    MyHandsGameContent(
+        contentId = "0c7b5aab-525b-4c0f-9b06-d0df38e9282c",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -93,15 +101,33 @@ fun SocratesMotivationScreen(
 }
 
 @Composable
-fun SocratesConclusionScreen(
+fun MyHandsFingersScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    MyHandsGameContent(
+        contentId = "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun MyHandsConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "5153a22b-f6a5-4ba1-a174-2fdad118c60e",
+    MyHandsGameContent(
+        contentId = "882e0095-9126-4626-b98d-01153aece2f9",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -111,7 +137,7 @@ fun SocratesConclusionScreen(
 }
 
 private fun smileEmoji(smile: String): String = when (smile) {
-    "thinking" -> "\uD83E\uDD14"
+    "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
     else -> "\uD83D\uDE0A"
 }
@@ -119,8 +145,114 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
+private fun isHandsSvg(text: String?): Boolean =
+    text?.contains("<svg") == true && text.contains("hand-shape")
+
+private fun isSvgStyle(text: String?): Boolean =
+    text?.startsWith("<style>") == true
+
 @Composable
-private fun SocratesGameContent(
+private fun HandsTogether(
+    gapBetweenHands: Dp = 0.dp,
+    countingCircles: Boolean = false,
+    leftHandVowels: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    val handPath = remember { buildHandPath() }
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(3f)
+    ) {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color(0xFFF4C2A1).hashCode()
+            style = Paint.Style.FILL
+            strokeJoin = Paint.Join.ROUND
+        }
+        val s = size.height / 320f
+        val gap = gapBetweenHands.toPx() / 2f
+
+        val leftCx = size.width * 0.28f - gap
+        val rightCx = size.width * 0.72f + gap
+        val cy = size.height - 338f * s
+
+        val leftMatrix = Matrix().apply {
+            setTranslate(leftCx, cy)
+            preScale(-s, s)
+        }
+        val rightMatrix = Matrix().apply {
+            setTranslate(rightCx, cy)
+            preScale(s, s)
+        }
+
+        val left = Path().apply { addPath(handPath, leftMatrix) }
+        val right = Path().apply { addPath(handPath, rightMatrix) }
+        drawContext.canvas.nativeCanvas.drawPath(left, paint)
+        drawContext.canvas.nativeCanvas.drawPath(right, paint)
+
+        if (leftHandVowels) {
+            val vowels = listOf("a", "e", "i", "o", "u")
+            val tips = listOf(
+                Offset(-240f, 243f),
+                Offset(-170f, 233f),
+                Offset(-100f, 228f),
+                Offset(-35f, 233f),
+                Offset(50f, 258f)
+            )
+            val offsets = listOf(
+                Offset(-82.dp.toPx(), 10.dp.toPx()),
+                Offset(-50.dp.toPx(), -10.dp.toPx()),
+                Offset(-10.dp.toPx(), -20.dp.toPx()),
+                Offset(30.dp.toPx(), -27.dp.toPx()),
+                Offset(100.dp.toPx(), -20.dp.toPx())
+            )
+            val letterSize = 34f * s
+            val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color(0xFF2E3A46).hashCode()
+                textSize = letterSize
+                textAlign = Paint.Align.CENTER
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+            }
+            vowels.forEachIndexed { index, letter ->
+                val tip = tips[index]
+                val off = offsets[index]
+                val x = leftCx - tip.x * s + off.x
+                val y = cy + tip.y * s - letterSize * 0.4f + off.y
+                drawContext.canvas.nativeCanvas.drawText(letter, x, y, textPaint)
+            }
+        }
+
+        if (countingCircles) {
+            val colors = listOf(
+                Color(0xFFADD8E6),
+                Color(0xFF90EE90),
+                Color(0xFFFF8080)
+            )
+            val tips = listOf(
+                Offset(-170f, 233f),
+                Offset(-100f, 228f),
+                Offset(-35f, 233f)
+            )
+            val offsets = listOf(
+                Offset(-10.dp.toPx(), -20.dp.toPx()),
+                Offset(2.dp.toPx(), -40.dp.toPx()),
+                Offset(-4.dp.toPx(), -35.dp.toPx())
+            )
+            val radius = 26f * s
+            tips.forEachIndexed { index, tip ->
+                val off = offsets[index]
+                drawCircle(
+                    color = colors[index],
+                    radius = radius,
+                    center = Offset(rightCx + tip.x * s + off.x, cy + tip.y * s + off.y)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MyHandsGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -130,7 +262,7 @@ private fun SocratesGameContent(
     onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = myHandsScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -212,12 +344,30 @@ private fun SocratesGameContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     content.text?.forEach { text ->
-                        if (text.format == "markdown") {
-                            MarkdownText(text = text.text ?: "")
-                        } else {
-                            TextRenderer(text = text, repo = repo)
+                        if (text == null) return@forEach
+                        when {
+                            text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
+                            isHandsSvg(text.text) -> HandsTogether(
+                                gapBetweenHands = 50.dp,
+                                countingCircles = content.id == "0c7b5aab-525b-4c0f-9b06-d0df38e9282c",
+                                leftHandVowels = content.id == "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204",
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            isSvgStyle(text.text) -> Unit
+                            else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
+                    }
+
+                    if (content.id == "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204") {
+                        xs.fingerNameLabels.forEach { label ->
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(vertical = 2.dp)
+                            )
+                        }
                     }
 
                     if (content.answer != null) {
@@ -312,7 +462,7 @@ private fun AnswerSection(
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = myHandsScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }

@@ -3,6 +3,7 @@ package com.historytracers.app.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,10 +14,26 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 
 private val HEADING_REGEX = Regex("^(#{1,6})\\s+(.+)$")
+
+// A line that starts with a single "*" (closing "*" optional) and contains no
+// other asterisks is an image caption: rendered centered, italic, and smaller
+// than the normal body text.
+private fun isCaptionLine(line: String): Boolean {
+    if (!line.startsWith("*") || line.startsWith("**")) return false
+    val rest = line.drop(1)
+    val content = if (rest.endsWith("*") && !rest.endsWith("**")) rest.dropLast(1) else rest
+    return '*' !in content
+}
+
+private fun captionText(line: String): String {
+    val rest = line.drop(1)
+    return if (rest.endsWith("*") && !rest.endsWith("**")) rest.dropLast(1) else rest
+}
 
 @Composable
 fun MarkdownText(text: String, modifier: Modifier = Modifier) {
@@ -33,6 +50,13 @@ fun MarkdownText(text: String, modifier: Modifier = Modifier) {
                     Text(
                         text = parseMarkdownInline(heading.groupValues[2]),
                         style = headingTextStyle(level)
+                    )
+                } else if (isCaptionLine(trimmed)) {
+                    Text(
+                        text = parseMarkdownInline(captionText(trimmed)),
+                        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 } else {
                     Text(

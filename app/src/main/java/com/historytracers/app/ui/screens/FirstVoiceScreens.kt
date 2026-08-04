@@ -31,24 +31,24 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
+import com.historytracers.app.ui.features.firstVoiceScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.socratesScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "smartphone/20c8240d-6ddf-4949-88c7-c8964e1cf92d"
+private const val SMARTPHONE_GAME_FILE = "smartphone/d6a4ac74-b797-4cce-a7fa-46021e7f636e"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun SocratesPhilosophyScreen(
+fun FirstVoiceIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "c69673be-0a59-4235-a83e-0f2d26e13ede",
+    FirstVoiceGameContent(
+        contentId = "05e6154c-9faf-426c-9325-9cb0b6efe6b7",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -57,15 +57,15 @@ fun SocratesPhilosophyScreen(
 }
 
 @Composable
-fun SocratesQuestionScreen(
+fun FirstVoiceVoiceScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "cb8d0c30-1698-430d-9023-0a52aca7dc52",
+    FirstVoiceGameContent(
+        contentId = "dbe4e7ae-134d-449d-80f6-c5ec8abab3e1",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -75,15 +75,15 @@ fun SocratesQuestionScreen(
 }
 
 @Composable
-fun SocratesMotivationScreen(
+fun FirstVoiceReflectionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "7ca84a61-9912-4004-b07e-f44a19fbdaa4",
+    FirstVoiceGameContent(
+        contentId = "52257273-5728-4306-8790-c84bf79b1deb",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -93,15 +93,33 @@ fun SocratesMotivationScreen(
 }
 
 @Composable
-fun SocratesConclusionScreen(
+fun FirstVoiceDifferenceScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    FirstVoiceGameContent(
+        contentId = "f7649886-f825-4ef9-be0b-672ee0fe5cb0",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun FirstVoiceConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "5153a22b-f6a5-4ba1-a174-2fdad118c60e",
+    FirstVoiceGameContent(
+        contentId = "521e3dff-a3a4-454e-a1fc-077e41228ddc",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -111,8 +129,9 @@ fun SocratesConclusionScreen(
 }
 
 private fun smileEmoji(smile: String): String = when (smile) {
-    "thinking" -> "\uD83E\uDD14"
+    "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
+    "surprise" -> "\uD83D\uDE32"
     else -> "\uD83D\uDE0A"
 }
 
@@ -120,7 +139,7 @@ private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
 @Composable
-private fun SocratesGameContent(
+private fun FirstVoiceGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -130,7 +149,7 @@ private fun SocratesGameContent(
     onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = firstVoiceScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -212,7 +231,8 @@ private fun SocratesGameContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     content.text?.forEach { text ->
-                        if (text.format == "markdown") {
+                        if (text == null) return@forEach
+                        if (text.format?.contains("markdown") == true) {
                             MarkdownText(text = text.text ?: "")
                         } else {
                             TextRenderer(text = text, repo = repo)
@@ -312,7 +332,7 @@ private fun AnswerSection(
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = firstVoiceScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }

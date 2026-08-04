@@ -439,7 +439,7 @@ private fun DrawScope.drawYpMultiplyRow(cellOriginX: Float, cellOriginY: Float, 
     val dotRadius = minOf(cellWidth * 0.18f, cellHeight * 0.18f, 9f / 860f * cw); val markerRadius = dotRadius * 0.9f; val markerGap = cellHeight * 0.12f; val extraPx = with(density) { 3.dp.toPx() }
     val dotPositionsByCol = listOf(
         listOf(Offset(-dotRadius * 1.5f, -dotRadius * 2f), Offset(-dotRadius * 1.5f, 0f), Offset(-dotRadius * 1.5f, dotRadius * 2f), Offset(dotRadius * 1.5f, -dotRadius * 0.8f - extraPx / 2f), Offset(dotRadius * 1.5f, dotRadius * 0.8f + extraPx / 2f)),
-        listOf(Offset(0f, -dotRadius * 1.8f), Offset(0f, 0f), Offset(0f, dotRadius * 1.8f)),
+        listOf(Offset(-dotRadius * 1.5f, -dotRadius * 1.8f), Offset(-dotRadius * 1.5f, dotRadius * 1.8f), Offset(dotRadius * 1.5f, 0f)),
         listOf(Offset(0f, -dotRadius * 1.2f), Offset(0f, dotRadius * 1.2f)),
         listOf(Offset(0f, 0f)),
     )
