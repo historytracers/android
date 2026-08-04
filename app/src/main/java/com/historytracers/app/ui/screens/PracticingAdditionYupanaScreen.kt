@@ -1018,9 +1018,9 @@ private fun DrawScope.drawYupanaRow(
             Offset(dotRadius * 1.5f, dotRadius * 0.8f + extraPx / 2f),
         ),
         listOf(
-            Offset(0f, -dotRadius * 1.8f),
-            Offset(0f, 0f),
-            Offset(0f, dotRadius * 1.8f),
+            Offset(-dotRadius * 1.5f, -dotRadius * 1.8f),
+            Offset(-dotRadius * 1.5f, dotRadius * 1.8f),
+            Offset(dotRadius * 1.5f, 0f),
         ),
         listOf(
             Offset(0f, -dotRadius * 1.2f),
