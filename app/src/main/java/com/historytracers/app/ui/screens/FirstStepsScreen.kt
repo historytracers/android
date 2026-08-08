@@ -686,6 +686,37 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = {
+                    scope.launch { preferences.markFirstStepsSectionCompleted("where_are_they") }
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("where_are_they")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "?",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.whereAreThey,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
                     controller.markCompleted("going_to_infinity")
                     scope.launch { preferences.markFirstStepsSectionCompleted("going_to_infinity") }
                 },
