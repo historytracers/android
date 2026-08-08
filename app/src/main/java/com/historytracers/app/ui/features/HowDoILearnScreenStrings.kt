@@ -10,7 +10,7 @@ data class HowDoILearnScreenStrings(
 )
 
 val EnHowDoILearnScreenStrings = HowDoILearnScreenStrings(
-    title = "How do we learn?",
+    title = "How Do We Learn?",
     wrongAnswerMessage = "This is not the expected answer. But you have learned something new in your life, so we are going to reward you with 1 point in your score.",
     chartLabels = listOf(
         "Verbal-linguistic",

@@ -22,6 +22,7 @@
 - When adding new UI text, always provide translations for all three locales: English (`En*`), Portuguese (`Pt*`), and Spanish (`Es*`).
 - Brand names that are identical across languages (e.g., "Patreon", "PayPal") still need entries in all three locales for consistency — use the same name in all three.
 - Use `%d` / `%s` format specifiers (Kotlin style) for interpolated values.
+- **English titles use Title Case.** Screen titles and hub button labels (both the top app bar and the label below each button) must capitalize every word except short function words — articles (`a`, `an`, `the`), conjunctions (`and`, `or`, `but`), and prepositions (`in`, `on`, `at`, `to`, `of`, `for`, `with`, `by`, `from`, `without`) — which stay lowercase. The first and last word are always capitalized. Examples: "Building Game", "First Steps (Counting)", "Learning in Layers", "Multiplying with Yupana", "Complement to 10", "Where Are We From?". This rule applies to English only; Portuguese and Spanish follow their own conventions.
 
 ## Sources Menu
 

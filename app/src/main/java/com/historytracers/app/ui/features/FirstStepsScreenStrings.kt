@@ -18,21 +18,21 @@ data class FirstStepsScreenStrings(
 )
 
 val EnFirstStepsScreenStrings = FirstStepsScreenStrings(
-    building = "Building",
-    learningInLayers = "Learning in layers",
-    howDoILearn = "How do I learn?",
-    sequenceGameOrders = "Sequence game (Orders)",
-    sequenceGameFamilies = "Sequence game (Families)",
-    whereAreThey = "Where are they?",
+    building = "Building Game",
+    learningInLayers = "Learning in Layers",
+    howDoILearn = "How Do I Learn?",
+    sequenceGameOrders = "Sequence Game (Orders)",
+    sequenceGameFamilies = "Sequence Game (Families)",
+    whereAreThey = "Where Are They?",
     ordersUnits = "Units",
     ordersTens = "Tens",
     ordersMore = "..",
-    firstHands = "The first (hands)",
-    firstVoice = "The first (voice)",
+    firstHands = "The First (Hands)",
+    firstVoice = "The First (Voice)",
 )
 
 val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
-    building = "Constru\u00e7\u00e3o",
+    building = "Jogo de Constru\u00e7\u00e3o",
     learningInLayers = "Aprendendo em camadas",
     howDoILearn = "Como eu aprendo?",
     sequenceGameOrders = "Jogo da sequ\u00eancia (Ordens)",
@@ -46,7 +46,7 @@ val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
 )
 
 val EsFirstStepsScreenStrings = FirstStepsScreenStrings(
-    building = "Construcci\u00f3n",
+    building = "Juego de Construcci\u00f3n",
     learningInLayers = "Aprendiendo en capas",
     howDoILearn = "\u00bfC\u00f3mo aprendo?",
     sequenceGameOrders = "Juego de secuencia (\u00d3rdenes)",

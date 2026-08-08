@@ -10,7 +10,7 @@ data class MyHandsScreenStrings(
 )
 
 val EnMyHandsScreenStrings = MyHandsScreenStrings(
-    title = "My hands",
+    title = "My Hands",
     wrongAnswerMessage = "This is not the expected answer. But you have learned something new in your life, so we are going to reward you with 1 point in your score.",
     fingerNameLabels = listOf(
         "a) Pinky",

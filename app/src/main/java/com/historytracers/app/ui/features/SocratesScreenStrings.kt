@@ -9,7 +9,7 @@ data class SocratesScreenStrings(
 )
 
 val EnSocratesScreenStrings = SocratesScreenStrings(
-    title = "I only know that I know nothing",
+    title = "I Only Know that I Know Nothing",
     wrongAnswerMessage = "This is not the expected answer. But you have learned something new in your life, so we are going to reward you with 1 point in your score.",
 )
 

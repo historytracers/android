@@ -13,7 +13,7 @@ data class SequenceGameFamiliesScreenStrings(
 )
 
 val EnSequenceGameFamiliesScreenStrings = SequenceGameFamiliesScreenStrings(
-    title = "Sequence game (Families)",
+    title = "Sequence Game (Families)",
     instruction = "Complete the sequence by finding the missing number. Use the arrows to adjust the value until it matches.",
     upArrow = "Increase value",
     downArrow = "Decrease value",

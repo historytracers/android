@@ -17,7 +17,7 @@ data class SequenceGameOrdersScreenStrings(
 )
 
 val EnSequenceGameOrdersScreenStrings = SequenceGameOrdersScreenStrings(
-    title = "Sequence game (Orders)",
+    title = "Sequence Game (Orders)",
     instruction = "Connect each number on the left with its order name on the right. Select a number, then select its name to pair them.",
     units = "Units",
     tens = "Tens",
