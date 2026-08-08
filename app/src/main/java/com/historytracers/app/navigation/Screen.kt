@@ -12,6 +12,7 @@ sealed class Screen(val route: String) {
     data object SequenceGame : Screen("sequence_game")
     data object SequenceGameOrders : Screen("sequence_game_orders")
     data object SequenceGameFamilies : Screen("sequence_game_families")
+    data object BuildingGame : Screen("building_game")
     data object Socrates : Screen("socrates")
     data object SocratesQuestion : Screen("socrates_question")
     data object SocratesMotivation : Screen("socrates_motivation")
