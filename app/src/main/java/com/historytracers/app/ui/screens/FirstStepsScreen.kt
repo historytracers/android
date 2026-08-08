@@ -561,6 +561,38 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = {
+                    scope.launch { preferences.markFirstStepsSectionCompleted("sequence_game_families") }
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("sequence_game_families")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "_ 50 51",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.sequenceGameFamilies,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
                     controller.markCompleted("building")
                     scope.launch { preferences.markFirstStepsSectionCompleted("building") }
                 },
