@@ -147,7 +147,7 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
     - Correct → `🎉 Correct! 🎉` (`s.common.correct` wrapped in `\uD83C\uDF89`) in green (`Color(0xFF2E7D32)`).
     - Wrong → the localized wrong-answer message (`xs.wrongAnswerMessage`) in red (`MaterialTheme.colorScheme.error`).
   - When `smile` is non-empty: smile emoji at `Alignment.BottomEnd` (`"thinking"` → 🤔, `"happy"` → 😊).
-  - When `source_menu` is non-empty: a Sources menu at `Alignment.BottomStart` — one first-level `DropdownMenuItem` per source (label = `source.text`) each opening a Copy URL / Go to URL submenu using the (prefixed) `source.page`.
+  - **Always use the `source_menu` array to populate a Source menu on screen** whenever `source_menu` is present (not `null`) — do not hardcode sources and do not skip the menu. Render a Sources menu at `Alignment.BottomStart` with a book icon + `s.common.sources` label; tapping it shows one first-level `DropdownMenuItem` per source (label = `source.text`) each opening a Copy URL / Go to URL submenu using the (prefixed) `source.page`.
 
 ### 6. Scoring
 - Award each screen's default `score` as soon as the user reaches it (arrival award) — every screen, including question screens.
