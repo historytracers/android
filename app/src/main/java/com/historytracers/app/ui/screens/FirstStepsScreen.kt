@@ -59,7 +59,8 @@ fun FirstStepsScreen(
     onNavigateToFirstHands: () -> Unit = {},
     onNavigateToFirstVoice: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
-    onNavigateToSequenceGameOrders: () -> Unit = {}
+    onNavigateToSequenceGameOrders: () -> Unit = {},
+    onNavigateToSequenceGameFamilies: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -560,9 +561,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    scope.launch { preferences.markFirstStepsSectionCompleted("sequence_game_families") }
-                },
+                onClick = { onNavigateToSequenceGameFamilies() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
