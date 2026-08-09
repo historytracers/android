@@ -118,7 +118,7 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 
 ### 1. Understand the data model
 - `SMGameFile` has `title` and `content` (list of `SMGameContent`). Each `SMGameContent` is one screen, identified by its `id`.
-- Fields to handle per content: `text` (list of `HTText`), `answer` (expected Yes/No answer or null), `smile` (`"thinking"`/`"happy"`), `source_menu` (list of `HTSource`), `score`, and the position in the `content` vector drives next/prev navigation.
+- Fields to handle per content: `text` (list of `HTText`), `answer` (expected Yes/No answer or null), `smile` (values like `"thinking"`, `"happy"`, `"nerd"`, `"shocking"`, `"party"`; see the emoji mapping below), `source_menu` (list of `HTSource`), `score`, and the position in the `content` vector drives next/prev navigation.
 - `HTText.format` is `"markdown"` or `"html"` — render markdown text with `MarkdownText` (`#### heading` → bold title, `===x===`/`**x**` → bold, `*x*` → italic); other formats use `TextRenderer`.
 - **`<img>` tags must be rendered as actual images, never shown as raw text.** `HTText` with `format == "html"` may contain `<img src="...">` tags. `TextRenderer` handles this automatically: it splits the HTML, renders non-tag segments as `Text`, and renders each `<img>` with Coil's `AsyncImage` (`ContentScale.Fit`, `HTText.imgdesc` as content description). When a screen renders HTML, always route it through `TextRenderer` (do not pass `<img>` blocks to a plain `Text`).
 - **Image captions** (the text block that follows an `<img>`): a markdown line that starts with a single `*` (a closing `*` is optional) and contains no other asterisks (e.g. `*Image taken during a visit to ...` or `*Image made by the Taï Chimpanzee Project*`) is an image caption. `MarkdownText` renders it centered (`TextAlign.Center`), italic (`FontStyle.Italic`), and smaller than the normal body text (`bodySmall`), stripping the outer `*`s. Keep this convention in the JSON: captions must start with a single `*`.
@@ -147,7 +147,7 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
   - When `answer != null`: green Yes/No buttons (`ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`) — both buttons green, no selected-color switching. On submit show the result once (no retry):
     - Correct → `🎉 Correct! 🎉` (`s.common.correct` wrapped in `\uD83C\uDF89`) in green (`Color(0xFF2E7D32)`).
     - Wrong → the localized wrong-answer message (`xs.wrongAnswerMessage`) in red (`MaterialTheme.colorScheme.error`).
-  - When `smile` is non-empty: smile emoji at `Alignment.BottomEnd` (`"thinking"` → 🤔, `"happy"` → 😊).
+  - When `smile` is non-empty: smile emoji at `Alignment.BottomEnd`. Map smile values with a `smileEmoji(smile)` helper: `"thinking"`/`"think"` → 🤔 (`\uD83E\uDD14`), `"happy"` → 😊 (`\uD83D\uDE0A`), `"nerd"` → 🤓 (`\uD83E\uDD13`), `"shocking"`/`"surprise"` → 😲 (`\uD83D\uDE32`), `"party"` → 🥳 (`\uD83E\uDD73`); default to 😊 for any other value.
   - **Always use the `source_menu` array to populate a Source menu on screen** whenever `source_menu` is present (not `null`) — do not hardcode sources and do not skip the menu. Render a Sources menu at `Alignment.BottomStart` with a book icon + `s.common.sources` label; tapping it shows one first-level `DropdownMenuItem` per source (label = `source.text`) each opening a Copy URL / Go to URL submenu using the (prefixed) `source.page`.
 
 ### 6. Scoring
