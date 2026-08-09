@@ -167,6 +167,9 @@ fun FirstHandsConclusionScreen(
 private fun smileEmoji(smile: String): String = when (smile) {
     "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
+    "nerd" -> "\uD83E\uDD13"
+    "shocking", "surprise" -> "\uD83D\uDE32"
+    "party" -> "\uD83E\uDD73"
     else -> "\uD83D\uDE0A"
 }
 
