@@ -132,6 +132,9 @@ private fun smileEmoji(smile: String): String = when (smile) {
     "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
     "surprise" -> "\uD83D\uDE32"
+    "nerd" -> "\uD83E\uDD13"
+    "inlove" -> "\uD83D\uDE0D"
+    "party" -> "\uD83E\uDD73"
     else -> "\uD83D\uDE0A"
 }
 
