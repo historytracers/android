@@ -16,6 +16,12 @@ android {
         versionName = "1.0.0"
     }
 
+    sourceSets {
+        getByName("main") {
+            assets.srcDirs("src/main/assets", "../common/src/smartphone")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
