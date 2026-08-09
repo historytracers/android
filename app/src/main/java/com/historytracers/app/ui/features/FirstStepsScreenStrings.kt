@@ -27,8 +27,8 @@ val EnFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersUnits = "Units",
     ordersTens = "Tens",
     ordersMore = "..",
-    firstHands = "The First (Hands)",
-    firstVoice = "The First (Voice)",
+    firstHands = "The First Ones (Hands)",
+    firstVoice = "The First Ones (Voice)",
 )
 
 val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
@@ -41,8 +41,8 @@ val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersUnits = "Unidades",
     ordersTens = "Dezenas",
     ordersMore = "..",
-    firstHands = "As primeiras (m\u00e3os)",
-    firstVoice = "As primeiras (voz)",
+    firstHands = "Os primeiros (m\u00e3os)",
+    firstVoice = "Os primeiros (voz)",
 )
 
 val EsFirstStepsScreenStrings = FirstStepsScreenStrings(
@@ -55,8 +55,8 @@ val EsFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersUnits = "Unidades",
     ordersTens = "Decenas",
     ordersMore = "..",
-    firstHands = "Las primeras (manos)",
-    firstVoice = "Las primeras (voz)",
+    firstHands = "Los primeros (manos)",
+    firstVoice = "Los primeros (voz)",
 )
 
 val LocalFirstStepsScreenStrings = staticCompositionLocalOf { EnFirstStepsScreenStrings }
