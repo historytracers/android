@@ -177,6 +177,9 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
+private fun isImgHtml(text: String?): Boolean =
+    text?.startsWith("<img") == true
+
 @Composable
 private fun FirstHandsGameContent(
     contentId: String,
@@ -273,6 +276,11 @@ private fun FirstHandsGameContent(
                         if (text == null) return@forEach
                         if (text.format?.contains("markdown") == true) {
                             MarkdownText(text = text.text ?: "")
+                        } else if (isImgHtml(text.text)) {
+                            ResponsiveImage(
+                                html = text.text ?: "",
+                                imgDesc = text.imgdesc
+                            )
                         } else {
                             TextRenderer(text = text, repo = repo)
                         }

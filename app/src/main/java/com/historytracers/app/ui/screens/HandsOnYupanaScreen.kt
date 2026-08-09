@@ -20,7 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -120,6 +122,8 @@ fun HandsOnYupanaScreen(
                         }
                     }
                 } else {
+                    val configuration = LocalConfiguration.current
+                    val maxHeight = with(LocalDensity.current) { (configuration.screenHeightDp * 0.4f).dp }
                     AsyncImage(
                         model = ImageRequest.Builder(context)
                             .data(IMAGE_URL)
@@ -128,6 +132,7 @@ fun HandsOnYupanaScreen(
                         contentDescription = ys.handsOnYupana,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(max = maxHeight)
                             .padding(horizontal = 8.dp),
                         contentScale = ContentScale.Fit,
                         onError = { imageFailed = true }

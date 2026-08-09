@@ -30,6 +30,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.firstVoiceScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -141,6 +142,9 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
+private fun isImgHtml(text: String?): Boolean =
+    text?.startsWith("<img") == true
+
 @Composable
 private fun FirstVoiceGameContent(
     contentId: String,
@@ -237,6 +241,11 @@ private fun FirstVoiceGameContent(
                         if (text == null) return@forEach
                         if (text.format?.contains("markdown") == true) {
                             MarkdownText(text = text.text ?: "")
+                        } else if (isImgHtml(text.text)) {
+                            ResponsiveImage(
+                                html = text.text ?: "",
+                                imgDesc = text.imgdesc
+                            )
                         } else {
                             TextRenderer(text = text, repo = repo)
                         }
