@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,7 +20,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,24 +36,24 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
-import com.historytracers.app.ui.features.firstHandsScreenStringsForLanguage
+import com.historytracers.app.ui.features.drawingAndCoutingScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "smartphone/ab80ffd7-1940-482d-981b-ab5872697523"
+private const val SMARTPHONE_GAME_FILE = "smartphone/2f710a64-a076-457e-bbd3-138f7475f67f"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun FirstHandsIntroScreen(
+fun DrawingAndCoutingIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "5ea578d6-7f67-43f8-82b7-320a3f8c14e3",
+    DrawingAndCoutingGameContent(
+        contentId = "a54492f4-9d19-4e02-9a1b-9abb9918ff8a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -58,15 +62,15 @@ fun FirstHandsIntroScreen(
 }
 
 @Composable
-fun FirstHandsQuestionScreen(
+fun DrawingAndCoutingCirclesScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "7aa8a22b-cc43-443e-bd1a-45ac98346264",
+    DrawingAndCoutingGameContent(
+        contentId = "f7b09a23-2fd5-457a-9f62-6126191720ac",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -76,15 +80,15 @@ fun FirstHandsQuestionScreen(
 }
 
 @Composable
-fun FirstHandsKnowledgeScreen(
+fun DrawingAndCoutingRectanglesScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "93c341e9-1aa0-4433-8747-029f96f11d9a",
+    DrawingAndCoutingGameContent(
+        contentId = "461b6e4d-de5f-41a0-9e6a-1231ba552d4b",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -94,15 +98,15 @@ fun FirstHandsKnowledgeScreen(
 }
 
 @Composable
-fun FirstHandsHabilisScreen(
+fun DrawingAndCoutingMesoamericansScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "5c8e1349-2f29-4b3e-80d4-76eb8d7e9786",
+    DrawingAndCoutingGameContent(
+        contentId = "3c743085-9b37-427e-a673-48f3599d4f1f",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -112,15 +116,15 @@ fun FirstHandsHabilisScreen(
 }
 
 @Composable
-fun FirstHandsReflectionScreen(
+fun DrawingAndCoutingQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "f6d79260-e367-4313-94c7-3b1aaa2bf6f1",
+    DrawingAndCoutingGameContent(
+        contentId = "ecfabf83-4d09-4969-a960-4594ed95f37a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -130,15 +134,15 @@ fun FirstHandsReflectionScreen(
 }
 
 @Composable
-fun FirstHandsCountingScreen(
+fun DrawingAndCoutingExamplesScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "4af50451-d77e-4285-83c7-7a228fe1a50e",
+    DrawingAndCoutingGameContent(
+        contentId = "15a8f64e-4fac-4f31-906c-95554cccb36a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -148,15 +152,15 @@ fun FirstHandsCountingScreen(
 }
 
 @Composable
-fun FirstHandsConclusionScreen(
+fun DrawingAndCoutingConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {}
 ) {
-    FirstHandsGameContent(
-        contentId = "922797ba-64d5-4ebe-b5e1-a85ff21a4df0",
+    DrawingAndCoutingGameContent(
+        contentId = "a9cfe71d-6c88-4b22-86f2-e8e9d3da7c67",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -167,21 +171,72 @@ fun FirstHandsConclusionScreen(
 
 private fun smileEmoji(smile: String): String = when (smile) {
     "thinking", "think" -> "\uD83E\uDD14"
-    "happy" -> "\uD83D\uDE0A"
+    "happy", "smile" -> "\uD83D\uDE0A"
     "nerd" -> "\uD83E\uDD13"
-    "shocking", "surprise" -> "\uD83D\uDE32"
+    "inlove" -> "\uD83D\uDE0D"
     "party" -> "\uD83E\uDD73"
+    "surprising", "surprise", "shocking" -> "\uD83D\uDE32"
     else -> "\uD83D\uDE0A"
 }
 
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
+private fun isCirclesHtml(text: String?): Boolean =
+    text?.contains("<div class=\"circle\"") == true
+
+private fun isRectangleHtml(text: String?): Boolean =
+    text?.contains("<div class=\"rectangle\"") == true
+
+@Composable
+private fun CirclesShapes(modifier: Modifier = Modifier) {
+    val circleColor = Color(0xFF82d6f5)
+    val diameter = 100.dp
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(4) {
+            Box(
+                modifier = Modifier.size(diameter)
+            ) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    drawCircle(color = circleColor)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RectangleShape(modifier: Modifier = Modifier) {
+    val rectangleColor = Color(0xFF51ff00)
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .width(300.dp)
+                .height(150.dp)
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawRect(color = rectangleColor)
+            }
+        }
+    }
+}
+
 private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
 @Composable
-private fun FirstHandsGameContent(
+private fun DrawingAndCoutingGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -191,7 +246,7 @@ private fun FirstHandsGameContent(
     onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = firstHandsScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = drawingAndCoutingScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -274,15 +329,19 @@ private fun FirstHandsGameContent(
                 ) {
                     content.text?.forEach { text ->
                         if (text == null) return@forEach
-                        if (text.format?.contains("markdown") == true) {
-                            MarkdownText(text = text.text ?: "")
-                        } else if (isImgHtml(text.text)) {
-                            ResponsiveImage(
+                        when {
+                            text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
+                            isCirclesHtml(text.text) -> CirclesShapes(
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            isRectangleHtml(text.text) -> RectangleShape(
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            isImgHtml(text.text) -> ResponsiveImage(
                                 html = text.text ?: "",
                                 imgDesc = text.imgdesc
                             )
-                        } else {
-                            TextRenderer(text = text, repo = repo)
+                            else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
@@ -379,7 +438,7 @@ private fun AnswerSection(
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = firstHandsScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = drawingAndCoutingScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }

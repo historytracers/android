@@ -8,7 +8,7 @@
       "SPDX-License-Identifier: GPL-3.0-or-later"
    ],
    "last_update": [
-      "1785715322"
+      "1786197720"
    ],
    "authors": "",
    "reviewers": "",
@@ -18,13 +18,13 @@
       {
          "id": "05e6154c-9faf-426c-9325-9cb0b6efe6b7",
          "audio": "",
-         "smile": "",
+         "smile": "nerd",
          "source_menu": [
             {
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Original Text",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -35,7 +35,7 @@
          ],
          "text": [
             {
-               "text": "#### Us and Them\n\nTo give names to our fingers, but to write a name, it is necessary to speak that name.\n\nThe voice is also something very old and that did not arise with us.\n\nIn this lesson, we will see the difference between our voice and the voice of other animals.",
+               "text": "#### Us and Them\n\nWe can give names to our fingers. But to write a name, we first need to speak it.\n\nThe voice is very old. It did not appear with us.\n\nIn this lesson, we will see the difference between our voice and the voice of other animals.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -49,8 +49,7 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "dbe4e7ae-134d-449d-80f6-c5ec8abab3e1",
@@ -73,7 +72,7 @@
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Original Text",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -84,7 +83,7 @@
          ],
          "text": [
             {
-               "text": "#### I Also Have a Voice\n\nWe are not the only animals (yes, we are animals and we will see this in more detail later). This happens with animals close to us, that is, that look like us, such as the chimpanzee in the picture. Or animals that are more distant — they do not look like us — but they live with us, like cats.",
+               "text": "#### I Also Have a Voice\n\nWe are not the only animals that have a voice. (Yes, we are animals too, and we will see this later.)\n\nAnimals that look like us also have a voice. For example, the chimpanzee in the picture.\n\nAnimals that do not look like us also have a voice. For example, the cats that live with us.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -116,8 +115,7 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "52257273-5728-4306-8790-c84bf79b1deb",
@@ -140,7 +138,7 @@
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Original Text",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -151,7 +149,7 @@
          ],
          "text": [
             {
-               "text": "The fact that many animals have a voice indicates that it has been present in species for a long time, but is there a difference in how we use our voices?",
+               "text": "Many animals have a voice. This shows that the voice is very old. But is there a difference in how we use our voices?",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -164,14 +162,13 @@
          "next": "f7649886-f825-4ef9-be0b-672ee0fe5cb0",
          "prev": "",
          "jumpTo": "",
-         "answer": null,
-         "score": 2,
-         "position": ""
+         "answer": "yes",
+         "score": 2
       },
       {
          "id": "f7649886-f825-4ef9-be0b-672ee0fe5cb0",
          "audio": "",
-         "smile": "",
+         "smile": "inlove",
          "source_menu": [
             {
                "type": 1,
@@ -201,7 +198,7 @@
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Original Text",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -212,7 +209,7 @@
          ],
          "text": [
             {
-               "text": "#### Same, but Different\n\nEven though many animals have a voice, as far as we know, speech with distinction of sounds is something only we have. This allows us, among other things, to give names to the fingers of our hands and to ourselves.\n\nAnd giving names is not the only activity we can do with that speech; it also allows us to transmit different knowledge to other people.",
+               "text": "#### Same, but Different\n\nMany animals have a voice. But as far as we know, only humans speak with different sounds.\n\nThis lets us give names to our fingers and to ourselves. Giving names is not the only thing we can do with speech.\n\nSpeech also lets us share knowledge with other people.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -226,32 +223,30 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
-        "id": "521e3dff-a3a4-454e-a1fc-077e41228ddc",
-        "audio": "",
-        "smile": "",
-        "source_menu": [],
-        "text": [
-          {
-            "text": "#### Conclusion\n\nIn this lesson, we learned that we are not the only animals that have a voice. In addition, we saw the difference between our voice and that of other animals.\n\nSince we are still in the first lessons, we did not go into the details of the reasons why we have a type of speech that other animals do not have. This will be taught as our knowledge grows.",
-            "source": [],
-            "date_time": null,
-            "isTable": false,
-            "imgdesc": "",
-            "format": "markdown",
-            "PostMention": ""
-          }
-        ],
-        "desc": null,
-        "next": "",
-        "prev": "",
-        "jumpTo": "",
-        "answer": null,
-        "score": 1,
-        "position": ""
+         "id": "521e3dff-a3a4-454e-a1fc-077e41228ddc",
+         "audio": "",
+         "smile": "party",
+         "source_menu": [],
+         "text": [
+            {
+               "text": "#### Conclusion\n\nIn this lesson, we learned that we are not the only animals that have a voice. We also saw the difference between our voice and the voice of other animals.\n\nWe are still in the first lessons, so we did not study the reasons why we have a type of speech that other animals do not have. We will learn this as our knowledge grows.",
+               "source": [],
+               "date_time": null,
+               "isTable": false,
+               "imgdesc": "",
+               "format": "markdown",
+               "PostMention": ""
+            }
+         ],
+         "desc": null,
+         "next": "",
+         "prev": "",
+         "jumpTo": "",
+         "answer": null,
+         "score": 1
       }
    ]
 }

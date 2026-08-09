@@ -8,7 +8,7 @@
       "SPDX-License-Identifier: GPL-3.0-or-later"
    ],
    "last_update": [
-      "1785715322"
+      "1786197721"
    ],
    "authors": "",
    "reviewers": "",
@@ -18,13 +18,13 @@
       {
          "id": "05e6154c-9faf-426c-9325-9cb0b6efe6b7",
          "audio": "",
-         "smile": "",
+         "smile": "nerd",
          "source_menu": [
             {
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -35,7 +35,7 @@
          ],
          "text": [
             {
-               "text": "#### Nós e eles\n\nPara dar nome aos nossos dedos, mas, para escrever um nome, é necessário falar esse nome.\n\nA voz também é algo muito antigo e que não surgiu conosco.\n\nNesta aula, veremos qual é a diferença entre a nossa voz e a voz de outros animais.",
+               "text": "#### Nós e eles\n\nPodemos dar nome aos nossos dedos. Mas, para escrever um nome, primeiro precisamos falar esse nome.\n\nA voz é muito antiga. Ela não surgiu conosco.\n\nNesta aula, veremos a diferença entre a nossa voz e a voz de outros animais.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -49,8 +49,7 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "dbe4e7ae-134d-449d-80f6-c5ec8abab3e1",
@@ -73,7 +72,7 @@
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -84,7 +83,7 @@
          ],
          "text": [
             {
-               "text": "#### Eu também tenho voz\n\nNão somos os únicos animais (sim somos animais e veremos isso com mais detalhes depois), isso ocorre desde animais próximos a nós, ou seja, que se parecem conosco, como o chipanzé da figura. Ou animais que estão mais distantes - não se parecem conosco -, mas vivemo conosco, como gatos.",
+               "text": "#### Eu também tenho voz\n\nNão somos os únicos animais que têm voz. (Sim, nós também somos animais, e veremos isso depois.)\n\nAnimais parecidos conosco também têm voz. Por exemplo, o chimpanzé da figura.\n\nAnimais que não se parecem conosco também têm voz. Por exemplo, os gatos que vivem conosco.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -116,8 +115,7 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "52257273-5728-4306-8790-c84bf79b1deb",
@@ -140,7 +138,7 @@
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -151,7 +149,7 @@
          ],
          "text": [
             {
-               "text": "O fato de que muitos animais possuem fala indica que ela está presente nas espécies há muito tempo, mas, existe diferença em como usamos as vozes?",
+               "text": "Muitos animais têm voz. Isso mostra que a voz é muito antiga. Mas existe diferença em como usamos as vozes?",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -164,14 +162,13 @@
          "next": "f7649886-f825-4ef9-be0b-672ee0fe5cb0",
          "prev": "",
          "jumpTo": "",
-         "answer": null,
-         "score": 2,
-         "position": ""
+         "answer": "yes",
+         "score": 2
       },
       {
          "id": "f7649886-f825-4ef9-be0b-672ee0fe5cb0",
          "audio": "",
-         "smile": "",
+         "smile": "inlove",
          "source_menu": [
             {
                "type": 1,
@@ -201,7 +198,7 @@
                "type": 1,
                "uuid": "80ae0cca-8a79-4be3-a359-f1dd8700110b",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466",
                "date_time": {
                   "type": "gregory",
                   "year": "2026",
@@ -212,7 +209,7 @@
          ],
          "text": [
             {
-               "text": "#### Iguais, mas diferentes\n\nApesar de muitos animais terem voz, até onde temos conhecimento, a fala com distinção de sons é algo que só nós temos. Isso nos permite, entre outras coisas, dar nomes aos dedos de nossas mãos e a nós mesmos.\n\nE dar nomes não é a única atividade que podemos fazer com essa fala; ela também nos permite transmitir diferentes conhecimentos a outras pessoas.",
+               "text": "#### Iguais, mas diferentes\n\nMuitos animais têm voz. Mas, até onde sabemos, só os humanos falam com sons diferentes.\n\nIsso nos permite dar nomes aos nossos dedos e a nós mesmos. Dar nomes não é a única coisa que podemos fazer com a fala.\n\nA fala também nos permite compartilhar conhecimentos com outras pessoas.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -226,32 +223,30 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
-        "id": "521e3dff-a3a4-454e-a1fc-077e41228ddc",
-        "audio": "",
-        "smile": "",
-        "source_menu": [],
-        "text": [
-          {
-            "text": "#### Conclusão\n\nNesta aula, aprendemos que não somos os únicos animais a ter voz. Além disso, vimos a diferença entre a nossa voz e a de outros animais.\n\nComo ainda estamos nas primeiras aulas, não entramos nos detalhes dos motivos que fazem com que nós tenhamos um tipo de fala que outros animais não possuem. Isso será ensinado à medida que nosso conhecimento for aumentando.",
-            "source": [],
-            "date_time": null,
-            "isTable": false,
-            "imgdesc": "",
-            "format": "markdown",
-            "PostMention": ""
-          }
-        ],
-        "desc": null,
-        "next": "",
-        "prev": "",
-        "jumpTo": "",
-        "answer": null,
-        "score": 1,
-        "position": ""
+         "id": "521e3dff-a3a4-454e-a1fc-077e41228ddc",
+         "audio": "",
+         "smile": "party",
+         "source_menu": [],
+         "text": [
+            {
+               "text": "#### Conclusão\n\nNesta aula, aprendemos que não somos os únicos animais que têm voz. Também vimos a diferença entre a nossa voz e a voz de outros animais.\n\nAinda estamos nas primeiras aulas, então não estudamos os motivos pelos quais temos um tipo de fala que outros animais não têm. Vamos aprender isso conforme nosso conhecimento crescer.",
+               "source": [],
+               "date_time": null,
+               "isTable": false,
+               "imgdesc": "",
+               "format": "markdown",
+               "PostMention": ""
+            }
+         ],
+         "desc": null,
+         "next": "",
+         "prev": "",
+         "jumpTo": "",
+         "answer": null,
+         "score": 1
       }
    ]
 }

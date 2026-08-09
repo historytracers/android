@@ -30,6 +30,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.firstVoiceScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -132,11 +133,17 @@ private fun smileEmoji(smile: String): String = when (smile) {
     "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
     "surprise" -> "\uD83D\uDE32"
+    "nerd" -> "\uD83E\uDD13"
+    "inlove" -> "\uD83D\uDE0D"
+    "party" -> "\uD83E\uDD73"
     else -> "\uD83D\uDE0A"
 }
 
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
+
+private fun isImgHtml(text: String?): Boolean =
+    text?.startsWith("<img") == true
 
 @Composable
 private fun FirstVoiceGameContent(
@@ -234,6 +241,11 @@ private fun FirstVoiceGameContent(
                         if (text == null) return@forEach
                         if (text.format?.contains("markdown") == true) {
                             MarkdownText(text = text.text ?: "")
+                        } else if (isImgHtml(text.text)) {
+                            ResponsiveImage(
+                                html = text.text ?: "",
+                                imgDesc = text.imgdesc
+                            )
                         } else {
                             TextRenderer(text = text, repo = repo)
                         }
@@ -374,14 +386,27 @@ private fun AnswerSection(
         }
     } else {
         val isCorrect = selected == correctAnswer
-        Text(
-            text = if (isCorrect) "\uD83C\uDF89 ${s.common.correct} \uD83C\uDF89" else xs.wrongAnswerMessage,
-            color = if (isCorrect) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        ) {
+            Text(
+                text = if (isCorrect) "\uD83C\uDF89 ${s.common.correct} \uD83C\uDF89" else xs.wrongAnswerMessage,
+                color = if (isCorrect) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            if (isCorrect) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = xs.scoreDoubledMessage,
+                    color = Color(0xFF2E7D32),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 

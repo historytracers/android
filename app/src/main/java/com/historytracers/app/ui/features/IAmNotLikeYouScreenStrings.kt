@@ -8,7 +8,7 @@ data class IAmNotLikeYouScreenStrings(
 )
 
 val EnIAmNotLikeYouScreenStrings = IAmNotLikeYouScreenStrings(
-    weAreEquals = "We are equals",
+    weAreEquals = "We Are Equals",
 )
 
 val PtIAmNotLikeYouScreenStrings = IAmNotLikeYouScreenStrings(

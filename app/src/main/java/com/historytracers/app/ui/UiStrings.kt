@@ -62,7 +62,7 @@ val EnStrings = UiStrings(
         levelComplete = "Congratulations, you finished level %d/8!",
         levelCompleteMax = "Congratulations, excellent work! You complete all levels",
         resetHint = "Click \"New Exercise\" to try another one!",
-        nextLevel = "Next level",
+        nextLevel = "Next Level",
         unsupportedContentType = "unsupported content type",
         levelPrefix = "Level: ",
         valuePrefix = "Value: ",
@@ -75,6 +75,7 @@ val EnStrings = UiStrings(
         complete = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 Complete! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
         sources = "Sources",
         originalText = "Original Text",
+        imageOfflineMessage = "This image is only available when you are online.",
     ),
 )
 
@@ -146,6 +147,7 @@ val PtStrings = UiStrings(
         complete = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 Completo! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
         sources = "Fontes",
         originalText = "Texto Original",
+        imageOfflineMessage = "Esta imagem s\u00f3 est\u00e1 dispon\u00edvel quando voc\u00ea est\u00e1 online.",
     ),
 )
 
@@ -217,6 +219,7 @@ val EsStrings = UiStrings(
         complete = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1Completo! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
         sources = "Fuentes",
         originalText = "Texto Original",
+        imageOfflineMessage = "Esta imagen solo est\u00e1 disponible cuando est\u00e1s en l\u00ednea.",
     ),
 )
 

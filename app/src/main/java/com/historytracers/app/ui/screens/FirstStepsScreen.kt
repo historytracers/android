@@ -58,8 +58,12 @@ fun FirstStepsScreen(
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToFirstHands: () -> Unit = {},
     onNavigateToFirstVoice: () -> Unit = {},
+    onNavigateToDrawingAndCouting: () -> Unit = {},
+    onNavigateToNumbers: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
-    onNavigateToSequenceGameOrders: () -> Unit = {}
+    onNavigateToSequenceGameOrders: () -> Unit = {},
+    onNavigateToSequenceGameFamilies: () -> Unit = {},
+    onNavigateToBuildingGame: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -434,6 +438,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("drawing")
                     scope.launch { preferences.markFirstStepsSectionCompleted("drawing") }
+                    onNavigateToDrawingAndCouting()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -466,6 +471,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("numbers")
                     scope.launch { preferences.markFirstStepsSectionCompleted("numbers") }
+                    onNavigateToNumbers()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -560,9 +566,40 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
+                onClick = { onNavigateToSequenceGameFamilies() },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("sequence_game_families")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "_ 50 51",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.sequenceGameFamilies,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
                 onClick = {
                     controller.markCompleted("building")
                     scope.launch { preferences.markFirstStepsSectionCompleted("building") }
+                    onNavigateToBuildingGame()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -643,6 +680,37 @@ fun FirstStepsScreen(
 
             Text(
                 text = xs.sequenceGameOrders,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    scope.launch { preferences.markFirstStepsSectionCompleted("where_are_they") }
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("where_are_they")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "?",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.whereAreThey,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

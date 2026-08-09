@@ -8,7 +8,7 @@
       "SPDX-License-Identifier: GPL-3.0-or-later"
    ],
    "last_update": [
-      "1785620787"
+      "1786197721"
    ],
    "authors": "",
    "reviewers": "",
@@ -18,13 +18,13 @@
       {
          "id": "0ca93769-32f7-4492-a049-5d3530eb3d8b",
          "audio": "",
-         "smile": "",
+         "smile": "nerd",
          "source_menu": [
             {
                "type": 1,
                "uuid": "c4c2c00d-7878-42da-9cc4-060cd7f8d225",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
                "date_time": {
                   "type": "gregory",
                   "year": "2024",
@@ -35,7 +35,7 @@
          ],
          "text": [
             {
-               "text": "#### Nosso corpo, nosso entendimento\n\nAgora que entendemos como aprendemos, podemos começar a desvendar a natureza e, para isso, utilizaremos nosso corpo.",
+               "text": "#### Nosso corpo, nosso entendimento\n\nAgora entendemos como aprendemos. Então podemos começar a entender a natureza. Para isso, vamos usar nosso corpo.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -49,8 +49,7 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "6880b03c-65b8-441c-bac1-c9a07ddce3e9",
@@ -61,7 +60,7 @@
                "type": 1,
                "uuid": "c4c2c00d-7878-42da-9cc4-060cd7f8d225",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
                "date_time": {
                   "type": "gregory",
                   "year": "2024",
@@ -86,19 +85,18 @@
          "prev": "",
          "jumpTo": "",
          "answer": "yes",
-         "score": 2,
-         "position": ""
+         "score": 2
       },
       {
          "id": "0c7b5aab-525b-4c0f-9b06-d0df38e9282c",
          "audio": "",
-         "smile": "",
+         "smile": "happy",
          "source_menu": [
             {
                "type": 1,
                "uuid": "c4c2c00d-7878-42da-9cc4-060cd7f8d225",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
                "date_time": {
                   "type": "gregory",
                   "year": "2024",
@@ -109,7 +107,7 @@
          ],
          "text": [
             {
-               "text": "#### Contagem e as mãos\n\nNós podemos utilizar as mãos para contar, conectando cada dedo a um único objeto. Por exemplo, abaixo estamos contando círculos.",
+               "text": "#### Contagem e as mãos\n\nPodemos usar as mãos para contar. Ligamos cada dedo a um objeto. Por exemplo, abaixo estamos contando círculos.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -141,19 +139,18 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204",
          "audio": "",
-         "smile": "",
+         "smile": "thinking",
          "source_menu": [
             {
                "type": 1,
                "uuid": "c4c2c00d-7878-42da-9cc4-060cd7f8d225",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
                "date_time": {
                   "type": "gregory",
                   "year": "2024",
@@ -164,7 +161,7 @@
          ],
          "text": [
             {
-               "text": "#### Meu nome é...\n\nNós, a maioria dos humanos, temos maior facilidade em trabalhar com o que conhecemos do que com o que desconhecemos. Como consequência disso, acabamos dando nome aos nossos dedos, como demonstrado abaixo.",
+               "text": "#### Meu nome é...\n\nA maioria dos humanos acha mais fácil trabalhar com o que conhecemos do que com o que não conhecemos. Por causa disso, damos nomes aos nossos dedos, como mostrado abaixo.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -196,19 +193,18 @@
          "prev": "f81a230b-4956-4ed7-9b3a-a832e01f5027",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       },
       {
          "id": "882e0095-9126-4626-b98d-01153aece2f9",
          "audio": "",
-         "smile": "",
+         "smile": "party",
          "source_menu": [
             {
                "type": 1,
                "uuid": "c4c2c00d-7878-42da-9cc4-060cd7f8d225",
                "text": "Texto Original",
-               "page": "index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
+               "page": "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3",
                "date_time": {
                   "type": "gregory",
                   "year": "2024",
@@ -219,7 +215,7 @@
          ],
          "text": [
             {
-               "text": "#### Conclusão\n\nNesta aula, aprendemos que nossos dedos podem ser usados para contar e vimos que dar nome aos dedos nos ajuda a lembrar de maneira mais fácil.\n\nEntretanto, não falamos sobre as primeiras pessoas a fazer isso nem sobre quando começamos a falar e a nomear. Esses tópicos serão explorados em mais detalhes nas próximas aulas.",
+               "text": "#### Conclusão\n\nNesta aula, aprendemos que nossos dedos podem ser usados para contar. Também vimos que dar nomes aos dedos nos ajuda a lembrar deles com mais facilidade.\n\nMas não falamos sobre as primeiras pessoas a fazer isso. Também não falamos sobre quando começamos a falar e a dar nomes. Vamos aprender mais sobre esses assuntos nas próximas aulas.",
                "source": [],
                "date_time": null,
                "isTable": false,
@@ -233,8 +229,7 @@
          "prev": "",
          "jumpTo": "",
          "answer": null,
-         "score": 1,
-         "position": ""
+         "score": 1
       }
    ]
 }

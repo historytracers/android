@@ -22,6 +22,7 @@
 - When adding new UI text, always provide translations for all three locales: English (`En*`), Portuguese (`Pt*`), and Spanish (`Es*`).
 - Brand names that are identical across languages (e.g., "Patreon", "PayPal") still need entries in all three locales for consistency — use the same name in all three.
 - Use `%d` / `%s` format specifiers (Kotlin style) for interpolated values.
+- **English titles use Title Case.** Screen titles and hub button labels (both the top app bar and the label below each button) must capitalize every word except short function words — articles (`a`, `an`, `the`), conjunctions (`and`, `or`, `but`), and prepositions (`in`, `on`, `at`, `to`, `of`, `for`, `with`, `by`, `from`, `without`) — which stay lowercase. The first and last word are always capitalized. Examples: "Building Game", "First Steps (Counting)", "Learning in Layers", "Multiplying with Yupana", "Complement to 10", "Where Are We From?". This rule applies to English only; Portuguese and Spanish follow their own conventions.
 
 ## Sources Menu
 
@@ -117,9 +118,10 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 
 ### 1. Understand the data model
 - `SMGameFile` has `title` and `content` (list of `SMGameContent`). Each `SMGameContent` is one screen, identified by its `id`.
-- Fields to handle per content: `text` (list of `HTText`), `answer` (expected Yes/No answer or null), `smile` (`"thinking"`/`"happy"`), `source_menu` (list of `HTSource`), `score`, and the position in the `content` vector drives next/prev navigation.
+- Fields to handle per content: `text` (list of `HTText`), `answer` (expected Yes/No answer or null), `smile` (values like `"thinking"`, `"happy"`, `"nerd"`, `"shocking"`, `"party"`, `"inlove"`; see the emoji mapping below), `source_menu` (list of `HTSource`), `score`, and the position in the `content` vector drives next/prev navigation.
 - `HTText.format` is `"markdown"` or `"html"` — render markdown text with `MarkdownText` (`#### heading` → bold title, `===x===`/`**x**` → bold, `*x*` → italic); other formats use `TextRenderer`.
 - **`<img>` tags must be rendered as actual images, never shown as raw text.** `HTText` with `format == "html"` may contain `<img src="...">` tags. `TextRenderer` handles this automatically: it splits the HTML, renders non-tag segments as `Text`, and renders each `<img>` with Coil's `AsyncImage` (`ContentScale.Fit`, `HTText.imgdesc` as content description). When a screen renders HTML, always route it through `TextRenderer` (do not pass `<img>` blocks to a plain `Text`).
+- **Keep screens scroll-free: images must be responsive.** Prefer layouts that fit on a single phone screen without scrolling, keeping the navigation buttons (Previous/Next) visible. In particular, when a screen's `<img>` is large (e.g. a full-width photo), do not rely on `TextRenderer`'s fixed 480dp max height — render the image through a dedicated responsive composable that caps its height to a fraction of the screen (e.g. `LocalConfiguration.screenHeightDp * 0.4f` with `ContentScale.Fit` and full width), keyed to that screen's `contentId`, so the buttons stay on screen without scrolling.
 - **Image captions** (the text block that follows an `<img>`): a markdown line that starts with a single `*` (a closing `*` is optional) and contains no other asterisks (e.g. `*Image taken during a visit to ...` or `*Image made by the Taï Chimpanzee Project*`) is an image caption. `MarkdownText` renders it centered (`TextAlign.Center`), italic (`FontStyle.Italic`), and smaller than the normal body text (`bodySmall`), stripping the outer `*`s. Keep this convention in the JSON: captions must start with a single `*`.
 - `HTSource` has `text` (menu label) and `page` (URL). When `page` starts with `"index.html"`, prefix it with `"https://www.historytracers.org/"`.
 
@@ -144,10 +146,10 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
     - Previous/Next use `ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`.
     - Previous shows `Icons.AutoMirrored.Filled.ArrowBack` before the label, Next shows `Icons.AutoMirrored.Filled.ArrowForward` after the label. Show them according to the `content` vector position (first screen: only Next; middle screens: both; last screen: only Previous).
   - When `answer != null`: green Yes/No buttons (`ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`) — both buttons green, no selected-color switching. On submit show the result once (no retry):
-    - Correct → `🎉 Correct! 🎉` (`s.common.correct` wrapped in `\uD83C\uDF89`) in green (`Color(0xFF2E7D32)`).
+    - Correct → `🎉 Correct! 🎉` (`s.common.correct` wrapped in `\uD83C\uDF89`) in green (`Color(0xFF2E7D32)`), followed by a localized message (`xs.scoreDoubledMessage`) informing the user that their score for this screen will be doubled (correct answers award the full `score` on top of the arrival award).
     - Wrong → the localized wrong-answer message (`xs.wrongAnswerMessage`) in red (`MaterialTheme.colorScheme.error`).
-  - When `smile` is non-empty: smile emoji at `Alignment.BottomEnd` (`"thinking"` → 🤔, `"happy"` → 😊).
-  - When `source_menu` is non-empty: a Sources menu at `Alignment.BottomStart` — one first-level `DropdownMenuItem` per source (label = `source.text`) each opening a Copy URL / Go to URL submenu using the (prefixed) `source.page`.
+  - When `smile` is non-empty: smile emoji at `Alignment.BottomEnd`. Map smile values with a `smileEmoji(smile)` helper: `"thinking"`/`"think"` → 🤔 (`\uD83E\uDD14`), `"happy"` → 😊 (`\uD83D\uDE0A`), `"nerd"` → 🤓 (`\uD83E\uDD13`), `"shocking"`/`"surprise"` → 😲 (`\uD83D\uDE32`), `"party"` → 🥳 (`\uD83E\uDD73`), `"inlove"` → 😍 (`\uD83D\uDE0D`); default to 😊 for any other value.
+  - **Always use the `source_menu` array to populate a Source menu on screen** whenever `source_menu` is present (not `null`) — do not hardcode sources and do not skip the menu. Render a Sources menu at `Alignment.BottomStart` with a book icon + `s.common.sources` label; tapping it shows one first-level `DropdownMenuItem` per source (label = `source.text`) each opening a Copy URL / Go to URL submenu using the (prefixed) `source.page`.
 
 ### 6. Scoring
 - Award each screen's default `score` as soon as the user reaches it (arrival award) — every screen, including question screens.

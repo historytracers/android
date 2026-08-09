@@ -50,6 +50,7 @@ fun DrawingToCountScreen(
     skinColor: String = "#A5672C",
     onNavigateBack: () -> Unit = {},
     onNavigateToHandsOnYupana: () -> Unit = {},
+    onNavigateToYupana: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}
 ) {
@@ -293,6 +294,21 @@ fun DrawingToCountScreen(
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = ys.tawantsuyu,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                FilledTonalButton(
+                    onClick = onNavigateToYupana,
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = ys.yupana,
                         fontWeight = FontWeight.Bold
                     )
                 }

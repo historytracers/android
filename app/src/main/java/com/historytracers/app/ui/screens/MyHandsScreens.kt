@@ -139,6 +139,8 @@ fun MyHandsConclusionScreen(
 private fun smileEmoji(smile: String): String = when (smile) {
     "thinking", "think" -> "\uD83E\uDD14"
     "happy" -> "\uD83D\uDE0A"
+    "nerd" -> "\uD83E\uDD13"
+    "party" -> "\uD83E\uDD73"
     else -> "\uD83D\uDE0A"
 }
 
@@ -504,14 +506,27 @@ private fun AnswerSection(
         }
     } else {
         val isCorrect = selected == correctAnswer
-        Text(
-            text = if (isCorrect) "\uD83C\uDF89 ${s.common.correct} \uD83C\uDF89" else xs.wrongAnswerMessage,
-            color = if (isCorrect) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        ) {
+            Text(
+                text = if (isCorrect) "\uD83C\uDF89 ${s.common.correct} \uD83C\uDF89" else xs.wrongAnswerMessage,
+                color = if (isCorrect) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            if (isCorrect) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = xs.scoreDoubledMessage,
+                    color = Color(0xFF2E7D32),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 

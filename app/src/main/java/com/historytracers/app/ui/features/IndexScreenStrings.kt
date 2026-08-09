@@ -8,7 +8,7 @@ data class IndexScreenStrings(
 )
 
 val EnIndexScreenStrings = IndexScreenStrings(
-    runningAndGrowing = "Running and growing",
+    runningAndGrowing = "Running and Growing",
 )
 
 val PtIndexScreenStrings = IndexScreenStrings(
