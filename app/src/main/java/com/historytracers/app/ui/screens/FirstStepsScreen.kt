@@ -59,6 +59,7 @@ fun FirstStepsScreen(
     onNavigateToFirstHands: () -> Unit = {},
     onNavigateToFirstVoice: () -> Unit = {},
     onNavigateToDrawingAndCouting: () -> Unit = {},
+    onNavigateToNumbers: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
     onNavigateToSequenceGameOrders: () -> Unit = {},
     onNavigateToSequenceGameFamilies: () -> Unit = {},
@@ -470,6 +471,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("numbers")
                     scope.launch { preferences.markFirstStepsSectionCompleted("numbers") }
+                    onNavigateToNumbers()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
