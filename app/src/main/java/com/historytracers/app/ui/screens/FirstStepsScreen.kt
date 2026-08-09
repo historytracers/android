@@ -61,6 +61,7 @@ fun FirstStepsScreen(
     onNavigateToDrawingAndCouting: () -> Unit = {},
     onNavigateToNumbers: () -> Unit = {},
     onNavigateToFamilyPart1: () -> Unit = {},
+    onNavigateToTheZero: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
     onNavigateToSequenceGameOrders: () -> Unit = {},
     onNavigateToSequenceGameFamilies: () -> Unit = {},
@@ -492,6 +493,39 @@ fun FirstStepsScreen(
 
             Text(
                 text = hts.numbers,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    controller.markCompleted("the_zero")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("the_zero") }
+                    onNavigateToTheZero()
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("the_zero")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "0",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.weHaveZero,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
