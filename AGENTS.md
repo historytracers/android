@@ -125,10 +125,11 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 - **Image captions** (the text block that follows an `<img>`): a markdown line that starts with a single `*` (a closing `*` is optional) and contains no other asterisks (e.g. `*Image taken during a visit to ...` or `*Image made by the Taï Chimpanzee Project*`) is an image caption. `MarkdownText` renders it centered (`TextAlign.Center`), italic (`FontStyle.Italic`), and smaller than the normal body text (`bodySmall`), stripping the outer `*`s. Keep this convention in the JSON: captions must start with a single `*`.
 - `HTSource` has `text` (menu label) and `page` (URL). When `page` starts with `"index.html"`, prefix it with `"https://www.historytracers.org/"`.
 
-### 2. Copy the JSON into Android assets
-- Copy `historytracers/lang/{en-US,pt-BR,es-ES}/smartphone/<uuid>.json` to `app/src/main/assets/lang/{lang}/smartphone/<uuid>.json` (LF line endings).
-- Load with `ContentRepository.loadAndParse("${LocalAppLanguage.current}/smartphone/<uuid>")` and handle `ContentResult.SMGame` / `ContentResult.Error`.
-- After the user edits translations in the `historytracers` repo, re-copy the files into assets and rebuild.
+### 2. Smartphone game JSON comes from the common submodule
+- The smartphone game JSONs are the single source of truth in `historytracers/lang/{en-US,pt-BR,es-ES}/smartphone/<uuid>.json`. They are bundled into the app from the `common` submodule: after the user updates them in the `historytracers` repo, sync the `common/` submodule so the files are at `common/src/smartphone/{lang}/<uuid>.json`.
+- `app/build.gradle.kts` adds `common/src/smartphone` as an assets source directory, so the JSONs are bundled at the asset root as `{lang}/<uuid>.json`.
+- Load with `ContentRepository.loadAndParse("${LocalAppLanguage.current}/<uuid>")` (no `smartphone/` prefix, no `lang/` prefix) and handle `ContentResult.SMGame` / `ContentResult.Error`.
+- Do not copy smartphone JSONs into `app/src/main/assets/` — that would create duplicates of the common submodule files.
 
 ### 3. Keep Gson mapping in sync (common module)
 - JSON uses snake_case (`source_menu`); Java fields need matching annotations — `SMGameContent.sourceMenu` requires `@SerializedName("source_menu")`. When editing `common/src/android/.../com/historytracers/common/*.java`, update the Go counterpart in `common/src/go/data-type.go` in sync.
@@ -166,4 +167,4 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 
 ### 8. Build & verify
 - Run `.\gradlew.bat assembleDebug` and fix unresolved references.
-- Confirm the JSON was bundled under `app/build/intermediates/assets/debug/mergeDebugAssets/lang/<lang>/smartphone/`.
+- Confirm the JSON was bundled under `app/build/intermediates/assets/debug/mergeDebugAssets/{lang}/<uuid>.json`.

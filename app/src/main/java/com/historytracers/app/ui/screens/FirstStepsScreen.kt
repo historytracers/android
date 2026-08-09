@@ -60,6 +60,8 @@ fun FirstStepsScreen(
     onNavigateToFirstVoice: () -> Unit = {},
     onNavigateToDrawingAndCouting: () -> Unit = {},
     onNavigateToNumbers: () -> Unit = {},
+    onNavigateToFamilyPart1: () -> Unit = {},
+    onNavigateToTheZero: () -> Unit = {},
     onNavigateToSequenceGame: () -> Unit = {},
     onNavigateToSequenceGameOrders: () -> Unit = {},
     onNavigateToSequenceGameFamilies: () -> Unit = {},
@@ -502,6 +504,39 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = {
+                    controller.markCompleted("the_zero")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("the_zero") }
+                    onNavigateToTheZero()
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("the_zero")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "0",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.weHaveZero,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
                     controller.markCompleted("sequence_game")
                     scope.launch { preferences.markFirstStepsSectionCompleted("sequence_game") }
                     onNavigateToSequenceGame()
@@ -537,6 +572,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("family_part1")
                     scope.launch { preferences.markFirstStepsSectionCompleted("family_part1") }
+                    onNavigateToFamilyPart1()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

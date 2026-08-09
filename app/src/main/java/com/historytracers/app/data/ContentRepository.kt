@@ -14,14 +14,14 @@ class ContentRepository(private val context: Context) {
 
     fun loadJson(name: String): String? {
         return try {
-            context.assets.open("lang/$name.json").bufferedReader().use { it.readText() }
+            context.assets.open("$name.json").bufferedReader().use { it.readText() }
         } catch (e: Exception) {
             null
         }
     }
 
     fun loadSourceFile(uuid: String): HTSourceFile? {
-        val json = loadJson("sources/$uuid") ?: return null
+        val json = loadJson("lang/sources/$uuid") ?: return null
         return try {
             gson.fromJson(json, HTSourceFile::class.java)
         } catch (e: Exception) {

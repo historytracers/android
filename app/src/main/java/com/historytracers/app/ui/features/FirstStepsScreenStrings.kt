@@ -15,6 +15,7 @@ data class FirstStepsScreenStrings(
     val ordersMore: String,
     val firstHands: String,
     val firstVoice: String,
+    val weHaveZero: String,
 )
 
 val EnFirstStepsScreenStrings = FirstStepsScreenStrings(
@@ -29,6 +30,7 @@ val EnFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersMore = "..",
     firstHands = "The First Ones (Hands)",
     firstVoice = "The First Ones (Voice)",
+    weHaveZero = "We Have Zero",
 )
 
 val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
@@ -43,6 +45,7 @@ val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersMore = "..",
     firstHands = "Os primeiros (m\u00e3os)",
     firstVoice = "Os primeiros (voz)",
+    weHaveZero = "Temos zero",
 )
 
 val EsFirstStepsScreenStrings = FirstStepsScreenStrings(
@@ -57,6 +60,7 @@ val EsFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersMore = "..",
     firstHands = "Los primeros (manos)",
     firstVoice = "Los primeros (voz)",
+    weHaveZero = "Tenemos cero",
 )
 
 val LocalFirstStepsScreenStrings = staticCompositionLocalOf { EnFirstStepsScreenStrings }

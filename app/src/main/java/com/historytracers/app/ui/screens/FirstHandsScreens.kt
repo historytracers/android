@@ -38,7 +38,7 @@ import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "smartphone/ab80ffd7-1940-482d-981b-ab5872697523"
+private const val SMARTPHONE_GAME_FILE = "ab80ffd7-1940-482d-981b-ab5872697523"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable

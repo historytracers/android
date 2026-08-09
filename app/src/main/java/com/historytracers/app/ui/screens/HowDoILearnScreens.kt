@@ -45,7 +45,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const val SMARTPHONE_GAME_FILE = "smartphone/a0690af8-6396-42da-bc03-3f51af78e1e7"
+private const val SMARTPHONE_GAME_FILE = "a0690af8-6396-42da-bc03-3f51af78e1e7"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable

@@ -19,36 +19,42 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.SubcomposeAsyncImage
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.socratesScreenStringsForLanguage
+import com.historytracers.app.ui.features.theZeroScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "20c8240d-6ddf-4949-88c7-c8964e1cf92d"
+private const val SMARTPHONE_GAME_FILE = "db7a36be-0e75-4b2d-826f-9356ea89ef00"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
+private const val THE_NUMBER_CONTENT_ID = "92eef5b8-4108-4379-99d1-6363b4f5d61f"
+
+private val IMG_TAG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
 
 @Composable
-fun SocratesPhilosophyScreen(
+fun TheZeroIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "c69673be-0a59-4235-a83e-0f2d26e13ede",
+    TheZeroGameContent(
+        contentId = "50fee325-1253-494b-b598-497361e26a77",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -57,15 +63,15 @@ fun SocratesPhilosophyScreen(
 }
 
 @Composable
-fun SocratesQuestionScreen(
+fun TheZeroWhatIsScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "cb8d0c30-1698-430d-9023-0a52aca7dc52",
+    TheZeroGameContent(
+        contentId = "18375d42-afce-4d15-bfd8-cb8a26bbc154",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -75,15 +81,15 @@ fun SocratesQuestionScreen(
 }
 
 @Composable
-fun SocratesMotivationScreen(
+fun TheZeroIntuitiveScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "7ca84a61-9912-4004-b07e-f44a19fbdaa4",
+    TheZeroGameContent(
+        contentId = "28344d9f-7e40-4550-8fea-a6f82ae62a77",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -93,15 +99,51 @@ fun SocratesMotivationScreen(
 }
 
 @Composable
-fun SocratesConclusionScreen(
+fun TheZeroNumberScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    TheZeroGameContent(
+        contentId = "92eef5b8-4108-4379-99d1-6363b4f5d61f",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun TheZeroQuestionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    TheZeroGameContent(
+        contentId = "03808fad-6362-4083-aef5-76d8e86e5f8b",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun TheZeroConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {}
 ) {
-    SocratesGameContent(
-        contentId = "5153a22b-f6a5-4ba1-a174-2fdad118c60e",
+    TheZeroGameContent(
+        contentId = "9f4db07e-429e-4f56-b004-2620e34296a4",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -111,9 +153,10 @@ fun SocratesConclusionScreen(
 }
 
 private fun smileEmoji(smile: String): String = when (smile) {
-    "thinking" -> "\uD83E\uDD14"
-    "happy" -> "\uD83D\uDE0A"
+    "thinking", "think" -> "\uD83E\uDD14"
+    "happy", "smile" -> "\uD83D\uDE0A"
     "nerd" -> "\uD83E\uDD13"
+    "shocking", "surprise", "surprising" -> "\uD83D\uDE32"
     "party" -> "\uD83E\uDD73"
     else -> "\uD83D\uDE0A"
 }
@@ -121,8 +164,49 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
+private fun isImgHtml(text: String?): Boolean =
+    text?.startsWith("<img") == true
+
 @Composable
-private fun SocratesGameContent(
+private fun OriginalSizeImage(html: String, imgDesc: String?, modifier: Modifier = Modifier) {
+    val s = LocalUiStrings.current
+    val url = IMG_TAG_REGEX.find(html)?.groupValues?.get(1) ?: return
+    SubcomposeAsyncImage(
+        model = url,
+        contentDescription = imgDesc,
+        modifier = modifier
+            .size(56.dp, 62.dp)
+            .padding(vertical = 8.dp),
+        contentScale = ContentScale.Fit,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 96.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        },
+        error = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 96.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = s.common.imageOfflineMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun TheZeroGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -132,7 +216,7 @@ private fun SocratesGameContent(
     onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = theZeroScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -214,10 +298,18 @@ private fun SocratesGameContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     content.text?.forEach { text ->
-                        if (text.format == "markdown") {
-                            MarkdownText(text = text.text ?: "")
-                        } else {
-                            TextRenderer(text = text, repo = repo)
+                        if (text == null) return@forEach
+                        when {
+                            text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
+                            contentId == THE_NUMBER_CONTENT_ID && isImgHtml(text.text) -> OriginalSizeImage(
+                                html = text.text ?: "",
+                                imgDesc = text.imgdesc
+                            )
+                            isImgHtml(text.text) -> ResponsiveImage(
+                                html = text.text ?: "",
+                                imgDesc = text.imgdesc
+                            )
+                            else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
@@ -314,7 +406,7 @@ private fun AnswerSection(
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = theZeroScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
