@@ -107,6 +107,10 @@ fun SequenceGameFamiliesScreen(
             onScoreChanged(initialScore + totalAwarded)
             feedbackMessage = xs.completionMessage
             isFeedbackPositive = true
+            scope.launch {
+                preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("sequence_game_families")
+            }
         }
     }
 
