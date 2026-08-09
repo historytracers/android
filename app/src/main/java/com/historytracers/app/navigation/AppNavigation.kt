@@ -79,6 +79,13 @@ import com.historytracers.app.ui.screens.FirstVoiceVoiceScreen
 import com.historytracers.app.ui.screens.FirstVoiceReflectionScreen
 import com.historytracers.app.ui.screens.FirstVoiceDifferenceScreen
 import com.historytracers.app.ui.screens.FirstVoiceConclusionScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingIntroScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingCirclesScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingRectanglesScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingMesoamericansScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingQuestionScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingExamplesScreen
+import com.historytracers.app.ui.screens.DrawingAndCoutingConclusionScreen
 import com.historytracers.app.ui.screens.MyHandsCountingScreen
 import com.historytracers.app.ui.screens.MyHandsFingersScreen
 import com.historytracers.app.ui.screens.MyHandsIntroScreen
@@ -128,7 +135,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "i_am_not_like_you", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
+    val simpleRoutes = setOf("index", "i_am_not_like_you", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "drawing_and_couting_intro", "drawing_and_couting_circles", "drawing_and_couting_rectangles", "drawing_and_couting_mesoamericans", "drawing_and_couting_question", "drawing_and_couting_examples", "drawing_and_couting_conclusion", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement")
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
@@ -392,6 +399,7 @@ fun AppNavigation() {
                             onNavigateToMyBody = { navController.navigate(Screen.MyBody.route) { launchSingleTop = true } },
                             onNavigateToFirstHands = { navController.navigate(Screen.FirstHands.route) { launchSingleTop = true } },
                             onNavigateToFirstVoice = { navController.navigate(Screen.FirstVoice.route) { launchSingleTop = true } },
+                            onNavigateToDrawingAndCouting = { navController.navigate(Screen.DrawingAndCoutingIntro.route) { launchSingleTop = true } },
                             onNavigateToSequenceGame = { navController.navigate(Screen.SequenceGame.route) { launchSingleTop = true } },
                             onNavigateToSequenceGameOrders = { navController.navigate(Screen.SequenceGameOrders.route) { launchSingleTop = true } },
                             onNavigateToSequenceGameFamilies = { navController.navigate(Screen.SequenceGameFamilies.route) { launchSingleTop = true } },
@@ -1124,6 +1132,124 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = { navController.navigate(Screen.FirstVoiceDifference.route) { launchSingleTop = true } },
+                            onNavigateToFirstSteps = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingIntro.route) {
+                        DrawingAndCoutingIntroScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingAndCoutingCircles.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingCircles.route) {
+                        DrawingAndCoutingCirclesScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.DrawingAndCoutingIntro.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.DrawingAndCoutingRectangles.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingRectangles.route) {
+                        DrawingAndCoutingRectanglesScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.DrawingAndCoutingCircles.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.DrawingAndCoutingMesoamericans.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingMesoamericans.route) {
+                        DrawingAndCoutingMesoamericansScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.DrawingAndCoutingRectangles.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.DrawingAndCoutingQuestion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingQuestion.route) {
+                        DrawingAndCoutingQuestionScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.DrawingAndCoutingMesoamericans.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.DrawingAndCoutingExamples.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingExamples.route) {
+                        DrawingAndCoutingExamplesScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.DrawingAndCoutingQuestion.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.DrawingAndCoutingConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.DrawingAndCoutingConclusion.route) {
+                        DrawingAndCoutingConclusionScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
+                                    navController.navigate(Screen.FirstSteps.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.DrawingAndCoutingExamples.route) { launchSingleTop = true } },
                             onNavigateToFirstSteps = {
                                 if (!navController.popBackStack(Screen.FirstSteps.route, false)) {
                                     navController.navigate(Screen.FirstSteps.route) {
