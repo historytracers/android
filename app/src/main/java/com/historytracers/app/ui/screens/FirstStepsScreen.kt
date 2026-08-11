@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Handshake
@@ -65,7 +66,9 @@ fun FirstStepsScreen(
     onNavigateToSequenceGame: () -> Unit = {},
     onNavigateToSequenceGameOrders: () -> Unit = {},
     onNavigateToSequenceGameFamilies: () -> Unit = {},
-    onNavigateToBuildingGame: () -> Unit = {}
+    onNavigateToBuildingGame: () -> Unit = {},
+    onNavigateToNaturalFamiliesPart2: () -> Unit = {},
+    onNavigateToTowardInfinity: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -668,6 +671,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("natural_families_part2")
                     scope.launch { preferences.markFirstStepsSectionCompleted("natural_families_part2") }
+                    onNavigateToNaturalFamiliesPart2()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -727,6 +731,89 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = {
+                    controller.markCompleted("going_to_infinity")
+                    scope.launch { preferences.markFirstStepsSectionCompleted("going_to_infinity") }
+                    onNavigateToTowardInfinity()
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("going_to_infinity")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Text(
+                    text = "\u221E",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = hts.goingToInfinity,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    scope.launch { preferences.markFirstStepsSectionCompleted("limits_min_max") }
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("limits_min_max")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Text(
+                        text = "|",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Icon(
+                        Icons.Default.Accessibility,
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = OnButtonYellow
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "|",
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.limitsMinMax,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
                     scope.launch { preferences.markFirstStepsSectionCompleted("where_are_they") }
                 },
                 modifier = Modifier.size(96.dp),
@@ -747,38 +834,6 @@ fun FirstStepsScreen(
 
             Text(
                 text = xs.whereAreThey,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(48.dp))
-
-            FilledIconButton(
-                onClick = {
-                    controller.markCompleted("going_to_infinity")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("going_to_infinity") }
-                },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("going_to_infinity")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Text(
-                    text = "\u221E",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = hts.goingToInfinity,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

@@ -33,16 +33,27 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
-private val orderNumbers = listOf("1", "10", "100", "1000", "10000", "100000")
+private val allOrderNumbers = listOf(
+    1L, 10L, 100L, 1000L, 10000L, 100000L,
+    1000000L, 10000000L, 100000000L, 1000000000L
+)
 
 private data class OrderLeftItem(val text: String, val id: Int)
 private data class OrderRightItem(val text: String, val id: Int)
 
-private fun buildLeftItems(): List<OrderLeftItem> =
-    orderNumbers.indices.shuffled().map { OrderLeftItem(orderNumbers[it], it) }
+private fun selectedOrderIds(): List<Int> =
+    allOrderNumbers.indices.shuffled().take(6)
 
-private fun buildRightItems(names: List<String>): List<OrderRightItem> =
-    names.indices.shuffled().map { OrderRightItem(names[it], it) }
+private fun formatOrderNumber(value: Long, language: String): String {
+    val separator = if (language == "en-US") "," else "."
+    return value.toString().reversed().chunked(3).joinToString(separator).reversed()
+}
+
+private fun buildLeftItems(ids: List<Int>, language: String): List<OrderLeftItem> =
+    ids.shuffled().map { OrderLeftItem(formatOrderNumber(allOrderNumbers[it], language), it) }
+
+private fun buildRightItems(names: List<String>, ids: List<Int>): List<OrderRightItem> =
+    ids.shuffled().map { OrderRightItem(names[it], it) }
 
 @Composable
 private fun OrderItemButton(
@@ -91,17 +102,23 @@ fun SequenceGameOrdersScreen(
 ) {
     val s = LocalUiStrings.current
     val xs = sequenceGameOrdersScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
 
-    val orderNames = listOf(xs.units, xs.tens, xs.hundreds, xs.thousands, xs.tenThousands, xs.hundredThousands)
+    val allOrderNames = listOf(
+        xs.units, xs.tens, xs.hundreds, xs.thousands, xs.tenThousands, xs.hundredThousands,
+        xs.millions, xs.tenMillions, xs.hundredMillions, xs.billions
+    )
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
 
-    var leftItems by remember { mutableStateOf(buildLeftItems()) }
-    var rightItems by remember { mutableStateOf(buildRightItems(orderNames)) }
+    val initialOrderIds = remember { selectedOrderIds() }
+    var orderIds by remember { mutableStateOf(initialOrderIds) }
+    var leftItems by remember { mutableStateOf(buildLeftItems(initialOrderIds, language)) }
+    var rightItems by remember { mutableStateOf(buildRightItems(allOrderNames, initialOrderIds)) }
     var matchedIds by remember { mutableStateOf(emptySet<Int>()) }
     var selectedLeftId by remember { mutableStateOf<Int?>(null) }
     var selectedRightId by remember { mutableStateOf<Int?>(null) }
@@ -114,7 +131,7 @@ fun SequenceGameOrdersScreen(
             matchedIds = matchedIds + leftId
             selectedLeftId = null
             selectedRightId = null
-            if (matchedIds.size == orderNumbers.size) {
+            if (matchedIds.size == orderIds.size) {
                 completed = true
                 totalAwarded += 2
                 onScoreChanged(initialScore + totalAwarded)
@@ -150,8 +167,10 @@ fun SequenceGameOrdersScreen(
     }
 
     fun newGame() {
-        leftItems = buildLeftItems()
-        rightItems = buildRightItems(orderNames)
+        val ids = selectedOrderIds()
+        orderIds = ids
+        leftItems = buildLeftItems(ids, language)
+        rightItems = buildRightItems(allOrderNames, ids)
         matchedIds = emptySet()
         selectedLeftId = null
         selectedRightId = null

@@ -12,6 +12,10 @@ data class SequenceGameOrdersScreenStrings(
     val thousands: String,
     val tenThousands: String,
     val hundredThousands: String,
+    val millions: String,
+    val tenMillions: String,
+    val hundredMillions: String,
+    val billions: String,
     val newGame: String,
     val completionMessage: String,
 )
@@ -25,6 +29,10 @@ val EnSequenceGameOrdersScreenStrings = SequenceGameOrdersScreenStrings(
     thousands = "Thousands",
     tenThousands = "Ten Thousands",
     hundredThousands = "Hundred Thousands",
+    millions = "Millions",
+    tenMillions = "Ten Millions",
+    hundredMillions = "Hundred Millions",
+    billions = "Billions",
     newGame = "New Game",
     completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PERFECT! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nYou matched all numbers with their order names!\nGreat job!",
 )
@@ -38,6 +46,10 @@ val PtSequenceGameOrdersScreenStrings = SequenceGameOrdersScreenStrings(
     thousands = "Milhares",
     tenThousands = "Dezenas de milhar",
     hundredThousands = "Centenas de milhar",
+    millions = "Milh\u00f5es",
+    tenMillions = "Dezenas de milh\u00f5es",
+    hundredMillions = "Centenas de milh\u00f5es",
+    billions = "Bilh\u00f5es",
     newGame = "Novo Jogo",
     completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PERFEITO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nVoc\u00ea ligou todos os n\u00fameros \u00e0s suas ordens!\n\u00d3timo trabalho!",
 )
@@ -51,6 +63,10 @@ val EsSequenceGameOrdersScreenStrings = SequenceGameOrdersScreenStrings(
     thousands = "Miles",
     tenThousands = "Decenas de mil",
     hundredThousands = "Centenas de mil",
+    millions = "Millones",
+    tenMillions = "Decenas de millones",
+    hundredMillions = "Centenas de millones",
+    billions = "Billones",
     newGame = "Nuevo Juego",
     completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1PERFECTO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\n\u00a1Conectaste todos los n\u00fameros con sus \u00f3rdenes!\n\u00a1Gran trabajo!",
 )
