@@ -67,7 +67,8 @@ fun FirstStepsScreen(
     onNavigateToSequenceGameOrders: () -> Unit = {},
     onNavigateToSequenceGameFamilies: () -> Unit = {},
     onNavigateToBuildingGame: () -> Unit = {},
-    onNavigateToNaturalFamiliesPart2: () -> Unit = {}
+    onNavigateToNaturalFamiliesPart2: () -> Unit = {},
+    onNavigateToTowardInfinity: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -732,6 +733,7 @@ fun FirstStepsScreen(
                 onClick = {
                     controller.markCompleted("going_to_infinity")
                     scope.launch { preferences.markFirstStepsSectionCompleted("going_to_infinity") }
+                    onNavigateToTowardInfinity()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
