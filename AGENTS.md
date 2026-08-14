@@ -6,6 +6,29 @@
 
 - Never create a local score variable. Always update the global score via `onScoreChanged(currentScore + N)` (the `currentScore` / `onScoreChanged` pattern wired through `AppNavigation.kt`), which persists to DataStore and displays in the top app bar across all screens.
 
+## Streak Rules
+
+- **Every time the user reaches the end of any multi-screen group, update the day's streak — unless it was already updated today.**
+- `UserPreferences.recordLessonCompletion()` (`app/src/main/java/com/historytracers/app/data/UserPreferences.kt`) does exactly this: it is idempotent (early-returns if today's date is already in `completedDates`) and increments/keeps the streak while handling missed selected days. Never write a custom streak routine; always reuse it.
+- **Any group of screens launched from a hub must trigger the streak when its last screen is shown** — not on every screen, only on the group's conclusion/last screen. This includes sm_game story groups (Socrates, Numbers, Toward Infinity, Limits (Min and Max), Where Are They?, etc.), not just exercise screens. Single screens do not need it.
+- Implementation pattern (shared loader with a `(onNavigateToFirstSteps: (() -> Unit)? = null)` style last-screen parameter):
+  1. Add the import `com.historytracers.app.data.UserPreferences`.
+  2. In the loader, next to `val repo = remember { ContentRepository(context) }`, add `val preferences = remember { UserPreferences(context) }`.
+  3. In the loader's `LaunchedEffect(content)` block (where the arrival score is awarded), when the group's last screen is reached call `preferences.recordLessonCompletion()`, e.g.:
+     ```kotlin
+     LaunchedEffect(content) {
+         val node = content
+         if (node != null) {
+             award(node.score)
+             if (onNavigateToFirstSteps != null) {
+                 preferences.recordLessonCompletion()
+             }
+         }
+     }
+     ```
+  The `recordLessonCompletion()` call is a suspend function and runs inside the `LaunchedEffect` coroutine scope (no extra `rememberCoroutineScope()` needed).
+- When adding a new group, always verify the streak updates once per day by reaching the group's final screen.
+
 ## Abacus Game Rules
 
 - When the "Correct!" feedback message is shown (step completed), the abacus must be frozen (non-interactive) until the user clicks "Next Step", "Next Level", or "New Exercise". Implement this by adding `stepCompleted` to `pointerInput` keys and returning early with `if (stepCompleted) return@detectTapGestures`.

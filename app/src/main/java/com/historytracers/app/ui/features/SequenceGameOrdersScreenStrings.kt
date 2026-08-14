@@ -66,7 +66,7 @@ val EsSequenceGameOrdersScreenStrings = SequenceGameOrdersScreenStrings(
     millions = "Millones",
     tenMillions = "Decenas de millones",
     hundredMillions = "Centenas de millones",
-    billions = "Billones",
+    billions = "Mil millones",
     newGame = "Nuevo Juego",
     completionMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1PERFECTO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\n\u00a1Conectaste todos los n\u00fameros con sus \u00f3rdenes!\n\u00a1Gran trabajo!",
 )

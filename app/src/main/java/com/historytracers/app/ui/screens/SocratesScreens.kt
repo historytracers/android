@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
@@ -137,6 +138,7 @@ private fun SocratesGameContent(
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
+    val preferences = remember { UserPreferences(context) }
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -164,6 +166,9 @@ private fun SocratesGameContent(
         val node = content
         if (node != null) {
             award(node.score)
+            if (onNavigateToFirstSteps != null) {
+                preferences.recordLessonCompletion()
+            }
         }
     }
 

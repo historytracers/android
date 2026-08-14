@@ -4,7 +4,9 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Paint
 import android.widget.Toast
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -34,23 +37,23 @@ import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.towardInfinityScreenStringsForLanguage
+import com.historytracers.app.ui.features.whereAreTheyScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "3a3c5e37-5f91-4622-a2e8-5ec52e103f4c"
+private const val SMARTPHONE_GAME_FILE = "93b8800e-6f1d-4a79-b53f-7607a59f96b2"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun TowardInfinityMaximumScreen(
+fun WhereAreTheyIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    TowardInfinityGameContent(
-        contentId = "6b6713fb-af81-4db8-98c6-f24b98dd186c",
+    WhereAreTheyGameContent(
+        contentId = "d8306f3b-a479-4df1-8032-8bb5371bcb08",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -59,15 +62,15 @@ fun TowardInfinityMaximumScreen(
 }
 
 @Composable
-fun TowardInfinityLawScreen(
+fun WhereAreTheyInUsScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    TowardInfinityGameContent(
-        contentId = "da986842-0ca2-4c1e-93aa-83d423a6c00e",
+    WhereAreTheyGameContent(
+        contentId = "9fca9377-a5bd-47a5-8113-1bdb35e4e33f",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -77,15 +80,15 @@ fun TowardInfinityLawScreen(
 }
 
 @Composable
-fun TowardInfinityWithoutLimitsScreen(
+fun WhereAreTheyInTextsScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    TowardInfinityGameContent(
-        contentId = "e52b9fa6-65a2-48f3-a08f-477a24dd75f9",
+    WhereAreTheyGameContent(
+        contentId = "1085204f-72c0-44cf-aed8-e49e307f0599",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -95,15 +98,15 @@ fun TowardInfinityWithoutLimitsScreen(
 }
 
 @Composable
-fun TowardInfinitySymbolScreen(
+fun WhereAreTheyAgesScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    TowardInfinityGameContent(
-        contentId = "aad23fe2-76a0-45af-bf8c-c13ffe7e536c",
+    WhereAreTheyGameContent(
+        contentId = "8d37d550-e695-4270-9174-96a18bd89f5c",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -113,15 +116,15 @@ fun TowardInfinitySymbolScreen(
 }
 
 @Composable
-fun TowardInfinityDirectionScreen(
+fun WhereAreTheyQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    TowardInfinityGameContent(
-        contentId = "ddb81ec9-48a7-4959-9ca2-fa40132140fe",
+    WhereAreTheyGameContent(
+        contentId = "a6b3df3d-c1d2-4897-a567-508887dbb8b1",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -131,15 +134,69 @@ fun TowardInfinityDirectionScreen(
 }
 
 @Composable
-fun TowardInfinityConclusionScreen(
+fun WhereAreTheyWrongButRightScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    WhereAreTheyGameContent(
+        contentId = "74ebbfc2-8d37-4d29-b6be-eb38acc8c060",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun WhereAreTheySpeciesScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    WhereAreTheyGameContent(
+        contentId = "08b8faee-c9d5-4195-af8d-43573971f07d",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun WhereAreTheyUniverseScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    WhereAreTheyGameContent(
+        contentId = "504c51fb-461d-4b92-99fa-6e0ba81d5c5e",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun WhereAreTheyConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {}
 ) {
-    TowardInfinityGameContent(
-        contentId = "00da5320-730e-43a6-976c-46494ad02a66",
+    WhereAreTheyGameContent(
+        contentId = "964f32d7-56fa-4c27-8c70-83866b62934b",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -164,8 +221,86 @@ private fun sourceUrl(page: String): String =
 private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
+private fun isCircleDiagram(text: String?): Boolean =
+    text?.contains("atlasCircleContainer") == true || text?.contains("circle-draw") == true
+
+private data class DiagramLine(val x1: Float, val y1: Float, val x2: Float, val y2: Float)
+
+private data class DiagramText(
+    val x: Float, val y: Float, val angle: Float,
+    val rotCx: Float, val rotCy: Float, val label: String
+)
+
+private val SVG_LINE_REGEX = Regex("""<line\s+x1="([\d.]+)"\s+y1="([\d.]+)"\s+x2="([\d.]+)"\s+y2="([\d.]+)"""")
+private val SVG_TEXT_REGEX = Regex("""<text\s+x="([\d.]+)"\s+y="([\d.]+)"[^>]*rotate\((-?[\d.]+),\s*([\d.]+),\s*([\d.]+)\)[^>]*>([^<]+)</text>""")
+
+private fun parseSvgLines(html: String): List<DiagramLine> {
+    return SVG_LINE_REGEX.findAll(html).map { m ->
+        DiagramLine(
+            m.groupValues[1].toFloat(),
+            m.groupValues[2].toFloat(),
+            m.groupValues[3].toFloat(),
+            m.groupValues[4].toFloat()
+        )
+    }.toList()
+}
+
+private fun parseSvgTexts(html: String): List<DiagramText> {
+    return SVG_TEXT_REGEX.findAll(html).map { m ->
+        DiagramText(
+            m.groupValues[1].toFloat(),
+            m.groupValues[2].toFloat(),
+            m.groupValues[3].toFloat(),
+            m.groupValues[4].toFloat(),
+            m.groupValues[5].toFloat(),
+            m.groupValues[6]
+        )
+    }.toList()
+}
+
 @Composable
-private fun TowardInfinityGameContent(
+private fun CircleDiagram(html: String, modifier: Modifier = Modifier) {
+    val lines = remember(html) { parseSvgLines(html) }
+    val texts = remember(html) { parseSvgTexts(html) }
+
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(600f / 340f)
+    ) {
+        val s = size.width / 600f
+
+        val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = android.graphics.Color.BLACK
+            style = Paint.Style.STROKE
+            strokeWidth = 2f * s
+        }
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = android.graphics.Color.BLACK
+            textSize = 16f * s
+            typeface = android.graphics.Typeface.create(
+                android.graphics.Typeface.DEFAULT,
+                android.graphics.Typeface.ITALIC
+            )
+        }
+
+        lines.forEach { line ->
+            drawContext.canvas.nativeCanvas.drawLine(
+                line.x1 * s, line.y1 * s, line.x2 * s, line.y2 * s, linePaint
+            )
+        }
+
+        texts.forEach { text ->
+            drawContext.canvas.nativeCanvas.save()
+            drawContext.canvas.nativeCanvas.rotate(text.angle, text.rotCx * s, text.rotCy * s)
+            drawContext.canvas.nativeCanvas.drawText(text.label, text.x * s, text.y * s, textPaint)
+            drawContext.canvas.nativeCanvas.restore()
+        }
+    }
+}
+
+@Composable
+private fun WhereAreTheyGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -175,7 +310,7 @@ private fun TowardInfinityGameContent(
     onNavigateToFirstSteps: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = towardInfinityScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = whereAreTheyScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -264,6 +399,10 @@ private fun TowardInfinityGameContent(
                         if (text == null) return@forEach
                         when {
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
+                            isCircleDiagram(text.text) -> CircleDiagram(
+                                html = text.text ?: "",
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
                             isImgHtml(text.text) -> ResponsiveImage(
                                 html = text.text ?: "",
                                 imgDesc = text.imgdesc
@@ -365,7 +504,7 @@ private fun AnswerSection(
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = towardInfinityScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = whereAreTheyScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
