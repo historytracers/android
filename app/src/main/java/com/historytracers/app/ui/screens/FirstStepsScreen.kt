@@ -68,7 +68,8 @@ fun FirstStepsScreen(
     onNavigateToSequenceGameFamilies: () -> Unit = {},
     onNavigateToBuildingGame: () -> Unit = {},
     onNavigateToNaturalFamiliesPart2: () -> Unit = {},
-    onNavigateToTowardInfinity: () -> Unit = {}
+    onNavigateToTowardInfinity: () -> Unit = {},
+    onNavigateToLimitsMinMax: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -80,7 +81,7 @@ fun FirstStepsScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity"),
+            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity", "limits_min_max"),
             completedSections
         )
     }
@@ -764,7 +765,9 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = {
+                    controller.markCompleted("limits_min_max")
                     scope.launch { preferences.markFirstStepsSectionCompleted("limits_min_max") }
+                    onNavigateToLimitsMinMax()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
