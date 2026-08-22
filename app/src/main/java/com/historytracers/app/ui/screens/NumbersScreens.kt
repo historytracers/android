@@ -154,11 +154,12 @@ fun NumbersConclusionScreen(
 }
 
 private fun smileEmoji(smile: String): String = when (smile) {
-    "thinking", "think", "thiking" -> "\uD83E\uDD14"
-    "happy", "smile", "smilling" -> "\uD83D\uDE0A"
+    "thinking", "think" -> "\uD83E\uDD14"
+    "happy", "smile", "smiling" -> "\uD83D\uDE0A"
     "nerd" -> "\uD83E\uDD13"
-    "shocking", "surprise" -> "\uD83D\uDE32"
+    "shocking", "surprise", "surprising" -> "\uD83D\uDE32"
     "party" -> "\uD83E\uDD73"
+    "inlove", "loving" -> "\uD83D\uDE0D"
     else -> "\uD83D\uDE0A"
 }
 
