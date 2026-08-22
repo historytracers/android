@@ -4,19 +4,19 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class IAmNotLikeYouScreenStrings(
-    val weAreEquals: String,
+    val toBeOrNotToBe: String,
 )
 
 val EnIAmNotLikeYouScreenStrings = IAmNotLikeYouScreenStrings(
-    weAreEquals = "We Are Equals",
+    toBeOrNotToBe = "To Be or Not to Be",
 )
 
 val PtIAmNotLikeYouScreenStrings = IAmNotLikeYouScreenStrings(
-    weAreEquals = "N\u00f3s somos iguais",
+    toBeOrNotToBe = "Ser ou n\u00e3o ser",
 )
 
 val EsIAmNotLikeYouScreenStrings = IAmNotLikeYouScreenStrings(
-    weAreEquals = "Somos iguales",
+    toBeOrNotToBe = "Ser o no ser",
 )
 
 val LocalIAmNotLikeYouScreenStrings = staticCompositionLocalOf { EnIAmNotLikeYouScreenStrings }
