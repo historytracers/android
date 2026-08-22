@@ -28,7 +28,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 @Composable
 fun IAmNotLikeYouScreen(
     scrollState: ScrollState = rememberScrollState(),
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToEquality: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -65,7 +66,7 @@ fun IAmNotLikeYouScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToEquality,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
