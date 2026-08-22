@@ -71,7 +71,7 @@ fun IAmNotLikeYouScreen(
                 )
             ) {
                 Text(
-                    text = "\uD83E\uDD14",
+                    text = xs.thinkingEmoji,
                     fontSize = 44.sp,
                     textAlign = TextAlign.Center
                 )

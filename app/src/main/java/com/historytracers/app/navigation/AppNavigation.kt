@@ -458,8 +458,16 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.EqualityEqual.route) { launchSingleTop = true } },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.EqualityIntro.route, false)) {
+                                    navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.EqualityEqual.route, false)) {
+                                    navController.navigate(Screen.EqualityEqual.route) { launchSingleTop = true }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -474,8 +482,16 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.EqualityQuestion.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.EqualityExpanding.route) { launchSingleTop = true } },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.EqualityQuestion.route, false)) {
+                                    navController.navigate(Screen.EqualityQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.EqualityExpanding.route, false)) {
+                                    navController.navigate(Screen.EqualityExpanding.route) { launchSingleTop = true }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -490,8 +506,16 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.EqualityEqual.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.EqualityInGeneral.route) { launchSingleTop = true } },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.EqualityEqual.route, false)) {
+                                    navController.navigate(Screen.EqualityEqual.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.EqualityInGeneral.route, false)) {
+                                    navController.navigate(Screen.EqualityInGeneral.route) { launchSingleTop = true }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -506,8 +530,16 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.EqualityExpanding.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.EqualityConclusion.route) { launchSingleTop = true } },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.EqualityExpanding.route, false)) {
+                                    navController.navigate(Screen.EqualityExpanding.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.EqualityConclusion.route, false)) {
+                                    navController.navigate(Screen.EqualityConclusion.route) { launchSingleTop = true }
+                                }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -522,7 +554,11 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.EqualityInGeneral.route) { launchSingleTop = true } },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.EqualityInGeneral.route, false)) {
+                                    navController.navigate(Screen.EqualityInGeneral.route) { launchSingleTop = true }
+                                }
+                            },
                             onNavigateToIAmNotLikeYou = {
                                 if (!navController.popBackStack(Screen.IAmNotLikeYou.route, false)) {
                                     navController.navigate(Screen.IAmNotLikeYou.route) {

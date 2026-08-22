@@ -208,8 +208,12 @@ private fun isCitationQuote(text: String?): Boolean =
 private val CITATION_LI_REGEX = Regex("""<li>\s*([^<]*)(?:<i>([^<]*)</i>)?([^<]*)</li>""")
 
 private fun parseCitationQuote(html: String): String {
-    val match = CITATION_LI_REGEX.find(html) ?: return html
-    return (match.groupValues[1] + match.groupValues[2] + match.groupValues[3]).trim()
+    val entries = CITATION_LI_REGEX.findAll(html)
+        .map { match -> (match.groupValues[1] + match.groupValues[2] + match.groupValues[3]).trim() }
+        .filter { it.isNotEmpty() }
+        .toList()
+    if (entries.isEmpty()) return html
+    return entries.joinToString("\n")
 }
 
 @Composable
@@ -538,7 +542,7 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
 
         DropdownMenu(
             expanded = showSourcesMenu && activeSource != null,
-            onDismissRequest = { activeSource = null }
+            onDismissRequest = { showSourcesMenu = false; activeSource = null }
         ) {
             activeSource?.let { source ->
                 val url = sourceUrl(source.page)
