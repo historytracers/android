@@ -16,6 +16,7 @@ data class EqualSameGroupDifferentScreenStrings(
     val ofWord: String,
     val restart: String,
     val playAgain: String,
+    val backToHub: String,
     val levelNames: List<String>,
     val levelProgressFormat: String,
     val questionProgressFormat: String,
@@ -35,6 +36,7 @@ val EnEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
     ofWord = "of",
     restart = "Restart",
     playAgain = "Play Again",
+    backToHub = "Back to Hub",
     levelNames = listOf(
         "Numbers from 0 to 9",
         "Numbers from 10 to 1,000,000",
@@ -62,6 +64,7 @@ val PtEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
     ofWord = "de",
     restart = "Reiniciar",
     playAgain = "Jogar novamente",
+    backToHub = "Voltar ao in\u00edcio",
     levelNames = listOf(
         "N\u00fameros de 0 a 9",
         "N\u00fameros de 10 a 1.000.000",
@@ -89,6 +92,7 @@ val EsEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
     ofWord = "de",
     restart = "Reiniciar",
     playAgain = "Jugar de nuevo",
+    backToHub = "Volver al inicio",
     levelNames = listOf(
         "N\u00fameros del 0 al 9",
         "N\u00fameros del 10 al 1.000.000",

@@ -29,7 +29,9 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun IAmNotLikeYouScreen(
@@ -68,9 +70,12 @@ fun IAmNotLikeYouScreen(
         claiming = true
         onScoreChanged(currentScore + 10)
         scope.launch {
-            preferences.recordLessonCompletion()
-            preferences.markLevelClaimed("i_am_not_like_you")
+            withContext(NonCancellable) {
+                preferences.recordLessonCompletion()
+                preferences.markLevelClaimed("i_am_not_like_you")
+            }
             claiming = false
+            onNavigateToCongratulation()
         }
     }
 
@@ -202,8 +207,6 @@ fun IAmNotLikeYouScreen(
 
             FilledIconButton(
                 onClick = {
-                    controller.markCompleted("equal_same_group_or_different")
-                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equal_same_group_or_different") }
                     onNavigateToEqualSameGroupDifferent()
                 },
                 modifier = Modifier.size(96.dp),
@@ -233,10 +236,7 @@ fun IAmNotLikeYouScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    claimLevel()
-                    onNavigateToCongratulation()
-                },
+                onClick = { claimLevel() },
                 enabled = controller.allCompleted,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

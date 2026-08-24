@@ -42,6 +42,7 @@ import com.historytracers.app.ui.features.equalSameGroupDifferentScreenStringsFo
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -300,8 +301,6 @@ fun EqualSameGroupDifferentScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
 
-    val initialScore = remember { currentScore }
-    var totalAwarded by remember { mutableIntStateOf(0) }
     var level by remember { mutableIntStateOf(1) }
     var questions by remember { mutableStateOf(buildLevelQuestions(1)) }
     var qIndex by remember { mutableIntStateOf(0) }
@@ -313,8 +312,11 @@ fun EqualSameGroupDifferentScreen(
     var gameFinished by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
+    var answerJob by remember { mutableStateOf<Job?>(null) }
 
     fun loadLevel(newLevel: Int) {
+        answerJob?.cancel()
+        answerJob = null
         level = newLevel
         questions = buildLevelQuestions(newLevel)
         qIndex = 0
@@ -359,10 +361,9 @@ fun EqualSameGroupDifferentScreen(
         if (choice == q.answer) {
             answering = true
             score++
-            totalAwarded += 2
-            onScoreChanged(initialScore + totalAwarded)
+            onScoreChanged(currentScore + 2)
             showCorrect = true
-            scope.launch {
+            answerJob = scope.launch {
                 delay(1200)
                 nextQuestion()
             }
@@ -577,6 +578,19 @@ fun EqualSameGroupDifferentScreen(
                                 text = if (gameFinished) xs.playAgain else s.common.nextLevel,
                                 fontWeight = FontWeight.Bold
                             )
+                        }
+                    }
+
+                    if (gameFinished) {
+                        FilledTonalButton(
+                            onClick = { onNavigateBack() },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = ButtonYellow,
+                                contentColor = OnButtonYellow
+                            )
+                        ) {
+                            Text(xs.backToHub, fontWeight = FontWeight.Bold)
                         }
                     }
 
