@@ -17,6 +17,9 @@ data class EqualSameGroupDifferentScreenStrings(
     val restart: String,
     val playAgain: String,
     val levelNames: List<String>,
+    val levelProgressFormat: String,
+    val questionProgressFormat: String,
+    val scoreProgressFormat: String,
 )
 
 val EnEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenStrings(
@@ -41,6 +44,9 @@ val EnEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
         "Numbers, Circles and Squares",
         "Egypt, Mesoamerica and Pyramids",
     ),
+    levelProgressFormat = "%s %d: %s",
+    questionProgressFormat = "%s %d %s %d",
+    scoreProgressFormat = "%s: %d/%d",
 )
 
 val PtEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenStrings(
@@ -65,6 +71,9 @@ val PtEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
         "N\u00fameros, c\u00edrculos e quadrados",
         "Egito, Mesoam\u00e9rica e pir\u00e2mides",
     ),
+    levelProgressFormat = "%s %d: %s",
+    questionProgressFormat = "%s %d %s %d",
+    scoreProgressFormat = "%s: %d/%d",
 )
 
 val EsEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenStrings(
@@ -89,6 +98,9 @@ val EsEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
         "N\u00fameros, c\u00edrculos y cuadrados",
         "Egipto, Mesoam\u00e9rica y pir\u00e1mides",
     ),
+    levelProgressFormat = "%s %d: %s",
+    questionProgressFormat = "%s %d %s %d",
+    scoreProgressFormat = "%s: %d/%d",
 )
 
 val LocalEqualSameGroupDifferentScreenStrings = staticCompositionLocalOf { EnEqualSameGroupDifferentScreenStrings }

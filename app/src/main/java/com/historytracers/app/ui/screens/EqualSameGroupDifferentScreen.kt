@@ -367,10 +367,12 @@ fun EqualSameGroupDifferentScreen(
                 nextQuestion()
             }
         } else {
+            answering = true
             showWrong = true
             scope.launch {
                 delay(1200)
                 showWrong = false
+                answering = false
             }
         }
     }
@@ -422,7 +424,7 @@ fun EqualSameGroupDifferentScreen(
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = "${s.common.level} $level: ${xs.levelNames[level - 1]}",
+                    text = xs.levelProgressFormat.format(s.common.level, level, xs.levelNames[level - 1]),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF5A3F2C),
@@ -444,7 +446,7 @@ fun EqualSameGroupDifferentScreen(
                     Spacer(Modifier.height(16.dp))
 
                     Text(
-                        text = "${xs.questionWord} ${qIndex + 1} ${xs.ofWord} ${questions.size}",
+                        text = xs.questionProgressFormat.format(xs.questionWord, qIndex + 1, xs.ofWord, questions.size),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF5A3F2C)
@@ -453,7 +455,7 @@ fun EqualSameGroupDifferentScreen(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = "${s.common.score}: $score/${questions.size}",
+                        text = xs.scoreProgressFormat.format(s.common.score, score, questions.size),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF5A3F2C)

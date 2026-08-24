@@ -51,7 +51,7 @@ fun IAmNotLikeYouScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("to_be_or_not_to_be", "totally_equal", "equality_in_history", "equal_same_group_or_different"),
+            listOf("to_be_or_not_to_be", "equal_same_group_or_different"),
             completedSections
         )
     }
@@ -60,11 +60,18 @@ fun IAmNotLikeYouScreen(
     }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    var claiming by remember { mutableStateOf(false) }
 
     fun claimLevel() {
+        if (claiming) return
         if ("i_am_not_like_you" in claimedLevels) return
+        claiming = true
         onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed("i_am_not_like_you") }
+        scope.launch {
+            preferences.recordLessonCompletion()
+            preferences.markLevelClaimed("i_am_not_like_you")
+            claiming = false
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
