@@ -422,6 +422,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.IAmNotLikeYou.route) {
                         IAmNotLikeYouScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -430,7 +432,8 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigateToEquality = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } }
+                            onNavigateToEquality = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.EqualityIntro.route) {

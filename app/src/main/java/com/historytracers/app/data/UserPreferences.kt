@@ -39,6 +39,7 @@ class UserPreferences(private val context: Context) {
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
         private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
+        private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
     }
 
@@ -249,6 +250,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markYupanaSectionCompleted(section: String) {
         context.dataStore.edit { preferences ->
             preferences[YUPANA_SECTIONS_KEY] = (preferences[YUPANA_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedIAmNotLikeYouSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markIAmNotLikeYouSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] = (preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 
