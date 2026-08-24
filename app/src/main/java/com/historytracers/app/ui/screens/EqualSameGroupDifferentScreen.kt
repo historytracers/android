@@ -413,6 +413,15 @@ fun EqualSameGroupDifferentScreen(
             ) {
                 Spacer(Modifier.height(8.dp))
 
+                MarkdownText(
+                    text = xs.instruction,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+
+                Spacer(Modifier.height(16.dp))
+
                 Text(
                     text = "${s.common.level} $level: ${xs.levelNames[level - 1]}",
                     style = MaterialTheme.typography.titleMedium,
@@ -581,15 +590,6 @@ fun EqualSameGroupDifferentScreen(
                         Text(xs.restart, fontWeight = FontWeight.Bold)
                     }
                 }
-
-                Spacer(Modifier.height(8.dp))
-
-                MarkdownText(
-                    text = xs.instruction,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
 
                 Spacer(Modifier.height(24.dp))
             }
