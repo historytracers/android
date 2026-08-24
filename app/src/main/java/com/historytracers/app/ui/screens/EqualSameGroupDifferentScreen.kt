@@ -342,6 +342,8 @@ fun EqualSameGroupDifferentScreen(
         qIndex++
         if (qIndex >= questions.size) {
             answering = false
+            showCorrect = false
+            showWrong = false
             if (level >= TOTAL_LEVELS) {
                 gameFinished = true
                 scope.launch {
