@@ -134,6 +134,7 @@ fun IAmNotLikeYouScreen(
                     controller.markCompleted("totally_equal")
                     scope.launch { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") }
                 },
+                enabled = false,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -165,6 +166,7 @@ fun IAmNotLikeYouScreen(
                     controller.markCompleted("equality_in_history")
                     scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history") }
                 },
+                enabled = false,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

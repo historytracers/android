@@ -4,10 +4,6 @@
     android:height="64dp"
     android:viewportWidth="120"
     android:viewportHeight="120">
-    <!-- sun -->
-    <path
-        android:fillColor="#D4A847"
-        android:pathData="M85,30 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0Z" />
     <!-- pyramid body -->
     <path
         android:fillColor="#C9714C"

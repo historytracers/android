@@ -108,8 +108,13 @@ private fun buildMixedPair(answer: Answer): Pair<GameItem, GameItem> {
             } else {
                 val o = shapes[Random.nextInt(shapes.size)]
                 val i = makeMixedItem(o)
+                val baseColor = when (i) {
+                    is GameItem.Circle -> i.color
+                    is GameItem.Square -> i.color
+                    else -> Color.Unspecified
+                }
                 var n = randomColor()
-                while (n == (i as? GameItem.Circle)?.color ?: (i as GameItem.Square).color) n = randomColor()
+                while (n == baseColor) n = randomColor()
                 val right = if (o == "circle") GameItem.Circle(n) else GameItem.Square(n)
                 i to right
             }
@@ -127,17 +132,6 @@ private fun buildMixedPair(answer: Answer): Pair<GameItem, GameItem> {
     }
 }
 
-private fun buildPyramidPair(answer: Answer): Pair<GameItem, GameItem> =
-    if (answer == Answer.GROUP) {
-        GameItem.Egypt to GameItem.Pyramid
-    } else {
-        if (Random.nextInt(0, 2) == 0) {
-            GameItem.Meso to GameItem.Pyramid
-        } else {
-            GameItem.Meso to GameItem.Egypt
-        }
-    }
-
 private fun buildPair(level: Int, answer: Answer): Question {
     if (level <= 3) {
         return if (answer == Answer.EQUAL) {
@@ -150,7 +144,7 @@ private fun buildPair(level: Int, answer: Answer): Question {
             Question(makeItem(level, n), makeItem(level, s), answer)
         }
     }
-    val pair = if (level <= 6) buildMixedPair(answer) else buildPyramidPair(answer)
+    val pair = buildMixedPair(answer)
     return Question(pair.first, pair.second, answer)
 }
 
@@ -347,6 +341,7 @@ fun EqualSameGroupDifferentScreen(
             if (level >= TOTAL_LEVELS) {
                 gameFinished = true
                 scope.launch {
+                    preferences.recordLessonCompletion()
                     preferences.markIAmNotLikeYouSectionCompleted("equal_same_group_or_different")
                 }
             } else {
