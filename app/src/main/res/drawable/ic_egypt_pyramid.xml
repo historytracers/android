@@ -1,0 +1,27 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- sun -->
+    <path
+        android:fillColor="#D4A847"
+        android:pathData="M88,22 m-10,0 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0Z" />
+    <!-- pyramid body -->
+    <path
+        android:fillColor="#C9714C"
+        android:pathData="M20,100 L60,18 L100,100 Z" />
+    <!-- right face shading -->
+    <path
+        android:fillColor="#A6552F"
+        android:pathData="M60,18 L100,100 L60,100 Z" />
+    <!-- doorway -->
+    <path
+        android:fillColor="#5D3A1A"
+        android:pathData="M54,100 L54,80 Q60,72 66,80 L66,100 Z" />
+    <!-- ground -->
+    <path
+        android:fillColor="#E8C36A"
+        android:pathData="M14,100 L106,100 L106,108 L14,108 Z" />
+</vector>

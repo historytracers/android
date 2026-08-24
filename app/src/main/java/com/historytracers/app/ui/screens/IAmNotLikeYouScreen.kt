@@ -38,6 +38,7 @@ fun IAmNotLikeYouScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToEquality: () -> Unit = {},
+    onNavigateToEqualSameGroupDifferent: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -194,6 +195,7 @@ fun IAmNotLikeYouScreen(
                 onClick = {
                     controller.markCompleted("equal_same_group_or_different")
                     scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equal_same_group_or_different") }
+                    onNavigateToEqualSameGroupDifferent()
                 },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,

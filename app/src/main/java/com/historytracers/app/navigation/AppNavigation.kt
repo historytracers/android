@@ -34,6 +34,7 @@ import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.BuildingGameScreen
 import com.historytracers.app.ui.screens.ContentScreen
 import com.historytracers.app.ui.screens.EqualityConclusionScreen
+import com.historytracers.app.ui.screens.EqualSameGroupDifferentScreen
 import com.historytracers.app.ui.screens.EqualityEqualScreen
 import com.historytracers.app.ui.screens.EqualityExpandingScreen
 import com.historytracers.app.ui.screens.EqualityInGeneralScreen
@@ -433,7 +434,22 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToEquality = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
+                            onNavigateToEqualSameGroupDifferent = { navController.navigate(Screen.EqualSameGroupDifferent.route) { launchSingleTop = true } },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.EqualSameGroupDifferent.route) {
+                        EqualSameGroupDifferentScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.IAmNotLikeYou.route, false)) {
+                                    navController.navigate(Screen.IAmNotLikeYou.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
                     composable(Screen.EqualityIntro.route) {

@@ -14,6 +14,7 @@ sealed class Screen(val route: String) {
     data object EqualityExpanding : Screen("equality_expanding")
     data object EqualityInGeneral : Screen("equality_in_general")
     data object EqualityConclusion : Screen("equality_conclusion")
+    data object EqualSameGroupDifferent : Screen("equal_same_group_different")
     data object FirstSteps : Screen("first_steps")
     data object SequenceGame : Screen("sequence_game")
     data object SequenceGameOrders : Screen("sequence_game_orders")
