@@ -99,7 +99,8 @@ fun SequenceGameFamiliesScreen(
 
     fun adjustGuess(delta: Int) {
         if (completed) return
-        val newGuess = ((guess ?: rangeMin) + delta).coerceIn(rangeMin, rangeMax)
+        val base = if (guess == null && delta < 0) rangeMax else (guess ?: rangeMin)
+        val newGuess = (base + delta).coerceIn(rangeMin, rangeMax)
         guess = newGuess
         if (newGuess == sequence[missingIndex]) {
             completed = true

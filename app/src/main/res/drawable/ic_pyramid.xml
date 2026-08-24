@@ -1,0 +1,19 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- pyramid body -->
+    <path
+        android:fillColor="#C9714C"
+        android:pathData="M20,95 L60,25 L100,95 Z" />
+    <!-- pyramid shading -->
+    <path
+        android:fillColor="#A6552F"
+        android:pathData="M60,25 L100,95 L60,95 Z" />
+    <!-- ground -->
+    <path
+        android:fillColor="#E8C36A"
+        android:pathData="M15,95 L105,95 L105,105 L15,105 Z" />
+</vector>

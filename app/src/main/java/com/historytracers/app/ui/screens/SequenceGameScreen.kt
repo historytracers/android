@@ -88,7 +88,8 @@ fun SequenceGameScreen(
 
     fun adjustGuess(delta: Int) {
         if (completed) return
-        val newGuess = ((guess ?: 0) + delta).coerceIn(0, 9)
+        val base = if (guess == null && delta < 0) 9 else (guess ?: 0)
+        val newGuess = (base + delta).coerceIn(0, 9)
         guess = newGuess
         if (newGuess == sequence[missingIndex]) {
             completed = true
