@@ -82,7 +82,7 @@ private fun randomColor(): Color = compColors[Random.nextInt(compColors.size)]
 private fun randomValue(level: Int): Int = when {
     level <= 1 -> Random.nextInt(0, 10)
     level == 2 -> Random.nextInt(10, 1000001)
-    else -> Random.nextInt(0, 20)
+    else -> Random.nextInt(1, 20)
 }
 
 private fun makeItem(level: Int, value: Int): GameItem =
@@ -259,22 +259,24 @@ private fun MayaNumber(value: Int, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val ink = Color(0xFF5A3F2C)
         val dotRadius = size.minDimension * 0.07f
-        val barWidth = size.width * 0.34f
-        val barHeight = size.height * 0.14f
         val gap = size.height * 0.06f
+        val barWidth = 4 * dotRadius * 2f + 3 * gap
+        val barHeight = size.height * 0.14f
         val bars = value / 5
         val dots = value % 5
         if (value == 0) {
             drawOval(color = ink, style = Stroke(width = size.minDimension * 0.04f))
             return@Canvas
         }
-        var y = center.y - (bars * (barHeight + gap)) / 2f
-        if (dots > 0) y -= dotRadius * 2f + gap
+        val barsHeight = if (bars > 0) bars * barHeight + (bars - 1) * gap else 0f
+        val dotsHeight = if (dots > 0) dotRadius * 2f + gap else 0f
+        val contentHeight = barsHeight + dotsHeight
+        var y = size.height - size.height * 0.05f - contentHeight
         if (dots > 0) {
             val totalWidth = dots * dotRadius * 2f + (dots - 1) * gap
             var x = center.x - totalWidth / 2f + dotRadius
             repeat(dots) {
-                drawCircle(color = ink, radius = dotRadius, center = Offset(x, y))
+                drawCircle(color = ink, radius = dotRadius, center = Offset(x, y + dotRadius))
                 x += dotRadius * 2f + gap
             }
             y += dotRadius * 2f + gap
@@ -409,7 +411,7 @@ fun EqualSameGroupDifferentScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Top
             ) {
                 Spacer(Modifier.height(8.dp))
 
