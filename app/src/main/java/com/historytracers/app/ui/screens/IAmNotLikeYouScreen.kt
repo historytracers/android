@@ -147,6 +147,34 @@ fun IAmNotLikeYouScreen(
             )
 
             Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = { /* TODO */ },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_square_circle),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.equalSameGroupOrDifferent,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
         }
     }
 }
