@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontStyle
@@ -232,7 +233,7 @@ private fun EqualityHandsController(html: String, modifier: Modifier = Modifier)
             val cx = size.width / 2f
 
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = Color(0xFFF4C2A1).hashCode()
+                color = Color(0xFFF4C2A1).toArgb()
                 style = Paint.Style.FILL
                 strokeJoin = Paint.Join.ROUND
             }
