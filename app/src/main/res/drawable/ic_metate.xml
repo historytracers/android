@@ -1,0 +1,31 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- back leg -->
+    <path
+        android:fillColor="#7A5C43"
+        android:pathData="M52,60 L50,88 L66,88 L64,60 Z" />
+    <!-- left front leg -->
+    <path
+        android:fillColor="#8F6C4C"
+        android:pathData="M28,60 L25,94 L37,94 L40,60 Z" />
+    <!-- right front leg -->
+    <path
+        android:fillColor="#8F6C4C"
+        android:pathData="M80,60 L83,94 L95,94 L92,60 Z" />
+    <!-- grinding slab (concave surface) -->
+    <path
+        android:fillColor="#B08968"
+        android:pathData="M23,50 Q60,56 97,50 L97,62 L23,62 Z" />
+    <!-- mano (rolling stone) -->
+    <path
+        android:fillColor="#C9A77E"
+        android:pathData="M36,42 C36,35 84,35 84,42 C84,49 36,49 36,42 Z" />
+    <!-- ground -->
+    <path
+        android:fillColor="#E8C36A"
+        android:pathData="M12,96 L108,96 L108,104 L12,104 Z" />
+</vector>

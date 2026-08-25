@@ -176,6 +176,38 @@ fun IAmNotLikeYouScreen(
 
             FilledIconButton(
                 onClick = {
+                    controller.markCompleted("equality_in_history_metate")
+                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate") }
+                },
+                enabled = false,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("equality_in_history_metate")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_metate),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.equalityInHistoryMetate,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
                     controller.markCompleted("equality_in_history")
                     scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history") }
                 },
