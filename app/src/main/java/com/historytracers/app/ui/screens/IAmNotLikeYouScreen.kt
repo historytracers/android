@@ -40,6 +40,7 @@ fun IAmNotLikeYouScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToEquality: () -> Unit = {},
+    onNavigateToTotallyEqual: () -> Unit = {},
     onNavigateToEqualSameGroupDifferent: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -53,7 +54,7 @@ fun IAmNotLikeYouScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("to_be_or_not_to_be", "equal_same_group_or_different"),
+            listOf("to_be_or_not_to_be", "totally_equal", "equal_same_group_or_different"),
             completedSections
         )
     }
@@ -145,8 +146,8 @@ fun IAmNotLikeYouScreen(
                 onClick = {
                     controller.markCompleted("totally_equal")
                     scope.launch { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") }
+                    onNavigateToTotallyEqual()
                 },
-                enabled = false,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
