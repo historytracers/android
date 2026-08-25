@@ -40,6 +40,8 @@ fun IAmNotLikeYouScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToEquality: () -> Unit = {},
+    onNavigateToTotallyEqual: () -> Unit = {},
+    onNavigateToHistoricalEquality: () -> Unit = {},
     onNavigateToEqualSameGroupDifferent: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -53,7 +55,7 @@ fun IAmNotLikeYouScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("to_be_or_not_to_be", "equal_same_group_or_different"),
+            listOf("to_be_or_not_to_be", "totally_equal", "equality_in_history_metate", "equal_same_group_or_different"),
             completedSections
         )
     }
@@ -145,8 +147,8 @@ fun IAmNotLikeYouScreen(
                 onClick = {
                     controller.markCompleted("totally_equal")
                     scope.launch { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") }
+                    onNavigateToTotallyEqual()
                 },
-                enabled = false,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -164,6 +166,38 @@ fun IAmNotLikeYouScreen(
 
             Text(
                 text = xs.totallyEqual,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = {
+                    controller.markCompleted("equality_in_history_metate")
+                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate") }
+                    onNavigateToHistoricalEquality()
+                },
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("equality_in_history_metate")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_metate),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.equalityInHistoryMetate,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
