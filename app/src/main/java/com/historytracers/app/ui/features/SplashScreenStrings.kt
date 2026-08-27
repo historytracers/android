@@ -4,19 +4,23 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class SplashScreenStrings(
-    val tracers: String,
+    val title: String,
+    val subtitle: String,
 )
 
 val EnSplashScreenStrings = SplashScreenStrings(
-    tracers = "Tracers",
+    title = "History Tracers",
+    subtitle = "Understand Yourself and Everything Around You",
 )
 
 val PtSplashScreenStrings = SplashScreenStrings(
-    tracers = "Tracers",
+    title = "History Tracers",
+    subtitle = "Entenda a si mesmo e tudo ao seu redor",
 )
 
 val EsSplashScreenStrings = SplashScreenStrings(
-    tracers = "Tracers",
+    title = "History Tracers",
+    subtitle = "Enti\u00e9ndete a ti mismo y todo lo que te rodea",
 )
 
 val LocalSplashScreenStrings = staticCompositionLocalOf { EnSplashScreenStrings }
