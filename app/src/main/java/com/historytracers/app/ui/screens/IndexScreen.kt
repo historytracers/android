@@ -57,6 +57,13 @@ private val yupanaSectionIds = listOf(
     "hands_on_yupana", "moving_in_yupana"
 )
 
+// Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
+// This list is intentionally empty: no main-screen hub button was newly introduced
+// by the current release (the five wired hubs already existed), and the four
+// placeholder buttons are not complete, so they must NOT be added here.
+// When a new, fully functional hub button is added to this screen, insert its id
+// (e.g. "workout") here so isNewHub flags it; the badge hides once the user taps
+// it (persisted via UserPreferences.markNewHubSeen).
 private val newHubIds = setOf<String>()
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
