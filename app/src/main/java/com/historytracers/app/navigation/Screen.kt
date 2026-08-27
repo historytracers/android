@@ -3,6 +3,8 @@ package com.historytracers.app.navigation
 
 sealed class Screen(val route: String) {
     data object Index : Screen("index")
+    data object Welcome : Screen("welcome")
+    data object OnboardingConfig : Screen("onboarding_config")
     data object Content : Screen("content/{fileName}") {
         fun createRoute(fileName: String) = "content/$fileName"
     }

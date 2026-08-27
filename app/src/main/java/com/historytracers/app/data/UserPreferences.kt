@@ -11,10 +11,22 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import java.util.Locale
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
+
+fun detectDefaultLanguage(locale: Locale = Locale.getDefault()): String {
+    val lang = locale.language.lowercase()
+    return when {
+        lang.startsWith("pt") -> "pt-BR"
+        lang.startsWith("es") -> "es-ES"
+        lang.startsWith("en") -> "en-US"
+        else -> "en-US"
+    }
+}
 
 class UserPreferences(private val context: Context) {
     companion object {
@@ -41,6 +53,26 @@ class UserPreferences(private val context: Context) {
         private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
         private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
+        private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
+    }
+
+    val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[ONBOARDING_COMPLETED_KEY] ?: false
+    }
+
+    suspend fun setOnboardingCompleted() {
+        context.dataStore.edit { preferences ->
+            preferences[ONBOARDING_COMPLETED_KEY] = true
+        }
+    }
+
+    suspend fun initDefaultLanguage() {
+        val current = context.dataStore.data.first()[LANGUAGE_KEY]
+        if (current == null) {
+            context.dataStore.edit { preferences ->
+                preferences[LANGUAGE_KEY] = detectDefaultLanguage()
+            }
+        }
     }
 
     val language: Flow<String> = context.dataStore.data.map { preferences ->
