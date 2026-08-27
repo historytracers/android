@@ -72,6 +72,51 @@
 - In the hub screen: collect the flow, create controllers via `remember { LevelGroupController(sectionIds, completedSections) }`, sync via `LaunchedEffect(completedSections)`, and add `enabled = controller.allCompleted` to the flag button.
 - Each section's `onClick` must call `controller.markCompleted(id)` and `scope.launch { preferences.mark[Screen]SectionCompleted(id) }`.
 
+## Main Screen Hub Completion Colors
+
+- Every main screen (`IndexScreen.kt`) button that opens a hub (First Steps, I Am (Not) Like You, Workout, Abacus, Yupana) must change color when the user finishes all tasks available in that hub — mirroring how internal buttons turn dark when their section is completed.
+- The button switches from `ButtonYellow` (incomplete) to `ButtonYellowDark` (all sections done), keeping `OnButtonYellow` as the content color.
+- Completion is driven by the per-hub section sets already persisted in `UserPreferences` (`first_steps_sections`, `i_am_not_like_you_sections`, `workout_sections`, `abacus_sections`, `yupana_sections`).
+- A hub's `SectionIds` list must match **exactly** the sections whose internal buttons record completion via `mark[Hub]SectionCompleted(...)`. Never include a section that cannot be completed, or the main button would never turn dark.
+- Implementation pattern (as in `IndexScreen.kt`):
+  1. Define a `private val <hub>SectionIds = listOf(...)` for each hub listing every markable section.
+  2. Collect each completed flow with `preferences.completed<Hub>Sections.collectAsState(initial = emptySet())`.
+  3. Derive the completed flag from the observed state: `val <hub>Done = <hub>SectionIds.all { it in completed<Hub> }`.
+  4. On the hub button, set `containerColor = if (<hub>Done) ButtonYellowDark else ButtonYellow`.
+- Do not gate the main-screen button color on `LevelGroupController.allCompleted`: it reads a `MutableStateFlow` that Compose does not observe, so the color would not refresh after the persisted state loads. Always derive the flag from a `collectAsState`-observed set.
+- When a new section/button is added to a hub, the section must record completion in its exercise screen (via `mark[Hub]SectionCompleted`) **and** be added to the corresponding `<hub>SectionIds` list on the main screen — otherwise the main button never reflects full completion.
+- The rule only applies to buttons that lead to real hubs; buttons without internal screens (e.g. unimplemented placeholders) keep a static color.
+- Current section lists to keep in sync:
+  - **First Steps** (19): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
+  - **I Am (Not) Like You** (5): `to_be_or_not_to_be`, `totally_equal`, `equality_in_history_metate`, `equality_in_history`, `equal_same_group_or_different`
+  - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
+  - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
+  - **Yupana** (2): `hands_on_yupana`, `moving_in_yupana`
+
+## Latest Addition (Main Menu)
+
+- The main menu (drawer) must always contain a "Latest addition" entry (`Screen.LatestAddition` → `LatestAdditionScreen.kt`), so users get one-tap access to the newest content.
+- `LatestAdditionScreen` lists the **5 most recently added screens**, with the latest always on top. The list is a hardcoded ordered list in `LatestAdditionScreen.kt`; it is **not** derived at runtime.
+- Each entry is a button that navigates directly to that screen and marks its section completed on tap (`mark[Hub]SectionCompleted(sectionId)`); its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
+- Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
+- **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
+- Current list (latest first): `equality_in_history` (Equality in History – Pyramids), `equality_in_history_metate` (Equality in History – Metate), `totally_equal` (Totally Equal), `equal_same_group_or_different` (Equal, Same Group, or Different?), `to_be_or_not_to_be` (To Be or Not to Be).
+
+## New Main-Screen Buttons (Sun Badge)
+
+- Whenever a new, fully functional (complete) button is added to the main screen (`IndexScreen.kt`), it must:
+  - show a sun icon (`Icons.Filled.WbSunny`) in its **top-right corner** to flag it as new;
+  - return to the normal (light) `ButtonYellow` color, overriding the completed/dark state, until the user accesses it;
+  - hide the sun once the user taps the button. The "seen" state is persisted per hub in `UserPreferences.seenNewHubs` (`markNewHubSeen(hubId)`), so the sun stays hidden on later visits.
+- Implementation pattern (as in `IndexScreen.kt`):
+  1. Add the new hub's id to the `newHubIds` set at the top of `IndexScreen.kt`.
+  2. Compute `val <hub>New = isNewHub("<hubId>", seenNewHubs)`.
+  3. Wrap the button in a `Box(modifier = Modifier.padding(horizontal = 32.dp))`, put the button inside, and render `NewHubSunBadge()` (a `BoxScope` composable aligning `TopEnd`) only when `<hub>New` is true.
+  4. Set `containerColor = if (<hub>New) ButtonYellow else if (<hub>Controller.allCompleted) ButtonYellowDark else ButtonYellow`.
+  5. In the button's `onClick`, call `scope.launch { preferences.markNewHubSeen("<hubId>") }` when `<hub>New` before navigating.
+- When a hub is no longer considered "new", remove its id from `newHubIds`; no data migration is needed — the persisted `seenNewHubs` set simply stops being consulted for that hub.
+- The rule applies only to main-screen buttons; it does not apply to internal hub buttons or the "Latest addition" entries.
+
 ## Return-to-Hub Buttons
 
 - **Every multi-screen group launched from a hub (principal/main screen) must end with a button on its last screen that returns directly to that hub.** Groups with a single screen do not need this button.

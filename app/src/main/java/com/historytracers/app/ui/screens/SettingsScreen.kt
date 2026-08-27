@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -16,11 +18,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.HubTitleStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.settingsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.SkinColorPalette
 import com.historytracers.app.ui.theme.parseHexColor
 
@@ -41,9 +45,11 @@ fun SettingsScreen(
     onLanguageChanged: (String) -> Unit,
     onBreakTimeChanged: (Int) -> Unit,
     onSkinColorChanged: (String) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onStartLearning: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
+    val xs = settingsScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     var languageExpanded by remember { mutableStateOf(false) }
     var breakTimeExpanded by remember { mutableStateOf(false) }
@@ -77,6 +83,7 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -187,6 +194,22 @@ fun SettingsScreen(
                             )
                             .clickable { onSkinColorChanged(hex) }
                     )
+                }
+            }
+
+            onStartLearning?.let { onStart ->
+                Spacer(Modifier.height(8.dp))
+                Divider()
+                Spacer(Modifier.height(8.dp))
+                Button(
+                    onClick = onStart,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(xs.startLearning)
                 }
             }
         }

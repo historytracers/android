@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -26,9 +27,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.data.detectDefaultLanguage
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.uiStringsForLanguage
 import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.BuildingGameScreen
@@ -68,9 +71,11 @@ import com.historytracers.app.ui.screens.LearningInLayersPlayingScreen
 import com.historytracers.app.ui.screens.LearningInLayersQuestionScreen
 import com.historytracers.app.ui.screens.LearningInLayersStagesScreen
 import com.historytracers.app.ui.screens.LearningInLayersToyScreen
+import com.historytracers.app.ui.screens.LatestAdditionScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.SequenceGameScreen
 import com.historytracers.app.ui.screens.SequenceGameFamiliesScreen
+import com.historytracers.app.ui.screens.WelcomeScreen
 import com.historytracers.app.ui.screens.SequenceGameOrdersScreen
 import com.historytracers.app.ui.screens.WorkoutScreen
 import com.historytracers.app.ui.screens.AbacusScreen
@@ -209,12 +214,21 @@ fun AppNavigation() {
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
     val simpleRoutes = setOf("index", "i_am_not_like_you", "equality_intro", "equality_question", "equality_equal", "equality_expanding", "equality_in_general", "equality_conclusion", "totally_equal_intro", "totally_equal_question", "totally_equal_sign", "totally_equal_exercise", "totally_equal_conclusion", "historical_equality_intro", "historical_equality_mapping", "historical_equality_objects", "historical_equality_question", "historical_equality_evidence", "historical_equality_conclusion", "historical_equality_pyramids_intro", "historical_equality_pyramids_definition", "historical_equality_pyramids_mesoamerica", "historical_equality_pyramids_question", "historical_equality_pyramids_look_alike", "historical_equality_pyramids_precision", "historical_equality_pyramids_conclusion", "equal_same_group_different", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "drawing_and_couting_intro", "drawing_and_couting_circles", "drawing_and_couting_rectangles", "drawing_and_couting_mesoamericans", "drawing_and_couting_question", "drawing_and_couting_examples", "drawing_and_couting_conclusion", "numbers_intro", "numbers_origin", "numbers_question", "numbers_equal", "numbers_visualizing", "numbers_conclusion", "family_part1_intro", "family_part1_orders", "family_part1_order", "family_part1_altar", "family_part1_continuity", "family_part1_stages", "family_part1_rule", "family_part1_conclusion", "natural_families_part2_intro", "natural_families_part2_question", "natural_families_part2_logic", "natural_families_part2_orders_question", "natural_families_part2_copan", "natural_families_part2_naming", "natural_families_part2_billion_question", "natural_families_part2_conclusion", "the_zero_intro", "the_zero_what_is", "the_zero_intuitive", "the_zero_number", "the_zero_question", "the_zero_conclusion", "workout", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", Screen.SchyotyWriting.route, "large_numbers_writing", "practicing_addition", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement", "toward_infinity_maximum", "toward_infinity_law", "toward_infinity_without_limits", "toward_infinity_symbol", "toward_infinity_direction", "toward_infinity_conclusion", "limits_min_max_between_both", "limits_min_max_question", "limits_min_max_tending", "limits_min_max_hands", "limits_min_max_conclusion", "where_are_they_intro", "where_are_they_in_us", "where_are_they_in_texts", "where_are_they_ages", "where_are_they_question", "where_are_they_wrong", "where_are_they_species", "where_are_they_universe", "where_are_they_conclusion")
+    val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(Unit) {
+        val onboarded = preferences.onboardingCompleted.first()
+        if (!onboarded) {
+            preferences.initDefaultLanguage()
+        }
         preferences.lastRoute.first().let { saved ->
-            startDest = if (saved in simpleRoutes) saved else "index"
+            startDest = when {
+                !onboarded -> Screen.Welcome.route
+                saved in simpleRoutes -> saved
+                else -> Screen.Index.route
+            }
         }
         savedScore = preferences.score.first()
     }
@@ -250,6 +264,7 @@ fun AppNavigation() {
 
     val uiStrings = uiStringsForLanguage(language)
     val hts = hubTitleStringsForLanguage(language)
+    val latestAdditionStrings = latestAdditionScreenStringsForLanguage(language)
 
     val startDestination = startDest!!
 
@@ -316,6 +331,7 @@ fun AppNavigation() {
     CompositionLocalProvider(LocalUiStrings provides uiStrings, LocalAppLanguage provides language) {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = currentRoute !in onboardingRoutes,
             drawerContent = {
                 ModalDrawerSheet {
                     Spacer(Modifier.padding(top = 24.dp))
@@ -354,6 +370,15 @@ fun AppNavigation() {
                             scope.launch { drawerState.close() }
                         }
                     )
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.NewReleases, contentDescription = null) },
+                        label = { Text(latestAdditionStrings.title) },
+                        selected = currentRoute == Screen.LatestAddition.route,
+                        onClick = {
+                            navController.navigate(Screen.LatestAddition.route)
+                            scope.launch { drawerState.close() }
+                        }
+                    )
                     Divider()
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
@@ -387,42 +412,44 @@ fun AppNavigation() {
         ) {
             Scaffold(
                 topBar = {
-                    TopAppBar(
-                        title = {},
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                scope.launch { drawerState.open() }
-                            }) {
-                                Icon(Icons.Default.Menu, contentDescription = uiStrings.common.menu)
+                    if (currentRoute !in onboardingRoutes) {
+                        TopAppBar(
+                            title = {},
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    scope.launch { drawerState.open() }
+                                }) {
+                                    Icon(Icons.Default.Menu, contentDescription = uiStrings.common.menu)
+                                }
+                            },
+                            actions = {
+                                Text(
+                                    text = counter.toString(),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(Modifier.padding(end = 4.dp))
+                                Icon(
+                                    Icons.Default.Psychology,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(Modifier.padding(end = 8.dp))
+                                Text(
+                                    text = streakCount.toString(),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(Modifier.padding(end = 4.dp))
+                                Icon(
+                                    Icons.Default.LocalFireDepartment,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(Modifier.padding(end = 12.dp))
                             }
-                        },
-                        actions = {
-                            Text(
-                                text = counter.toString(),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.padding(end = 4.dp))
-                            Icon(
-                                Icons.Default.Psychology,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(Modifier.padding(end = 8.dp))
-                            Text(
-                                text = streakCount.toString(),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.padding(end = 4.dp))
-                            Icon(
-                                Icons.Default.LocalFireDepartment,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(Modifier.padding(end = 12.dp))
-                        }
-                    )
+                        )
+                    }
                 }
             ) { padding ->
                 NavHost(
@@ -430,6 +457,37 @@ fun AppNavigation() {
                     startDestination = startDestination,
                     modifier = Modifier.padding(padding)
                 ) {
+                    composable(Screen.Welcome.route) {
+                        WelcomeScreen(
+                            onNavigateNext = { navController.navigate(Screen.OnboardingConfig.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.OnboardingConfig.route) {
+                        SettingsScreen(
+                            currentLanguage = language,
+                            currentBreakTime = breakTime,
+                            currentSkinColor = skinColor,
+                            onLanguageChanged = { lang ->
+                                scope.launch { preferences.setLanguage(lang) }
+                            },
+                            onBreakTimeChanged = { minutes ->
+                                scope.launch { preferences.setBreakTime(minutes) }
+                            },
+                            onSkinColorChanged = { color ->
+                                scope.launch { preferences.setSkinColor(color) }
+                            },
+                            onNavigateBack = { navController.popBackStack() },
+                            onStartLearning = {
+                                scope.launch {
+                                    preferences.setOnboardingCompleted()
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
                     composable(Screen.Index.route) {
                         IndexScreen(
                             onNavigateToFirstSteps = { navController.navigate(Screen.FirstSteps.route) { launchSingleTop = true } },
@@ -3040,6 +3098,16 @@ fun AppNavigation() {
                                 scope.launch { preferences.setSkinColor(color) }
                             },
                             onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable(Screen.LatestAddition.route) {
+                        LatestAdditionScreen(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
+                            onNavigateToTotallyEqualIntro = { navController.navigate(Screen.TotallyEqualIntro.route) { launchSingleTop = true } },
+                            onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
+                            onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } },
+                            onNavigateToEqualSameGroupDifferent = { navController.navigate(Screen.EqualSameGroupDifferent.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.Streak.route) {
