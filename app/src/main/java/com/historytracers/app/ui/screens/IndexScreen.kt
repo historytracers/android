@@ -18,7 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
-import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -99,18 +98,11 @@ fun IndexScreen(
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val firstStepsController = remember { LevelGroupController(firstStepsSectionIds) }
-    val iAmNotLikeYouController = remember { LevelGroupController(iAmNotLikeYouSectionIds) }
-    val workoutController = remember { LevelGroupController(workoutSectionIds) }
-    val abacusController = remember { LevelGroupController(abacusSectionIds) }
-    val yupanaController = remember { LevelGroupController(yupanaSectionIds) }
-    LaunchedEffect(completedFirstSteps, completedIAmNotLikeYou, completedWorkout, completedAbacus, completedYupana) {
-        firstStepsController.syncFromPersisted(completedFirstSteps)
-        iAmNotLikeYouController.syncFromPersisted(completedIAmNotLikeYou)
-        workoutController.syncFromPersisted(completedWorkout)
-        abacusController.syncFromPersisted(completedAbacus)
-        yupanaController.syncFromPersisted(completedYupana)
-    }
+    val firstStepsDone = firstStepsSectionIds.all { it in completedFirstSteps }
+    val iAmNotLikeYouDone = iAmNotLikeYouSectionIds.all { it in completedIAmNotLikeYou }
+    val workoutDone = workoutSectionIds.all { it in completedWorkout }
+    val abacusDone = abacusSectionIds.all { it in completedAbacus }
+    val yupanaDone = yupanaSectionIds.all { it in completedYupana }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -133,7 +125,7 @@ fun IndexScreen(
                         onNavigateToFirstSteps()
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (firstStepsNew) ButtonYellow else if (firstStepsController.allCompleted) ButtonYellowDark else ButtonYellow,
+                        containerColor = if (firstStepsNew) ButtonYellow else if (firstStepsDone) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {
@@ -162,7 +154,7 @@ fun IndexScreen(
                         onNavigateToIAmNotLikeYou()
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (iAmNotLikeYouNew) ButtonYellow else if (iAmNotLikeYouController.allCompleted) ButtonYellowDark else ButtonYellow,
+                        containerColor = if (iAmNotLikeYouNew) ButtonYellow else if (iAmNotLikeYouDone) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {
@@ -287,7 +279,7 @@ fun IndexScreen(
                         onNavigateToWorkout()
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (workoutNew) ButtonYellow else if (workoutController.allCompleted) ButtonYellowDark else ButtonYellow,
+                        containerColor = if (workoutNew) ButtonYellow else if (workoutDone) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {
@@ -316,7 +308,7 @@ fun IndexScreen(
                         onNavigateToYupana()
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (yupanaNew) ButtonYellow else if (yupanaController.allCompleted) ButtonYellowDark else ButtonYellow,
+                        containerColor = if (yupanaNew) ButtonYellow else if (yupanaDone) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {
@@ -345,7 +337,7 @@ fun IndexScreen(
                         onNavigateToAbacus()
                     },
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = if (abacusNew) ButtonYellow else if (abacusController.allCompleted) ButtonYellowDark else ButtonYellow,
+                        containerColor = if (abacusNew) ButtonYellow else if (abacusDone) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {

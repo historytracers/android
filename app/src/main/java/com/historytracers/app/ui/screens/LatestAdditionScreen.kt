@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -120,10 +122,14 @@ fun LatestAdditionScreen(
             entries.forEach { entry ->
                 FilledIconButton(
                     onClick = {
-                        scope.launch { preferences.markIAmNotLikeYouSectionCompleted(entry.sectionId) }
-                        entry.onNavigate()
+                        scope.launch {
+                            preferences.markIAmNotLikeYouSectionCompleted(entry.sectionId)
+                            entry.onNavigate()
+                        }
                     },
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = entry.label },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (completedSections.contains(entry.sectionId)) ButtonYellowDark else ButtonYellow,

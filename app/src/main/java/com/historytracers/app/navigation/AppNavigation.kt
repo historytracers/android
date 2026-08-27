@@ -331,6 +331,7 @@ fun AppNavigation() {
     CompositionLocalProvider(LocalUiStrings provides uiStrings, LocalAppLanguage provides language) {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = currentRoute !in onboardingRoutes,
             drawerContent = {
                 ModalDrawerSheet {
                     Spacer(Modifier.padding(top = 24.dp))

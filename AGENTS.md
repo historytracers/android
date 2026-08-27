@@ -81,8 +81,9 @@
 - Implementation pattern (as in `IndexScreen.kt`):
   1. Define a `private val <hub>SectionIds = listOf(...)` for each hub listing every markable section.
   2. Collect each completed flow with `preferences.completed<Hub>Sections.collectAsState(initial = emptySet())`.
-  3. Create one `LevelGroupController(<hub>SectionIds)` per hub and sync it via `LaunchedEffect(completed...) { controller.syncFromPersisted(...) }`.
-  4. On the hub button, set `containerColor = if (<hub>Controller.allCompleted) ButtonYellowDark else ButtonYellow`.
+  3. Derive the completed flag from the observed state: `val <hub>Done = <hub>SectionIds.all { it in completed<Hub> }`.
+  4. On the hub button, set `containerColor = if (<hub>Done) ButtonYellowDark else ButtonYellow`.
+- Do not gate the main-screen button color on `LevelGroupController.allCompleted`: it reads a `MutableStateFlow` that Compose does not observe, so the color would not refresh after the persisted state loads. Always derive the flag from a `collectAsState`-observed set.
 - When a new section/button is added to a hub, the section must record completion in its exercise screen (via `mark[Hub]SectionCompleted`) **and** be added to the corresponding `<hub>SectionIds` list on the main screen — otherwise the main button never reflects full completion.
 - The rule only applies to buttons that lead to real hubs; buttons without internal screens (e.g. unimplemented placeholders) keep a static color.
 - Current section lists to keep in sync:
