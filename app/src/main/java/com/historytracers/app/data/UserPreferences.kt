@@ -54,6 +54,7 @@ class UserPreferences(private val context: Context) {
         private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
+        private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -330,6 +331,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markLevelClaimed(levelId: String) {
         context.dataStore.edit { preferences ->
             preferences[CLAIMED_LEVELS_KEY] = (preferences[CLAIMED_LEVELS_KEY] ?: emptySet()) + levelId
+        }
+    }
+
+    val seenNewHubs: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[SEEN_NEW_HUBS_KEY] ?: emptySet()
+    }
+
+    suspend fun markNewHubSeen(hubId: String) {
+        context.dataStore.edit { preferences ->
+            preferences[SEEN_NEW_HUBS_KEY] = (preferences[SEEN_NEW_HUBS_KEY] ?: emptySet()) + hubId
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -30,6 +31,7 @@ import com.historytracers.app.data.detectDefaultLanguage
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.uiStringsForLanguage
 import com.historytracers.app.ui.screens.AboutScreen
 import com.historytracers.app.ui.screens.BuildingGameScreen
@@ -69,6 +71,7 @@ import com.historytracers.app.ui.screens.LearningInLayersPlayingScreen
 import com.historytracers.app.ui.screens.LearningInLayersQuestionScreen
 import com.historytracers.app.ui.screens.LearningInLayersStagesScreen
 import com.historytracers.app.ui.screens.LearningInLayersToyScreen
+import com.historytracers.app.ui.screens.LatestAdditionScreen
 import com.historytracers.app.ui.screens.SettingsScreen
 import com.historytracers.app.ui.screens.SequenceGameScreen
 import com.historytracers.app.ui.screens.SequenceGameFamiliesScreen
@@ -261,6 +264,7 @@ fun AppNavigation() {
 
     val uiStrings = uiStringsForLanguage(language)
     val hts = hubTitleStringsForLanguage(language)
+    val latestAdditionStrings = latestAdditionScreenStringsForLanguage(language)
 
     val startDestination = startDest!!
 
@@ -362,6 +366,15 @@ fun AppNavigation() {
                         selected = currentRoute == Screen.Streak.route,
                         onClick = {
                             navController.navigate(Screen.Streak.route)
+                            scope.launch { drawerState.close() }
+                        }
+                    )
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.NewReleases, contentDescription = null) },
+                        label = { Text(latestAdditionStrings.title) },
+                        selected = currentRoute == Screen.LatestAddition.route,
+                        onClick = {
+                            navController.navigate(Screen.LatestAddition.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -3084,6 +3097,16 @@ fun AppNavigation() {
                                 scope.launch { preferences.setSkinColor(color) }
                             },
                             onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable(Screen.LatestAddition.route) {
+                        LatestAdditionScreen(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
+                            onNavigateToTotallyEqualIntro = { navController.navigate(Screen.TotallyEqualIntro.route) { launchSingleTop = true } },
+                            onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
+                            onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } },
+                            onNavigateToEqualSameGroupDifferent = { navController.navigate(Screen.EqualSameGroupDifferent.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.Streak.route) {
