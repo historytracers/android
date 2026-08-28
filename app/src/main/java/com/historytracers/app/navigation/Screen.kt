@@ -136,6 +136,7 @@ sealed class Screen(val route: String) {
     data object WhereAreTheyUniverse : Screen("where_are_they_universe")
     data object WhereAreTheyConclusion : Screen("where_are_they_conclusion")
     data object Workout : Screen("workout")
+    data object RoadToSomewhere : Screen("road_to_somewhere")
     data object Abacus : Screen("abacus")
     data object Settings : Screen("settings")
     data object LatestAddition : Screen("latest_addition")
