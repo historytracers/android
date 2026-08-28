@@ -4,9 +4,12 @@ package com.historytracers.app.ui.screens
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -136,6 +139,50 @@ private fun FootIcon(color: Color, modifier: Modifier = Modifier) {
     }
 }
 
+private fun buildStairPath(): Path {
+    return Path().apply {
+        moveTo(10f, 70f)
+        lineTo(26f, 70f)
+        lineTo(26f, 76f)
+        lineTo(42f, 76f)
+        lineTo(42f, 82f)
+        lineTo(58f, 82f)
+        lineTo(58f, 88f)
+        lineTo(74f, 88f)
+        lineTo(74f, 94f)
+        lineTo(10f, 94f)
+        close()
+    }
+}
+
+private val stairPath: Path by lazy { buildStairPath() }
+
+@Composable
+private fun NumberOneOnStairs(color: Color, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val scale = minOf(size.width, size.height) / 100f
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            this.color = color.hashCode()
+            style = Paint.Style.FILL
+        }
+        val m = Matrix()
+        m.setScale(scale, scale)
+        val stair = Path()
+        stair.addPath(stairPath, m)
+        drawContext.canvas.nativeCanvas.drawPath(stair, paint)
+
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            this.color = color.hashCode()
+            textSize = 64f * scale
+            textAlign = Paint.Align.CENTER
+            typeface = Typeface.DEFAULT_BOLD
+        }
+        val fm = textPaint.fontMetrics
+        val baseline = 70f * scale - fm.descent
+        drawContext.canvas.nativeCanvas.drawText("1", size.width / 2f, baseline, textPaint)
+    }
+}
+
 @Composable
 fun RoadToSomewhereScreen(
     onNavigateBack: () -> Unit = {}
@@ -172,6 +219,7 @@ fun RoadToSomewhereScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -193,6 +241,33 @@ fun RoadToSomewhereScreen(
 
                 Text(
                     text = xs.walkAmongNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = { },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    NumberOneOnStairs(
+                        color = OnButtonYellow,
+                        modifier = Modifier.size(52.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.carryingInAddition,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
