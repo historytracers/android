@@ -198,6 +198,7 @@ fun RoadToSomewhereScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
+    onNavigateToWalkAmongNumbers: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -261,8 +262,7 @@ fun RoadToSomewhereScreen(
             ) {
                 FilledIconButton(
                     onClick = {
-                        controller.markCompleted("walk_among_numbers")
-                        scope.launch { preferences.markRoadToSomewhereSectionCompleted("walk_among_numbers") }
+                        onNavigateToWalkAmongNumbers()
                     },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,

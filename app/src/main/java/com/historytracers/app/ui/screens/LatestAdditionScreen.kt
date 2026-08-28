@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.iAmNotLikeYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.walkAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -35,6 +37,8 @@ private data class LatestAdditionEntry(
     val sectionId: String,
     val label: String,
     val icon: @Composable () -> Unit,
+    val isCompleted: () -> Boolean,
+    val markCompleted: suspend () -> Unit,
     val onNavigate: () -> Unit
 )
 
@@ -42,6 +46,7 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToWalkAmongNumbersIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToTotallyEqualIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
@@ -51,41 +56,53 @@ fun LatestAdditionScreen(
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val ials = iAmNotLikeYouScreenStringsForLanguage(LocalAppLanguage.current)
+    val was = walkAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
-    val completedSections by preferences.completedIAmNotLikeYouSections.collectAsState(initial = emptySet())
+    val completedIAmNotLikeYou by preferences.completedIAmNotLikeYouSections.collectAsState(initial = emptySet())
+    val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
         LatestAdditionEntry(
+            sectionId = "walk_among_numbers",
+            label = was.title,
+            icon = { Icon(Icons.AutoMirrored.Filled.DirectionsWalk, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
+            isCompleted = { "walk_among_numbers" in completedRoadToSomewhere },
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("walk_among_numbers") },
+            onNavigate = onNavigateToWalkAmongNumbersIntro
+        ),
+        LatestAdditionEntry(
             sectionId = "equality_in_history",
             label = ials.equalityInHistoryPyramids,
             icon = { Icon(painterResource(R.drawable.ic_pyramid), contentDescription = null, modifier = Modifier.size(48.dp)) },
+            isCompleted = { "equality_in_history" in completedIAmNotLikeYou },
+            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history") },
             onNavigate = onNavigateToHistoricalEqualityPyramidsIntro
         ),
         LatestAdditionEntry(
             sectionId = "equality_in_history_metate",
             label = ials.equalityInHistoryMetate,
             icon = { Icon(painterResource(R.drawable.ic_metate), contentDescription = null, modifier = Modifier.size(48.dp)) },
+            isCompleted = { "equality_in_history_metate" in completedIAmNotLikeYou },
+            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate") },
             onNavigate = onNavigateToHistoricalEqualityIntro
         ),
         LatestAdditionEntry(
             sectionId = "totally_equal",
             label = ials.totallyEqual,
             icon = { Text("=", fontSize = 44.sp, textAlign = TextAlign.Center, color = OnButtonYellow) },
+            isCompleted = { "totally_equal" in completedIAmNotLikeYou },
+            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") },
             onNavigate = onNavigateToTotallyEqualIntro
         ),
         LatestAdditionEntry(
             sectionId = "equal_same_group_or_different",
             label = ials.equalSameGroupOrDifferent,
             icon = { Icon(painterResource(R.drawable.ic_square_circle), contentDescription = null, modifier = Modifier.size(48.dp)) },
+            isCompleted = { "equal_same_group_or_different" in completedIAmNotLikeYou },
+            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equal_same_group_or_different") },
             onNavigate = onNavigateToEqualSameGroupDifferent
-        ),
-        LatestAdditionEntry(
-            sectionId = "to_be_or_not_to_be",
-            label = ials.toBeOrNotToBe,
-            icon = { Text(ials.thinkingEmoji, fontSize = 44.sp, textAlign = TextAlign.Center) },
-            onNavigate = onNavigateToEqualityIntro
         )
     )
 
@@ -123,7 +140,7 @@ fun LatestAdditionScreen(
                 FilledIconButton(
                     onClick = {
                         scope.launch {
-                            preferences.markIAmNotLikeYouSectionCompleted(entry.sectionId)
+                            entry.markCompleted()
                             entry.onNavigate()
                         }
                     },
@@ -132,7 +149,7 @@ fun LatestAdditionScreen(
                         .semantics { contentDescription = entry.label },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains(entry.sectionId)) ButtonYellowDark else ButtonYellow,
+                        containerColor = if (entry.isCompleted()) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {
