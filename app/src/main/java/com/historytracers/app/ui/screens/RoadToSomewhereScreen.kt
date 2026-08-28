@@ -170,7 +170,7 @@ private fun buildStairPath(): Path {
 private val stairPath: Path by lazy { buildStairPath() }
 
 @Composable
-private fun NumberOneOnStairs(color: Color, modifier: Modifier = Modifier) {
+private fun NumberOneOnStairs(color: Color, label: String, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val scale = minOf(size.width, size.height) / 100f
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -191,7 +191,7 @@ private fun NumberOneOnStairs(color: Color, modifier: Modifier = Modifier) {
         }
         val fm = textPaint.fontMetrics
         val baseline = 70f * scale - fm.descent
-        drawContext.canvas.nativeCanvas.drawText("1", size.width / 2f, baseline, textPaint)
+        drawContext.canvas.nativeCanvas.drawText(label, size.width / 2f, baseline, textPaint)
     }
 }
 
@@ -304,6 +304,7 @@ fun RoadToSomewhereScreen(
                 ) {
                     NumberOneOnStairs(
                         color = OnButtonYellow,
+                        label = xs.numberOne,
                         modifier = Modifier.size(52.dp)
                     )
                 }
@@ -365,7 +366,7 @@ fun RoadToSomewhereScreen(
                     )
                 ) {
                     Text(
-                        text = "12+34",
+                        text = xs.practicingExpression,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = OnButtonYellow

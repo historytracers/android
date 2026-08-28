@@ -8,6 +8,8 @@ data class RoadToSomewhereScreenStrings(
     val carryingInAddition: String,
     val runningAmongNumbers: String,
     val practicingAddition: String,
+    val numberOne: String,
+    val practicingExpression: String,
 )
 
 val EnRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
@@ -15,6 +17,8 @@ val EnRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
     carryingInAddition = "Carrying in Addition",
     runningAmongNumbers = "Running Among Numbers",
     practicingAddition = "Practicing Addition",
+    numberOne = "1",
+    practicingExpression = "12+34",
 )
 
 val PtRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
@@ -22,6 +26,8 @@ val PtRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
     carryingInAddition = "Levando 1 na Adi\u00e7\u00e3o",
     runningAmongNumbers = "Correndo entre os n\u00fameros",
     practicingAddition = "Praticando Adi\u00e7\u00e3o",
+    numberOne = "1",
+    practicingExpression = "12+34",
 )
 
 val EsRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
@@ -29,6 +35,8 @@ val EsRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
     carryingInAddition = "Llevando 1 en la Suma",
     runningAmongNumbers = "Corriendo entre n\u00fameros",
     practicingAddition = "Practicando Suma",
+    numberOne = "1",
+    practicingExpression = "12+34",
 )
 
 val LocalRoadToSomewhereScreenStrings = staticCompositionLocalOf { EnRoadToSomewhereScreenStrings }

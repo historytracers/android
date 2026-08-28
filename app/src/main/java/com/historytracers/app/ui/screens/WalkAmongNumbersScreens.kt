@@ -475,7 +475,7 @@ private fun roadEndPoint(d: String, s: Float): Pair<Float, Float>? {
 @Composable
 private fun RoadSvg(html: String, modifier: Modifier = Modifier) {
     val paths = remember(html) { parseRoadPaths(html) }
-    val roadPathData = remember(html) { paths.firstOrNull()?.d ?: "" }
+    val arrowPathData = remember(html) { (paths.firstOrNull { !it.dashed } ?: paths.firstOrNull())?.d ?: "" }
     val circles = remember(html) { ROAD_CIRCLE_REGEX.findAll(html).map { m -> Triple(m.groupValues[1].toFloat(), m.groupValues[2].toFloat(), m.groupValues[3].toFloat()) }.toList() }
     val caption = remember(html) { axisCaption(html) }
 
@@ -487,9 +487,8 @@ private fun RoadSvg(html: String, modifier: Modifier = Modifier) {
         ) {
             val s = size.width / 450f
 
-            val roadPath = buildRoadPath(roadPathData, s)
-
             paths.forEach { p ->
+                val path = buildRoadPath(p.d, s)
                 val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     color = parseHexColor(p.stroke).toInt()
                     style = Paint.Style.STROKE
@@ -500,7 +499,7 @@ private fun RoadSvg(html: String, modifier: Modifier = Modifier) {
                         pathEffect = DashPathEffect(floatArrayOf(0.1f * s, 14f * s), 0f)
                     }
                 }
-                drawContext.canvas.nativeCanvas.drawPath(roadPath, paint)
+                drawContext.canvas.nativeCanvas.drawPath(path, paint)
             }
 
             val cityPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -516,7 +515,7 @@ private fun RoadSvg(html: String, modifier: Modifier = Modifier) {
                 drawContext.canvas.nativeCanvas.drawCircle(cx * s, cy * s, r * s, cityPaint)
             }
 
-            roadEndPoint(roadPathData, s)?.let { (ex, ey) ->
+            roadEndPoint(arrowPathData, s)?.let { (ex, ey) ->
                 val arrow = Path().apply {
                     moveTo(ex, ey - 8f * s)
                     lineTo(ex + 12f * s, ey)
@@ -559,7 +558,9 @@ private fun WalkAmongNumbersGameContent(
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(language) {
+        game = null
+        error = null
         when (val result = repo.loadAndParse("$language/$SMARTPHONE_GAME_FILE")) {
             is ContentResult.SMGame -> game = result.data
             is ContentResult.Error -> error = result.message
@@ -579,9 +580,12 @@ private fun WalkAmongNumbersGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
+    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
+
     LaunchedEffect(content) {
         val node = content
-        if (node != null) {
+        if (node != null && !arrivalHandled) {
+            arrivalHandled = true
             award(node.score)
             if (onNavigateToRoadToSomewhere != null) {
                 preferences.markRoadToSomewhereSectionCompleted("walk_among_numbers")
@@ -639,6 +643,10 @@ private fun WalkAmongNumbersGameContent(
                     content.text?.forEach { text ->
                         if (text == null) return@forEach
                         when {
+                            isImgHtml(text.text) -> ResponsiveImage(
+                                html = text.text ?: "",
+                                imgDesc = text.imgdesc
+                            )
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
                             isAxisSvg(text.text) -> NumberAxis(
                                 html = text.text ?: "",
@@ -648,10 +656,6 @@ private fun WalkAmongNumbersGameContent(
                             isRoadSvg(text.text) -> RoadSvg(
                                 html = text.text ?: "",
                                 modifier = Modifier.padding(vertical = 8.dp)
-                            )
-                            isImgHtml(text.text) -> ResponsiveImage(
-                                html = text.text ?: "",
-                                imgDesc = text.imgdesc
                             )
                             else -> TextRenderer(text = text, repo = repo)
                         }
