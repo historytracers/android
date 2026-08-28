@@ -21,6 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
@@ -355,10 +356,15 @@ private fun HandsPair(modifier: Modifier = Modifier) {
         drawOneHand(rightCx, handCy, handScale, isLeft = false, paint, handPath)
 
         val rightNums = (1..5).map { it to (5 - it) }
+        val numberExtraOffsets = mapOf(
+            1 to Offset(5f, 0f),
+            2 to Offset(5f, 0f),
+        )
         drawHandNumbers(
             numbers = rightNums,
             cx = rightCx, cy = handCy, handScale = handScale, isLeft = false,
-            textPaint = textPaint, strokePaint = strokePaint
+            textPaint = textPaint, strokePaint = strokePaint,
+            extraOffsets = numberExtraOffsets
         )
     }
 }
