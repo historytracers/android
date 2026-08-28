@@ -139,6 +139,7 @@ sealed class Screen(val route: String) {
     data object RoadToSomewhere : Screen("road_to_somewhere")
     data object WalkAmongNumbersIntro : Screen("walk_among_numbers_intro")
     data object WalkAmongNumbersRoads : Screen("walk_among_numbers_roads")
+    data object WalkAmongNumbersIncaRoads : Screen("walk_among_numbers_inca_roads")
     data object WalkAmongNumbersAxes : Screen("walk_among_numbers_axes")
     data object WalkAmongNumbersHands : Screen("walk_among_numbers_hands")
     data object WalkAmongNumbersQuestion : Screen("walk_among_numbers_question")

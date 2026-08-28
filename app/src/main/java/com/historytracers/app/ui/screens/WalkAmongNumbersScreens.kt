@@ -4,6 +4,7 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Path
 import android.widget.Toast
@@ -103,6 +104,24 @@ fun WalkAmongNumbersAxesScreen(
 }
 
 @Composable
+fun WalkAmongNumbersIncaRoadsScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    WalkAmongNumbersGameContent(
+        contentId = "b76b8c5f-4479-4b74-9556-9d722b4a4ed6",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
 fun WalkAmongNumbersHandsScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -177,6 +196,9 @@ private fun isAxisSvg(text: String?): Boolean =
 
 private fun isHandsSvg(text: String?): Boolean =
     text?.contains("<svg") == true && text.contains("hand-shape")
+
+private fun isRoadSvg(text: String?): Boolean =
+    text?.contains("<svg") == true && text.contains("class=\"road\"")
 
 private fun buildHandPath(): Path {
     return Path().apply {
@@ -369,6 +391,146 @@ private fun HandsPair(modifier: Modifier = Modifier) {
     }
 }
 
+private val ROAD_PATH_REGEX = Regex("""<path\s+d="([^"]*)"\s+fill="none"\s+stroke="([^"]*)"\s+stroke-width="([\d.]+)"([^>]*)""")
+private val ROAD_CIRCLE_REGEX = Regex("""<circle\s+cx="([\d.]+)"\s+cy="([\d.]+)"\s+r="([\d.]+)"\s+fill="([^"]*)"\s*/>""")
+
+private data class RoadPathData(
+    val d: String,
+    val stroke: String,
+    val width: Float,
+    val dashed: Boolean
+)
+
+private fun parseRoadPaths(html: String): List<RoadPathData> {
+    return ROAD_PATH_REGEX.findAll(html).map { m ->
+        RoadPathData(
+            d = m.groupValues[1],
+            stroke = m.groupValues[2],
+            width = m.groupValues[3].toFloat(),
+            dashed = m.groupValues[4].contains("stroke-dasharray")
+        )
+    }.toList()
+}
+
+private fun buildRoadPath(d: String, s: Float): Path {
+    val path = Path()
+    val tokens = Regex("""[MCL]\s+-?[\d.]+(?:[,\s]+-?[\d.]+)*""")
+        .findAll(d)
+        .map { it.value.trim() }
+        .toList()
+    for (token in tokens) {
+        val cmd = token[0]
+        val nums = Regex("""-?[\d.]+""").findAll(token).map { it.value.toFloat() }.toList()
+        when (cmd) {
+            'M' -> if (nums.size >= 2) path.moveTo(nums[0] * s, nums[1] * s)
+            'L' -> if (nums.size >= 2) path.lineTo(nums[0] * s, nums[1] * s)
+            'C' -> if (nums.size >= 6) path.cubicTo(nums[0] * s, nums[1] * s, nums[2] * s, nums[3] * s, nums[4] * s, nums[5] * s)
+        }
+    }
+    return path
+}
+
+private fun parseHexColor(hex: String): Long {
+    val cleaned = hex.removePrefix("#")
+    val rgb = cleaned.toLong(16)
+    return if (cleaned.length == 6) (0xFF000000L or rgb) else rgb
+}
+
+private fun roadEndPoint(d: String, s: Float): Pair<Float, Float>? {
+    val tokens = Regex("""[MLC]\s+-?[\d.]+(?:[,\s]+-?[\d.]+)*""")
+        .findAll(d)
+        .map { it.value.trim() }
+        .toList()
+    var last: Pair<Float, Float>? = null
+    var current = 0f to 0f
+    for (token in tokens) {
+        val cmd = token[0]
+        val nums = Regex("""-?[\d.]+""").findAll(token).map { it.value.toFloat() }.toList()
+        when (cmd) {
+            'M' -> if (nums.size >= 2) {
+                current = nums[0] to nums[1]
+                last = current
+            }
+            'L' -> if (nums.size >= 2) {
+                current = nums[0] to nums[1]
+                last = current
+            }
+            'C' -> if (nums.size >= 6) {
+                current = nums[4] to nums[5]
+                last = current
+            }
+        }
+    }
+    return last?.let { it.first * s to it.second * s }
+}
+
+@Composable
+private fun RoadSvg(html: String, modifier: Modifier = Modifier) {
+    val paths = remember(html) { parseRoadPaths(html) }
+    val roadPathData = remember(html) { paths.firstOrNull()?.d ?: "" }
+    val circles = remember(html) { ROAD_CIRCLE_REGEX.findAll(html).map { m -> Triple(m.groupValues[1].toFloat(), m.groupValues[2].toFloat(), m.groupValues[3].toFloat()) }.toList() }
+    val caption = remember(html) { axisCaption(html) }
+
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(450f / 120f)
+        ) {
+            val s = size.width / 450f
+
+            val roadPath = buildRoadPath(roadPathData, s)
+
+            paths.forEach { p ->
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = parseHexColor(p.stroke).toInt()
+                    style = Paint.Style.STROKE
+                    strokeWidth = p.width * s
+                    strokeCap = Paint.Cap.ROUND
+                    strokeJoin = Paint.Join.ROUND
+                    if (p.dashed) {
+                        pathEffect = DashPathEffect(floatArrayOf(0.1f * s, 14f * s), 0f)
+                    }
+                }
+                drawContext.canvas.nativeCanvas.drawPath(roadPath, paint)
+            }
+
+            val cityPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color(0xFFB48B5A).hashCode()
+                style = Paint.Style.FILL
+            }
+            val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.BLACK
+                style = Paint.Style.FILL
+            }
+
+            circles.forEach { (cx, cy, r) ->
+                drawContext.canvas.nativeCanvas.drawCircle(cx * s, cy * s, r * s, cityPaint)
+            }
+
+            roadEndPoint(roadPathData, s)?.let { (ex, ey) ->
+                val arrow = Path().apply {
+                    moveTo(ex, ey - 8f * s)
+                    lineTo(ex + 12f * s, ey)
+                    lineTo(ex, ey + 8f * s)
+                    close()
+                }
+                drawContext.canvas.nativeCanvas.drawPath(arrow, fillPaint)
+            }
+        }
+
+        if (caption.isNotEmpty()) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = caption,
+                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
 @Composable
 private fun WalkAmongNumbersGameContent(
     contentId: String,
@@ -475,6 +637,10 @@ private fun WalkAmongNumbersGameContent(
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                             isHandsSvg(text.text) -> HandsPair()
+                            isRoadSvg(text.text) -> RoadSvg(
+                                html = text.text ?: "",
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
                             isImgHtml(text.text) -> ResponsiveImage(
                                 html = text.text ?: "",
                                 imgDesc = text.imgdesc
