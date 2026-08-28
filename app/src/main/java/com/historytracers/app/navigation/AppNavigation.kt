@@ -501,6 +501,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.RoadToSomewhere.route) {
                         RoadToSomewhereScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -508,7 +510,8 @@ fun AppNavigation() {
                                         launchSingleTop = true
                                     }
                                 }
-                            }
+                            },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.IAmNotLikeYou.route) {

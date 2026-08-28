@@ -57,6 +57,10 @@ private val yupanaSectionIds = listOf(
     "hands_on_yupana", "moving_in_yupana"
 )
 
+private val roadToSomewhereSectionIds = listOf(
+    "walk_among_numbers", "carrying_in_addition", "running_among_numbers", "practicing_addition"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // This list is intentionally empty: no main-screen hub button was newly introduced
 // by the current release (the five wired hubs already existed), and the four
@@ -103,6 +107,7 @@ fun IndexScreen(
     val completedWorkout by preferences.completedWorkoutSections.collectAsState(initial = emptySet())
     val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
+    val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -111,6 +116,7 @@ fun IndexScreen(
     val workoutDone = workoutSectionIds.all { it in completedWorkout }
     val abacusDone = abacusSectionIds.all { it in completedAbacus }
     val yupanaDone = yupanaSectionIds.all { it in completedYupana }
+    val roadToSomewhereDone = roadToSomewhereSectionIds.all { it in completedRoadToSomewhere }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -188,7 +194,7 @@ fun IndexScreen(
                 onClick = { onNavigateToRoadToSomewhere() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (roadToSomewhereDone) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {
