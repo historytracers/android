@@ -11,9 +11,9 @@ data class RoadToSomewhereScreenStrings(
 )
 
 val EnRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
-    walkAmongNumbers = "Walking among Numbers",
+    walkAmongNumbers = "Walking Among Numbers",
     carryingInAddition = "Carrying in Addition",
-    runningAmongNumbers = "Running among Numbers",
+    runningAmongNumbers = "Running Among Numbers",
     practicingAddition = "Practicing Addition",
 )
 

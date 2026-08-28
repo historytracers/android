@@ -69,7 +69,7 @@ fun LatestAdditionScreen(
             label = was.title,
             icon = { Icon(Icons.AutoMirrored.Filled.DirectionsWalk, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
             isCompleted = { "walk_among_numbers" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("walk_among_numbers") },
+            markCompleted = {},
             onNavigate = onNavigateToWalkAmongNumbersIntro
         ),
         LatestAdditionEntry(
@@ -91,7 +91,7 @@ fun LatestAdditionScreen(
         LatestAdditionEntry(
             sectionId = "totally_equal",
             label = ials.totallyEqual,
-            icon = { Text("=", fontSize = 44.sp, textAlign = TextAlign.Center, color = OnButtonYellow) },
+            icon = { Text(xs.equalsSign, fontSize = 44.sp, textAlign = TextAlign.Center, color = OnButtonYellow) },
             isCompleted = { "totally_equal" in completedIAmNotLikeYou },
             markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") },
             onNavigate = onNavigateToTotallyEqualIntro

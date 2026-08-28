@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +55,8 @@ private fun parseSvgPathToAndroidPath(svgD: String): Path {
                     if (svgD[i].isWhitespace() || svgD[i] == ',') { i++; continue }
                     if (svgD[i] in 'a'..'z' || svgD[i] in 'A'..'Z') break
                     val sb = StringBuilder()
-                    while (i < svgD.length && (svgD[i] == '-' || svgD[i] == '.' || svgD[i].isDigit())) {
+                    if (svgD[i] == '-') { sb.append('-'); i++ }
+                    while (i < svgD.length && (svgD[i] == '.' || svgD[i].isDigit())) {
                         sb.append(svgD[i]); i++
                     }
                     if (sb.isNotEmpty()) nums.add(sb.toString().toFloat())
@@ -142,7 +144,7 @@ private fun FootIcon(color: Color, modifier: Modifier = Modifier) {
         val p = Path()
         p.addPath(foot.first, m)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            this.color = color.hashCode()
+            this.color = color.toArgb()
             style = Paint.Style.FILL
         }
         drawContext.canvas.nativeCanvas.drawPath(p, paint)
@@ -172,7 +174,7 @@ private fun NumberOneOnStairs(color: Color, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val scale = minOf(size.width, size.height) / 100f
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            this.color = color.hashCode()
+            this.color = color.toArgb()
             style = Paint.Style.FILL
         }
         val m = Matrix()
@@ -182,7 +184,7 @@ private fun NumberOneOnStairs(color: Color, modifier: Modifier = Modifier) {
         drawContext.canvas.nativeCanvas.drawPath(stair, paint)
 
         val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            this.color = color.hashCode()
+            this.color = color.toArgb()
             textSize = 64f * scale
             textAlign = Paint.Align.CENTER
             typeface = Typeface.DEFAULT_BOLD
@@ -210,15 +212,15 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
+    val roadSectionIds = listOf("walk_among_numbers")
     val controller = remember {
-        LevelGroupController(
-            listOf("walk_among_numbers", "carrying_in_addition", "running_among_numbers", "practicing_addition"),
-            completedSections
-        )
+        LevelGroupController(roadSectionIds, completedSections)
     }
     LaunchedEffect(completedSections) {
         controller.syncFromPersisted(completedSections)
     }
+    val controllerCompleted by controller.completed.collectAsState()
+    val allRoadSectionsDone = roadSectionIds.all { it in controllerCompleted }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
@@ -290,14 +292,14 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller.markCompleted("carrying_in_addition")
-                        scope.launch { preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition") }
-                    },
+                    onClick = {},
+                    enabled = false,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("carrying_in_addition")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow,
+                        disabledContainerColor = ButtonYellow,
+                        disabledContentColor = OnButtonYellow
                     )
                 ) {
                     NumberOneOnStairs(
@@ -320,14 +322,14 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller.markCompleted("running_among_numbers")
-                        scope.launch { preferences.markRoadToSomewhereSectionCompleted("running_among_numbers") }
-                    },
+                    onClick = {},
+                    enabled = false,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("running_among_numbers")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow,
+                        disabledContainerColor = ButtonYellow,
+                        disabledContentColor = OnButtonYellow
                     )
                 ) {
                     Icon(
@@ -352,14 +354,14 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        controller.markCompleted("practicing_addition")
-                        scope.launch { preferences.markRoadToSomewhereSectionCompleted("practicing_addition") }
-                    },
+                    onClick = {},
+                    enabled = false,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
+                        containerColor = ButtonYellow,
+                        disabledContainerColor = ButtonYellow,
+                        disabledContentColor = OnButtonYellow
                     )
                 ) {
                     Text(
@@ -388,7 +390,7 @@ fun RoadToSomewhereScreen(
                         claimRoadToSomewhereLevel()
                         onNavigateToCongratulation()
                     },
-                    enabled = controller.allCompleted,
+                    enabled = allRoadSectionsDone,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(

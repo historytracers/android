@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontStyle
@@ -353,7 +354,7 @@ private fun HandsPair(modifier: Modifier = Modifier) {
         val cx = size.width / 2f
 
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color(0xFFF4C2A1).hashCode()
+            color = Color(0xFFF4C2A1).toArgb()
             style = Paint.Style.FILL
             strokeJoin = Paint.Join.ROUND
         }
@@ -430,10 +431,17 @@ private fun buildRoadPath(d: String, s: Float): Path {
     return path
 }
 
+private val HEX_COLOR_REGEX = Regex("^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+
 private fun parseHexColor(hex: String): Long {
-    val cleaned = hex.removePrefix("#")
-    val rgb = cleaned.toLong(16)
-    return if (cleaned.length == 6) (0xFF000000L or rgb) else rgb
+    val match = HEX_COLOR_REGEX.matchEntire(hex.trim()) ?: return 0xFF8B5E3CL
+    val digits = match.groupValues[1]
+    val expanded = if (digits.length == 3) {
+        digits.map { "$it$it" }.joinToString("")
+    } else {
+        digits
+    }
+    return 0xFF000000L or expanded.toLong(16)
 }
 
 private fun roadEndPoint(d: String, s: Float): Pair<Float, Float>? {
@@ -496,7 +504,7 @@ private fun RoadSvg(html: String, modifier: Modifier = Modifier) {
             }
 
             val cityPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = Color(0xFFB48B5A).hashCode()
+                color = Color(0xFFB48B5A).toArgb()
                 style = Paint.Style.FILL
             }
             val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
