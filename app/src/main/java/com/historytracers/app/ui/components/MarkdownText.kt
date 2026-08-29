@@ -53,7 +53,6 @@ fun MarkdownText(text: String, modifier: Modifier = Modifier) {
                     Text(
                         text = codeLines.joinToString("\n"),
                         style = MaterialTheme.typography.bodyLarge.copy(fontFamily = FontFamily.Monospace),
-                        textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

@@ -170,7 +170,7 @@ private fun buildStairPath(): Path {
 private val stairPath: Path by lazy { buildStairPath() }
 
 @Composable
-private fun NumberOneOnStairs(color: Color, label: String, modifier: Modifier = Modifier) {
+internal fun NumberOneOnStairs(color: Color, label: String, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val scale = minOf(size.width, size.height) / 100f
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

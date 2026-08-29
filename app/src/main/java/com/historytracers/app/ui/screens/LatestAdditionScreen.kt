@@ -21,7 +21,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
@@ -80,7 +79,13 @@ fun LatestAdditionScreen(
         LatestAdditionEntry(
             sectionId = "carrying_in_addition",
             label = cas.title,
-            icon = { Text(xs.equalsSign, fontSize = 44.sp, textAlign = TextAlign.Center, color = OnButtonYellow) },
+            icon = {
+                NumberOneOnStairs(
+                    color = OnButtonYellow,
+                    label = "1",
+                    modifier = Modifier.size(48.dp)
+                )
+            },
             isCompleted = { "carrying_in_addition" in completedRoadToSomewhere },
             markCompleted = {},
             onNavigate = onNavigateToCarryingInAdditionIntro

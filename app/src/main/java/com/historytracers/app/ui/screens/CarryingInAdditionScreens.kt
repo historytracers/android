@@ -226,8 +226,8 @@ private fun CarryingHandsPair(modifier: Modifier = Modifier) {
 
         val handScale = 0.55f * scale
         val handCy = 110f * scale
-        val leftCx = cx - 140.dp.toPx()
-        val rightCx = cx + 100.dp.toPx()
+        val leftCx = cx - 140f * scale
+        val rightCx = cx + 100f * scale
 
         drawOneHand(leftCx, handCy, handScale, isLeft = true, paint, handPath)
         drawOneHand(rightCx, handCy, handScale, isLeft = false, paint, handPath)
@@ -459,14 +459,19 @@ private fun CarryingAnswerSection(
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val answer = content.answer) {
+        is Boolean -> answer
+        is String -> answer.equals("yes", ignoreCase = true)
+        else -> null
+    }
 
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
         if (!awarded) {
             awarded = true
-            val points = if (answer == correctAnswer) content.score else content.score / 2
+            val answeredCorrectly = (answer == "yes") == correctAnswer
+            val points = if (answeredCorrectly) content.score else content.score / 2
             onAnswered(points)
         }
     }
@@ -495,7 +500,7 @@ private fun CarryingAnswerSection(
             }
         }
     } else {
-        val isCorrect = selected == correctAnswer
+        val isCorrect = (selected == "yes") == correctAnswer
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
