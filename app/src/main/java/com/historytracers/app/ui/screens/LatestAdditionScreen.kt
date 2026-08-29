@@ -25,6 +25,7 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.iAmNotLikeYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkAmongNumbersScreenStringsForLanguage
@@ -47,16 +48,17 @@ fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkAmongNumbersIntro: () -> Unit = {},
+    onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToTotallyEqualIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
-    onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {},
-    onNavigateToEqualSameGroupDifferent: () -> Unit = {}
+    onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val ials = iAmNotLikeYouScreenStringsForLanguage(LocalAppLanguage.current)
     val was = walkAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedIAmNotLikeYou by preferences.completedIAmNotLikeYouSections.collectAsState(initial = emptySet())
@@ -64,6 +66,14 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "carrying_in_addition",
+            label = cas.title,
+            icon = { Text(xs.equalsSign, fontSize = 44.sp, textAlign = TextAlign.Center, color = OnButtonYellow) },
+            isCompleted = { "carrying_in_addition" in completedRoadToSomewhere },
+            markCompleted = {},
+            onNavigate = onNavigateToCarryingInAdditionIntro
+        ),
         LatestAdditionEntry(
             sectionId = "walk_among_numbers",
             label = was.title,
@@ -95,14 +105,6 @@ fun LatestAdditionScreen(
             isCompleted = { "totally_equal" in completedIAmNotLikeYou },
             markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") },
             onNavigate = onNavigateToTotallyEqualIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "equal_same_group_or_different",
-            label = ials.equalSameGroupOrDifferent,
-            icon = { Icon(painterResource(R.drawable.ic_square_circle), contentDescription = null, modifier = Modifier.size(48.dp)) },
-            isCompleted = { "equal_same_group_or_different" in completedIAmNotLikeYou },
-            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equal_same_group_or_different") },
-            onNavigate = onNavigateToEqualSameGroupDifferent
         )
     )
 

@@ -201,6 +201,7 @@ fun RoadToSomewhereScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkAmongNumbers: () -> Unit = {},
+    onNavigateToCarryingInAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -212,7 +213,7 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val roadSectionIds = listOf("walk_among_numbers")
+    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition")
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
     }
@@ -292,14 +293,11 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
-                    enabled = false,
+                    onClick = onNavigateToCarryingInAddition,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
-                        disabledContainerColor = ButtonYellow,
-                        disabledContentColor = OnButtonYellow
+                        containerColor = if (completedSections.contains("carrying_in_addition")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     NumberOneOnStairs(
