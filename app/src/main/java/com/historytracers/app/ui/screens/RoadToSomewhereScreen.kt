@@ -323,6 +323,36 @@ fun RoadToSomewhereScreen(
 
                 FilledIconButton(
                     onClick = {},
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.commutativeExpression,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.theOrderOfAddition,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = {},
                     enabled = false,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
