@@ -206,6 +206,7 @@ import com.historytracers.app.ui.screens.CarryingInAdditionIntroScreen
 import com.historytracers.app.ui.screens.CarryingInAdditionQuestionScreen
 import com.historytracers.app.ui.screens.CarryingInAdditionZeroInHandsScreen
 import com.historytracers.app.ui.screens.KinkinMovementScreen
+import com.historytracers.app.ui.screens.PracticingAdditionRoadScreen
 import com.historytracers.app.ui.screens.RoadToSomewhereScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersAxesScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersConclusionScreen
@@ -527,7 +528,22 @@ fun AppNavigation() {
                             },
                             onNavigateToWalkAmongNumbers = { navController.navigate(Screen.WalkAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAddition = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAdditionRoad.route) { launchSingleTop = true } },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.PracticingAdditionRoad.route) {
+                        PracticingAdditionRoadScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.WalkAmongNumbersIntro.route) {
@@ -3462,8 +3478,8 @@ fun AppNavigation() {
                             onNavigateBack = { navController.popBackStack() },
                             onNavigateToWalkAmongNumbersIntro = { navController.navigate(Screen.WalkAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAdditionIntro = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingAdditionRoad = { navController.navigate(Screen.PracticingAdditionRoad.route) { launchSingleTop = true } },
                             onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
-                            onNavigateToTotallyEqualIntro = { navController.navigate(Screen.TotallyEqualIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } }
                         )

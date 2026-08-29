@@ -151,6 +151,7 @@ sealed class Screen(val route: String) {
     data object CarryingInAdditionIdentity : Screen("carrying_in_addition_identity")
     data object CarryingInAdditionZeroInHands : Screen("carrying_in_addition_zero_in_hands")
     data object CarryingInAdditionConclusion : Screen("carrying_in_addition_conclusion")
+    data object PracticingAdditionRoad : Screen("practicing_addition_road")
     data object Abacus : Screen("abacus")
     data object Settings : Screen("settings")
     data object LatestAddition : Screen("latest_addition")
