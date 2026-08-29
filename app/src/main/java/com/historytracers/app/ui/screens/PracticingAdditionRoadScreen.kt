@@ -197,7 +197,7 @@ private fun AdditionPracticeTable(
                             contentColor = if (finished) MaterialTheme.colorScheme.onSurfaceVariant else Color.White
                         )
                     ) {
-                        Icon(Icons.Filled.KeyboardArrowUp, contentDescription = null)
+                        Icon(Icons.Filled.KeyboardArrowUp, contentDescription = xs.increase)
                     }
                     Spacer(Modifier.height(4.dp))
                     FilledIconButton(
@@ -210,7 +210,7 @@ private fun AdditionPracticeTable(
                             contentColor = if (finished) MaterialTheme.colorScheme.onSurfaceVariant else Color.White
                         )
                     ) {
-                        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null)
+                        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = xs.decrease)
                     }
                 }
             }
@@ -234,7 +234,7 @@ private fun AdditionPracticeTable(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Text("\uD83E\uDD47", fontSize = 40.sp)
+                            Text(text = xs.medal, fontSize = 40.sp)
                             Text(
                                 text = message,
                                 style = MaterialTheme.typography.bodySmall,
@@ -277,6 +277,7 @@ fun PracticingAdditionRoadScreen(
     var finished by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf("") }
     var completionHandled by remember { mutableStateOf(false) }
+    var arrivalAwarded by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
 
@@ -354,12 +355,15 @@ fun PracticingAdditionRoadScreen(
         if (finished && !completionHandled) {
             completionHandled = true
             preferences.markRoadToSomewhereSectionCompleted("practicing_addition")
-            onScoreChanged(currentScore + 2)
         }
     }
 
     LaunchedEffect(Unit) {
         resetExercise()
+        if (!arrivalAwarded) {
+            arrivalAwarded = true
+            onScoreChanged(currentScore + 2)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

@@ -13,6 +13,9 @@ data class PracticingAdditionRoadScreenStrings(
     val addStepContinue: String,
     val addStepCarry: String,
     val repeat: String,
+    val increase: String,
+    val decrease: String,
+    val medal: String,
     val congratsMessage: String,
 )
 
@@ -26,6 +29,9 @@ val EnPracticingAdditionRoadScreenStrings = PracticingAdditionRoadScreenStrings(
     addStepContinue = "Addition is always performed in pairs. At this stage, we are adding: (%d + %d).",
     addStepCarry = "Addition is always performed in pairs. At this stage, we are adding: (%d + %d) + %d.\nEach numerical position can only contain digits between 0 and 9. As a result, the excess value (1) was carried over to the next higher position.",
     repeat = "Repeat",
+    increase = "Increase",
+    decrease = "Decrease",
+    medal = "\uD83E\uDD47",
     congratsMessage = "%d + %d = %d\nYou finished the addition! Click 'Repeat' to reinforce or 'New exercise' for another problem.",
 )
 
@@ -39,6 +45,9 @@ val PtPracticingAdditionRoadScreenStrings = PracticingAdditionRoadScreenStrings(
     addStepContinue = "A soma \u00e9 sempre feita em pares. Neste momento, estamos somando: (%d + %d).",
     addStepCarry = "A soma \u00e9 sempre feita em pares. Neste momento, estamos somando: (%d + %d) + %d.\nCada posi\u00e7\u00e3o num\u00e9rica pode conter apenas d\u00edgitos de 0 a 9. Por isso, o valor excedente (1) foi transferido para a pr\u00f3xima posi\u00e7\u00e3o superior.",
     repeat = "Repetir",
+    increase = "Aumentar",
+    decrease = "Diminuir",
+    medal = "\uD83E\uDD47",
     congratsMessage = "%d + %d = %d\nVoc\u00ea concluiu a adi\u00e7\u00e3o! Clique em 'Repetir' para refor\u00e7ar ou 'Novo exerc\u00edcio' para outra.",
 )
 
@@ -52,6 +61,9 @@ val EsPracticingAdditionRoadScreenStrings = PracticingAdditionRoadScreenStrings(
     addStepContinue = "La suma siempre se realiza en pares. En este momento, estamos sumando: (%d + %d).",
     addStepCarry = "La suma siempre se realiza en pares. En este momento, estamos sumando: (%d + %d) + %d.\nCada posici\u00f3n num\u00e9rica solo puede contener d\u00edgitos del 0 al 9. Por ello, el valor excedente (1) se traslad\u00f3 a la siguiente posici\u00f3n.",
     repeat = "Repetir",
+    increase = "Aumentar",
+    decrease = "Disminuir",
+    medal = "\uD83E\uDD47",
     congratsMessage = "%d + %d = %d\n\u00a1Has terminado la suma! Haz clic en 'Repetir' para reforzar o 'Nuevo ejercicio' para otra.",
 )
 

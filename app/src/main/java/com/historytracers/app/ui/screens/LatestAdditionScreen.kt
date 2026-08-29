@@ -73,7 +73,7 @@ fun LatestAdditionScreen(
             label = pras.title,
             icon = { Icon(Icons.Filled.Calculate, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
             isCompleted = { "practicing_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("practicing_addition") },
+            markCompleted = {},
             onNavigate = onNavigateToPracticingAdditionRoad
         ),
         LatestAdditionEntry(
@@ -82,7 +82,7 @@ fun LatestAdditionScreen(
             icon = {
                 NumberOneOnStairs(
                     color = OnButtonYellow,
-                    label = "1",
+                    label = xs.numberOne,
                     modifier = Modifier.size(48.dp)
                 )
             },
