@@ -170,7 +170,7 @@ private fun buildStairPath(): Path {
 private val stairPath: Path by lazy { buildStairPath() }
 
 @Composable
-private fun NumberOneOnStairs(color: Color, label: String, modifier: Modifier = Modifier) {
+internal fun NumberOneOnStairs(color: Color, label: String, modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val scale = minOf(size.width, size.height) / 100f
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -201,6 +201,8 @@ fun RoadToSomewhereScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkAmongNumbers: () -> Unit = {},
+    onNavigateToCarryingInAddition: () -> Unit = {},
+    onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -212,7 +214,7 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val roadSectionIds = listOf("walk_among_numbers")
+    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "practicing_addition")
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
     }
@@ -292,14 +294,11 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
-                    enabled = false,
+                    onClick = onNavigateToCarryingInAddition,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
-                        disabledContainerColor = ButtonYellow,
-                        disabledContentColor = OnButtonYellow
+                        containerColor = if (completedSections.contains("carrying_in_addition")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     NumberOneOnStairs(
@@ -355,14 +354,11 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
-                    enabled = false,
+                    onClick = onNavigateToPracticingAddition,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
-                        disabledContainerColor = ButtonYellow,
-                        disabledContentColor = OnButtonYellow
+                        containerColor = if (completedSections.contains("practicing_addition")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(

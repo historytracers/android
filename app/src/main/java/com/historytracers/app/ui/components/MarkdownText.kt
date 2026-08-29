@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 
 private val HEADING_REGEX = Regex("^(#{1,6})\\s+(.+)$")
+private val CODE_FENCE_REGEX = Regex("^\\s*```")
 
 // A line that starts with a single "*" (closing "*" optional) and contains no
 // other asterisks is an image caption: rendered centered, italic, and smaller
@@ -35,34 +37,49 @@ private fun captionText(line: String): String {
     return if (rest.endsWith("*") && !rest.endsWith("**")) rest.dropLast(1) else rest
 }
 
+private fun isCodeFence(line: String): Boolean = CODE_FENCE_REGEX.containsMatchIn(line)
+
 @Composable
 fun MarkdownText(text: String, modifier: Modifier = Modifier) {
     val paragraphs = text.split(Regex("\\n\\s*\\n"))
     Column(modifier = modifier) {
         paragraphs.forEachIndexed { paragraphIndex, paragraph ->
             if (paragraphIndex > 0) Spacer(Modifier.height(12.dp))
-            paragraph.lines().forEach { line ->
-                val trimmed = line.trim()
-                if (trimmed.isEmpty()) return@forEach
-                val heading = HEADING_REGEX.find(trimmed)
-                if (heading != null) {
-                    val level = heading.groupValues[1].length
+            val paragraphLines = paragraph.lines()
+            val inCodeBlock = paragraphLines.any { isCodeFence(it) }
+            if (inCodeBlock) {
+                val codeLines = paragraphLines.filterNot { isCodeFence(it) }
+                if (codeLines.isNotEmpty()) {
                     Text(
-                        text = parseMarkdownInline(heading.groupValues[2]),
-                        style = headingTextStyle(level)
-                    )
-                } else if (isCaptionLine(trimmed)) {
-                    Text(
-                        text = parseMarkdownInline(captionText(trimmed)),
-                        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-                        textAlign = TextAlign.Center,
+                        text = codeLines.joinToString("\n"),
+                        style = MaterialTheme.typography.bodyLarge.copy(fontFamily = FontFamily.Monospace),
                         modifier = Modifier.fillMaxWidth()
                     )
-                } else {
-                    Text(
-                        text = parseMarkdownInline(trimmed),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                }
+            } else {
+                paragraphLines.forEach { line ->
+                    val trimmed = line.trim()
+                    if (trimmed.isEmpty()) return@forEach
+                    val heading = HEADING_REGEX.find(trimmed)
+                    if (heading != null) {
+                        val level = heading.groupValues[1].length
+                        Text(
+                            text = parseMarkdownInline(heading.groupValues[2]),
+                            style = headingTextStyle(level)
+                        )
+                    } else if (isCaptionLine(trimmed)) {
+                        Text(
+                            text = parseMarkdownInline(captionText(trimmed)),
+                            style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = parseMarkdownInline(trimmed),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
             }
         }
