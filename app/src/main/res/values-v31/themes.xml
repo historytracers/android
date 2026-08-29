@@ -1,6 +1,4 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <resources>
-    <style name="Theme.HistoryTracers" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowSplashScreenBrandingImage">@drawable/splash_branding</item>
-    </style>
+    <style name="Theme.HistoryTracers" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

@@ -52,6 +52,7 @@ class UserPreferences(private val context: Context) {
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
         private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
         private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
+        private val ROAD_TO_SOMEWHERE_SECTIONS_KEY = stringSetPreferencesKey("road_to_somewhere_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
@@ -293,6 +294,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markIAmNotLikeYouSectionCompleted(section: String) {
         context.dataStore.edit { preferences ->
             preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] = (preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedRoadToSomewhereSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markRoadToSomewhereSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = (preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 
