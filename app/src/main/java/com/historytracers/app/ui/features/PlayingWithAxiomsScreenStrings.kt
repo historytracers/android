@@ -22,6 +22,7 @@ data class PlayingWithAxiomsScreenStrings(
     val instr3: String,
     val increase: String,
     val decrease: String,
+    val levelComplete: String,
     val gameComplete: String,
 )
 
@@ -44,6 +45,7 @@ val EnPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
     instr3 = "Use the arrows to fill in both values on the right in reversed order to make both sides equal.",
     increase = "Increase",
     decrease = "Decrease",
+    levelComplete = "Congratulations, you finished level %d!",
     gameComplete = "Game complete! Congratulations!",
 )
 
@@ -66,6 +68,7 @@ val PtPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
     instr3 = "Use as setas para preencher os dois valores \u00e0 direita em ordem inversa e fazer os dois lados ficarem iguais.",
     increase = "Aumentar",
     decrease = "Diminuir",
+    levelComplete = "Parab\u00e9ns, voc\u00ea finalizou o n\u00edvel %d!",
     gameComplete = "Jogo conclu\u00eddo! Parab\u00e9ns!",
 )
 
@@ -88,6 +91,7 @@ val EsPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
     instr3 = "Usa las flechas para rellenar los dos valores de la derecha en orden inverso y que ambos lados sean iguales.",
     increase = "Aumentar",
     decrease = "Disminuir",
+    levelComplete = "\u00a1Felicitaciones, terminaste el nivel %d!",
     gameComplete = "\u00a1Juego completado! \u00a1Felicidades!",
 )
 
