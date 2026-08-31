@@ -40,8 +40,8 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=462b1750-2d39-454d-a780-f22d4bd154c3"
@@ -145,6 +145,15 @@ fun PlayingWithAxiomsGameScreen(
         }
     }
 
+    fun progressAfterCorrect() {
+        correctShown = false
+        if (round >= TOTAL_ROUNDS) {
+            finishLevel()
+        } else {
+            setupRound()
+        }
+    }
+
     fun change(idx: Int, delta: Int) {
         if (solved || locked.getOrNull(idx) == true) return
         val newValues = values.toMutableList()
@@ -160,27 +169,18 @@ fun PlayingWithAxiomsGameScreen(
         loadLevel()
     }
 
-    LaunchedEffect(correctShown) {
-        if (correctShown) {
-            delay(1100)
-            if (round >= TOTAL_ROUNDS) {
-                correctShown = false
-                finishLevel()
-            } else {
-                correctShown = false
-                setupRound()
-            }
-        }
-    }
+    val completionScope = rememberCoroutineScope()
 
     LaunchedEffect(gameCompleteShown) {
         if (gameCompleteShown) {
-            val alreadyScored = preferences.awardedScreens.first().contains("playing_with_axioms")
-            if (!alreadyScored) {
-                preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms")
-                preferences.recordLessonCompletion()
-                preferences.markScreenAwarded("playing_with_axioms")
-                onScoreChanged(currentScore + 2)
+            completionScope.launch {
+                val alreadyScored = preferences.awardedScreens.first().contains("playing_with_axioms")
+                if (!alreadyScored) {
+                    preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms")
+                    preferences.recordLessonCompletion()
+                    preferences.markScreenAwarded("playing_with_axioms")
+                    onScoreChanged(currentScore + 2)
+                }
             }
         }
     }
@@ -327,7 +327,7 @@ fun PlayingWithAxiomsGameScreen(
                 )
 
                 Text(
-                    text = "${s.common.score}: $correctRounds/$TOTAL_ROUNDS",
+                    text = xs.scoreProgress.format(correctRounds, TOTAL_ROUNDS),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -351,6 +351,22 @@ fun PlayingWithAxiomsGameScreen(
                         text = xs.gameComplete,
                         color = Color(0xFF2E7D32)
                     )
+                }
+
+                if (correctShown) {
+                    Spacer(Modifier.height(8.dp))
+                    FilledTonalButton(
+                        onClick = { progressAfterCorrect() },
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = if (round >= TOTAL_ROUNDS) s.common.nextLevel else s.common.nextStep,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(8.dp))

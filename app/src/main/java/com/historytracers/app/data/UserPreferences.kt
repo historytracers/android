@@ -57,6 +57,7 @@ class UserPreferences(private val context: Context) {
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
         private val AWARDED_SCREENS_KEY = stringSetPreferencesKey("awarded_screens")
+        private val ARRIVAL_AWARDED_SCREENS_KEY = stringSetPreferencesKey("arrival_awarded_screens")
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -315,6 +316,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markScreenAwarded(screenId: String) {
         context.dataStore.edit { preferences ->
             preferences[AWARDED_SCREENS_KEY] = (preferences[AWARDED_SCREENS_KEY] ?: emptySet()) + screenId
+        }
+    }
+
+    val arrivalAwardedScreens: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[ARRIVAL_AWARDED_SCREENS_KEY] ?: emptySet()
+    }
+
+    suspend fun markArrivalAwarded(screenId: String) {
+        context.dataStore.edit { preferences ->
+            preferences[ARRIVAL_AWARDED_SCREENS_KEY] = (preferences[ARRIVAL_AWARDED_SCREENS_KEY] ?: emptySet()) + screenId
         }
     }
 

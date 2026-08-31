@@ -437,13 +437,18 @@ private fun OrderOfAdditionGameContent(
                 preferences.markRoadToSomewhereSectionCompleted("order_of_addition")
                 preferences.recordLessonCompletion()
             }
-            val alreadyScored = preferences.awardedScreens.first().contains(node.id)
-            if (alreadyScored) return@LaunchedEffect
             if (node.answer == null) {
-                award(1)
-                preferences.markScreenAwarded(node.id)
+                val alreadyScored = preferences.awardedScreens.first().contains(node.id)
+                if (!alreadyScored) {
+                    award(1)
+                    preferences.markScreenAwarded(node.id)
+                }
             } else {
-                award(node.score)
+                val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
+                if (!arrivalAlreadyAwarded) {
+                    award(node.score)
+                    preferences.markArrivalAwarded(node.id)
+                }
             }
         }
     }
