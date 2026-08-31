@@ -58,7 +58,7 @@ private val yupanaSectionIds = listOf(
 )
 
 private val roadToSomewhereSectionIds = listOf(
-    "walk_among_numbers", "carrying_in_addition", "practicing_addition"
+    "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "practicing_addition"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).

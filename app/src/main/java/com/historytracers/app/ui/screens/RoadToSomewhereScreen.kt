@@ -202,6 +202,8 @@ fun RoadToSomewhereScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkAmongNumbers: () -> Unit = {},
     onNavigateToCarryingInAddition: () -> Unit = {},
+    onNavigateToOrderOfAddition: () -> Unit = {},
+    onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -214,7 +216,7 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "practicing_addition")
+    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "practicing_addition")
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
     }
@@ -312,6 +314,70 @@ fun RoadToSomewhereScreen(
 
                 Text(
                     text = xs.carryingInAddition,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        onNavigateToOrderOfAddition()
+                    },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("order_of_addition")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.commutativeExpression,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.theOrderOfAddition,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        onNavigateToPlayingWithAxioms()
+                    },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("playing_with_axioms")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.axiomsExpression,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.playingWithAxioms,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

@@ -6,36 +6,52 @@ import androidx.compose.runtime.staticCompositionLocalOf
 data class RoadToSomewhereScreenStrings(
     val walkAmongNumbers: String,
     val carryingInAddition: String,
+    val theOrderOfAddition: String,
     val runningAmongNumbers: String,
+    val playingWithAxioms: String,
     val practicingAddition: String,
     val numberOne: String,
+    val commutativeExpression: String,
+    val axiomsExpression: String,
     val practicingExpression: String,
 )
 
 val EnRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
     walkAmongNumbers = "Walking Among Numbers",
     carryingInAddition = "Carrying in Addition",
+    theOrderOfAddition = "The Order of Addition",
     runningAmongNumbers = "Running Among Numbers",
+    playingWithAxioms = "Playing with Axioms",
     practicingAddition = "Practicing Addition",
     numberOne = "1",
+    commutativeExpression = "1 + 2 = 2 + 1",
+    axiomsExpression = "a + 0 = a,\na + b = b + a",
     practicingExpression = "12+34",
 )
 
 val PtRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
     walkAmongNumbers = "Andar entre os n\u00fameros",
     carryingInAddition = "Levando 1 na Adi\u00e7\u00e3o",
+    theOrderOfAddition = "A Ordem da Adi\u00e7\u00e3o",
     runningAmongNumbers = "Correndo entre os n\u00fameros",
+    playingWithAxioms = "Brincando com axiomas",
     practicingAddition = "Praticando Adi\u00e7\u00e3o",
     numberOne = "1",
+    commutativeExpression = "1 + 2 = 2 + 1",
+    axiomsExpression = "a + 0 = a,\na + b = b + a",
     practicingExpression = "12+34",
 )
 
 val EsRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
     walkAmongNumbers = "Caminar entre n\u00fameros",
     carryingInAddition = "Llevando 1 en la Suma",
+    theOrderOfAddition = "El Orden de la Suma",
     runningAmongNumbers = "Corriendo entre n\u00fameros",
+    playingWithAxioms = "Jugando con axiomas",
     practicingAddition = "Practicando Suma",
     numberOne = "1",
+    commutativeExpression = "1 + 2 = 2 + 1",
+    axiomsExpression = "a + 0 = a,\na + b = b + a",
     practicingExpression = "12+34",
 )
 

@@ -1,4 +1,7 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <resources>
-    <style name="Theme.HistoryTracers" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.HistoryTracers" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowSplashScreenBackground">#FFFBFE</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash_blank</item>
+    </style>
 </resources>
