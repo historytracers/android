@@ -293,7 +293,7 @@ private fun parseFruitTexts(html: String): List<FruitText> {
     return FRUIT_TEXT_REGEX.findAll(html).map { m ->
         val attrs = m.groupValues[3]
         val sizeMatch = Regex("""font-size="([\d.]+)""").find(attrs)
-        val fillMatch = Regex("""fill="(#?[0-9a-fA-F]{3}|#?[0-9a-fA-F]{6})""").find(attrs)
+        val fillMatch = Regex("""fill="(#?[0-9a-fA-F]{6}|#?[0-9a-fA-F]{3})""").find(attrs)
         FruitText(
             x = m.groupValues[1].toFloat(),
             y = m.groupValues[2].toFloat(),
@@ -442,6 +442,8 @@ private fun OrderOfAdditionGameContent(
             if (node.answer == null) {
                 award(1)
                 preferences.markScreenAwarded(node.id)
+            } else {
+                award(node.score)
             }
         }
     }

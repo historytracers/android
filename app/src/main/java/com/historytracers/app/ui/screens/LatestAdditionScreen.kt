@@ -85,7 +85,7 @@ fun LatestAdditionScreen(
                 )
             },
             isCompleted = { "playing_with_axioms" in completedRoadToSomewhere },
-            markCompleted = {},
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms") },
             onNavigate = onNavigateToPlayingWithAxioms
         ),
         LatestAdditionEntry(
@@ -101,7 +101,7 @@ fun LatestAdditionScreen(
                 )
             },
             isCompleted = { "order_of_addition" in completedRoadToSomewhere },
-            markCompleted = {},
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("order_of_addition") },
             onNavigate = onNavigateToOrderOfAdditionIntro
         ),
         LatestAdditionEntry(
@@ -109,7 +109,7 @@ fun LatestAdditionScreen(
             label = pras.title,
             icon = { Icon(Icons.Filled.Calculate, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
             isCompleted = { "practicing_addition" in completedRoadToSomewhere },
-            markCompleted = {},
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("practicing_addition") },
             onNavigate = onNavigateToPracticingAdditionRoad
         ),
         LatestAdditionEntry(
@@ -123,7 +123,7 @@ fun LatestAdditionScreen(
                 )
             },
             isCompleted = { "carrying_in_addition" in completedRoadToSomewhere },
-            markCompleted = {},
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition") },
             onNavigate = onNavigateToCarryingInAdditionIntro
         ),
         LatestAdditionEntry(
@@ -131,7 +131,7 @@ fun LatestAdditionScreen(
             label = was.title,
             icon = { Icon(Icons.AutoMirrored.Filled.DirectionsWalk, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
             isCompleted = { "walk_among_numbers" in completedRoadToSomewhere },
-            markCompleted = {},
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("walk_among_numbers") },
             onNavigate = onNavigateToWalkAmongNumbersIntro
         )
     )

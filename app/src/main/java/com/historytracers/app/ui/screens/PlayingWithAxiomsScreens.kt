@@ -41,6 +41,7 @@ import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLangu
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlin.random.Random
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=462b1750-2d39-454d-a780-f22d4bd154c3"
@@ -77,11 +78,10 @@ fun PlayingWithAxiomsGameScreen(
     var targets by remember { mutableStateOf<List<Int>>(emptyList()) }
     var locked by remember { mutableStateOf<List<Boolean>>(emptyList()) }
     var solved by remember { mutableStateOf(false) }
-    var score by remember { mutableIntStateOf(0) }
+    var correctRounds by remember { mutableIntStateOf(0) }
     var correctShown by remember { mutableStateOf(false) }
     var levelCompleteShown by remember { mutableStateOf(false) }
     var gameCompleteShown by remember { mutableStateOf(false) }
-    var gameCompletionHandled by remember { mutableStateOf(false) }
 
     fun setupRound() {
         if (level == 1) {
@@ -117,7 +117,7 @@ fun PlayingWithAxiomsGameScreen(
 
     fun loadLevel() {
         round = 0
-        score = 0
+        correctRounds = 0
         correctShown = false
         levelCompleteShown = false
         gameCompleteShown = false
@@ -140,7 +140,7 @@ fun PlayingWithAxiomsGameScreen(
     fun check() {
         if (locked.all { it }) {
             solved = true
-            score++
+            correctRounds++
             correctShown = true
         }
     }
@@ -174,11 +174,14 @@ fun PlayingWithAxiomsGameScreen(
     }
 
     LaunchedEffect(gameCompleteShown) {
-        if (gameCompleteShown && !gameCompletionHandled) {
-            gameCompletionHandled = true
-            preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms")
-            preferences.recordLessonCompletion()
-            onScoreChanged(currentScore + 2)
+        if (gameCompleteShown) {
+            val alreadyScored = preferences.awardedScreens.first().contains("playing_with_axioms")
+            if (!alreadyScored) {
+                preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms")
+                preferences.recordLessonCompletion()
+                preferences.markScreenAwarded("playing_with_axioms")
+                onScoreChanged(currentScore + 2)
+            }
         }
     }
 
@@ -324,7 +327,7 @@ fun PlayingWithAxiomsGameScreen(
                 )
 
                 Text(
-                    text = "${s.common.score}: $score/$TOTAL_ROUNDS",
+                    text = "${s.common.score}: $correctRounds/$TOTAL_ROUNDS",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
