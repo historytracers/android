@@ -202,6 +202,7 @@ fun RoadToSomewhereScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkAmongNumbers: () -> Unit = {},
     onNavigateToCarryingInAddition: () -> Unit = {},
+    onNavigateToOrderOfAddition: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -214,7 +215,7 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "practicing_addition")
+    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "order_of_addition", "practicing_addition")
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
     }
@@ -322,11 +323,13 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = {
+                        onNavigateToOrderOfAddition()
+                    },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("order_of_addition")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(

@@ -28,7 +28,9 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.iAmNotLikeYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.orderOfAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
+import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -48,6 +50,7 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToOrderOfAdditionIntro: () -> Unit = {},
     onNavigateToWalkAmongNumbersIntro: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToPracticingAdditionRoad: () -> Unit = {},
@@ -61,6 +64,8 @@ fun LatestAdditionScreen(
     val was = walkAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val pras = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
+    val oas = orderOfAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedIAmNotLikeYou by preferences.completedIAmNotLikeYouSections.collectAsState(initial = emptySet())
@@ -68,6 +73,22 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "order_of_addition",
+            label = oas.title,
+            icon = {
+                Text(
+                    text = rts.commutativeExpression,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "order_of_addition" in completedRoadToSomewhere },
+            markCompleted = {},
+            onNavigate = onNavigateToOrderOfAdditionIntro
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_addition",
             label = pras.title,
@@ -105,14 +126,6 @@ fun LatestAdditionScreen(
             isCompleted = { "equality_in_history" in completedIAmNotLikeYou },
             markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history") },
             onNavigate = onNavigateToHistoricalEqualityPyramidsIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "equality_in_history_metate",
-            label = ials.equalityInHistoryMetate,
-            icon = { Icon(painterResource(R.drawable.ic_metate), contentDescription = null, modifier = Modifier.size(48.dp)) },
-            isCompleted = { "equality_in_history_metate" in completedIAmNotLikeYou },
-            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate") },
-            onNavigate = onNavigateToHistoricalEqualityIntro
         )
     )
 
