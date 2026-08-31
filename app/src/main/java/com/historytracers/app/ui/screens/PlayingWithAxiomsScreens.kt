@@ -223,6 +223,16 @@ fun PlayingWithAxiomsGameScreen(
                 Spacer(Modifier.height(4.dp))
 
                 Text(
+                    text = xs.explanation,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
                     text = "${xs.levelWord} $level: ${levelDesc(xs, level)}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,

@@ -5,6 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 data class PlayingWithAxiomsScreenStrings(
     val title: String,
+    val explanation: String,
     val levelWord: String,
     val exerciseWord: String,
     val of: String,
@@ -25,6 +26,7 @@ data class PlayingWithAxiomsScreenStrings(
 
 val EnPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
     title = "Practicing the Axioms of Addition",
+    explanation = "In this game, you will complete the missing values to understand an axiom of addition.",
     levelWord = "Level",
     exerciseWord = "Exercise",
     of = "of",
@@ -45,6 +47,7 @@ val EnPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
 
 val PtPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
     title = "Praticando os axiomas da adi\u00e7\u00e3o",
+    explanation = "Neste jogo, voc\u00ea completar\u00e1 os valores que faltam para entender um axioma da adi\u00e7\u00e3o.",
     levelWord = "N\u00edvel",
     exerciseWord = "Exerc\u00edcio",
     of = "de",
@@ -65,6 +68,7 @@ val PtPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
 
 val EsPlayingWithAxiomsScreenStrings = PlayingWithAxiomsScreenStrings(
     title = "Practicando los axiomas de la suma",
+    explanation = "En este juego, completar\u00e1s los valores que faltan para entender un axioma de la suma.",
     levelWord = "Nivel",
     exerciseWord = "Ejercicio",
     of = "de",
