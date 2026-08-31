@@ -21,14 +21,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.iAmNotLikeYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.orderOfAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkAmongNumbersScreenStringsForLanguage
@@ -50,6 +49,7 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToOrderOfAdditionIntro: () -> Unit = {},
     onNavigateToWalkAmongNumbersIntro: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
@@ -60,19 +60,34 @@ fun LatestAdditionScreen(
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ials = iAmNotLikeYouScreenStringsForLanguage(LocalAppLanguage.current)
     val was = walkAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val pras = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
     val oas = orderOfAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
-    val completedIAmNotLikeYou by preferences.completedIAmNotLikeYouSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "playing_with_axioms",
+            label = pwas.title,
+            icon = {
+                Text(
+                    text = rts.axiomsExpression,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnButtonYellow,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "playing_with_axioms" in completedRoadToSomewhere },
+            markCompleted = {},
+            onNavigate = onNavigateToPlayingWithAxioms
+        ),
         LatestAdditionEntry(
             sectionId = "order_of_addition",
             label = oas.title,
@@ -118,14 +133,6 @@ fun LatestAdditionScreen(
             isCompleted = { "walk_among_numbers" in completedRoadToSomewhere },
             markCompleted = {},
             onNavigate = onNavigateToWalkAmongNumbersIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "equality_in_history",
-            label = ials.equalityInHistoryPyramids,
-            icon = { Icon(painterResource(R.drawable.ic_pyramid), contentDescription = null, modifier = Modifier.size(48.dp)) },
-            isCompleted = { "equality_in_history" in completedIAmNotLikeYou },
-            markCompleted = { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history") },
-            onNavigate = onNavigateToHistoricalEqualityPyramidsIntro
         )
     )
 

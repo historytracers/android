@@ -157,6 +157,7 @@ sealed class Screen(val route: String) {
     data object OrderOfAdditionCommutative : Screen("order_of_addition_commutative")
     data object OrderOfAdditionQuestion : Screen("order_of_addition_question")
     data object OrderOfAdditionConclusion : Screen("order_of_addition_conclusion")
+    data object PlayingWithAxiomsGame : Screen("playing_with_axioms_game")
     data object Abacus : Screen("abacus")
     data object Settings : Screen("settings")
     data object LatestAddition : Screen("latest_addition")

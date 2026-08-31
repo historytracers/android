@@ -92,7 +92,7 @@
   - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
   - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
   - **Yupana** (2): `hands_on_yupana`, `moving_in_yupana`
-  - **Road to Somewhere** (4): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `practicing_addition`
+  - **Road to Somewhere** (5): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `practicing_addition`
 
 ## Latest Addition (Main Menu)
 
@@ -101,7 +101,7 @@
 - Each entry is a button that navigates directly to that screen and marks its section completed on tap (`mark[Hub]SectionCompleted(sectionId)`); its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `order_of_addition` (The Order of Addition), `practicing_addition` (Practicing Addition), `carrying_in_addition` (Carrying in Addition), `walk_among_numbers` (Walking Among Numbers), `equality_in_history` (Equality in History – Pyramids).
+- Current list (latest first): `playing_with_axioms` (Practicing the Axioms of Addition), `order_of_addition` (The Order of Addition), `practicing_addition` (Practicing Addition), `carrying_in_addition` (Carrying in Addition), `walk_among_numbers` (Walking Among Numbers).
 
 ## New Main-Screen Buttons (Sun Badge)
 
