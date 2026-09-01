@@ -204,6 +204,7 @@ fun RoadToSomewhereScreen(
     onNavigateToCarryingInAddition: () -> Unit = {},
     onNavigateToOrderOfAddition: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
+    onNavigateToRunningAmongNumbers: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -216,7 +217,7 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "practicing_addition")
+    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "running_among_numbers", "practicing_addition")
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
     }
@@ -388,14 +389,13 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
-                    enabled = false,
+                    onClick = {
+                        onNavigateToRunningAmongNumbers()
+                    },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
-                        disabledContainerColor = ButtonYellow,
-                        disabledContentColor = OnButtonYellow
+                        containerColor = if (completedSections.contains("running_among_numbers")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(
