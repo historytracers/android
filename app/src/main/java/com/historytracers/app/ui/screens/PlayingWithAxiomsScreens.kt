@@ -343,7 +343,7 @@ fun PlayingWithAxiomsGameScreen(
                     )
                     levelCompleteShown -> FeedbackRow(
                         icon = { Icon(Icons.Filled.EmojiEvents, contentDescription = null, modifier = Modifier.size(20.dp)) },
-                        text = s.common.levelComplete,
+                        text = xs.levelComplete.format(level),
                         color = MaterialTheme.colorScheme.primary
                     )
                     gameCompleteShown -> FeedbackRow(

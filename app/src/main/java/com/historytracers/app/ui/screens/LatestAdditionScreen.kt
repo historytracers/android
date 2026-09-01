@@ -8,7 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.automirrored.filled.DirectionsRun
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,7 +30,7 @@ import com.historytracers.app.ui.features.orderOfAdditionScreenStringsForLanguag
 import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
-import com.historytracers.app.ui.features.walkAmongNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -51,20 +51,20 @@ fun LatestAdditionScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToOrderOfAdditionIntro: () -> Unit = {},
-    onNavigateToWalkAmongNumbersIntro: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToPracticingAdditionRoad: () -> Unit = {},
+    onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val was = walkAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val pras = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
     val oas = orderOfAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
+    val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -72,6 +72,14 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "running_among_numbers",
+            label = rnas.title,
+            icon = { Icon(Icons.AutoMirrored.Filled.DirectionsRun, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
+            isCompleted = { "running_among_numbers" in completedRoadToSomewhere },
+            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("running_among_numbers") },
+            onNavigate = onNavigateToRunningAmongNumbersIntro
+        ),
         LatestAdditionEntry(
             sectionId = "playing_with_axioms",
             label = pwas.title,
@@ -125,14 +133,6 @@ fun LatestAdditionScreen(
             isCompleted = { "carrying_in_addition" in completedRoadToSomewhere },
             markCompleted = { preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition") },
             onNavigate = onNavigateToCarryingInAdditionIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "walk_among_numbers",
-            label = was.title,
-            icon = { Icon(Icons.AutoMirrored.Filled.DirectionsWalk, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
-            isCompleted = { "walk_among_numbers" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("walk_among_numbers") },
-            onNavigate = onNavigateToWalkAmongNumbersIntro
         )
     )
 
