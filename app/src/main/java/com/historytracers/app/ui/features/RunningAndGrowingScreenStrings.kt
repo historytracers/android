@@ -9,6 +9,8 @@ data class RunningAndGrowingScreenStrings(
     val resultExpression: String,
     val theResultIs: String,
     val inversion: String,
+    val connectingTheMultiplication: String,
+    val drawingMultiplication: String,
 )
 
 val EnRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
@@ -17,6 +19,8 @@ val EnRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
     resultExpression = "7 x 7 + 7=?",
     theResultIs = "The result is",
     inversion = "Inversion",
+    connectingTheMultiplication = "Connecting the multiplication",
+    drawingMultiplication = "Drawing multiplication",
 )
 
 val PtRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
@@ -25,6 +29,8 @@ val PtRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
     resultExpression = "7 x 7 + 7=?",
     theResultIs = "O resultado \u00e9",
     inversion = "Invers\u00e3o",
+    connectingTheMultiplication = "Conectando a multiplica\u00e7\u00e3o",
+    drawingMultiplication = "Desenhando a multiplica\u00e7\u00e3o",
 )
 
 val EsRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
@@ -33,6 +39,8 @@ val EsRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
     resultExpression = "7 x 7 + 7=?",
     theResultIs = "El resultado es",
     inversion = "Inversi\u00f3n",
+    connectingTheMultiplication = "Conectando la multiplicaci\u00f3n",
+    drawingMultiplication = "Dibujando la multiplicaci\u00f3n",
 )
 
 val LocalRunningAndGrowingScreenStrings = staticCompositionLocalOf { EnRunningAndGrowingScreenStrings }
