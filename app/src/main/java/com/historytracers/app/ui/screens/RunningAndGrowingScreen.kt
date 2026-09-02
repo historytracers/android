@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +26,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 fun RunningAndGrowingScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToAddingTheSameNumber: () -> Unit = {},
-    onNavigateToTheResultIs: () -> Unit = {}
+    onNavigateToTheResultIs: () -> Unit = {},
+    onNavigateToInversion: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -114,6 +116,35 @@ fun RunningAndGrowingScreen(
 
                 Text(
                     text = xs.theResultIs,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = { onNavigateToInversion() },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Icon(
+                        Icons.Filled.SwapHoriz,
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.inversion,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
