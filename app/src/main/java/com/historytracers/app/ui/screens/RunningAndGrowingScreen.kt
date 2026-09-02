@@ -24,7 +24,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 @Composable
 fun RunningAndGrowingScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToAddingTheSameNumber: () -> Unit = {}
+    onNavigateToAddingTheSameNumber: () -> Unit = {},
+    onNavigateToTheResultIs: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -83,6 +84,36 @@ fun RunningAndGrowingScreen(
 
                 Text(
                     text = xs.addingTheSameNumber,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = { onNavigateToTheResultIs() },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.resultExpression,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.theResultIs,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
