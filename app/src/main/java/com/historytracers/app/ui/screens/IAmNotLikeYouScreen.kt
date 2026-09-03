@@ -113,11 +113,7 @@ fun IAmNotLikeYouScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("to_be_or_not_to_be")
-                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("to_be_or_not_to_be") }
-                    onNavigateToEquality()
-                },
+                onClick = { onNavigateToEquality() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -145,11 +141,7 @@ fun IAmNotLikeYouScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("totally_equal")
-                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("totally_equal") }
-                    onNavigateToTotallyEqual()
-                },
+                onClick = { onNavigateToTotallyEqual() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -177,11 +169,7 @@ fun IAmNotLikeYouScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("equality_in_history_metate")
-                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate") }
-                    onNavigateToHistoricalEquality()
-                },
+                onClick = { onNavigateToHistoricalEquality() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -209,11 +197,7 @@ fun IAmNotLikeYouScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("equality_in_history")
-                    scope.launch { preferences.markIAmNotLikeYouSectionCompleted("equality_in_history") }
-                    onNavigateToHistoricalEqualityPyramids()
-                },
+                onClick = { onNavigateToHistoricalEqualityPyramids() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(

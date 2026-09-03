@@ -192,6 +192,7 @@ private fun FirstVoiceGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("first_voice")
             }
         }
     }

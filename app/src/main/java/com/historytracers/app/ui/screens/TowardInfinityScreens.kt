@@ -210,6 +210,7 @@ private fun TowardInfinityGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("going_to_infinity")
             }
         }
     }

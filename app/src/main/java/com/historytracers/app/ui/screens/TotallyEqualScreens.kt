@@ -349,6 +349,7 @@ private fun TotallyEqualGameContent(
             award(node.score)
             if (onNavigateToIAmNotLikeYou != null) {
                 preferences.recordLessonCompletion()
+                preferences.markIAmNotLikeYouSectionCompleted("totally_equal")
             }
         }
     }

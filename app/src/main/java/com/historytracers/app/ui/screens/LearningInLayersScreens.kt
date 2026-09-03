@@ -325,6 +325,7 @@ private fun LearningInLayersGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("learning_in_shells")
             }
         }
     }

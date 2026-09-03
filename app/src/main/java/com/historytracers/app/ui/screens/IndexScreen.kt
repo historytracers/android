@@ -53,7 +53,7 @@ private val abacusSectionIds = listOf(
 )
 
 private val yupanaSectionIds = listOf(
-    "hands_on_yupana", "moving_in_yupana"
+    "hands_on_yupana", "moving_in_yupana", "practicing_addition"
 )
 
 private val roadToSomewhereSectionIds = listOf(

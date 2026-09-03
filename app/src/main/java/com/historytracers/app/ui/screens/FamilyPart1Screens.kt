@@ -277,6 +277,7 @@ private fun FamilyPart1GameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("family_part1")
             }
         }
     }

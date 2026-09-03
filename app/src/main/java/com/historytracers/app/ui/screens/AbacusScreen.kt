@@ -75,7 +75,7 @@ fun AbacusScreen(
 
     val group1Controller = remember {
         LevelGroupController(
-            listOf("soroban_writing", "suanpan_writing", "large_numbers_writing"),
+            listOf("soroban_writing", "suanpan_writing", "schyoty_writing", "large_numbers_writing"),
             completedSections
         )
     }
@@ -93,7 +93,7 @@ fun AbacusScreen(
     }
     val group4Controller = remember {
         LevelGroupController(
-            listOf("returning_with_abacus", "subtracting_with_abacus"),
+            listOf("subtracting_with_abacus"),
             completedSections
         )
     }

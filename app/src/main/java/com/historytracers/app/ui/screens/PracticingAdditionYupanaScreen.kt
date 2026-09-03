@@ -305,6 +305,7 @@ fun PracticingAdditionYupanaScreen(
                             finalCongratsShown = true
                             onScoreChanged(currentScore + 2)
                             scope.launch { preferences.recordLessonCompletion() }
+                            scope.launch { preferences.markYupanaSectionCompleted("practicing_addition") }
                         } else {
                             feedbackMessage = ys.ypCorrectMessage
                         }

@@ -275,6 +275,7 @@ private fun EqualityGameContent(
             award(node.score)
             if (onNavigateToIAmNotLikeYou != null) {
                 preferences.recordLessonCompletion()
+                preferences.markIAmNotLikeYouSectionCompleted("to_be_or_not_to_be")
             }
         }
     }

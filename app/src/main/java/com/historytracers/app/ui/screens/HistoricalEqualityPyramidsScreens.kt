@@ -316,6 +316,7 @@ private fun HistoricalEqualityPyramidsGameContent(
             award(node.score)
             if (onNavigateToIAmNotLikeYou != null) {
                 preferences.recordLessonCompletion()
+                preferences.markIAmNotLikeYouSectionCompleted("equality_in_history")
             }
         }
     }

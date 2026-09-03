@@ -82,7 +82,7 @@ fun FirstStepsScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "my_body", "drawing", "numbers", "sequence_game", "family_part1", "building", "natural_families_part2", "going_to_infinity", "limits_min_max", "where_are_they"),
+            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game", "sequence_game_families", "family_part1", "building", "natural_families_part2", "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"),
             completedSections
         )
     }
@@ -131,11 +131,7 @@ fun FirstStepsScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("i_dont_know")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("i_dont_know") }
-                    onNavigateToSocrates()
-                },
+                onClick = { onNavigateToSocrates() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -164,11 +160,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("learning_in_shells")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("learning_in_shells") }
-                    onNavigateToLearningInLayers()
-                },
+                onClick = { onNavigateToLearningInLayers() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -206,11 +198,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("how_do_i_learn")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("how_do_i_learn") }
-                    onNavigateToHowDoILearn()
-                },
+                onClick = { onNavigateToHowDoILearn() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -287,11 +275,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("my_hands")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("my_hands") }
-                    onNavigateToMyHands()
-                },
+                onClick = { onNavigateToMyHands() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -320,11 +304,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("first_hands")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("first_hands") }
-                    onNavigateToFirstHands()
-                },
+                onClick = { onNavigateToFirstHands() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -353,11 +333,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("first_voice")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("first_voice") }
-                    onNavigateToFirstVoice()
-                },
+                onClick = { onNavigateToFirstVoice() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -409,11 +385,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("my_body")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("my_body") }
-                    onNavigateToMyBody()
-                },
+                onClick = { onNavigateToMyBody() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -442,11 +414,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("drawing")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("drawing") }
-                    onNavigateToDrawingAndCouting()
-                },
+                onClick = { onNavigateToDrawingAndCouting() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -475,11 +443,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("numbers")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("numbers") }
-                    onNavigateToNumbers()
-                },
+                onClick = { onNavigateToNumbers() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -508,11 +472,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("the_zero")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("the_zero") }
-                    onNavigateToTheZero()
-                },
+                onClick = { onNavigateToTheZero() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -541,11 +501,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("sequence_game")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("sequence_game") }
-                    onNavigateToSequenceGame()
-                },
+                onClick = { onNavigateToSequenceGame() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -574,11 +530,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("family_part1")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("family_part1") }
-                    onNavigateToFamilyPart1()
-                },
+                onClick = { onNavigateToFamilyPart1() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -637,11 +589,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("building")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("building") }
-                    onNavigateToBuildingGame()
-                },
+                onClick = { onNavigateToBuildingGame() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -670,11 +618,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("natural_families_part2")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("natural_families_part2") }
-                    onNavigateToNaturalFamiliesPart2()
-                },
+                onClick = { onNavigateToNaturalFamiliesPart2() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -732,11 +676,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("going_to_infinity")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("going_to_infinity") }
-                    onNavigateToTowardInfinity()
-                },
+                onClick = { onNavigateToTowardInfinity() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -765,11 +705,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("limits_min_max")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("limits_min_max") }
-                    onNavigateToLimitsMinMax()
-                },
+                onClick = { onNavigateToLimitsMinMax() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
@@ -817,11 +753,7 @@ fun FirstStepsScreen(
             Spacer(Modifier.height(48.dp))
 
             FilledIconButton(
-                onClick = {
-                    controller.markCompleted("where_are_they")
-                    scope.launch { preferences.markFirstStepsSectionCompleted("where_are_they") }
-                    onNavigateToWhereAreThey()
-                },
+                onClick = { onNavigateToWhereAreThey() },
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
