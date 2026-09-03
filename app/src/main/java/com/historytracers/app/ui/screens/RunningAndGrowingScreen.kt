@@ -20,12 +20,29 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.runningAndGrowingScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.launch
+
+private val runningAndGrowingSectionIds = listOf(
+    "adding_the_same_number",
+    "the_result_is",
+    "inversion",
+    "connecting_the_multiplication",
+    "drawing_multiplication"
+)
 
 @Composable
 private fun DotsOnLineIcon(color: Color, modifier: Modifier = Modifier) {
@@ -55,7 +72,10 @@ private fun DotsOnLineIcon(color: Color, modifier: Modifier = Modifier) {
 
 @Composable
 fun RunningAndGrowingScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {},
     onNavigateToAddingTheSameNumber: () -> Unit = {},
     onNavigateToTheResultIs: () -> Unit = {},
     onNavigateToInversion: () -> Unit = {},
@@ -65,6 +85,26 @@ fun RunningAndGrowingScreen(
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = runningAndGrowingScreenStringsForLanguage(LocalAppLanguage.current)
+
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedRunningAndGrowingSections.collectAsState(initial = emptySet())
+    val scope = rememberCoroutineScope()
+
+    val controller = remember {
+        LevelGroupController(runningAndGrowingSectionIds, completedSections)
+    }
+    LaunchedEffect(completedSections) {
+        controller.syncFromPersisted(completedSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimRunningAndGrowingLevel() {
+        if ("running_and_growing" in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed("running_and_growing") }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -103,7 +143,7 @@ fun RunningAndGrowingScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("adding_the_same_number")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
@@ -133,7 +173,7 @@ fun RunningAndGrowingScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("the_result_is")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
@@ -163,7 +203,7 @@ fun RunningAndGrowingScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("inversion")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(
@@ -192,7 +232,7 @@ fun RunningAndGrowingScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("connecting_the_multiplication")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     DotsOnLineIcon(
@@ -219,7 +259,7 @@ fun RunningAndGrowingScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("drawing_multiplication")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(
@@ -234,6 +274,40 @@ fun RunningAndGrowingScreen(
 
                 Text(
                     text = xs.drawingMultiplication,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimRunningAndGrowingLevel()
+                        onNavigateToCongratulation()
+                    },
+                    enabled = controller.allCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("running_and_growing" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
