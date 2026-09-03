@@ -253,6 +253,7 @@ private fun TheZeroGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("the_zero")
             }
         }
     }

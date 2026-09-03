@@ -443,6 +443,7 @@ private fun LimitsMinMaxGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("limits_min_max")
             }
         }
     }

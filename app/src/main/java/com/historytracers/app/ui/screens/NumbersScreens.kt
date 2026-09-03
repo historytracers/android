@@ -264,6 +264,7 @@ private fun NumbersGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("numbers")
             }
         }
     }

@@ -22,7 +22,6 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.indexScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -54,7 +53,7 @@ private val abacusSectionIds = listOf(
 )
 
 private val yupanaSectionIds = listOf(
-    "hands_on_yupana", "moving_in_yupana"
+    "hands_on_yupana", "moving_in_yupana", "practicing_addition"
 )
 
 private val roadToSomewhereSectionIds = listOf(
@@ -93,12 +92,12 @@ fun IndexScreen(
     onNavigateToWorkout: () -> Unit = {},
     onNavigateToAbacus: () -> Unit = {},
     onNavigateToYupana: () -> Unit = {},
-    onNavigateToRoadToSomewhere: () -> Unit = {}
+    onNavigateToRoadToSomewhere: () -> Unit = {},
+    onNavigateToRunningAndGrowing: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
-    val xs = indexScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -215,7 +214,7 @@ fun IndexScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledTonalButton(
-                onClick = { /* TODO */ },
+                onClick = { onNavigateToRunningAndGrowing() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = ButtonYellow,
@@ -230,7 +229,7 @@ fun IndexScreen(
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
-                    text = xs.runningAndGrowing,
+                    text = hts.runningAndGrowing,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

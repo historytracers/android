@@ -58,7 +58,7 @@ fun YupanaScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("quipu", "hands_on_yupana", "large_numbers"),
+            listOf("hands_on_yupana"),
             completedSections
         )
     }

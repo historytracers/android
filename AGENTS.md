@@ -91,7 +91,7 @@
   - **I Am (Not) Like You** (5): `to_be_or_not_to_be`, `totally_equal`, `equality_in_history_metate`, `equality_in_history`, `equal_same_group_or_different`
   - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
   - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
-  - **Yupana** (2): `hands_on_yupana`, `moving_in_yupana`
+  - **Yupana** (3): `hands_on_yupana`, `moving_in_yupana`, `practicing_addition`
   - **Road to Somewhere** (6): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `running_among_numbers`, `practicing_addition`
 
 ## Latest Addition (Main Menu)

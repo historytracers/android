@@ -302,6 +302,7 @@ private fun MyHandsGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("my_hands")
             }
         }
     }

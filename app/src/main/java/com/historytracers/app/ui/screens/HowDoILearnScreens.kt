@@ -316,6 +316,7 @@ private fun HowDoILearnGameContent(
             award(node.score)
             if (onNavigateToFirstSteps != null) {
                 preferences.recordLessonCompletion()
+                preferences.markFirstStepsSectionCompleted("how_do_i_learn")
             }
         }
     }

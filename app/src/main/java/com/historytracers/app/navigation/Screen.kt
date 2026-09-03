@@ -164,6 +164,7 @@ sealed class Screen(val route: String) {
     data object RunningAmongNumbersAdding : Screen("running_among_numbers_adding")
     data object RunningAmongNumbersQuestion : Screen("running_among_numbers_question")
     data object RunningAmongNumbersConclusion : Screen("running_among_numbers_conclusion")
+    data object RunningAndGrowing : Screen("running_and_growing")
     data object Abacus : Screen("abacus")
     data object Settings : Screen("settings")
     data object LatestAddition : Screen("latest_addition")
