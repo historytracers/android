@@ -34,7 +34,9 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private val runningAndGrowingSectionIds = listOf(
     "adding_the_same_number",
@@ -97,13 +99,27 @@ fun RunningAndGrowingScreen(
     LaunchedEffect(completedSections) {
         controller.syncFromPersisted(completedSections)
     }
+    val controllerCompleted by controller.completed.collectAsState()
+    val allSectionsComplete = runningAndGrowingSectionIds.all { it in controllerCompleted }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    var claimingLevel by remember { mutableStateOf(false) }
 
     fun claimRunningAndGrowingLevel() {
+        if (claimingLevel) return
         if ("running_and_growing" in claimedLevels) return
-        onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed("running_and_growing") }
+        claimingLevel = true
+        scope.launch {
+            try {
+                withContext(NonCancellable) {
+                    preferences.markLevelClaimed("running_and_growing")
+                }
+                onScoreChanged(currentScore + 10)
+                onNavigateToCongratulation()
+            } finally {
+                claimingLevel = false
+            }
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -284,11 +300,8 @@ fun RunningAndGrowingScreen(
                 Spacer(Modifier.height(48.dp))
 
                 FilledIconButton(
-                    onClick = {
-                        claimRunningAndGrowingLevel()
-                        onNavigateToCongratulation()
-                    },
-                    enabled = controller.allCompleted,
+                    onClick = { claimRunningAndGrowingLevel() },
+                    enabled = allSectionsComplete,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
