@@ -221,6 +221,7 @@ import com.historytracers.app.ui.screens.RunningAmongNumbersQuestionScreen
 import com.historytracers.app.ui.screens.RunningAmongNumbersReconstructionScreen
 import com.historytracers.app.ui.screens.RunningAmongNumbersTempleScreen
 import com.historytracers.app.ui.screens.RunningAndGrowingScreen
+import com.historytracers.app.ui.screens.TheResultIsScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersAxesScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersConclusionScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersHandsScreen
@@ -540,7 +541,22 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
+                            onNavigateToTheResultIs = { navController.navigate(Screen.TheResultIs.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TheResultIs.route) {
+                        TheResultIsScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.RoadToSomewhere.route) {
