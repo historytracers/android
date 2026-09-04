@@ -319,7 +319,6 @@ fun TheResultIsScreen(
     var currentValue by remember { mutableIntStateOf(0) }
     var roundComplete by remember { mutableStateOf(false) }
     var completionHandled by remember { mutableStateOf(false) }
-    var arrivalAwarded by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
 
@@ -365,13 +364,8 @@ fun TheResultIsScreen(
     LaunchedEffect(roundComplete) {
         if (roundComplete && !completionHandled) {
             completionHandled = true
+            preferences.recordLessonCompletion()
             preferences.markRunningAndGrowingSectionCompleted(SECTION_ID)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        if (!arrivalAwarded) {
-            arrivalAwarded = true
             onScoreChanged(currentScore + 2)
         }
     }
