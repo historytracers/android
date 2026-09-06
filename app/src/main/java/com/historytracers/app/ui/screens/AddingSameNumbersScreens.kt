@@ -4,8 +4,6 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Paint
-import android.graphics.Path
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -27,7 +25,6 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,27 +37,27 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
+import com.historytracers.app.ui.features.addingSameNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.components.drawHandNumbers
 import com.historytracers.app.ui.components.drawOneHand
-import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "f0d93bc2-6685-4feb-b173-d58a41412bad"
+private const val SMARTPHONE_GAME_FILE = "8844ab78-8d9a-48ff-89ce-21696cb88d89"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun CarryingInAdditionIntroScreen(
+fun AddingSameNumbersIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-1111-4a00-8000-000000000001",
+    AddingSameNumbersGameContent(
+        contentId = "4e57e3a8-9e51-4625-8170-a17d095f041e",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -69,15 +66,15 @@ fun CarryingInAdditionIntroScreen(
 }
 
 @Composable
-fun CarryingInAdditionAddingScreen(
+fun AddingSameNumbersBodyScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-2222-4a00-8000-000000000002",
+    AddingSameNumbersGameContent(
+        contentId = "4ea65579-0b5a-4a9a-91eb-8f4154bd8dcb",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -87,15 +84,15 @@ fun CarryingInAdditionAddingScreen(
 }
 
 @Composable
-fun CarryingInAdditionHiddenZeroScreen(
+fun AddingSameNumbersThinkScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-3333-4a00-8000-000000000003",
+    AddingSameNumbersGameContent(
+        contentId = "b6bf2269-f1e3-4e50-8b01-ebb00cc70d63",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -105,15 +102,15 @@ fun CarryingInAdditionHiddenZeroScreen(
 }
 
 @Composable
-fun CarryingInAdditionQuestionScreen(
+fun AddingSameNumbersCountOneScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-4444-4a00-8000-000000000004",
+    AddingSameNumbersGameContent(
+        contentId = "e8a045ce-e997-4f9f-8041-03002c27b010",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -123,15 +120,15 @@ fun CarryingInAdditionQuestionScreen(
 }
 
 @Composable
-fun CarryingInAdditionIdentityScreen(
+fun AddingSameNumbersCountFiveScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-5555-4a00-8000-000000000005",
+    AddingSameNumbersGameContent(
+        contentId = "03ed6a29-d19b-4dbe-9c49-9d43464d5558",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -141,15 +138,15 @@ fun CarryingInAdditionIdentityScreen(
 }
 
 @Composable
-fun CarryingInAdditionZeroInHandsScreen(
+fun AddingSameNumbersQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-7777-4a00-8000-000000000007",
+    AddingSameNumbersGameContent(
+        contentId = "55ef7e2d-40c2-4393-bb17-6056f3f84710",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -159,20 +156,38 @@ fun CarryingInAdditionZeroInHandsScreen(
 }
 
 @Composable
-fun CarryingInAdditionConclusionScreen(
+fun AddingSameNumbersNewSignScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToRoadToSomewhere: () -> Unit = {}
+    onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-6666-4a00-8000-000000000006",
+    AddingSameNumbersGameContent(
+        contentId = "0b581a82-aa6e-4a93-9874-8137b65f2597",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToRoadToSomewhere = onNavigateToRoadToSomewhere
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun AddingSameNumbersConclusionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateToRunningAndGrowing: () -> Unit = {}
+) {
+    AddingSameNumbersGameContent(
+        contentId = "44f9b325-1368-4fae-a8f5-b76cff53b6cc",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateToRunningAndGrowing = onNavigateToRunningAndGrowing
     )
 }
 
@@ -196,7 +211,7 @@ private fun isHandsSvg(text: String?): Boolean =
     text?.contains("<svg") == true && text.contains("hand-shape")
 
 @Composable
-internal fun CarryingHandsPair(modifier: Modifier = Modifier) {
+private fun CountingOneByOneHandsPair(modifier: Modifier = Modifier) {
     val handPath = remember { buildHandPath() }
 
     Canvas(
@@ -207,20 +222,20 @@ internal fun CarryingHandsPair(modifier: Modifier = Modifier) {
         val scale = size.width / 600f
         val cx = size.width / 2f
 
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
             color = Color(0xFFF4C2A1).toArgb()
-            style = Paint.Style.FILL
-            strokeJoin = Paint.Join.ROUND
+            style = android.graphics.Paint.Style.FILL
+            strokeJoin = android.graphics.Paint.Join.ROUND
         }
-        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val textPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
             color = android.graphics.Color.WHITE
-            textAlign = Paint.Align.CENTER
-            style = Paint.Style.FILL
+            textAlign = android.graphics.Paint.Align.CENTER
+            style = android.graphics.Paint.Style.FILL
         }
-        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val strokePaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
             color = android.graphics.Color.BLACK
-            textAlign = Paint.Align.CENTER
-            style = Paint.Style.STROKE
+            textAlign = android.graphics.Paint.Align.CENTER
+            style = android.graphics.Paint.Style.STROKE
             strokeWidth = 3f
         }
 
@@ -232,7 +247,14 @@ internal fun CarryingHandsPair(modifier: Modifier = Modifier) {
         drawOneHand(leftCx, handCy, handScale, isLeft = true, paint, handPath)
         drawOneHand(rightCx, handCy, handScale, isLeft = false, paint, handPath)
 
-        val rightNums = (1..5).map { it to (5 - it) }
+        val leftNums = listOf(6 to 0, 7 to 1, 8 to 2, 9 to 3, 10 to 4)
+        drawHandNumbers(
+            numbers = leftNums,
+            cx = leftCx, cy = handCy, handScale = handScale, isLeft = true,
+            textPaint = textPaint, strokePaint = strokePaint
+        )
+
+        val rightNums = listOf(1 to 4, 2 to 3, 3 to 2, 4 to 1, 5 to 0)
         val numberExtraOffsets = mapOf(
             1 to Offset(5f, 0f),
             2 to Offset(3f, 0f),
@@ -247,17 +269,65 @@ internal fun CarryingHandsPair(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun CarryingInAdditionGameContent(
+private fun AddingFiveByFiveHandsPair(modifier: Modifier = Modifier) {
+    val handPath = remember { buildHandPath() }
+
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(600f / 220f)
+    ) {
+        val scale = size.width / 600f
+        val cx = size.width / 2f
+
+        val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color(0xFFF4C2A1).toArgb()
+            style = android.graphics.Paint.Style.FILL
+            strokeJoin = android.graphics.Paint.Join.ROUND
+        }
+
+        val handScale = 0.55f * scale
+        val handCy = 110f * scale
+        val leftCx = cx - 140f * scale
+        val rightCx = cx + 100f * scale
+
+        drawOneHand(leftCx, handCy, handScale, isLeft = true, paint, handPath)
+        drawOneHand(rightCx, handCy, handScale, isLeft = false, paint, handPath)
+
+        val numberPaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = android.graphics.Color.WHITE
+            textAlign = android.graphics.Paint.Align.CENTER
+            style = android.graphics.Paint.Style.FILL
+            textSize = 38f * handScale * 2.1f
+        }
+        val numberStrokePaint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = android.graphics.Color.BLACK
+            textAlign = android.graphics.Paint.Align.CENTER
+            style = android.graphics.Paint.Style.STROKE
+            strokeWidth = 3f
+            textSize = 38f * handScale * 2.1f
+        }
+
+        val numY = handCy - 80f * handScale
+        drawContext.canvas.nativeCanvas.drawText("5", leftCx, numY, numberStrokePaint)
+        drawContext.canvas.nativeCanvas.drawText("5", leftCx, numY, numberPaint)
+        drawContext.canvas.nativeCanvas.drawText("5", rightCx, numY, numberStrokePaint)
+        drawContext.canvas.nativeCanvas.drawText("5", rightCx, numY, numberPaint)
+    }
+}
+
+@Composable
+private fun AddingSameNumbersGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToRoadToSomewhere: (() -> Unit)? = null
+    onNavigateToRunningAndGrowing: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = addingSameNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -295,8 +365,8 @@ private fun CarryingInAdditionGameContent(
         if (node != null && !arrivalHandled) {
             arrivalHandled = true
             award(node.score)
-            if (onNavigateToRoadToSomewhere != null) {
-                preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition")
+            if (onNavigateToRunningAndGrowing != null) {
+                preferences.markRunningAndGrowingSectionCompleted("adding_the_same_number")
                 preferences.recordLessonCompletion()
             }
         }
@@ -355,7 +425,13 @@ private fun CarryingInAdditionGameContent(
                                 html = text.text ?: "",
                                 imgDesc = text.imgdesc
                             )
-                            isHandsSvg(text.text) -> CarryingHandsPair()
+                            isHandsSvg(text.text) -> {
+                                if (contentId == "03ed6a29-d19b-4dbe-9c49-9d43464d5558") {
+                                    AddingFiveByFiveHandsPair()
+                                } else {
+                                    CountingOneByOneHandsPair()
+                                }
+                            }
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
                             else -> TextRenderer(text = text, repo = repo)
                         }
@@ -363,7 +439,7 @@ private fun CarryingInAdditionGameContent(
                     }
 
                     if (content.answer != null) {
-                        CarryingAnswerSection(
+                        AddingSameNumbersAnswerSection(
                             content = content,
                             onAnswered = { points -> award(points) }
                         )
@@ -411,16 +487,16 @@ private fun CarryingInAdditionGameContent(
                         }
                     }
 
-                    if (onNavigateToRoadToSomewhere != null) {
+                    if (onNavigateToRunningAndGrowing != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToRoadToSomewhere,
+                            onClick = onNavigateToRunningAndGrowing,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.aRoadToSomewhere, fontWeight = FontWeight.Bold)
+                            Text(hts.runningAndGrowing, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -439,7 +515,7 @@ private fun CarryingInAdditionGameContent(
             }
 
             content?.sourceMenu?.takeIf { it.isNotEmpty() }?.let { sources ->
-                CarryingSourcesMenu(
+                AddingSameNumbersSourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -449,12 +525,12 @@ private fun CarryingInAdditionGameContent(
 }
 
 @Composable
-private fun CarryingAnswerSection(
+private fun AddingSameNumbersAnswerSection(
     content: SMGameContent,
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = addingSameNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
@@ -526,7 +602,7 @@ private fun CarryingAnswerSection(
 }
 
 @Composable
-private fun CarryingSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
+private fun AddingSameNumbersSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
