@@ -15,12 +15,12 @@ data class RunningAndGrowingScreenStrings(
 
 val EnRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(
     addingSameNumberExpression = "4+4+..",
-    addingTheSameNumber = "Adding the same number",
+    addingTheSameNumber = "Adding the Same Number",
     resultExpression = "7 x 7 + 7=?",
-    theResultIs = "The result is",
+    theResultIs = "The Result Is",
     inversion = "Inversion",
-    connectingTheMultiplication = "Connecting the multiplication",
-    drawingMultiplication = "Drawing multiplication",
+    connectingTheMultiplication = "Connecting the Multiplication",
+    drawingMultiplication = "Drawing Multiplication",
 )
 
 val PtRunningAndGrowingScreenStrings = RunningAndGrowingScreenStrings(

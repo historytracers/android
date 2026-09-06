@@ -4,10 +4,7 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Paint
-import android.graphics.Path
 import android.widget.Toast
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,13 +18,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,32 +28,31 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
+import kotlinx.coroutines.flow.first
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.HtmlRenderer
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
-import com.historytracers.app.ui.components.buildHandPath
-import com.historytracers.app.ui.components.drawHandNumbers
-import com.historytracers.app.ui.components.drawOneHand
-import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.drawingTheTableOfZeroScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 
-private const val SMARTPHONE_GAME_FILE = "f0d93bc2-6685-4feb-b173-d58a41412bad"
+private const val SMARTPHONE_GAME_FILE = "002ce1ce-a873-47e9-87ee-f071c1cc4429"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 @Composable
-fun CarryingInAdditionIntroScreen(
+fun DrawingTheTableOfZeroIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-1111-4a00-8000-000000000001",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "ab6e5e99-4673-4147-93ed-2964b2b2d78a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -69,15 +61,15 @@ fun CarryingInAdditionIntroScreen(
 }
 
 @Composable
-fun CarryingInAdditionAddingScreen(
+fun DrawingTheTableOfZeroRuleScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-2222-4a00-8000-000000000002",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "bbb3ae06-bcec-42f9-8eb1-7e9a7e4bf35a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -87,15 +79,15 @@ fun CarryingInAdditionAddingScreen(
 }
 
 @Composable
-fun CarryingInAdditionHiddenZeroScreen(
+fun DrawingTheTableOfZeroTableScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-3333-4a00-8000-000000000003",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "c601f869-fa3b-4bcc-a247-10f4d7aa07ae",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -105,15 +97,15 @@ fun CarryingInAdditionHiddenZeroScreen(
 }
 
 @Composable
-fun CarryingInAdditionQuestionScreen(
+fun DrawingTheTableOfZeroDrawingScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-4444-4a00-8000-000000000004",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "157b30ee-cbd6-4bc2-afc2-5d1fccceb6a3",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -123,15 +115,15 @@ fun CarryingInAdditionQuestionScreen(
 }
 
 @Composable
-fun CarryingInAdditionIdentityScreen(
+fun DrawingTheTableOfZeroQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-5555-4a00-8000-000000000005",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "20ee4936-b75a-42a8-9b57-73de7601b3a6",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -141,15 +133,15 @@ fun CarryingInAdditionIdentityScreen(
 }
 
 @Composable
-fun CarryingInAdditionZeroInHandsScreen(
+fun DrawingTheTableOfZeroFlatLineScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-7777-4a00-8000-000000000007",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "53a6fc0f-5cfa-464e-9e91-4697760e77de",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -159,20 +151,20 @@ fun CarryingInAdditionZeroInHandsScreen(
 }
 
 @Composable
-fun CarryingInAdditionConclusionScreen(
+fun DrawingTheTableOfZeroConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToRoadToSomewhere: () -> Unit = {}
+    onNavigateToRunningAndGrowing: () -> Unit = {}
 ) {
-    CarryingInAdditionGameContent(
-        contentId = "a1b2c3d4-6666-4a00-8000-000000000006",
+    DrawingTheTableOfZeroGameContent(
+        contentId = "ddeb209a-72e7-44af-8e8d-ee707c96b5fc",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToRoadToSomewhere = onNavigateToRoadToSomewhere
+        onNavigateToRunningAndGrowing = onNavigateToRunningAndGrowing
     )
 }
 
@@ -192,72 +184,18 @@ private fun sourceUrl(page: String): String =
 private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
-private fun isHandsSvg(text: String?): Boolean =
-    text?.contains("<svg") == true && text.contains("hand-shape")
-
 @Composable
-internal fun CarryingHandsPair(modifier: Modifier = Modifier) {
-    val handPath = remember { buildHandPath() }
-
-    Canvas(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(600f / 220f)
-    ) {
-        val scale = size.width / 600f
-        val cx = size.width / 2f
-
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color(0xFFF4C2A1).toArgb()
-            style = Paint.Style.FILL
-            strokeJoin = Paint.Join.ROUND
-        }
-        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = android.graphics.Color.WHITE
-            textAlign = Paint.Align.CENTER
-            style = Paint.Style.FILL
-        }
-        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = android.graphics.Color.BLACK
-            textAlign = Paint.Align.CENTER
-            style = Paint.Style.STROKE
-            strokeWidth = 3f
-        }
-
-        val handScale = 0.55f * scale
-        val handCy = 110f * scale
-        val leftCx = cx - 140f * scale
-        val rightCx = cx + 100f * scale
-
-        drawOneHand(leftCx, handCy, handScale, isLeft = true, paint, handPath)
-        drawOneHand(rightCx, handCy, handScale, isLeft = false, paint, handPath)
-
-        val rightNums = (1..5).map { it to (5 - it) }
-        val numberExtraOffsets = mapOf(
-            1 to Offset(5f, 0f),
-            2 to Offset(3f, 0f),
-        )
-        drawHandNumbers(
-            numbers = rightNums,
-            cx = rightCx, cy = handCy, handScale = handScale, isLeft = false,
-            textPaint = textPaint, strokePaint = strokePaint,
-            extraOffsets = numberExtraOffsets
-        )
-    }
-}
-
-@Composable
-private fun CarryingInAdditionGameContent(
+private fun DrawingTheTableOfZeroGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToRoadToSomewhere: (() -> Unit)? = null
+    onNavigateToRunningAndGrowing: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = drawingTheTableOfZeroScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
@@ -288,16 +226,17 @@ private fun CarryingInAdditionGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
-    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-
     LaunchedEffect(content) {
         val node = content
-        if (node != null && !arrivalHandled) {
-            arrivalHandled = true
-            award(node.score)
-            if (onNavigateToRoadToSomewhere != null) {
-                preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition")
+        if (node != null) {
+            if (onNavigateToRunningAndGrowing != null) {
+                preferences.markRunningAndGrowingSectionCompleted("connecting_the_multiplication")
                 preferences.recordLessonCompletion()
+            }
+            val alreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
+            if (!alreadyAwarded) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
             }
         }
     }
@@ -355,7 +294,9 @@ private fun CarryingInAdditionGameContent(
                                 html = text.text ?: "",
                                 imgDesc = text.imgdesc
                             )
-                            isHandsSvg(text.text) -> CarryingHandsPair()
+                            text.format?.contains("html") == true -> HtmlRenderer(
+                                html = text.text ?: ""
+                            )
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
                             else -> TextRenderer(text = text, repo = repo)
                         }
@@ -363,7 +304,7 @@ private fun CarryingInAdditionGameContent(
                     }
 
                     if (content.answer != null) {
-                        CarryingAnswerSection(
+                        DrawingTheTableOfZeroAnswerSection(
                             content = content,
                             onAnswered = { points -> award(points) }
                         )
@@ -411,16 +352,16 @@ private fun CarryingInAdditionGameContent(
                         }
                     }
 
-                    if (onNavigateToRoadToSomewhere != null) {
+                    if (onNavigateToRunningAndGrowing != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToRoadToSomewhere,
+                            onClick = onNavigateToRunningAndGrowing,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.aRoadToSomewhere, fontWeight = FontWeight.Bold)
+                            Text(hts.runningAndGrowing, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -439,7 +380,7 @@ private fun CarryingInAdditionGameContent(
             }
 
             content?.sourceMenu?.takeIf { it.isNotEmpty() }?.let { sources ->
-                CarryingSourcesMenu(
+                DrawingTheTableOfZeroSourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -449,12 +390,12 @@ private fun CarryingInAdditionGameContent(
 }
 
 @Composable
-private fun CarryingAnswerSection(
+private fun DrawingTheTableOfZeroAnswerSection(
     content: SMGameContent,
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = drawingTheTableOfZeroScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
@@ -526,7 +467,7 @@ private fun CarryingAnswerSection(
 }
 
 @Composable
-private fun CarryingSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
+private fun DrawingTheTableOfZeroSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current

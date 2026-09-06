@@ -205,6 +205,35 @@ import com.historytracers.app.ui.screens.CarryingInAdditionIdentityScreen
 import com.historytracers.app.ui.screens.CarryingInAdditionIntroScreen
 import com.historytracers.app.ui.screens.CarryingInAdditionQuestionScreen
 import com.historytracers.app.ui.screens.CarryingInAdditionZeroInHandsScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersIntroScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersBodyScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersThinkScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersCountOneScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersCountFiveScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersQuestionScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersNewSignScreen
+import com.historytracers.app.ui.screens.AddingSameNumbersConclusionScreen
+import com.historytracers.app.ui.screens.TheResultIsScreen
+import com.historytracers.app.ui.screens.InversionIntroScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroIntroScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroRuleScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroTableScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroDrawingScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroQuestionScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroFlatLineScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroConclusionScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneIntroScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneRuleScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneDrawingScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneQuestionScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneBoxesScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneConnectScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfOneConclusionScreen
+import com.historytracers.app.ui.screens.InversionSquaresGoingUpScreen
+import com.historytracers.app.ui.screens.InversionSquaresLyingDownScreen
+import com.historytracers.app.ui.screens.InversionQuestionScreen
+import com.historytracers.app.ui.screens.InversionOrderScreen
+import com.historytracers.app.ui.screens.InversionConclusionScreen
 import com.historytracers.app.ui.screens.KinkinMovementScreen
 import com.historytracers.app.ui.screens.OrderOfAdditionCommutativeScreen
 import com.historytracers.app.ui.screens.OrderOfAdditionConclusionScreen
@@ -242,7 +271,7 @@ fun AppNavigation() {
     val breakTime by preferences.breakTime.collectAsState(initial = 15)
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "running_and_growing", "i_am_not_like_you", "equality_intro", "equality_question", "equality_equal", "equality_expanding", "equality_in_general", "equality_conclusion", "totally_equal_intro", "totally_equal_question", "totally_equal_sign", "totally_equal_exercise", "totally_equal_conclusion", "historical_equality_intro", "historical_equality_mapping", "historical_equality_objects", "historical_equality_question", "historical_equality_evidence", "historical_equality_conclusion", "historical_equality_pyramids_intro", "historical_equality_pyramids_definition", "historical_equality_pyramids_mesoamerica", "historical_equality_pyramids_question", "historical_equality_pyramids_look_alike", "historical_equality_pyramids_precision", "historical_equality_pyramids_conclusion", "equal_same_group_different", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "drawing_and_couting_intro", "drawing_and_couting_circles", "drawing_and_couting_rectangles", "drawing_and_couting_mesoamericans", "drawing_and_couting_question", "drawing_and_couting_examples", "drawing_and_couting_conclusion", "numbers_intro", "numbers_origin", "numbers_question", "numbers_equal", "numbers_visualizing", "numbers_conclusion", "family_part1_intro", "family_part1_orders", "family_part1_order", "family_part1_altar", "family_part1_continuity", "family_part1_stages", "family_part1_rule", "family_part1_conclusion", "natural_families_part2_intro", "natural_families_part2_question", "natural_families_part2_logic", "natural_families_part2_orders_question", "natural_families_part2_copan", "natural_families_part2_naming", "natural_families_part2_billion_question", "natural_families_part2_conclusion", "the_zero_intro", "the_zero_what_is", "the_zero_intuitive", "the_zero_number", "the_zero_question", "the_zero_conclusion", "workout", "road_to_somewhere", "walk_among_numbers_intro", "walk_among_numbers_roads", "walk_among_numbers_inca_roads", "walk_among_numbers_axes", "walk_among_numbers_hands", "walk_among_numbers_question", "walk_among_numbers_conclusion", "carrying_in_addition_intro", "carrying_in_addition_adding", "carrying_in_addition_hidden_zero", "carrying_in_addition_question", "carrying_in_addition_identity", "carrying_in_addition_zero_in_hands", "carrying_in_addition_conclusion", "order_of_addition_intro", "order_of_addition_where", "order_of_addition_commutative", "order_of_addition_question", "order_of_addition_conclusion", "playing_with_axioms_game", "running_among_numbers_intro", "running_among_numbers_temple", "running_among_numbers_reconstruction", "running_among_numbers_adding", "running_among_numbers_question", "running_among_numbers_conclusion", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", Screen.SchyotyWriting.route, "large_numbers_writing", "practicing_addition", "practicing_addition_road", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement", "toward_infinity_maximum", "toward_infinity_law", "toward_infinity_without_limits", "toward_infinity_symbol", "toward_infinity_direction", "toward_infinity_conclusion", "limits_min_max_between_both", "limits_min_max_question", "limits_min_max_tending", "limits_min_max_hands", "limits_min_max_conclusion", "where_are_they_intro", "where_are_they_in_us", "where_are_they_in_texts", "where_are_they_ages", "where_are_they_question", "where_are_they_wrong", "where_are_they_species", "where_are_they_universe", "where_are_they_conclusion")
+    val simpleRoutes = setOf("index", "running_and_growing", "i_am_not_like_you", "equality_intro", "equality_question", "equality_equal", "equality_expanding", "equality_in_general", "equality_conclusion", "totally_equal_intro", "totally_equal_question", "totally_equal_sign", "totally_equal_exercise", "totally_equal_conclusion", "historical_equality_intro", "historical_equality_mapping", "historical_equality_objects", "historical_equality_question", "historical_equality_evidence", "historical_equality_conclusion", "historical_equality_pyramids_intro", "historical_equality_pyramids_definition", "historical_equality_pyramids_mesoamerica", "historical_equality_pyramids_question", "historical_equality_pyramids_look_alike", "historical_equality_pyramids_precision", "historical_equality_pyramids_conclusion", "equal_same_group_different", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "drawing_and_couting_intro", "drawing_and_couting_circles", "drawing_and_couting_rectangles", "drawing_and_couting_mesoamericans", "drawing_and_couting_question", "drawing_and_couting_examples", "drawing_and_couting_conclusion", "numbers_intro", "numbers_origin", "numbers_question", "numbers_equal", "numbers_visualizing", "numbers_conclusion", "family_part1_intro", "family_part1_orders", "family_part1_order", "family_part1_altar", "family_part1_continuity", "family_part1_stages", "family_part1_rule", "family_part1_conclusion", "natural_families_part2_intro", "natural_families_part2_question", "natural_families_part2_logic", "natural_families_part2_orders_question", "natural_families_part2_copan", "natural_families_part2_naming", "natural_families_part2_billion_question", "natural_families_part2_conclusion", "the_zero_intro", "the_zero_what_is", "the_zero_intuitive", "the_zero_number", "the_zero_question", "the_zero_conclusion", "workout", "road_to_somewhere", "walk_among_numbers_intro", "walk_among_numbers_roads", "walk_among_numbers_inca_roads", "walk_among_numbers_axes", "walk_among_numbers_hands", "walk_among_numbers_question", "walk_among_numbers_conclusion", "carrying_in_addition_intro", "carrying_in_addition_adding", "carrying_in_addition_hidden_zero", "carrying_in_addition_question", "carrying_in_addition_identity", "carrying_in_addition_zero_in_hands", "carrying_in_addition_conclusion", "adding_same_numbers_intro", "adding_same_numbers_body", "adding_same_numbers_think", "adding_same_numbers_count_one", "adding_same_numbers_count_five", "adding_same_numbers_question", "adding_same_numbers_new_sign", "adding_same_numbers_conclusion", "the_result_is", "inversion_intro", "inversion_squares_going_up", "inversion_squares_lying_down", "inversion_question", "inversion_order", "inversion_conclusion", "order_of_addition_intro", "order_of_addition_where", "order_of_addition_commutative", "order_of_addition_question", "order_of_addition_conclusion", "playing_with_axioms_game", "running_among_numbers_intro", "running_among_numbers_temple", "running_among_numbers_reconstruction", "running_among_numbers_adding", "running_among_numbers_question", "running_among_numbers_conclusion", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", Screen.SchyotyWriting.route, "large_numbers_writing", "practicing_addition", "practicing_addition_road", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement", "toward_infinity_maximum", "toward_infinity_law", "toward_infinity_without_limits", "toward_infinity_symbol", "toward_infinity_direction", "toward_infinity_conclusion", "limits_min_max_between_both", "limits_min_max_question", "limits_min_max_tending", "limits_min_max_hands", "limits_min_max_conclusion", "where_are_they_intro", "where_are_they_in_us", "where_are_they_in_texts", "where_are_they_ages", "where_are_they_question", "where_are_they_wrong", "where_are_they_species", "where_are_they_universe", "where_are_they_conclusion")
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -540,7 +569,12 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
+                            onNavigateToAddingTheSameNumber = { navController.navigate(Screen.AddingSameNumbersIntro.route) { launchSingleTop = true } },
+                            onNavigateToTheResultIs = { navController.navigate(Screen.TheResultIs.route) { launchSingleTop = true } },
+                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } },
+                            onNavigateToConnectingTheMultiplication = { navController.navigate(Screen.DrawingTheTableOfZeroIntro.route) { launchSingleTop = true } },
+                            onNavigateToDrawingMultiplication = { navController.navigate(Screen.DrawingTheTableOfOneIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.RoadToSomewhere.route) {
@@ -895,6 +929,588 @@ fun AppNavigation() {
                             onNavigateToRoadToSomewhere = {
                                 if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
                                     navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersIntro.route) {
+                        AddingSameNumbersIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersBody.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersBody.route) {
+                        AddingSameNumbersBodyScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersIntro.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersThink.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersThink.route) {
+                        AddingSameNumbersThinkScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersBody.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersBody.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersCountOne.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersCountOne.route) {
+                        AddingSameNumbersCountOneScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersThink.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersThink.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersCountFive.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersCountFive.route) {
+                        AddingSameNumbersCountFiveScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersCountOne.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersCountOne.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersQuestion.route) {
+                        AddingSameNumbersQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersCountFive.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersCountFive.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersNewSign.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersNewSign.route) {
+                        AddingSameNumbersNewSignScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersQuestion.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.AddingSameNumbersConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AddingSameNumbersConclusion.route) {
+                        AddingSameNumbersConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.AddingSameNumbersNewSign.route, false)) {
+                                    navController.navigate(Screen.AddingSameNumbersNewSign.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToRunningAndGrowing = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.TheResultIs.route) {
+                        TheResultIsScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.InversionIntro.route) {
+                        InversionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.InversionSquaresGoingUp.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.InversionSquaresGoingUp.route) {
+                        InversionSquaresGoingUpScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.InversionIntro.route, false)) {
+                                    navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.InversionSquaresLyingDown.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.InversionSquaresLyingDown.route) {
+                        InversionSquaresLyingDownScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.InversionSquaresGoingUp.route, false)) {
+                                    navController.navigate(Screen.InversionSquaresGoingUp.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.InversionQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.InversionQuestion.route) {
+                        InversionQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.InversionSquaresLyingDown.route, false)) {
+                                    navController.navigate(Screen.InversionSquaresLyingDown.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.InversionOrder.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.InversionOrder.route) {
+                        InversionOrderScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.InversionQuestion.route, false)) {
+                                    navController.navigate(Screen.InversionQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.InversionConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.InversionConclusion.route) {
+                        InversionConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.InversionOrder.route, false)) {
+                                    navController.navigate(Screen.InversionOrder.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToRunningAndGrowing = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroIntro.route) {
+                        DrawingTheTableOfZeroIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroRule.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroRule.route) {
+                        DrawingTheTableOfZeroRuleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroIntro.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroTable.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroTable.route) {
+                        DrawingTheTableOfZeroTableScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroRule.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroRule.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroDrawing.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroDrawing.route) {
+                        DrawingTheTableOfZeroDrawingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroTable.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroTable.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroQuestion.route) {
+                        DrawingTheTableOfZeroQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroDrawing.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroDrawing.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroFlatLine.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroFlatLine.route) {
+                        DrawingTheTableOfZeroFlatLineScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroQuestion.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroConclusion.route) {
+                        DrawingTheTableOfZeroConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroFlatLine.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroFlatLine.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToRunningAndGrowing = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneIntro.route) {
+                        DrawingTheTableOfOneIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfOneRule.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneRule.route) {
+                        DrawingTheTableOfOneRuleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfOneIntro.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfOneIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfOneDrawing.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneDrawing.route) {
+                        DrawingTheTableOfOneDrawingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfOneRule.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfOneRule.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfOneQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneQuestion.route) {
+                        DrawingTheTableOfOneQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfOneDrawing.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfOneDrawing.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfOneBoxes.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneBoxes.route) {
+                        DrawingTheTableOfOneBoxesScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfOneQuestion.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfOneQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfOneConnect.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneConnect.route) {
+                        DrawingTheTableOfOneConnectScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfOneBoxes.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfOneBoxes.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfOneConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfOneConclusion.route) {
+                        DrawingTheTableOfOneConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfOneConnect.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfOneConnect.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToRunningAndGrowing = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
