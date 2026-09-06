@@ -214,6 +214,13 @@ import com.historytracers.app.ui.screens.AddingSameNumbersQuestionScreen
 import com.historytracers.app.ui.screens.AddingSameNumbersNewSignScreen
 import com.historytracers.app.ui.screens.AddingSameNumbersConclusionScreen
 import com.historytracers.app.ui.screens.InversionIntroScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroIntroScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroRuleScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroTableScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroDrawingScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroQuestionScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroFlatLineScreen
+import com.historytracers.app.ui.screens.DrawingTheTableOfZeroConclusionScreen
 import com.historytracers.app.ui.screens.InversionSquaresGoingUpScreen
 import com.historytracers.app.ui.screens.InversionSquaresLyingDownScreen
 import com.historytracers.app.ui.screens.InversionQuestionScreen
@@ -556,7 +563,8 @@ fun AppNavigation() {
                             },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
                             onNavigateToAddingTheSameNumber = { navController.navigate(Screen.AddingSameNumbersIntro.route) { launchSingleTop = true } },
-                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } }
+                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } },
+                            onNavigateToConnectingTheMultiplication = { navController.navigate(Screen.DrawingTheTableOfZeroIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.RoadToSomewhere.route) {
@@ -1190,6 +1198,148 @@ fun AppNavigation() {
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.InversionOrder.route, false)) {
                                     navController.navigate(Screen.InversionOrder.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToRunningAndGrowing = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroIntro.route) {
+                        DrawingTheTableOfZeroIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroRule.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroRule.route) {
+                        DrawingTheTableOfZeroRuleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroIntro.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroTable.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroTable.route) {
+                        DrawingTheTableOfZeroTableScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroRule.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroRule.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroDrawing.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroDrawing.route) {
+                        DrawingTheTableOfZeroDrawingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroTable.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroTable.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroQuestion.route) {
+                        DrawingTheTableOfZeroQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroDrawing.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroDrawing.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroFlatLine.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroFlatLine.route) {
+                        DrawingTheTableOfZeroFlatLineScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroQuestion.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.DrawingTheTableOfZeroConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.DrawingTheTableOfZeroConclusion.route) {
+                        DrawingTheTableOfZeroConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RunningAndGrowing.route, false)) {
+                                    navController.navigate(Screen.RunningAndGrowing.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.DrawingTheTableOfZeroFlatLine.route, false)) {
+                                    navController.navigate(Screen.DrawingTheTableOfZeroFlatLine.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigateToRunningAndGrowing = {
