@@ -172,6 +172,7 @@ sealed class Screen(val route: String) {
     data object AddingSameNumbersQuestion : Screen("adding_same_numbers_question")
     data object AddingSameNumbersNewSign : Screen("adding_same_numbers_new_sign")
     data object AddingSameNumbersConclusion : Screen("adding_same_numbers_conclusion")
+    data object TheResultIs : Screen("the_result_is")
     data object InversionIntro : Screen("inversion_intro")
     data object InversionSquaresGoingUp : Screen("inversion_squares_going_up")
     data object InversionSquaresLyingDown : Screen("inversion_squares_lying_down")
