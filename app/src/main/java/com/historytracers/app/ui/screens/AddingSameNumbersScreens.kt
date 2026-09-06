@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
+import kotlinx.coroutines.flow.first
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
@@ -358,16 +359,17 @@ private fun AddingSameNumbersGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
-    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-
     LaunchedEffect(content) {
         val node = content
-        if (node != null && !arrivalHandled) {
-            arrivalHandled = true
-            award(node.score)
+        if (node != null) {
             if (onNavigateToRunningAndGrowing != null) {
                 preferences.markRunningAndGrowingSectionCompleted("adding_the_same_number")
                 preferences.recordLessonCompletion()
+            }
+            val alreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
+            if (!alreadyAwarded) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
             }
         }
     }
@@ -649,7 +651,7 @@ private fun AddingSameNumbersSourcesMenu(sources: List<HTSource>, modifier: Modi
 
         DropdownMenu(
             expanded = showSourcesMenu && activeSource != null,
-            onDismissRequest = { activeSource = null }
+            onDismissRequest = { activeSource = null; showSourcesMenu = false }
         ) {
             activeSource?.let { source ->
                 val url = sourceUrl(source.page)

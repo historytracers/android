@@ -535,7 +535,7 @@ fun TheResultIsScreen(
 
             DropdownMenu(
                 expanded = showSourcesMenu && showMainTextSubmenu,
-                onDismissRequest = { showMainTextSubmenu = false }
+                onDismissRequest = { showMainTextSubmenu = false; showSourcesMenu = false }
             ) {
                 DropdownMenuItem(
                     text = { Text(s.common.copyUrl) },

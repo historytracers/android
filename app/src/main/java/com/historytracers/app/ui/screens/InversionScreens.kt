@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
+import kotlinx.coroutines.flow.first
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.HtmlRenderer
@@ -165,9 +166,6 @@ private fun sourceUrl(page: String): String =
 private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
-private fun isSvgHtml(text: String?): Boolean =
-    text?.contains("<svg") == true
-
 @Composable
 private fun InversionGameContent(
     contentId: String,
@@ -210,16 +208,17 @@ private fun InversionGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
-    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-
     LaunchedEffect(content) {
         val node = content
-        if (node != null && !arrivalHandled) {
-            arrivalHandled = true
-            award(node.score)
+        if (node != null) {
             if (onNavigateToRunningAndGrowing != null) {
                 preferences.markRunningAndGrowingSectionCompleted("inversion")
                 preferences.recordLessonCompletion()
+            }
+            val alreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
+            if (!alreadyAwarded) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
             }
         }
     }
@@ -270,14 +269,14 @@ private fun InversionGameContent(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    content.text?.forEach { text ->
+                        content.text?.forEach { text ->
                         if (text == null) return@forEach
                         when {
                             isImgHtml(text.text) -> ResponsiveImage(
                                 html = text.text ?: "",
                                 imgDesc = text.imgdesc
                             )
-                            isSvgHtml(text.text) -> HtmlRenderer(
+                            text.format?.contains("html") == true -> HtmlRenderer(
                                 html = text.text ?: ""
                             )
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
