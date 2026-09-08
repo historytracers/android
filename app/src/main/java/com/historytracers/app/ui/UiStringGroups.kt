@@ -29,4 +29,6 @@ data class AppCommonStrings(
     val sources: String,
     val originalText: String,
     val imageOfflineMessage: String,
+    val resetClasses: String,
+    val resetClassesMessage: String,
 )

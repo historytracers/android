@@ -387,4 +387,19 @@ class UserPreferences(private val context: Context) {
             preferences[SEEN_NEW_HUBS_KEY] = (preferences[SEEN_NEW_HUBS_KEY] ?: emptySet()) + hubId
         }
     }
+
+    suspend fun resetAllClasses() {
+        context.dataStore.edit { preferences ->
+            preferences[FIRST_STEPS_SECTIONS_KEY] = emptySet()
+            preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] = emptySet()
+            preferences[WORKOUT_SECTIONS_KEY] = emptySet()
+            preferences[ABACUS_SECTIONS_KEY] = emptySet()
+            preferences[YUPANA_SECTIONS_KEY] = emptySet()
+            preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = emptySet()
+            preferences[RUNNING_AND_GROWING_SECTIONS_KEY] = emptySet()
+            preferences[CLAIMED_LEVELS_KEY] = emptySet()
+            preferences[AWARDED_SCREENS_KEY] = emptySet()
+            preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
+        }
+    }
 }
