@@ -94,6 +94,21 @@
   - **Yupana** (3): `hands_on_yupana`, `moving_in_yupana`, `practicing_addition`
   - **Road to Somewhere** (6): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `running_among_numbers`, `practicing_addition`
 
+## Reset Classes Menu
+
+- **Every hub screen** (First Steps, I Am (Not) Like You, Workout, Abacus, Yupana, Road to Somewhere, Running and Growing) **and the main screen** (`IndexScreen.kt`) must include a "Reset Classes" menu so users can restart all progress.
+- The menu appears as a 3-dot icon (`Icons.Default.MoreVert`) on the right side of the top app bar (or top-right corner for `IndexScreen`, which has no traditional top bar).
+- Tapping the icon opens a `DropdownMenu` with a single item: "Reset Classes" (`s.common.resetClasses`).
+- Tapping "Reset Classes" opens an `AlertDialog` confirmation with the message `s.common.resetClassesMessage`. The user must confirm (OK) or cancel.
+- On confirmation, call `scope.launch { preferences.resetAllClasses() }` which clears all hub sections, claimed levels, and awarded screens in `UserPreferences`.
+- Implementation pattern (as in the hub screens):
+  1. Add `import androidx.compose.material.icons.filled.MoreVert`.
+  2. Add state vars: `showResetMenu` and `showResetDialog` (both `remember { mutableStateOf(false) }`).
+  3. In the top bar `Row`, after the title, add `Spacer(Modifier.weight(1f))` then a `Box` containing the `IconButton` + `DropdownMenu`.
+  4. After the main layout (outside the `Column`/`Box`), render an `AlertDialog` when `showResetDialog` is true, with `confirmButton` calling `preferences.resetAllClasses()` and `dismissButton` closing the dialog.
+- The strings `resetClasses` and `resetClassesMessage` are defined in `AppCommonStrings` with translations in `UiStrings.kt` (`EnStrings`/`PtStrings`/`EsStrings`). Access them via `s.common.resetClasses` and `s.common.resetClassesMessage`.
+- **When creating a new hub screen for a main-screen button, always include this menu.** Do not omit it — every hub must allow users to reset their progress.
+
 ## Latest Addition (Main Menu)
 
 - The main menu (drawer) must always contain a "Latest addition" entry (`Screen.LatestAddition` → `LatestAdditionScreen.kt`), so users get one-tap access to the newest content.
