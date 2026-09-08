@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Accessibility
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Handshake
@@ -91,6 +92,8 @@ fun FirstStepsScreen(
     }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    var showResetMenu by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
 
     fun claimFirstStepsLevel() {
         if ("first_steps" in claimedLevels) return
@@ -118,8 +121,53 @@ fun FirstStepsScreen(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
+                Spacer(Modifier.weight(1f))
+                Box {
+                    IconButton(onClick = { showResetMenu = true }) {
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = s.common.menu,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showResetMenu,
+                        onDismissRequest = { showResetMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(s.common.resetClasses) },
+                            onClick = {
+                                showResetMenu = false
+                                showResetDialog = true
+                            }
+                        )
             }
         }
+    }
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text(s.common.resetClasses) },
+            text = { Text(s.common.resetClassesMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResetDialog = false
+                        scope.launch { preferences.resetAllClasses() }
+                    }
+                ) {
+                    Text(s.common.ok)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) {
+                    Text(s.common.cancel)
+                }
+            }
+        )
+    }
+}
 
         Box(
             modifier = Modifier.fillMaxSize(),

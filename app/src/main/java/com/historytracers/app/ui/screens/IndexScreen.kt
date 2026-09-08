@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -122,6 +123,9 @@ fun IndexScreen(
     val workoutNew = isNewHub("workout", seenNewHubs)
     val yupanaNew = isNewHub("yupana", seenNewHubs)
     val abacusNew = isNewHub("abacus", seenNewHubs)
+
+    var showResetMenu by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -370,5 +374,54 @@ fun IndexScreen(
                 if (abacusNew) NewHubSunBadge()
             }
         }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+        ) {
+            IconButton(onClick = { showResetMenu = true }) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    contentDescription = s.common.menu,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            DropdownMenu(
+                expanded = showResetMenu,
+                onDismissRequest = { showResetMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.common.resetClasses) },
+                    onClick = {
+                        showResetMenu = false
+                        showResetDialog = true
+                    }
+                )
+            }
+        }
+    }
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text(s.common.resetClasses) },
+            text = { Text(s.common.resetClassesMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResetDialog = false
+                        scope.launch { preferences.resetAllClasses() }
+                    }
+                ) {
+                    Text(s.common.ok)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) {
+                    Text(s.common.cancel)
+                }
+            }
+        )
     }
 }

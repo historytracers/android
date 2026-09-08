@@ -76,6 +76,8 @@ val EnStrings = UiStrings(
         sources = "Sources",
         originalText = "Original Text",
         imageOfflineMessage = "This image is only available when you are online.",
+        resetClasses = "Reset Classes",
+        resetClassesMessage = "We are going to reset all classes in this course to their initial state. This option exists because we understand that everyone learns at their own pace, and we do not want to create any barriers for you. Would you like to proceed?",
     ),
 )
 
@@ -148,6 +150,8 @@ val PtStrings = UiStrings(
         sources = "Fontes",
         originalText = "Texto Original",
         imageOfflineMessage = "Esta imagem s\u00f3 est\u00e1 dispon\u00edvel quando voc\u00ea est\u00e1 online.",
+        resetClasses = "Reiniciar Aulas",
+        resetClassesMessage = "Vamos reiniciar todas as aulas deste curso ao n\u00edvel inicial. Esta op\u00e7\u00e3o existe porque entendemos que cada pessoa aprende no seu pr\u00f3prio ritmo e n\u00e3o queremos criar barreiras para voc\u00ea. Deseja continuar?",
     ),
 )
 
@@ -220,6 +224,8 @@ val EsStrings = UiStrings(
         sources = "Fuentes",
         originalText = "Texto Original",
         imageOfflineMessage = "Esta imagen solo est\u00e1 disponible cuando est\u00e1s en l\u00ednea.",
+        resetClasses = "Reiniciar Clases",
+        resetClassesMessage = "Vamos a reiniciar todas las clases de este curso a su estado inicial. Esta opci\u00f3n existe porque entendemos que cada persona aprende a su propio ritmo y no queremos crear barreras para ti. \u00bfDeseas continuar?",
     ),
 )
 

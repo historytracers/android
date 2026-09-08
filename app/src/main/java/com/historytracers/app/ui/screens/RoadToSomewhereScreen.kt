@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.DirectionsRun
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -228,6 +229,8 @@ fun RoadToSomewhereScreen(
     val allRoadSectionsDone = roadSectionIds.all { it in controllerCompleted }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    var showResetMenu by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
 
     fun claimRoadToSomewhereLevel() {
         if ("road_to_somewhere" in claimedLevels) return
@@ -255,6 +258,28 @@ fun RoadToSomewhereScreen(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
+                Spacer(Modifier.weight(1f))
+                Box {
+                    IconButton(onClick = { showResetMenu = true }) {
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = s.common.menu,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showResetMenu,
+                        onDismissRequest = { showResetMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(s.common.resetClasses) },
+                            onClick = {
+                                showResetMenu = false
+                                showResetDialog = true
+                            }
+                        )
+                    }
+                }
             }
         }
 
@@ -481,5 +506,28 @@ fun RoadToSomewhereScreen(
                 )
             }
         }
+    }
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text(s.common.resetClasses) },
+            text = { Text(s.common.resetClassesMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResetDialog = false
+                        scope.launch { preferences.resetAllClasses() }
+                    }
+                ) {
+                    Text(s.common.ok)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) {
+                    Text(s.common.cancel)
+                }
+            }
+        )
     }
 }
