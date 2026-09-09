@@ -239,6 +239,7 @@ enum class CalendarType(val id: String, val displayName: String) {
     }
 
     companion object {
+        private const val GREGORIAN_EPOCH = 1721425.5
         private val MAYAN_HAAB_MONTHS = listOf("Pop", "Uo", "Zip", "Zotz", "Tzec", "Xul",
             "Yaxkin", "Mol", "Chen", "Yax", "Zac", "Ceh", "Mac", "Kankin", "Muan",
             "Pax", "Kayab", "Cumku", "Uayeb")
@@ -257,10 +258,14 @@ enum class CalendarType(val id: String, val displayName: String) {
             val y = date.year
             val m = date.monthValue
             val d = date.dayOfMonth
-            val a = ((14 - m) / 12)
-            val y1 = y + 4800 - a
-            val m1 = m + 12 * a - 3
-            return d + ((153 * m1 + 2) / 5) + 365 * y1 + (y1 / 4) - (y1 / 100) + (y1 / 400) - 32045.0
+            val correction = if (m <= 2) 0 else if (leapGregorian(y)) -1 else -2
+            val dayPart = Math.floor(((367.0 * m) - 362) / 12 + correction + d)
+            return (GREGORIAN_EPOCH - 1) +
+                    365.0 * (y - 1) +
+                    Math.floor((y - 1) / 4.0) -
+                    Math.floor((y - 1) / 100.0) +
+                    Math.floor((y - 1) / 400.0) +
+                    dayPart
         }
 
         fun jdToGregorian(jd: Double): LocalDate {
