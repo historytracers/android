@@ -30,6 +30,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.format.TextStyle
 import com.historytracers.app.ui.UiStrings
 
@@ -52,9 +53,9 @@ fun StreakScreen(
     val s = LocalUiStrings.current
     val xs = streakScreenStringsForLanguage(language)
     val cal = remember(calendarType) { CalendarType.fromId(calendarType) }
-    val now = LocalDate.now()
-    var currentYear by remember { mutableStateOf(cal.year(now)) }
-    var currentMonth by remember { mutableStateOf(cal.month(now)) }
+    val now = remember { LocalDate.now() }
+    var currentYear by remember(calendarType) { mutableStateOf(cal.year(now)) }
+    var currentMonth by remember(calendarType) { mutableStateOf(cal.month(now)) }
     val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
     var showTimePicker by remember { mutableStateOf(false) }
 
@@ -363,12 +364,27 @@ private fun CalendarGrid(
     val daysOfWeek = DayOfWeek.entries.map { it.getDisplayName(TextStyle.SHORT, locale) }
     val daysInMonth = cal.daysInMonth(year, month)
     val firstDayGregorian = cal.firstDayOfMonth(year, month)
-    val firstDayOfWeek = firstDayGregorian.dayOfWeek.value % 7
+    val firstDayOfWeek = (firstDayGregorian.dayOfWeek.value + 6) % 7
 
-    val today = LocalDate.now()
+    val today = remember { LocalDate.now() }
     val todayYear = cal.year(today)
     val todayMonth = cal.month(today)
     val todayDay = cal.day(today)
+
+    val completedDays = remember(cal, year, month, completedDates) {
+        val days = mutableSetOf<Int>()
+        for (dateStr in completedDates) {
+            val gregDate = try {
+                LocalDate.parse(dateStr)
+            } catch (_: DateTimeParseException) {
+                continue
+            }
+            if (cal.year(gregDate) == year && cal.month(gregDate) == month) {
+                days.add(cal.day(gregDate))
+            }
+        }
+        days
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -400,10 +416,7 @@ private fun CalendarGrid(
                         Box(modifier = Modifier.weight(1f).aspectRatio(1f))
                     } else {
                         val dayNum = dayCounter
-                        val isCompleted = completedDates.any { dateStr ->
-                            val gregDate = LocalDate.parse(dateStr)
-                            cal.year(gregDate) == year && cal.month(gregDate) == month && cal.day(gregDate) == dayNum
-                        }
+                        val isCompleted = dayNum in completedDays
                         val isToday = (todayYear == year && todayMonth == month && todayDay == dayNum)
 
                         DayCell(

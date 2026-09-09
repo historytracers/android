@@ -36,7 +36,7 @@ fun detectDefaultCalendar(locale: Locale = Locale.getDefault()): String {
         lang == "fa" -> "persian"
         lang == "zh" -> "chinese"
         lang == "ja" -> "japanese"
-        lang == "hi" -> "shaka"
+        lang == "hi" -> "indian_civil"
         lang.startsWith("es") -> "hispanic"
         else -> "gregorian"
     }

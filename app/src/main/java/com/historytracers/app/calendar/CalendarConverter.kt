@@ -83,7 +83,10 @@ enum class CalendarType(val id: String, val displayName: String) {
             MAYAN_EXTENDED -> jdToExtendedMayanCount(jd)[7]
             HISPANIC -> gregorian.dayOfMonth
             INDIAN_CIVIL -> jdToIndianCivil(jd)[2]
-            FRENCH_REPUBLICAN -> jdToFrenchRepublican(jd)[3]
+            FRENCH_REPUBLICAN -> {
+                val f = jdToFrenchRepublican(jd)
+                (f[2] - 1) * 10 + f[3]
+            }
             CHINESE -> jdToChinese(jd)[2]
             AYMARA -> jdToAymara(jd)[2]
             MAPUCHE -> jdToMapuche(jd)[2]
@@ -184,7 +187,7 @@ enum class CalendarType(val id: String, val displayName: String) {
         }
         FRENCH_REPUBLICAN -> if (month <= 12) 30 else sansculottidesDays(year)
         CHINESE -> 29
-        AYMARA -> AYMARA_MONTH_DAYS[month]
+        AYMARA -> if (month == 9 && aymaraLeapYear(year)) AYMARA_MONTH_DAYS[month] + 1 else AYMARA_MONTH_DAYS[month]
         MAPUCHE -> if (month == 9 && mapucheLeapYear(year)) 30 else MAPUCHE_MONTH_DAYS[month]
         INCA -> if (month == 3 && incaLeapYear(year)) INCA_MONTH_DAYS[month] + 1 else INCA_MONTH_DAYS[month]
         JAVANESE -> if (month in listOf(2, 4, 6, 8, 10, 12)) 29 else 30
@@ -231,11 +234,10 @@ enum class CalendarType(val id: String, val displayName: String) {
 
     fun maxMonth(): Int = when (this) {
         GREGORIAN, JULIAN, ISLAMIC, PERSIAN, PERSIAN_ASTRONOMICAL, INDIAN_CIVIL,
-        FRENCH_REPUBLICAN, AYMARA, INCA, JAVANESE, JAPANESE, HISPANIC -> 12
-        HEBREW -> 13
+        AYMARA, INCA, JAVANESE, JAPANESE, HISPANIC -> 12
+        HEBREW, FRENCH_REPUBLICAN, MAPUCHE -> 13
         MAYAN, MAYAN_EXTENDED -> 18
         CHINESE -> 12
-        MAPUCHE -> 13
     }
 
     companion object {
@@ -452,16 +454,16 @@ enum class CalendarType(val id: String, val displayName: String) {
         }
 
         private fun persianaToJd(year: Int, month: Int, day: Int): Double {
-            val guess = 1948320.5 + 365.24219 * (year - 1 - 1)
-            var lasteq = tehranEquinoxJd(guess.toInt() - 2)
-            var g = guess.toInt() - 2
-            while (lasteq > guess) { g--; lasteq = tehranEquinoxJd(g) }
-            var nexteq = lasteq - 1
-            while (!((lasteq <= guess) && (guess < nexteq))) {
-                lasteq = nexteq; g++; nexteq = tehranEquinoxJd(g)
+            var guess = 1948320.5 + 365.24219 * (year - 1 - 1)
+            var adrYear = year - 1
+            var equinox = 0.0
+            while (adrYear < year) {
+                val adr = persianaYear(guess)
+                adrYear = adr[0]
+                equinox = adr[1].toDouble()
+                guess = equinox + (365.24219 + 2)
             }
-            val eq = lasteq
-            return eq + (if (month <= 7) (month - 1) * 31 else (month - 1) * 30 + 6) + day - 1
+            return equinox + (if (month <= 7) (month - 1) * 31 else (month - 1) * 30 + 6) + day - 1
         }
 
         private fun persianaYear(jd: Double): IntArray {
@@ -583,15 +585,15 @@ enum class CalendarType(val id: String, val displayName: String) {
         private fun sansculottidesDays(year: Int): Int = if (leapFrenchRepublican(year)) 6 else 5
 
         private fun frenchRepublicanToJd(year: Int, month: Int, decade: Int, day: Int): Double {
-            val guess = 2375839.5 + 365.2422 * (year - 1 - 1)
-            var g = (guess - 2).toInt()
-            var lasteq = parisEquinoxeJd(g)
-            while (lasteq > guess) { g--; lasteq = parisEquinoxeJd(g) }
-            var nexteq = lasteq - 1
-            while (!((lasteq <= guess) && (guess < nexteq))) {
-                lasteq = nexteq; g++; nexteq = parisEquinoxeJd(g)
+            var guess = 2375839.5 + 365.2422 * (year - 1 - 1)
+            var adrYear = year - 1
+            var equinoxe = 0.0
+            while (adrYear < year) {
+                val adr = anneeDeLaRevolution(guess)
+                adrYear = adr[0]
+                equinoxe = adr[1].toDouble()
+                guess = equinoxe + (365.2422 + 2)
             }
-            val equinoxe = lasteq
             return equinoxe + (30 * (month - 1)) + (10 * (decade - 1)) + (day - 1)
         }
 
@@ -604,18 +606,23 @@ enum class CalendarType(val id: String, val displayName: String) {
             return equAPP + (2 + 20 / 60.0 + 15 / 3600.0) / 360
         }
 
-        private fun jdToFrenchRepublican(jd: Double): IntArray {
-            val j = Math.floor(jd) + 0.5
-            val guess = jdToGregorian(j).year - 2
-            var g = guess
+        private fun anneeDeLaRevolution(jd: Double): IntArray {
+            var g = jdToGregorian(jd).year - 2
             var lasteq = parisEquinoxeJd(g)
-            while (lasteq > j) { g--; lasteq = parisEquinoxeJd(g) }
+            while (lasteq > jd) { g--; lasteq = parisEquinoxeJd(g) }
             var nexteq = lasteq - 1
-            while (!((lasteq <= j) && (j < nexteq))) {
+            while (!((lasteq <= jd) && (jd < nexteq))) {
                 lasteq = nexteq; g++; nexteq = parisEquinoxeJd(g)
             }
             val an = Math.round((lasteq - 2375839.5) / 365.2422).toInt() + 1
-            val equinoxe = lasteq
+            return intArrayOf(an, lasteq.toInt())
+        }
+
+        private fun jdToFrenchRepublican(jd: Double): IntArray {
+            val j = Math.floor(jd) + 0.5
+            val adr = anneeDeLaRevolution(j)
+            val an = adr[0]
+            val equinoxe = adr[1].toDouble()
             val mois = Math.floor((j - equinoxe) / 30).toInt() + 1
             val jour = ((j - equinoxe) % 30).toInt()
             val decade = jour / 10 + 1
