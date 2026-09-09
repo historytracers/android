@@ -330,6 +330,16 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
+    val navigateFromDrawer: (String) -> Unit = { route ->
+        if (!navController.popBackStack(Screen.Index.route, false)) {
+            navController.navigate(Screen.Index.route) {
+                popUpTo(0) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+        navController.navigate(route) { launchSingleTop = true }
+    }
+
     val savedFirstStepsScroll by preferences.firstStepsScroll.collectAsState(initial = 0)
     val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
     val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
@@ -405,8 +415,11 @@ fun AppNavigation() {
                         label = { Text(uiStrings.common.home) },
                         selected = currentRoute == Screen.Index.route,
                         onClick = {
-                            navController.navigate(Screen.Index.route) {
-                                popUpTo(Screen.Index.route) { inclusive = true }
+                            if (!navController.popBackStack(Screen.Index.route, false)) {
+                                navController.navigate(Screen.Index.route) {
+                                    popUpTo(0) { inclusive = true }
+                                    launchSingleTop = true
+                                }
                             }
                             scope.launch { drawerState.close() }
                         }
@@ -416,7 +429,7 @@ fun AppNavigation() {
                         label = { Text(uiStrings.common.settings) },
                         selected = currentRoute == Screen.Settings.route,
                         onClick = {
-                            navController.navigate(Screen.Settings.route)
+                            navigateFromDrawer(Screen.Settings.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -425,7 +438,7 @@ fun AppNavigation() {
                         label = { Text(uiStrings.common.streak) },
                         selected = currentRoute == Screen.Streak.route,
                         onClick = {
-                            navController.navigate(Screen.Streak.route)
+                            navigateFromDrawer(Screen.Streak.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -434,7 +447,7 @@ fun AppNavigation() {
                         label = { Text(latestAdditionStrings.title) },
                         selected = currentRoute == Screen.LatestAddition.route,
                         onClick = {
-                            navController.navigate(Screen.LatestAddition.route)
+                            navigateFromDrawer(Screen.LatestAddition.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -444,7 +457,7 @@ fun AppNavigation() {
                         label = { Text(hts.isItFree) },
                         selected = currentRoute == Screen.IsItFree.route,
                         onClick = {
-                            navController.navigate(Screen.IsItFree.route)
+                            navigateFromDrawer(Screen.IsItFree.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -453,7 +466,7 @@ fun AppNavigation() {
                         label = { Text(hts.aboutUs) },
                         selected = currentRoute == Screen.About.route,
                         onClick = {
-                            navController.navigate(Screen.About.route)
+                            navigateFromDrawer(Screen.About.route)
                             scope.launch { drawerState.close() }
                         }
                     )
@@ -476,7 +489,10 @@ fun AppNavigation() {
                             title = {},
                             navigationIcon = {
                                 IconButton(onClick = {
-                                    scope.launch { drawerState.open() }
+                                    scope.launch {
+                                        if (drawerState.isOpen) drawerState.close()
+                                        else drawerState.open()
+                                    }
                                 }) {
                                     Icon(Icons.Default.Menu, contentDescription = uiStrings.common.menu)
                                 }
@@ -4401,12 +4417,26 @@ fun AppNavigation() {
                             onCalendarChanged = { cal ->
                                 scope.launch { preferences.setCalendar(cal) }
                             },
-                            onNavigateBack = { navController.popBackStack() }
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.LatestAddition.route) {
                         LatestAdditionScreen(
-                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToPlayingWithAxioms = { navController.navigate(Screen.PlayingWithAxiomsGame.route) { launchSingleTop = true } },
                             onNavigateToOrderOfAdditionIntro = { navController.navigate(Screen.OrderOfAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAdditionIntro = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
@@ -4435,7 +4465,14 @@ fun AppNavigation() {
                                     preferences.setReminderMinute(minute)
                                 }
                             },
-                            onNavigateBack = { navController.popBackStack() }
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.Clap.route) {
