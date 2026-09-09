@@ -28,6 +28,20 @@ fun detectDefaultLanguage(locale: Locale = Locale.getDefault()): String {
     }
 }
 
+fun detectDefaultCalendar(locale: Locale = Locale.getDefault()): String {
+    val lang = locale.language.lowercase()
+    return when {
+        lang == "he" -> "hebrew"
+        lang == "ar" -> "islamic"
+        lang == "fa" -> "persian"
+        lang == "zh" -> "chinese"
+        lang == "ja" -> "japanese"
+        lang == "hi" -> "shaka"
+        lang.startsWith("es") -> "hispanic"
+        else -> "gregorian"
+    }
+}
+
 class UserPreferences(private val context: Context) {
     companion object {
         private val LANGUAGE_KEY = stringPreferencesKey("language")
@@ -59,6 +73,7 @@ class UserPreferences(private val context: Context) {
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
         private val AWARDED_SCREENS_KEY = stringSetPreferencesKey("awarded_screens")
         private val ARRIVAL_AWARDED_SCREENS_KEY = stringSetPreferencesKey("arrival_awarded_screens")
+        private val CALENDAR_KEY = stringPreferencesKey("calendar")
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -76,6 +91,12 @@ class UserPreferences(private val context: Context) {
         if (current == null) {
             context.dataStore.edit { preferences ->
                 preferences[LANGUAGE_KEY] = detectDefaultLanguage()
+            }
+        }
+        val currentCalendar = context.dataStore.data.first()[CALENDAR_KEY]
+        if (currentCalendar == null) {
+            context.dataStore.edit { preferences ->
+                preferences[CALENDAR_KEY] = detectDefaultCalendar()
             }
         }
     }
@@ -337,6 +358,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markArrivalAwarded(screenId: String) {
         context.dataStore.edit { preferences ->
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = (preferences[ARRIVAL_AWARDED_SCREENS_KEY] ?: emptySet()) + screenId
+        }
+    }
+
+    val calendar: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[CALENDAR_KEY] ?: "gregorian"
+    }
+
+    suspend fun setCalendar(calendar: String) {
+        context.dataStore.edit { preferences ->
+            preferences[CALENDAR_KEY] = calendar
         }
     }
 

@@ -31,4 +31,5 @@ data class AppCommonStrings(
     val imageOfflineMessage: String,
     val resetClasses: String,
     val resetClassesMessage: String,
+    val calendar: String,
 )

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.historytracers.app.calendar.CalendarType
 import com.historytracers.app.ui.LocalUiStrings
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -37,6 +38,7 @@ fun StreakScreen(
     completedDates: Set<String>,
     streakDays: Set<String>,
     language: String,
+    calendarType: String,
     reminderEnabled: Boolean,
     reminderHour: Int,
     reminderMinute: Int,
@@ -46,9 +48,39 @@ fun StreakScreen(
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
-    var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    val cal = remember(calendarType) { CalendarType.fromId(calendarType) }
+    val now = LocalDate.now()
+    var currentYear by remember { mutableStateOf(cal.year(now)) }
+    var currentMonth by remember { mutableStateOf(cal.month(now)) }
     val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
     var showTimePicker by remember { mutableStateOf(false) }
+
+    val headerText = remember(cal, currentYear, currentMonth) {
+        when (cal) {
+            CalendarType.MAYAN -> {
+                val count = CalendarType.jdToMayanCount(
+                    CalendarType.gregorianToJd(
+                        cal.firstDayOfMonth(currentYear, currentMonth)
+                    )
+                )
+                val haabMonth = com.historytracers.app.calendar.CalendarType.mayanHaabMonths()[count[5] - 1]
+                "$haabMonth ${count[4]}"
+            }
+            CalendarType.CHINESE -> {
+                val parts = CalendarType.jdToChinese(
+                    CalendarType.gregorianToJd(
+                        cal.firstDayOfMonth(currentYear, currentMonth)
+                    )
+                )
+                val leap = if (parts[3] == 1) " (leap)" else ""
+                "${cal.monthNames().getOrElse(parts[1]) { "Month ${parts[1]}" }}$leap ${parts[0]}"
+            }
+            else -> {
+                val monthName = cal.monthNames().getOrElse(currentMonth) { "Month $currentMonth" }
+                "$monthName $currentYear"
+            }
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -148,15 +180,19 @@ fun StreakScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            CalendarHeader(currentMonth, locale, s, onPreviousMonth = {
-                currentMonth = currentMonth.minusMonths(1)
+            CalendarHeader(headerText, s, onPreviousMonth = {
+                val prev = cal.previousMonth(currentYear, currentMonth)
+                currentYear = prev.first
+                currentMonth = prev.second
             }, onNextMonth = {
-                currentMonth = currentMonth.plusMonths(1)
+                val next = cal.nextMonth(currentYear, currentMonth)
+                currentYear = next.first
+                currentMonth = next.second
             })
 
             Spacer(Modifier.height(8.dp))
 
-            CalendarGrid(currentMonth, completedDates, locale)
+            CalendarGrid(cal, currentYear, currentMonth, completedDates, locale)
         }
     }
 }
@@ -283,9 +319,7 @@ private fun WeekDaySelector(selectedDays: Set<String>, language: String, s: UiSt
 }
 
 @Composable
-private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, s: UiStrings, onPreviousMonth: () -> Unit, onNextMonth: () -> Unit) {
-    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", locale)
-
+private fun CalendarHeader(headerText: String, s: UiStrings, onPreviousMonth: () -> Unit, onNextMonth: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -295,7 +329,7 @@ private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, s: UiStri
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = s.common.previousMonth)
         }
         Text(
-            text = month.format(formatter).replaceFirstChar { it.uppercase() },
+            text = headerText,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -306,11 +340,22 @@ private fun CalendarHeader(month: YearMonth, locale: java.util.Locale, s: UiStri
 }
 
 @Composable
-private fun CalendarGrid(month: YearMonth, completedDates: Set<String>, locale: java.util.Locale) {
+private fun CalendarGrid(
+    cal: CalendarType,
+    year: Int,
+    month: Int,
+    completedDates: Set<String>,
+    locale: java.util.Locale
+) {
     val daysOfWeek = DayOfWeek.entries.map { it.getDisplayName(TextStyle.SHORT, locale) }
-    val firstOfMonth = month.atDay(1)
-    val firstDayOfWeek = firstOfMonth.dayOfWeek.value % 7
-    val daysInMonth = month.lengthOfMonth()
+    val daysInMonth = cal.daysInMonth(year, month)
+    val firstDayGregorian = cal.firstDayOfMonth(year, month)
+    val firstDayOfWeek = firstDayGregorian.dayOfWeek.value % 7
+
+    val today = LocalDate.now()
+    val todayYear = cal.year(today)
+    val todayMonth = cal.month(today)
+    val todayDay = cal.day(today)
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -341,14 +386,16 @@ private fun CalendarGrid(month: YearMonth, completedDates: Set<String>, locale: 
                     if (cellIndex < firstDayOfWeek || dayCounter > daysInMonth) {
                         Box(modifier = Modifier.weight(1f).aspectRatio(1f))
                     } else {
-                        val date = month.atDay(dayCounter)
-                        val dateStr = date.toString()
-                        val isCompleted = dateStr in completedDates
-                        val isToday = date == LocalDate.now()
+                        val dayNum = dayCounter
+                        val isCompleted = completedDates.any { dateStr ->
+                            val gregDate = LocalDate.parse(dateStr)
+                            cal.year(gregDate) == year && cal.month(gregDate) == month && cal.day(gregDate) == dayNum
+                        }
+                        val isToday = (todayYear == year && todayMonth == month && todayDay == dayNum)
 
                         DayCell(
                             modifier = Modifier.weight(1f),
-                            day = dayCounter,
+                            day = dayNum,
                             isCompleted = isCompleted,
                             isToday = isToday
                         )
