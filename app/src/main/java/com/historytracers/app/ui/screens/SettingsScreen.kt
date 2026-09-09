@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.HubTitleStrings
+import com.historytracers.app.ui.features.SettingsScreenStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.settingsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.SkinColorPalette
@@ -220,7 +221,7 @@ fun SettingsScreen(
                                 )
                                 Spacer(Modifier.width(12.dp))
                                 Text(
-                                    text = calendar.displayName,
+                                    text = calendarLabel(calendar, xs),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.weight(1f)
                                 )
@@ -294,6 +295,26 @@ fun SettingsScreen(
                 .padding(end = 2.dp)
         )
     }
+}
+
+private fun calendarLabel(calendar: CalendarType, xs: SettingsScreenStrings): String = when (calendar) {
+    CalendarType.GREGORIAN -> xs.calGregorian
+    CalendarType.JULIAN -> xs.calJulian
+    CalendarType.HEBREW -> xs.calHebrew
+    CalendarType.ISLAMIC -> xs.calIslamic
+    CalendarType.PERSIAN -> xs.calPersian
+    CalendarType.PERSIAN_ASTRONOMICAL -> xs.calShaka
+    CalendarType.MAYAN -> xs.calMesoamerican
+    CalendarType.MAYAN_EXTENDED -> xs.calMesoamericanExt
+    CalendarType.HISPANIC -> xs.calHispanic
+    CalendarType.INDIAN_CIVIL -> xs.calIndianCivil
+    CalendarType.FRENCH_REPUBLICAN -> xs.calFrenchRepublican
+    CalendarType.CHINESE -> xs.calChinese
+    CalendarType.AYMARA -> xs.calAymara
+    CalendarType.MAPUCHE -> xs.calMapuche
+    CalendarType.INCA -> xs.calInca
+    CalendarType.JAVANESE -> xs.calJavanese
+    CalendarType.JAPANESE -> xs.calJapanese
 }
 
 @Composable

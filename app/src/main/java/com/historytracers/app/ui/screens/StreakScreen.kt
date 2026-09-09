@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.calendar.CalendarType
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.StreakScreenStrings
+import com.historytracers.app.ui.features.streakScreenStringsForLanguage
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -48,6 +50,7 @@ fun StreakScreen(
     onNavigateBack: () -> Unit
 ) {
     val s = LocalUiStrings.current
+    val xs = streakScreenStringsForLanguage(language)
     val cal = remember(calendarType) { CalendarType.fromId(calendarType) }
     val now = LocalDate.now()
     var currentYear by remember { mutableStateOf(cal.year(now)) }
@@ -55,7 +58,7 @@ fun StreakScreen(
     val locale = remember(language) { java.util.Locale.forLanguageTag(language) }
     var showTimePicker by remember { mutableStateOf(false) }
 
-    val headerText = remember(cal, currentYear, currentMonth) {
+    val headerText = remember(cal, currentYear, currentMonth, xs) {
         when (cal) {
             CalendarType.MAYAN -> {
                 val count = CalendarType.jdToMayanCount(
@@ -72,11 +75,11 @@ fun StreakScreen(
                         cal.firstDayOfMonth(currentYear, currentMonth)
                     )
                 )
-                val leap = if (parts[3] == 1) " (leap)" else ""
-                "${cal.monthNames().getOrElse(parts[1]) { "Month ${parts[1]}" }}$leap ${parts[0]}"
+                val leap = if (parts[3] == 1) xs.leapMarker else ""
+                "${monthFormat(xs, parts[1])}$leap ${parts[0]}"
             }
             else -> {
-                val monthName = cal.monthNames().getOrElse(currentMonth) { "Month $currentMonth" }
+                val monthName = calendarMonthLabel(cal, currentMonth, xs)
                 "$monthName $currentYear"
             }
         }
@@ -196,6 +199,16 @@ fun StreakScreen(
         }
     }
 }
+
+private fun calendarMonthLabel(cal: CalendarType, month: Int, xs: StreakScreenStrings): String =
+    when (cal) {
+        CalendarType.GREGORIAN, CalendarType.JULIAN, CalendarType.HISPANIC ->
+            xs.months.getOrNull(month - 1) ?: monthFormat(xs, month)
+        else -> cal.monthNames().getOrElse(month) { monthFormat(xs, month) }
+    }
+
+private fun monthFormat(xs: StreakScreenStrings, month: Int): String =
+    String.format(java.util.Locale.US, xs.monthFormat, month)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
