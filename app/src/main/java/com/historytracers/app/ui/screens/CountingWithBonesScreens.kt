@@ -48,12 +48,10 @@ import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.Brown40
-import com.historytracers.app.ui.theme.ButtonYellow
-import com.historytracers.app.ui.theme.ButtonYellowDark
-import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
 
 private const val MAX_BONE_MARKS = 20
+private const val MAX_BONE_LEVELS = 4
 private const val LEBOMBO_BONE_IMAGE_URL = "https://www.historytracers.org/images/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=7d2fd4de-5c10-4811-957c-8233bc8d21de"
 private const val GONZALEZ_REDONDO_2010_URL = "https://doi.org/10.4321/S0211-95362010000100007"
@@ -180,12 +178,6 @@ fun CountingWithBonesGameScreen(
     LaunchedEffect(Unit) { newChallenge(1) }
 
     val won = target > 0 && marks == target
-    val levels = listOf(
-        1 to xs.levelLeft,
-        2 to xs.levelLeftRight,
-        3 to xs.levelFriend,
-        4 to xs.levelTwoPeople
-    )
 
     Column(modifier = Modifier.fillMaxSize()) {
         BoneTopBar(title = xs.title, onNavigateBack = onNavigateBack, backDescription = s.common.back)
@@ -206,22 +198,32 @@ fun CountingWithBonesGameScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                handDigits.forEachIndexed { index, digit ->
-                    BoneHand(
-                        count = digit,
-                        isLeft = index % 2 == 0,
-                        contentDescription = xs.raisedHandDesc,
+                handDigits.withIndex().chunked(2).forEach { rowHands ->
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                    )
+                            .fillMaxWidth()
+                            .height(120.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (rowHands.size == 1) Spacer(Modifier.weight(1f))
+                        rowHands.forEach { (index, digit) ->
+                            BoneHand(
+                                count = digit,
+                                isLeft = index % 2 == 0,
+                                contentDescription = xs.raisedHandDesc,
+                                modifier = Modifier
+                                    .weight(if (rowHands.size == 1) 2f else 1f)
+                                    .fillMaxHeight()
+                            )
+                        }
+                        if (rowHands.size == 1) Spacer(Modifier.weight(1f))
+                    }
                 }
             }
 
@@ -277,40 +279,35 @@ fun CountingWithBonesGameScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (level == MAX_BONE_LEVELS) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "\uD83C\uDF89 ${xs.allLevelsCongrats} \uD83C\uDF89",
+                        color = Color(0xFF2E7D32),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
 
-            Spacer(Modifier.height(16.dp))
-
-            Text(
-                text = xs.handsLabel,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(6.dp))
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                levels.chunked(2).forEach { rowLevels ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        rowLevels.forEach { (levelNumber, label) ->
-                            FilledTonalButton(
-                                onClick = { newChallenge(levelNumber) },
-                                colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = if (level == levelNumber) ButtonYellowDark else ButtonYellow,
-                                    contentColor = OnButtonYellow
-                                )
-                            ) {
-                                Text(label)
-                            }
-                        }
-                    }
+            if (won) {
+                Spacer(Modifier.height(16.dp))
+                FilledTonalButton(
+                    onClick = { newChallenge(if (level < MAX_BONE_LEVELS) level + 1 else 1) },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(s.common.nextLevel, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.width(8.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
 
