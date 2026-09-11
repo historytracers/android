@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -31,6 +33,7 @@ import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLangu
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -54,6 +57,7 @@ fun LatestAdditionScreen(
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToPracticingAdditionRoad: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
+    onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -66,12 +70,28 @@ fun LatestAdditionScreen(
     val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
+    val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "shared_origin",
+            label = sos.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_cmb),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "shared_origin" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("shared_origin") },
+            onNavigate = onNavigateToSharedOriginIntro
+        ),
         LatestAdditionEntry(
             sectionId = "running_among_numbers",
             label = rnas.title,
@@ -119,20 +139,6 @@ fun LatestAdditionScreen(
             isCompleted = { "practicing_addition" in completedRoadToSomewhere },
             markCompleted = { preferences.markRoadToSomewhereSectionCompleted("practicing_addition") },
             onNavigate = onNavigateToPracticingAdditionRoad
-        ),
-        LatestAdditionEntry(
-            sectionId = "carrying_in_addition",
-            label = cas.title,
-            icon = {
-                NumberOneOnStairs(
-                    color = OnButtonYellow,
-                    label = xs.numberOne,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "carrying_in_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition") },
-            onNavigate = onNavigateToCarryingInAdditionIntro
         )
     )
 

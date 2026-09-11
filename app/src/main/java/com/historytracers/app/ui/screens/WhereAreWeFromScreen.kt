@@ -26,6 +26,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,6 +41,7 @@ fun WhereAreWeFromScreen(
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -104,7 +106,7 @@ fun WhereAreWeFromScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("shared_origin" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Image(
