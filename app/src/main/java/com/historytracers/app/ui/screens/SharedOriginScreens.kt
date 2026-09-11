@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.DateUtils
@@ -211,13 +212,16 @@ private fun stripTags(html: String): String = TAG_STRIP_REGEX.replace(html, "").
 private fun isMarkdownTable(text: String?, isTable: Boolean): Boolean =
     isTable && text?.startsWith("|") == true
 
+@Composable
 private fun resolveRichText(
     text: String,
     dates: List<HTDate>?,
     sources: List<HTSource>?
 ): String {
+    val common = LocalUiStrings.current.common
+    val calendar = LocalAppCalendar.current
     var result = text
-    DateUtils.formatDate(dates)?.forEachIndexed { index, formatted ->
+    DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
         result = result.replace("<htdate$index>", formatted)
     }
     result = HTCITE_REGEX.replace(result) { m ->

@@ -29,6 +29,7 @@ import androidx.navigation.navArgument
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.data.detectDefaultLanguage
 import com.historytracers.app.ui.LocalAppLanguage
+import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
@@ -405,7 +406,11 @@ fun AppNavigation() {
         )
     }
 
-    CompositionLocalProvider(LocalUiStrings provides uiStrings, LocalAppLanguage provides language) {
+    CompositionLocalProvider(
+        LocalUiStrings provides uiStrings,
+        LocalAppLanguage provides language,
+        LocalAppCalendar provides calendar
+    ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             gesturesEnabled = currentRoute !in onboardingRoutes,

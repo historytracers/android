@@ -32,6 +32,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.DateUtils
@@ -196,10 +197,13 @@ private fun isImgHtml(text: String?): Boolean =
 private fun isFigureHtml(text: String?): Boolean =
     text?.contains("<img") == true || text?.contains("<htdate") == true
 
+@Composable
 private fun resolveDatePlaceholders(text: String, dates: List<HTDate>?): String {
     if (!text.contains("<htdate")) return text
+    val common = LocalUiStrings.current.common
+    val calendar = LocalAppCalendar.current
     var result = text
-    DateUtils.formatDate(dates)?.forEachIndexed { index, formatted ->
+    DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
         result = result.replace("<htdate$index>", formatted)
     }
     return TAG_STRIP_REGEX.replace(result, "")

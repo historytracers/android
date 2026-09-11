@@ -79,6 +79,8 @@ val EnStrings = UiStrings(
         resetClasses = "Reset Classes",
         resetClassesMessage = "We are going to reset all classes in this course to their initial state. This option exists because we understand that everyone learns at their own pace, and we do not want to create any barriers for you. Would you like to proceed?",
         calendar = "Calendar",
+        dateJulianDays = "days since 1st January of year 4713 B.C.",
+        bce = "BCE",
     ),
 )
 
@@ -154,6 +156,8 @@ val PtStrings = UiStrings(
         resetClasses = "Reiniciar Aulas",
         resetClassesMessage = "Vamos reiniciar todas as aulas deste curso ao n\u00edvel inicial. Esta op\u00e7\u00e3o existe porque entendemos que cada pessoa aprende no seu pr\u00f3prio ritmo e n\u00e3o queremos criar barreiras para voc\u00ea. Deseja continuar?",
         calendar = "Calend\u00e1rio",
+        dateJulianDays = "dias desde 1 de janeiro de 4713 A.C.",
+        bce = "A.E.C.",
     ),
 )
 
@@ -229,12 +233,16 @@ val EsStrings = UiStrings(
         resetClasses = "Reiniciar Clases",
         resetClassesMessage = "Vamos a reiniciar todas las clases de este curso a su estado inicial. Esta opci\u00f3n existe porque entendemos que cada persona aprende a su propio ritmo y no queremos crear barreras para ti. \u00bfDeseas continuar?",
         calendar = "Calendario",
+        dateJulianDays = "d\u00edas desde 1 de enero de 4713 a.C.",
+        bce = "a.e.c.",
     ),
 )
 
 val LocalUiStrings = staticCompositionLocalOf { EnStrings }
 
 val LocalAppLanguage = staticCompositionLocalOf { "en-US" }
+
+val LocalAppCalendar = staticCompositionLocalOf { "gregorian" }
 
 fun uiStringsForLanguage(language: String): UiStrings = when (language) {
     "pt-BR" -> PtStrings

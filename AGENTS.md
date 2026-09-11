@@ -196,6 +196,36 @@ When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `
 - Run the build script to ensure compilation succeeds.
 - Fix any unresolved references (missing strings or imports).
 
+## Calendar-Aware Dates
+
+- **Every `<htdateN>` placeholder must be rewritten whenever the user changes the calendar in configuration.** Never render a stored date as-is; always convert it to the currently selected calendar.
+- The dates come from the `HTText.date_time` vector (Java field `HTText.fillDates`), indexed by N. Replace each `<htdateN>` with `DateUtils.formatDate(dates, calendar, common)`.
+- The active calendar is exposed through the `LocalAppCalendar` composition local (`app/src/main/java/com/historytracers/app/ui/UiStrings.kt`), provided by `AppNavigation.kt` from the persisted `preferences.calendar`. The active language strings are `LocalUiStrings.current.common`.
+- Implementation pattern (used in `SharedOriginScreens.kt`, `RunningAmongNumbersScreens.kt`, `HistoricalEqualityScreens.kt`, `HistoricalEqualityPyramidsScreens.kt`):
+  1. Make the resolve function `@Composable` (all its call sites are already inside composables) and read the locals inside it:
+     ```kotlin
+     @Composable
+     private fun resolveDatePlaceholders(text: String, dates: List<HTDate>?): String {
+         if (!text.contains("<htdate")) return text
+         val common = LocalUiStrings.current.common
+         val calendar = LocalAppCalendar.current
+         var result = text
+         DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
+             result = result.replace("<htdate$index>", formatted)
+         }
+         return result
+     }
+     ```
+  2. Import `com.historytracers.app.ui.LocalAppCalendar` and use `LocalUiStrings.current.common`.
+- `DateUtils.formatDate(...)` (`app/src/main/java/com/historytracers/app/ui/components/DateUtils.kt`) performs the conversion and must always receive the active `calendarId` plus `AppCommonStrings`:
+  - Gregorian full date → converted day/month/year; Gregorian year-only → converted year.
+  - Julian selected → Julian Day number followed by the localized `dateJulianDays` string (matches the website's "Julian (Days)").
+  - Mayan / Extended Mayan → full count.
+  - Negative years use the localized `bce` label.
+  - `unix` and `julian` epoch `date_type`s are also handled.
+- **Direct date fields must also follow the calendar**, not only `<htdateN>` placeholders. Example: family/person birth and death dates in `ContentScreen.kt` (`DateUtils.formatDate(it, calendar, s.common)`).
+- The new global strings `dateJulianDays` and `bce` live in `AppCommonStrings` with translations in `UiStrings.kt` (`EnStrings`/`PtStrings`/`EsStrings`). Reuse them; do not hardcode the JD suffix or the BCE label.
+
 ## Creating Screens from Smartphone Game JSON (sm_game)
 
 When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` files (parsed by `SMGameFile`/`SMGameContent` in the `common` module, `type = "sm_game"`), follow this checklist:
