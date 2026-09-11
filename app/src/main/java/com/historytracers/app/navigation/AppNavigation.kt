@@ -340,12 +340,6 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     val navigateFromDrawer: (String) -> Unit = { route ->
-        if (!navController.popBackStack(Screen.Index.route, false)) {
-            navController.navigate(Screen.Index.route) {
-                popUpTo(0) { inclusive = true }
-                launchSingleTop = true
-            }
-        }
         navController.navigate(route) { launchSingleTop = true }
     }
 
