@@ -70,6 +70,14 @@ private val boneFingerTips = listOf(
     Offset(50f, 258f),
 )
 
+private val boneFingerTipNudges = listOf(
+    Offset(15f, -19f),
+    Offset(27f, -35f),
+    Offset(10f, -25f),
+    Offset(-8f, -9f),
+    Offset(-44f, 0f),
+)
+
 @Composable
 fun CountingWithBonesIntroScreen(
     onNavigateBack: () -> Unit = {},
@@ -514,8 +522,11 @@ private fun BoneHand(
         val tipRadius = minOf(size.width, size.height) * 0.09f
         for (index in 0 until count.coerceIn(0, boneFingerTips.size)) {
             val tip = boneFingerTips[index]
-            val x = cx + (if (isLeft) -1f else 1f) * (tip.x - pathCenterX) * scale
-            val y = cy + (tip.y - pathCenterY) * scale
+            val nudge = boneFingerTipNudges.getOrNull(index)
+            val pathDx = if (nudge != null) nudge.x.dp.toPx() / scale else 0f
+            val pathDy = if (nudge != null) nudge.y.dp.toPx() / scale else 0f
+            val x = cx + (if (isLeft) -1f else 1f) * (tip.x + pathDx - pathCenterX) * scale
+            val y = cy + (tip.y + pathDy - pathCenterY) * scale
             drawCircle(color = Color(0xFFC0392B), radius = tipRadius, center = Offset(x, y))
             drawCircle(color = Color.White, radius = tipRadius * 0.45f, center = Offset(x, y))
         }
