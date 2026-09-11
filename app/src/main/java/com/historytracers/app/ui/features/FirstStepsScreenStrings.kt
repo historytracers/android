@@ -16,6 +16,7 @@ data class FirstStepsScreenStrings(
     val ordersMore: String,
     val firstHands: String,
     val firstVoice: String,
+    val countingWithBones: String,
     val weHaveZero: String,
 )
 
@@ -32,6 +33,7 @@ val EnFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersMore = "..",
     firstHands = "The First Ones (Hands)",
     firstVoice = "The First Ones (Voice)",
+    countingWithBones = "Counting with Bones",
     weHaveZero = "We Have Zero",
 )
 
@@ -48,6 +50,7 @@ val PtFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersMore = "..",
     firstHands = "Os primeiros (m\u00e3os)",
     firstVoice = "Os primeiros (voz)",
+    countingWithBones = "Contando com ossos",
     weHaveZero = "Temos zero",
 )
 
@@ -64,6 +67,7 @@ val EsFirstStepsScreenStrings = FirstStepsScreenStrings(
     ordersMore = "..",
     firstHands = "Los primeros (manos)",
     firstVoice = "Los primeros (voz)",
+    countingWithBones = "Contando con huesos",
     weHaveZero = "Tenemos cero",
 )
 

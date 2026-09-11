@@ -87,7 +87,7 @@
 - When a new section/button is added to a hub, the section must record completion in its exercise screen (via `mark[Hub]SectionCompleted`) **and** be added to the corresponding `<hub>SectionIds` list on the main screen — otherwise the main button never reflects full completion.
 - The rule only applies to buttons that lead to real hubs; buttons without internal screens (e.g. unimplemented placeholders) keep a static color.
 - Current section lists to keep in sync:
-  - **First Steps** (19): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
+  - **First Steps** (20): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `counting_with_bones`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
   - **I Am (Not) Like You** (5): `to_be_or_not_to_be`, `totally_equal`, `equality_in_history_metate`, `equality_in_history`, `equal_same_group_or_different`
   - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
   - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
@@ -117,7 +117,7 @@
 - Each entry is a button that navigates directly to that screen and marks its section completed on tap (`mark[Hub]SectionCompleted(sectionId)`); its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `matter_energy` (Matter and Energy), `shared_origin` (Shared Origin), `running_among_numbers` (Running Among Numbers), `playing_with_axioms` (Practicing the Axioms of Addition), `order_of_addition` (The Order of Addition).
+- Current list (latest first): `counting_with_bones` (Counting with Bones), `matter_energy` (Matter and Energy), `shared_origin` (Shared Origin), `running_among_numbers` (Running Among Numbers), `playing_with_axioms` (Practicing the Axioms of Addition).
 
 ## New Main-Screen Buttons (Sun Badge)
 

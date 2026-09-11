@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 private val firstStepsSectionIds = listOf(
     "i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands",
-    "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game",
+    "counting_with_bones", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game",
     "family_part1", "sequence_game_families", "building", "natural_families_part2",
     "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"
 )

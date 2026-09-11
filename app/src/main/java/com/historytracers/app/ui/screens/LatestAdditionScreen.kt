@@ -26,9 +26,9 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.orderOfAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
@@ -52,11 +52,11 @@ fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
-    onNavigateToOrderOfAdditionIntro: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
+    onNavigateToCountingWithBonesIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -65,7 +65,7 @@ fun LatestAdditionScreen(
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
-    val oas = orderOfAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
     val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
@@ -74,9 +74,24 @@ fun LatestAdditionScreen(
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "counting_with_bones",
+            label = cwbs.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_hand_bones),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "counting_with_bones" in completedFirstSteps },
+            markCompleted = { preferences.markFirstStepsSectionCompleted("counting_with_bones") },
+            onNavigate = onNavigateToCountingWithBonesIntro
+        ),
         LatestAdditionEntry(
             sectionId = "matter_energy",
             label = maes.title,
@@ -128,22 +143,6 @@ fun LatestAdditionScreen(
             isCompleted = { "playing_with_axioms" in completedRoadToSomewhere },
             markCompleted = { preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms") },
             onNavigate = onNavigateToPlayingWithAxioms
-        ),
-        LatestAdditionEntry(
-            sectionId = "order_of_addition",
-            label = oas.title,
-            icon = {
-                Text(
-                    text = rts.commutativeExpression,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "order_of_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("order_of_addition") },
-            onNavigate = onNavigateToOrderOfAdditionIntro
         )
     )
 
