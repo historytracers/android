@@ -61,6 +61,10 @@ private val roadToSomewhereSectionIds = listOf(
     "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "running_among_numbers", "practicing_addition"
 )
 
+private val whereAreWeFromSectionIds = listOf(
+    "shared_origin", "matter_energy"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // This list is intentionally empty: no main-screen hub button was newly introduced
 // by the current release (the five wired hubs already existed), and the four
@@ -109,6 +113,7 @@ fun IndexScreen(
     val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -118,6 +123,7 @@ fun IndexScreen(
     val abacusDone = abacusSectionIds.all { it in completedAbacus }
     val yupanaDone = yupanaSectionIds.all { it in completedYupana }
     val roadToSomewhereDone = roadToSomewhereSectionIds.all { it in completedRoadToSomewhere }
+    val whereAreWeFromDone = whereAreWeFromSectionIds.all { it in completedWhereAreWeFrom }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -246,7 +252,7 @@ fun IndexScreen(
                 onClick = { onNavigateToWhereAreWeFrom() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (whereAreWeFromDone) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {

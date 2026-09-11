@@ -10,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,9 +27,9 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.orderOfAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -55,9 +54,9 @@ fun LatestAdditionScreen(
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToOrderOfAdditionIntro: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
-    onNavigateToPracticingAdditionRoad: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
+    onNavigateToMatterAndEnergyIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -65,7 +64,7 @@ fun LatestAdditionScreen(
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val pras = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
+    val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val oas = orderOfAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
@@ -78,6 +77,20 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "matter_energy",
+            label = maes.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_matter_energy),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "matter_energy" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("matter_energy") },
+            onNavigate = onNavigateToMatterAndEnergyIntro
+        ),
         LatestAdditionEntry(
             sectionId = "shared_origin",
             label = sos.title,
@@ -131,14 +144,6 @@ fun LatestAdditionScreen(
             isCompleted = { "order_of_addition" in completedRoadToSomewhere },
             markCompleted = { preferences.markRoadToSomewhereSectionCompleted("order_of_addition") },
             onNavigate = onNavigateToOrderOfAdditionIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_addition",
-            label = pras.title,
-            icon = { Icon(Icons.Filled.Calculate, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
-            isCompleted = { "practicing_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("practicing_addition") },
-            onNavigate = onNavigateToPracticingAdditionRoad
         )
     )
 
