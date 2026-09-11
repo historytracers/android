@@ -216,7 +216,7 @@ fun CountingWithBonesGameScreen(
                             BoneHand(
                                 count = digit,
                                 isLeft = index % 2 == 0,
-                                contentDescription = xs.raisedHandDesc,
+                                contentDescription = String.format(xs.raisedHandDesc, digit),
                                 modifier = Modifier
                                     .weight(if (rowHands.size == 1) 2f else 1f)
                                     .fillMaxHeight()
@@ -235,7 +235,7 @@ fun CountingWithBonesGameScreen(
             ) {
                 BoneWithMarks(
                     markCount = marks,
-                    contentDescription = xs.boneDesc,
+                    contentDescription = String.format(xs.boneDesc, marks),
                     modifier = Modifier
                         .weight(1f)
                         .height(96.dp)
@@ -295,7 +295,8 @@ fun CountingWithBonesGameScreen(
             if (won) {
                 Spacer(Modifier.height(16.dp))
                 FilledTonalButton(
-                    onClick = { newChallenge(if (level < MAX_BONE_LEVELS) level + 1 else 1) },
+                    onClick = onNavigateNext,
+                    enabled = won && level == MAX_BONE_LEVELS,
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = Color(0xFF4CAF50),
                         contentColor = Color.White

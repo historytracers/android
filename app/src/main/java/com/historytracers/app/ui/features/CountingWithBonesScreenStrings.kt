@@ -35,7 +35,7 @@ val EnCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     boneFigureCaption = "Figure 1: A bone with marks. The marks look like our fingers.",
     boneLookText = "Look at the marks on the bone. They look like our fingers. In this game, we do the opposite: we look at hands with raised fingers and we place marks on a bone until the marks match the raised fingers.",
     gameRulesTitle = "Objective and Rules",
-    gameRules = "Choose which hands will raise fingers using the buttons above. Look at the raised fingers. Then use the arrows beside the bone to place marks. The up arrow adds a mark, and the down arrow removes a mark. The game stops as soon as the bone shows the same quantity of marks as raised fingers. To practice more, start a new round or choose another set of hands.",
+    gameRules = "Look at the raised fingers. Then use the arrows beside the bone to place marks. The up arrow adds a mark, and the down arrow removes a mark. The game stops as soon as the bone shows the same quantity of marks as raised fingers. After you complete a level, a button appears to continue to the next set of hands. To practice the same level again, start a new round.",
     prompt = "Count the raised fingers, then place the same quantity of marks on the bone.",
     handsLabel = "Hands:",
     levelLeft = "Left hand",
@@ -49,8 +49,8 @@ val EnCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     allLevelsCongrats = "You completed all 4 levels!",
     practiceTitle = "What Are We Practicing?",
     practiceText = "With this game, we practice turning a quantity into a sequence of marks, like some ancient peoples did on bones. We also practice counting with the fingers of our hands and, when the quantity grows, with the hands of another person.",
-    raisedHandDesc = "Hand with raised fingers",
-    boneDesc = "Bone with marks",
+    raisedHandDesc = "Raised fingers: %d",
+    boneDesc = "Marks: %d",
 )
 
 val PtCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
@@ -60,7 +60,7 @@ val PtCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     boneFigureCaption = "Figura 1: Um osso com marcas. As marcas parecem nossos dedos.",
     boneLookText = "Observe as marcas no osso. Elas parecem nossos dedos. Neste jogo, fazemos o contr\u00e1rio: olhamos m\u00e3os com dedos levantados e colocamos marcas em um osso at\u00e9 que elas coincidam com os dedos levantados.",
     gameRulesTitle = "Objetivo e Regras",
-    gameRules = "Escolha quais m\u00e3os v\u00e3o levantar dedos usando os bot\u00f5es acima. Observe os dedos levantados. Depois, use as setas ao lado do osso para colocar marcas. A seta para cima adiciona uma marca, e a seta para baixo remove uma marca. O jogo para assim que o osso mostrar a mesma quantidade de marcas que a de dedos levantados. Para praticar mais, comece uma nova rodada ou escolha outras m\u00e3os.",
+    gameRules = "Observe os dedos levantados. Depois, use as setas ao lado do osso para colocar marcas. A seta para cima adiciona uma marca, e a seta para baixo remove uma marca. O jogo para assim que o osso mostrar a mesma quantidade de marcas que a de dedos levantados. Ao completar um n\u00edvel, aparece um bot\u00e3o para continuar para o pr\u00f3ximo conjunto de m\u00e3os. Para praticar o mesmo n\u00edvel de novo, comece uma nova rodada.",
     prompt = "Conte os dedos levantados e coloque no osso a mesma quantidade de marcas.",
     handsLabel = "M\u00e3os:",
     levelLeft = "M\u00e3o esquerda",
@@ -74,8 +74,8 @@ val PtCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     allLevelsCongrats = "Voc\u00ea completou todos os 4 n\u00edveis!",
     practiceTitle = "O Que Praticamos?",
     practiceText = "Com este jogo, praticamos transformar uma quantidade em uma sequ\u00eancia de marcas, como alguns povos antigos faziam nos ossos. Tamb\u00e9m praticamos contar com os dedos das nossas m\u00e3os e, quando a quantidade cresce, com as m\u00e3os de outra pessoa.",
-    raisedHandDesc = "M\u00e3o com dedos levantados",
-    boneDesc = "Osso com marcas",
+    raisedHandDesc = "Dedos levantados: %d",
+    boneDesc = "Marcas: %d",
 )
 
 val EsCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
@@ -85,7 +85,7 @@ val EsCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     boneFigureCaption = "Figura 1: Un hueso con marcas. Las marcas se parecen a nuestros dedos.",
     boneLookText = "Mira las marcas del hueso. Se parecen a nuestros dedos. En este juego hacemos lo contrario: miramos manos con dedos levantados y colocamos marcas en un hueso hasta que coinciden con los dedos levantados.",
     gameRulesTitle = "Objetivo y Reglas",
-    gameRules = "Elige qu\u00e9 manos levantar\u00e1n los dedos con los botones de arriba. Observa los dedos levantados. Despu\u00e9s usa las flechas al lado del hueso para colocar marcas. La flecha hacia arriba a\u00f1ade una marca, y la flecha hacia abajo quita una marca. El juego se detiene en cuanto el hueso muestra la misma cantidad de marcas que dedos levantados. Para practicar m\u00e1s, comienza una nueva ronda o elige otras manos.",
+    gameRules = "Observa los dedos levantados. Despu\u00e9s usa las flechas al lado del hueso para colocar marcas. La flecha hacia arriba a\u00f1ade una marca, y la flecha hacia abajo quita una marca. El juego se detiene en cuanto el hueso muestra la misma cantidad de marcas que dedos levantados. Al completar un nivel, aparece un bot\u00f3n para continuar con el siguiente conjunto de manos. Para practicar el mismo nivel otra vez, comienza una nueva ronda.",
     prompt = "Cuenta los dedos levantados y coloca en el hueso la misma cantidad de marcas.",
     handsLabel = "Manos:",
     levelLeft = "Mano izquierda",
@@ -99,8 +99,8 @@ val EsCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     allLevelsCongrats = "\u00a1Completaste los 4 niveles!",
     practiceTitle = "\u00bfQu\u00e9 Practicamos?",
     practiceText = "Con este juego practicamos convertir una cantidad en una secuencia de marcas, como algunos pueblos antiguos hac\u00edan en los huesos. Tambi\u00e9n practicamos contar con los dedos de nuestras manos y, cuando la cantidad crece, con las manos de otra persona.",
-    raisedHandDesc = "Mano con dedos levantados",
-    boneDesc = "Hueso con marcas",
+    raisedHandDesc = "Dedos levantados: %d",
+    boneDesc = "Marcas: %d",
 )
 
 val LocalCountingWithBonesScreenStrings = staticCompositionLocalOf { EnCountingWithBonesScreenStrings }

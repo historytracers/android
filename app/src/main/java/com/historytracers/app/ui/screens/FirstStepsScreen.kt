@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
@@ -385,7 +387,9 @@ fun FirstStepsScreen(
 
             FilledIconButton(
                 onClick = { onNavigateToCountingWithBones() },
-                modifier = Modifier.size(96.dp),
+                modifier = Modifier
+                    .size(96.dp)
+                    .semantics { contentDescription = xs.countingWithBones },
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = if (completedSections.contains("counting_with_bones")) ButtonYellowDark else ButtonYellow

@@ -51,6 +51,8 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "7cc05340-732f-4c3d-b260-5437670fbc99"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -333,6 +335,8 @@ private fun SharedOriginGameContent(
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -358,13 +362,13 @@ private fun SharedOriginGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
-    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-
     LaunchedEffect(content) {
         val node = content
-        if (node != null && !arrivalHandled) {
-            arrivalHandled = true
-            award(node.score)
+        if (node != null) {
+            if (!preferences.arrivalAwardedScreens.first().contains(node.id)) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
+            }
             if (onNavigateToWhereAreWeFrom != null) {
                 preferences.markWhereAreWeFromSectionCompleted("shared_origin")
                 preferences.recordLessonCompletion()
@@ -444,7 +448,12 @@ private fun SharedOriginGameContent(
                     if (content.answer != null) {
                         SharedOriginAnswerSection(
                             content = content,
-                            onAnswered = { points -> award(points) }
+                            onAnswered = { points ->
+                                if (content.id !in awardedScreens) {
+                                    award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
+                                }
+                            }
                         )
                     }
 
@@ -536,7 +545,6 @@ private fun SharedOriginAnswerSection(
     val xs = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
-    var awarded by remember { mutableStateOf(false) }
 
     val correctAnswer = when (val answer = content.answer) {
         is Boolean -> answer
@@ -547,12 +555,9 @@ private fun SharedOriginAnswerSection(
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        if (!awarded) {
-            awarded = true
-            val answeredCorrectly = (answer == "yes") == correctAnswer
-            val points = if (answeredCorrectly) content.score else content.score / 2
-            onAnswered(points)
-        }
+        val answeredCorrectly = (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else content.score / 2
+        onAnswered(points)
     }
 
     Spacer(Modifier.height(16.dp))

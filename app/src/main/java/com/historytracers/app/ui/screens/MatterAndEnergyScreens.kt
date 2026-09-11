@@ -43,6 +43,8 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "af0fcbef-3b19-4cf0-b100-93fafd9d9039"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -246,6 +248,8 @@ private fun MatterAndEnergyGameContent(
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -271,13 +275,13 @@ private fun MatterAndEnergyGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
-    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-
     LaunchedEffect(content) {
         val node = content
-        if (node != null && !arrivalHandled) {
-            arrivalHandled = true
-            award(node.score)
+        if (node != null) {
+            if (!preferences.arrivalAwardedScreens.first().contains(node.id)) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
+            }
             if (onNavigateToWhereAreWeFrom != null) {
                 preferences.markWhereAreWeFromSectionCompleted("matter_energy")
                 preferences.recordLessonCompletion()
@@ -354,7 +358,12 @@ private fun MatterAndEnergyGameContent(
                     if (content.answer != null) {
                         MatterAndEnergyAnswerSection(
                             content = content,
-                            onAnswered = { points -> award(points) }
+                            onAnswered = { points ->
+                                if (content.id !in awardedScreens) {
+                                    award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
+                                }
+                            }
                         )
                     }
 
@@ -446,7 +455,6 @@ private fun MatterAndEnergyAnswerSection(
     val xs = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
-    var awarded by remember { mutableStateOf(false) }
 
     val correctAnswer = when (val answer = content.answer) {
         is Boolean -> answer
@@ -457,12 +465,9 @@ private fun MatterAndEnergyAnswerSection(
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        if (!awarded) {
-            awarded = true
-            val answeredCorrectly = (answer == "yes") == correctAnswer
-            val points = if (answeredCorrectly) content.score else content.score / 2
-            onAnswered(points)
-        }
+        val answeredCorrectly = (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else content.score / 2
+        onAnswered(points)
     }
 
     Spacer(Modifier.height(16.dp))
