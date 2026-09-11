@@ -11,7 +11,6 @@ import android.graphics.RectF
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -281,21 +280,28 @@ fun CountingWithBonesGameScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(6.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                levels.forEach { (levelNumber, label) ->
-                    FilledTonalButton(
-                        onClick = { newChallenge(levelNumber) },
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = if (level == levelNumber) ButtonYellowDark else ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
+                levels.chunked(2).forEach { rowLevels ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(label)
+                        rowLevels.forEach { (levelNumber, label) ->
+                            FilledTonalButton(
+                                onClick = { newChallenge(levelNumber) },
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = if (level == levelNumber) ButtonYellowDark else ButtonYellow,
+                                    contentColor = OnButtonYellow
+                                )
+                            ) {
+                                Text(label)
+                            }
+                        }
                     }
                 }
             }
@@ -560,9 +566,14 @@ private fun BoneWithMarks(
 
         val markHalf = shaftHeight * 0.64f
         val markWidth = (w * 0.012f).coerceAtLeast(2f)
+        val markHalfWidth = markWidth / 2f
+        val knobOuter = knobRadius + border
+        val markStart = left + knobOuter + markHalfWidth
+        val markEnd = right - knobOuter - markHalfWidth
+        val markStep = if (MAX_BONE_MARKS > 1) (markEnd - markStart) / (MAX_BONE_MARKS - 1) else 0f
         val centerY = shaftTop + shaftHeight / 2f
         for (index in 0 until markCount.coerceIn(0, MAX_BONE_MARKS)) {
-            val x = w * (0.05f + index * 0.90f / (MAX_BONE_MARKS - 1))
+            val x = markStart + index * markStep
             drawLine(
                 color = markColor,
                 start = Offset(x, centerY - markHalf),
