@@ -5,9 +5,16 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,8 +25,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -28,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
@@ -37,33 +43,29 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.DateUtils
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
-import com.historytracers.app.ui.features.historicalEqualityScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-private const val SMARTPHONE_GAME_FILE = "ba31be57-9c2b-484f-ad79-3e3f39ee41ae"
+private const val SMARTPHONE_GAME_FILE = "7cc05340-732f-4c3d-b260-5437670fbc99"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
-private const val MESOAMERICA_MAP_URL =
-    "https://www.historytracers.org/images/Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg"
-
-private val IMG_TAG_REGEX = Regex("""<img[^>]*/?>""")
-private val IMG_SRC_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
-private val HTCITE_REGEX = Regex("""<htcite\d+>""")
-private val TAG_STRIP_REGEX = Regex("""<[^>]+>""")
 
 @Composable
-fun HistoricalEqualityIntroScreen(
+fun SharedOriginIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "89f89c40-931f-499c-a34d-1e4328088550",
+    SharedOriginGameContent(
+        contentId = "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -72,15 +74,15 @@ fun HistoricalEqualityIntroScreen(
 }
 
 @Composable
-fun HistoricalEqualityMappingScreen(
+fun SharedOriginExpandingScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "9bd2ba2d-e1f9-481f-b019-3a821ee74732",
+    SharedOriginGameContent(
+        contentId = "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -90,15 +92,15 @@ fun HistoricalEqualityMappingScreen(
 }
 
 @Composable
-fun HistoricalEqualityObjectsScreen(
+fun SharedOriginThinkScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "de39ec06-bdff-4e72-bbf9-a3159ae8726f",
+    SharedOriginGameContent(
+        contentId = "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -108,15 +110,15 @@ fun HistoricalEqualityObjectsScreen(
 }
 
 @Composable
-fun HistoricalEqualityQuestionScreen(
+fun SharedOriginHistoryScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "ba0cae93-4516-4f24-a616-0c0d79372569",
+    SharedOriginGameContent(
+        contentId = "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f80",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -126,15 +128,15 @@ fun HistoricalEqualityQuestionScreen(
 }
 
 @Composable
-fun HistoricalEqualityEvidenceScreen(
+fun SharedOriginCmbScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "51c8e018-dd46-4bae-9a51-7af416dc31e0",
+    SharedOriginGameContent(
+        contentId = "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8091",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -144,20 +146,38 @@ fun HistoricalEqualityEvidenceScreen(
 }
 
 @Composable
-fun HistoricalEqualityConclusionScreen(
+fun SharedOriginContractScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToIAmNotLikeYou: () -> Unit = {}
+    onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "1304d59e-9777-418e-a4d6-ddd3d57e34d5",
+    SharedOriginGameContent(
+        contentId = "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8091a2",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToIAmNotLikeYou = onNavigateToIAmNotLikeYou
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun SharedOriginConclusionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateToWhereAreWeFrom: () -> Unit = {}
+) {
+    SharedOriginGameContent(
+        contentId = "a7b8c9d0-e1f2-4a3b-4c5d-6e7f8091a2b3",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateToWhereAreWeFrom = onNavigateToWhereAreWeFrom
     )
 }
 
@@ -174,111 +194,155 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
-private fun httpsImageUrl(url: String): String =
-    if (url.startsWith("http://www.historytracers.org/")) url.replaceFirst("http://", "https://") else url
+private val IMG_TAG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
+private val TAG_STRIP_REGEX = Regex("""<[^>]+>""")
+private val HTCITE_REGEX = Regex("""<htcite(\d+)>""")
+private val HTCITE_PLAIN_REGEX = Regex("""<htcite\d+>""")
+private val CIRCLE_VH_REGEX = Regex("""height:\s*([\d.]+)vh""")
 
-private fun isMapFigure(text: String?): Boolean =
-    text?.contains("imgGeo14") == true
+private fun hasImgSrc(text: String?): Boolean =
+    text != null && IMG_TAG_REGEX.containsMatchIn(text)
 
-private fun isPhotoImage(text: String?): Boolean =
-    text?.startsWith("<img") == true
+private fun isCircleHtml(text: String?): Boolean =
+    text?.contains("htCircle") == true
+
+private fun isDescHtml(text: String?): Boolean =
+    text?.contains("class=\"desc\"") == true
+
+private fun stripTags(html: String): String = TAG_STRIP_REGEX.replace(html, "").trim()
+
+private fun isMarkdownTable(text: String?, isTable: Boolean): Boolean =
+    isTable && text?.startsWith("|") == true
 
 @Composable
-private fun resolveDatePlaceholders(text: String, dates: List<HTDate>?): String {
-    if (!text.contains("<htdate")) return text
+private fun resolveRichText(
+    text: String,
+    dates: List<HTDate>?,
+    sources: List<HTSource>?
+): String {
     val common = LocalUiStrings.current.common
     val calendar = LocalAppCalendar.current
     var result = text
     DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
         result = result.replace("<htdate$index>", formatted)
     }
-    return TAG_STRIP_REGEX.replace(result, "")
+    result = HTCITE_REGEX.replace(result) { m ->
+        val index = m.groupValues[1].toIntOrNull() ?: return@replace ""
+        sources?.getOrNull(index)?.text ?: ""
+    }
+    result = HTCITE_PLAIN_REGEX.replace(result, "")
+    return result
 }
 
 @Composable
-private fun HtResponsiveImage(url: String, imgDesc: String?, modifier: Modifier = Modifier) {
-    val s = LocalUiStrings.current
-    val configuration = LocalConfiguration.current
-    val maxHeight = (configuration.screenHeightDp * 0.4f).dp
-    SubcomposeAsyncImage(
-        model = httpsImageUrl(url),
-        contentDescription = imgDesc,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(max = maxHeight)
-            .padding(vertical = 8.dp),
-        contentScale = ContentScale.Fit,
-        loading = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 96.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        },
-        error = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 96.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = s.common.imageOfflineMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+private fun CaptionText(text: String, modifier: Modifier = Modifier) {
+    if (text.isEmpty()) return
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.fillMaxWidth()
     )
 }
 
 @Composable
-private fun MapFigure(html: String, modifier: Modifier = Modifier) {
-    val caption = remember(html) {
-        var text = IMG_TAG_REGEX.replace(html, "")
-        text = HTCITE_REGEX.replace(text, "")
-        TAG_STRIP_REGEX.replace(text, "").trim()
+private fun GrowingCircle(html: String, modifier: Modifier = Modifier) {
+    val configuration = LocalConfiguration.current
+    val baseVh = remember(html) {
+        CIRCLE_VH_REGEX.find(html)?.groupValues?.get(1)?.toFloatOrNull() ?: 20f
     }
+    val caption = remember(html) { stripTags(html) }
+    val expanding = baseVh <= 25f
+    val screenHeight = configuration.screenHeightDp.toFloat()
+    val baseSize = (screenHeight * baseVh / 100f).dp
+    val activeSize = (screenHeight * (if (expanding) 40f else 10f) / 100f).dp
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val diameter by animateDpAsState(
+        targetValue = if (pressed) activeSize else baseSize,
+        animationSpec = tween(durationMillis = 3000),
+        label = "sharedOriginCircle"
+    )
+
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HtResponsiveImage(url = MESOAMERICA_MAP_URL, imgDesc = null)
+        Box(
+            modifier = Modifier
+                .size(diameter)
+                .clip(CircleShape)
+                .background(Color.White)
+                .border(1.dp, Color.Black, CircleShape)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) {}
+        )
         if (caption.isNotEmpty()) {
-            Text(
-                text = caption,
-                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Spacer(Modifier.height(8.dp))
+            CaptionText(caption)
         }
     }
 }
 
 @Composable
-private fun HistoricalEqualityGameContent(
+private fun MarkdownTable(text: String, modifier: Modifier = Modifier) {
+    val rows = text.trim().split("\n").map { line ->
+        line.trim().trim('|').split("|").map { cell -> cell.trim() }
+    }.filter { row ->
+        row.isNotEmpty() && !row.all { cell -> cell.all { ch -> ch == '-' } }
+    }
+    val columnCount = rows.maxOfOrNull { it.size } ?: 3
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        rows.forEachIndexed { rowIndex, row ->
+            Row(modifier = Modifier.fillMaxWidth()) {
+                for (col in 0 until columnCount) {
+                    val cell = row.getOrElse(col) { "" }
+                    Text(
+                        text = cell,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = if (rowIndex == 0) FontWeight.Bold else FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(vertical = 4.dp)
+                    )
+                }
+            }
+            Divider(color = MaterialTheme.colorScheme.outlineVariant)
+        }
+    }
+}
+
+@Composable
+private fun SharedOriginGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToIAmNotLikeYou: (() -> Unit)? = null
+    onNavigateToWhereAreWeFrom: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = historicalEqualityScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(language) {
+        game = null
+        error = null
         when (val result = repo.loadAndParse("$language/$SMARTPHONE_GAME_FILE")) {
             is ContentResult.SMGame -> game = result.data
             is ContentResult.Error -> error = result.message
@@ -301,10 +365,13 @@ private fun HistoricalEqualityGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            award(node.score)
-            if (onNavigateToIAmNotLikeYou != null) {
+            if (!preferences.arrivalAwardedScreens.first().contains(node.id)) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
+            }
+            if (onNavigateToWhereAreWeFrom != null) {
+                preferences.markWhereAreWeFromSectionCompleted("shared_origin")
                 preferences.recordLessonCompletion()
-                preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate")
             }
         }
     }
@@ -357,26 +424,36 @@ private fun HistoricalEqualityGameContent(
                 ) {
                     content.text?.forEach { text ->
                         if (text == null) return@forEach
+                        val html = text.text ?: ""
                         when {
-                            text.format?.contains("markdown") == true -> MarkdownText(
-                                text = resolveDatePlaceholders(text.text ?: "", text.fillDates)
+                            isCircleHtml(html) -> GrowingCircle(
+                                html = html,
+                                modifier = Modifier.padding(vertical = 8.dp)
                             )
-                            isMapFigure(text.text) -> MapFigure(html = text.text ?: "")
-                            isPhotoImage(text.text) -> {
-                                val url = IMG_SRC_REGEX.find(text.text ?: "")?.groupValues?.get(1)
-                                if (!url.isNullOrEmpty()) {
-                                    HtResponsiveImage(url = url, imgDesc = text.imgdesc)
-                                }
+                            hasImgSrc(html) -> {
+                                ResponsiveImage(html = html, imgDesc = text.imgdesc)
+                                CaptionText(stripTags(html))
                             }
+                            isDescHtml(html) -> CaptionText(stripTags(html))
+                            isMarkdownTable(html, text.isTable) -> MarkdownTable(
+                                text = resolveRichText(html, text.fillDates, text.source),
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            text.format?.contains("markdown") == true -> MarkdownText(text = html)
                             else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
 
                     if (content.answer != null) {
-                        AnswerSection(
+                        SharedOriginAnswerSection(
                             content = content,
-                            onAnswered = { points -> award(points) }
+                            onAnswered = { points ->
+                                if (content.id !in awardedScreens) {
+                                    award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
+                                }
+                            }
                         )
                     }
 
@@ -422,16 +499,16 @@ private fun HistoricalEqualityGameContent(
                         }
                     }
 
-                    if (onNavigateToIAmNotLikeYou != null) {
+                    if (onNavigateToWhereAreWeFrom != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToIAmNotLikeYou,
+                            onClick = onNavigateToWhereAreWeFrom,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.iAmNotLikeYou, fontWeight = FontWeight.Bold)
+                            Text(hts.whereAreWeFrom, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -450,7 +527,7 @@ private fun HistoricalEqualityGameContent(
             }
 
             content?.sourceMenu?.takeIf { it.isNotEmpty() }?.let { sources ->
-                SourcesMenu(
+                SharedOriginSourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -460,26 +537,27 @@ private fun HistoricalEqualityGameContent(
 }
 
 @Composable
-private fun AnswerSection(
+private fun SharedOriginAnswerSection(
     content: SMGameContent,
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = historicalEqualityScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
-    var awarded by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val answer = content.answer) {
+        is Boolean -> answer
+        is String -> answer.equals("yes", ignoreCase = true)
+        else -> null
+    }
 
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        if (!awarded) {
-            awarded = true
-            val points = if (answer == correctAnswer) content.score else content.score / 2
-            onAnswered(points)
-        }
+        val answeredCorrectly = (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else content.score / 2
+        onAnswered(points)
     }
 
     Spacer(Modifier.height(16.dp))
@@ -506,7 +584,7 @@ private fun AnswerSection(
             }
         }
     } else {
-        val isCorrect = selected == correctAnswer
+        val isCorrect = (selected == "yes") == correctAnswer
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -532,7 +610,7 @@ private fun AnswerSection(
 }
 
 @Composable
-private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
+private fun SharedOriginSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -567,26 +645,19 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
             onDismissRequest = { showSourcesMenu = false }
         ) {
             sources.forEach { source ->
-                if (source.page.isNullOrEmpty()) {
-                    DropdownMenuItem(
-                        text = { Text(source.text) },
-                        onClick = { showSourcesMenu = false }
-                    )
-                } else {
-                    DropdownMenuItem(
-                        text = { Text(source.text) },
-                        trailingIcon = {
-                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                        },
-                        onClick = { activeSource = source }
-                    )
-                }
+                DropdownMenuItem(
+                    text = { Text(source.text) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { activeSource = source }
+                )
             }
         }
 
         DropdownMenu(
             expanded = showSourcesMenu && activeSource != null,
-            onDismissRequest = { showSourcesMenu = false; activeSource = null }
+            onDismissRequest = { activeSource = null }
         ) {
             activeSource?.let { source ->
                 val url = sourceUrl(source.page)
@@ -605,9 +676,7 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        if (url.isNotEmpty()) {
-                            uriHandler.openUri(url)
-                        }
+                        uriHandler.openUri(url)
                     }
                 )
             }

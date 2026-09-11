@@ -32,4 +32,6 @@ data class AppCommonStrings(
     val resetClasses: String,
     val resetClassesMessage: String,
     val calendar: String,
+    val dateJulianDays: String,
+    val bce: String,
 )

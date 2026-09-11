@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -278,6 +279,7 @@ private fun FamilySection(family: FamilyBody, repo: ContentRepository, s: UiStri
 @Composable
 private fun PersonSection(person: FamilyPerson, repo: ContentRepository, s: UiStrings) {
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val calendar = LocalAppCalendar.current
     var showDetails by remember { mutableStateOf(false) }
 
     OutlinedCard(
@@ -308,14 +310,14 @@ private fun PersonSection(person: FamilyPerson, repo: ContentRepository, s: UiSt
                 person.birth?.forEach { event ->
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${hts.birth}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.common.unknown}",
+                        text = "${hts.birth}: ${event.date?.let { DateUtils.formatDate(it, calendar, s.common) } ?: s.common.unknown}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
                 person.death?.forEach { event ->
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "${hts.death}: ${event.date?.let { DateUtils.formatDate(it) } ?: s.common.unknown}",
+                        text = "${hts.death}: ${event.date?.let { DateUtils.formatDate(it, calendar, s.common) } ?: s.common.unknown}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }

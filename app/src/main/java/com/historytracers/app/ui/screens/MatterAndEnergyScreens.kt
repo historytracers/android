@@ -19,8 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontStyle
@@ -28,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
@@ -36,34 +33,31 @@ import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.DateUtils
+import com.historytracers.app.ui.components.HtmlRenderer
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
-import com.historytracers.app.ui.features.historicalEqualityScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-private const val SMARTPHONE_GAME_FILE = "ba31be57-9c2b-484f-ad79-3e3f39ee41ae"
+private const val SMARTPHONE_GAME_FILE = "af0fcbef-3b19-4cf0-b100-93fafd9d9039"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
-private const val MESOAMERICA_MAP_URL =
-    "https://www.historytracers.org/images/Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg"
-
-private val IMG_TAG_REGEX = Regex("""<img[^>]*/?>""")
-private val IMG_SRC_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
-private val HTCITE_REGEX = Regex("""<htcite\d+>""")
-private val TAG_STRIP_REGEX = Regex("""<[^>]+>""")
 
 @Composable
-fun HistoricalEqualityIntroScreen(
+fun MatterAndEnergyIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "89f89c40-931f-499c-a34d-1e4328088550",
+    MatterAndEnergyGameContent(
+        contentId = "b8a78e11-ba35-4946-adfd-febfbaf6fb77",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -72,15 +66,15 @@ fun HistoricalEqualityIntroScreen(
 }
 
 @Composable
-fun HistoricalEqualityMappingScreen(
+fun MatterAndEnergyTransformationScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "9bd2ba2d-e1f9-481f-b019-3a821ee74732",
+    MatterAndEnergyGameContent(
+        contentId = "18600a45-e48e-4bff-8eeb-2c15742cf743",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -90,15 +84,15 @@ fun HistoricalEqualityMappingScreen(
 }
 
 @Composable
-fun HistoricalEqualityObjectsScreen(
+fun MatterAndEnergyLawScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "de39ec06-bdff-4e72-bbf9-a3159ae8726f",
+    MatterAndEnergyGameContent(
+        contentId = "9a89bb0f-673b-48eb-8b69-de31466f6845",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -108,15 +102,15 @@ fun HistoricalEqualityObjectsScreen(
 }
 
 @Composable
-fun HistoricalEqualityQuestionScreen(
+fun MatterAndEnergyQuestionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "ba0cae93-4516-4f24-a616-0c0d79372569",
+    MatterAndEnergyGameContent(
+        contentId = "fce5a39f-1a27-477f-b1ff-6e88e11f455a",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -126,15 +120,15 @@ fun HistoricalEqualityQuestionScreen(
 }
 
 @Composable
-fun HistoricalEqualityEvidenceScreen(
+fun MatterAndEnergyEnergyScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "51c8e018-dd46-4bae-9a51-7af416dc31e0",
+    MatterAndEnergyGameContent(
+        contentId = "616fa90d-bc12-41be-954f-fbee4efa2b9d",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -144,20 +138,38 @@ fun HistoricalEqualityEvidenceScreen(
 }
 
 @Composable
-fun HistoricalEqualityConclusionScreen(
+fun MatterAndEnergyTogetherScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToIAmNotLikeYou: () -> Unit = {}
+    onNavigateNext: () -> Unit = {}
 ) {
-    HistoricalEqualityGameContent(
-        contentId = "1304d59e-9777-418e-a4d6-ddd3d57e34d5",
+    MatterAndEnergyGameContent(
+        contentId = "846328fb-8f9b-41ff-8017-d2ee06a67c7c",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToIAmNotLikeYou = onNavigateToIAmNotLikeYou
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun MatterAndEnergyConclusionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateToWhereAreWeFrom: () -> Unit = {}
+) {
+    MatterAndEnergyGameContent(
+        contentId = "e11930af-8ce0-46de-b217-58c00367e531",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateToWhereAreWeFrom = onNavigateToWhereAreWeFrom
     )
 }
 
@@ -174,111 +186,76 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
-private fun httpsImageUrl(url: String): String =
-    if (url.startsWith("http://www.historytracers.org/")) url.replaceFirst("http://", "https://") else url
+private val IMG_TAG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
+private val TAG_STRIP_REGEX = Regex("""<[^>]+>""")
+private val HTCITE_REGEX = Regex("""<htcite(\d+)>""")
+private val HTCITE_PLAIN_REGEX = Regex("""<htcite\d+>""")
 
-private fun isMapFigure(text: String?): Boolean =
-    text?.contains("imgGeo14") == true
+private fun hasImgSrc(text: String?): Boolean =
+    text != null && IMG_TAG_REGEX.containsMatchIn(text)
 
-private fun isPhotoImage(text: String?): Boolean =
-    text?.startsWith("<img") == true
+private fun isDescHtml(text: String?): Boolean =
+    text?.contains("class=\"desc\"") == true
+
+private fun stripTags(html: String): String = TAG_STRIP_REGEX.replace(html, "").trim()
 
 @Composable
-private fun resolveDatePlaceholders(text: String, dates: List<HTDate>?): String {
-    if (!text.contains("<htdate")) return text
+private fun resolveRichText(
+    text: String,
+    dates: List<HTDate>?,
+    sources: List<HTSource>?
+): String {
     val common = LocalUiStrings.current.common
     val calendar = LocalAppCalendar.current
     var result = text
     DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
         result = result.replace("<htdate$index>", formatted)
     }
-    return TAG_STRIP_REGEX.replace(result, "")
+    result = HTCITE_REGEX.replace(result) { m ->
+        val index = m.groupValues[1].toIntOrNull() ?: return@replace ""
+        sources?.getOrNull(index)?.text ?: ""
+    }
+    result = HTCITE_PLAIN_REGEX.replace(result, "")
+    return result
 }
 
 @Composable
-private fun HtResponsiveImage(url: String, imgDesc: String?, modifier: Modifier = Modifier) {
-    val s = LocalUiStrings.current
-    val configuration = LocalConfiguration.current
-    val maxHeight = (configuration.screenHeightDp * 0.4f).dp
-    SubcomposeAsyncImage(
-        model = httpsImageUrl(url),
-        contentDescription = imgDesc,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(max = maxHeight)
-            .padding(vertical = 8.dp),
-        contentScale = ContentScale.Fit,
-        loading = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 96.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        },
-        error = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 96.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = s.common.imageOfflineMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+private fun CaptionText(text: String, modifier: Modifier = Modifier) {
+    if (text.isEmpty()) return
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.fillMaxWidth()
     )
 }
 
 @Composable
-private fun MapFigure(html: String, modifier: Modifier = Modifier) {
-    val caption = remember(html) {
-        var text = IMG_TAG_REGEX.replace(html, "")
-        text = HTCITE_REGEX.replace(text, "")
-        TAG_STRIP_REGEX.replace(text, "").trim()
-    }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        HtResponsiveImage(url = MESOAMERICA_MAP_URL, imgDesc = null)
-        if (caption.isNotEmpty()) {
-            Text(
-                text = caption,
-                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun HistoricalEqualityGameContent(
+private fun MatterAndEnergyGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToIAmNotLikeYou: (() -> Unit)? = null
+    onNavigateToWhereAreWeFrom: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = historicalEqualityScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(language) {
+        game = null
+        error = null
         when (val result = repo.loadAndParse("$language/$SMARTPHONE_GAME_FILE")) {
             is ContentResult.SMGame -> game = result.data
             is ContentResult.Error -> error = result.message
@@ -301,10 +278,13 @@ private fun HistoricalEqualityGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            award(node.score)
-            if (onNavigateToIAmNotLikeYou != null) {
+            if (!preferences.arrivalAwardedScreens.first().contains(node.id)) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
+            }
+            if (onNavigateToWhereAreWeFrom != null) {
+                preferences.markWhereAreWeFromSectionCompleted("matter_energy")
                 preferences.recordLessonCompletion()
-                preferences.markIAmNotLikeYouSectionCompleted("equality_in_history_metate")
             }
         }
     }
@@ -357,26 +337,33 @@ private fun HistoricalEqualityGameContent(
                 ) {
                     content.text?.forEach { text ->
                         if (text == null) return@forEach
+                        val html = text.text ?: ""
                         when {
-                            text.format?.contains("markdown") == true -> MarkdownText(
-                                text = resolveDatePlaceholders(text.text ?: "", text.fillDates)
-                            )
-                            isMapFigure(text.text) -> MapFigure(html = text.text ?: "")
-                            isPhotoImage(text.text) -> {
-                                val url = IMG_SRC_REGEX.find(text.text ?: "")?.groupValues?.get(1)
-                                if (!url.isNullOrEmpty()) {
-                                    HtResponsiveImage(url = url, imgDesc = text.imgdesc)
-                                }
+                            hasImgSrc(html) -> {
+                                ResponsiveImage(html = html, imgDesc = text.imgdesc)
+                                CaptionText(stripTags(resolveRichText(html, text.fillDates, text.source)))
                             }
+                            isDescHtml(html) -> CaptionText(stripTags(resolveRichText(html, text.fillDates, text.source)))
+                            text.format?.contains("markdown") == true -> MarkdownText(
+                                text = resolveRichText(html, text.fillDates, text.source)
+                            )
+                            text.format?.contains("html") == true -> HtmlRenderer(
+                                html = resolveRichText(html, text.fillDates, text.source)
+                            )
                             else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
 
                     if (content.answer != null) {
-                        AnswerSection(
+                        MatterAndEnergyAnswerSection(
                             content = content,
-                            onAnswered = { points -> award(points) }
+                            onAnswered = { points ->
+                                if (content.id !in awardedScreens) {
+                                    award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
+                                }
+                            }
                         )
                     }
 
@@ -422,16 +409,16 @@ private fun HistoricalEqualityGameContent(
                         }
                     }
 
-                    if (onNavigateToIAmNotLikeYou != null) {
+                    if (onNavigateToWhereAreWeFrom != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToIAmNotLikeYou,
+                            onClick = onNavigateToWhereAreWeFrom,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.iAmNotLikeYou, fontWeight = FontWeight.Bold)
+                            Text(hts.whereAreWeFrom, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -450,7 +437,7 @@ private fun HistoricalEqualityGameContent(
             }
 
             content?.sourceMenu?.takeIf { it.isNotEmpty() }?.let { sources ->
-                SourcesMenu(
+                MatterAndEnergySourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -460,26 +447,27 @@ private fun HistoricalEqualityGameContent(
 }
 
 @Composable
-private fun AnswerSection(
+private fun MatterAndEnergyAnswerSection(
     content: SMGameContent,
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = historicalEqualityScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
-    var awarded by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val answer = content.answer) {
+        is Boolean -> answer
+        is String -> answer.equals("yes", ignoreCase = true)
+        else -> null
+    }
 
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        if (!awarded) {
-            awarded = true
-            val points = if (answer == correctAnswer) content.score else content.score / 2
-            onAnswered(points)
-        }
+        val answeredCorrectly = (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else content.score / 2
+        onAnswered(points)
     }
 
     Spacer(Modifier.height(16.dp))
@@ -506,7 +494,7 @@ private fun AnswerSection(
             }
         }
     } else {
-        val isCorrect = selected == correctAnswer
+        val isCorrect = (selected == "yes") == correctAnswer
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -532,7 +520,7 @@ private fun AnswerSection(
 }
 
 @Composable
-private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
+private fun MatterAndEnergySourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -567,26 +555,19 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
             onDismissRequest = { showSourcesMenu = false }
         ) {
             sources.forEach { source ->
-                if (source.page.isNullOrEmpty()) {
-                    DropdownMenuItem(
-                        text = { Text(source.text) },
-                        onClick = { showSourcesMenu = false }
-                    )
-                } else {
-                    DropdownMenuItem(
-                        text = { Text(source.text) },
-                        trailingIcon = {
-                            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
-                        },
-                        onClick = { activeSource = source }
-                    )
-                }
+                DropdownMenuItem(
+                    text = { Text(source.text) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { activeSource = source }
+                )
             }
         }
 
         DropdownMenu(
             expanded = showSourcesMenu && activeSource != null,
-            onDismissRequest = { showSourcesMenu = false; activeSource = null }
+            onDismissRequest = { activeSource = null }
         ) {
             activeSource?.let { source ->
                 val url = sourceUrl(source.page)
@@ -605,9 +586,7 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        if (url.isNotEmpty()) {
-                            uriHandler.openUri(url)
-                        }
+                        uriHandler.openUri(url)
                     }
                 )
             }

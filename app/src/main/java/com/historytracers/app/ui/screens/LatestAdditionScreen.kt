@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,16 +21,18 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.orderOfAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -50,10 +52,11 @@ fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
-    onNavigateToOrderOfAdditionIntro: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
-    onNavigateToPracticingAdditionRoad: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
+    onNavigateToSharedOriginIntro: () -> Unit = {},
+    onNavigateToMatterAndEnergyIntro: () -> Unit = {},
+    onNavigateToCountingWithBonesIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -61,17 +64,62 @@ fun LatestAdditionScreen(
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val pras = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
-    val oas = orderOfAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
+    val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
     val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
+    val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "counting_with_bones",
+            label = cwbs.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_hand_bones),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "counting_with_bones" in completedFirstSteps },
+            markCompleted = { preferences.markFirstStepsSectionCompleted("counting_with_bones") },
+            onNavigate = onNavigateToCountingWithBonesIntro
+        ),
+        LatestAdditionEntry(
+            sectionId = "matter_energy",
+            label = maes.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_matter_energy),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "matter_energy" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("matter_energy") },
+            onNavigate = onNavigateToMatterAndEnergyIntro
+        ),
+        LatestAdditionEntry(
+            sectionId = "shared_origin",
+            label = sos.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_cmb),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "shared_origin" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("shared_origin") },
+            onNavigate = onNavigateToSharedOriginIntro
+        ),
         LatestAdditionEntry(
             sectionId = "running_among_numbers",
             label = rnas.title,
@@ -95,44 +143,6 @@ fun LatestAdditionScreen(
             isCompleted = { "playing_with_axioms" in completedRoadToSomewhere },
             markCompleted = { preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms") },
             onNavigate = onNavigateToPlayingWithAxioms
-        ),
-        LatestAdditionEntry(
-            sectionId = "order_of_addition",
-            label = oas.title,
-            icon = {
-                Text(
-                    text = rts.commutativeExpression,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "order_of_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("order_of_addition") },
-            onNavigate = onNavigateToOrderOfAdditionIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_addition",
-            label = pras.title,
-            icon = { Icon(Icons.Filled.Calculate, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
-            isCompleted = { "practicing_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("practicing_addition") },
-            onNavigate = onNavigateToPracticingAdditionRoad
-        ),
-        LatestAdditionEntry(
-            sectionId = "carrying_in_addition",
-            label = cas.title,
-            icon = {
-                NumberOneOnStairs(
-                    color = OnButtonYellow,
-                    label = xs.numberOne,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "carrying_in_addition" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("carrying_in_addition") },
-            onNavigate = onNavigateToCarryingInAdditionIntro
         )
     )
 

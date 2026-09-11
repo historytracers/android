@@ -87,12 +87,13 @@
 - When a new section/button is added to a hub, the section must record completion in its exercise screen (via `mark[Hub]SectionCompleted`) **and** be added to the corresponding `<hub>SectionIds` list on the main screen — otherwise the main button never reflects full completion.
 - The rule only applies to buttons that lead to real hubs; buttons without internal screens (e.g. unimplemented placeholders) keep a static color.
 - Current section lists to keep in sync:
-  - **First Steps** (19): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
+  - **First Steps** (20): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `counting_with_bones`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
   - **I Am (Not) Like You** (5): `to_be_or_not_to_be`, `totally_equal`, `equality_in_history_metate`, `equality_in_history`, `equal_same_group_or_different`
   - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
   - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
   - **Yupana** (3): `hands_on_yupana`, `moving_in_yupana`, `practicing_addition`
   - **Road to Somewhere** (6): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `running_among_numbers`, `practicing_addition`
+  - **Where Are We From** (2): `shared_origin`, `matter_energy`
 
 ## Reset Classes Menu
 
@@ -116,7 +117,7 @@
 - Each entry is a button that navigates directly to that screen and marks its section completed on tap (`mark[Hub]SectionCompleted(sectionId)`); its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `running_among_numbers` (Running Among Numbers), `playing_with_axioms` (Practicing the Axioms of Addition), `order_of_addition` (The Order of Addition), `practicing_addition` (Practicing Addition), `carrying_in_addition` (Carrying in Addition).
+- Current list (latest first): `counting_with_bones` (Counting with Bones), `matter_energy` (Matter and Energy), `shared_origin` (Shared Origin), `running_among_numbers` (Running Among Numbers), `playing_with_axioms` (Practicing the Axioms of Addition).
 
 ## New Main-Screen Buttons (Sun Badge)
 
@@ -195,6 +196,36 @@ When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `
 ### 5. Build & verify
 - Run the build script to ensure compilation succeeds.
 - Fix any unresolved references (missing strings or imports).
+
+## Calendar-Aware Dates
+
+- **Every `<htdateN>` placeholder must be rewritten whenever the user changes the calendar in configuration.** Never render a stored date as-is; always convert it to the currently selected calendar.
+- The dates come from the `HTText.date_time` vector (Java field `HTText.fillDates`), indexed by N. Replace each `<htdateN>` with `DateUtils.formatDate(dates, calendar, common)`.
+- The active calendar is exposed through the `LocalAppCalendar` composition local (`app/src/main/java/com/historytracers/app/ui/UiStrings.kt`), provided by `AppNavigation.kt` from the persisted `preferences.calendar`. The active language strings are `LocalUiStrings.current.common`.
+- Implementation pattern (used in `SharedOriginScreens.kt`, `RunningAmongNumbersScreens.kt`, `HistoricalEqualityScreens.kt`, `HistoricalEqualityPyramidsScreens.kt`):
+  1. Make the resolve function `@Composable` (all its call sites are already inside composables) and read the locals inside it:
+     ```kotlin
+     @Composable
+     private fun resolveDatePlaceholders(text: String, dates: List<HTDate>?): String {
+         if (!text.contains("<htdate")) return text
+         val common = LocalUiStrings.current.common
+         val calendar = LocalAppCalendar.current
+         var result = text
+         DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
+             result = result.replace("<htdate$index>", formatted)
+         }
+         return result
+     }
+     ```
+  2. Import `com.historytracers.app.ui.LocalAppCalendar` and use `LocalUiStrings.current.common`.
+- `DateUtils.formatDate(...)` (`app/src/main/java/com/historytracers/app/ui/components/DateUtils.kt`) performs the conversion and must always receive the active `calendarId` plus `AppCommonStrings`:
+  - Gregorian full date → converted day/month/year; Gregorian year-only → converted year.
+  - Julian selected → Julian Day number followed by the localized `dateJulianDays` string (matches the website's "Julian (Days)").
+  - Mayan / Extended Mayan → full count.
+  - Negative years use the localized `bce` label.
+  - `unix` and `julian` epoch `date_type`s are also handled.
+- **Direct date fields must also follow the calendar**, not only `<htdateN>` placeholders. Example: family/person birth and death dates in `ContentScreen.kt` (`DateUtils.formatDate(it, calendar, s.common)`).
+- The new global strings `dateJulianDays` and `bce` live in `AppCommonStrings` with translations in `UiStrings.kt` (`EnStrings`/`PtStrings`/`EsStrings`). Reuse them; do not hardcode the JD suffix or the BCE label.
 
 ## Creating Screens from Smartphone Game JSON (sm_game)
 

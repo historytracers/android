@@ -22,9 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +44,7 @@ import com.historytracers.app.ui.features.firstStepsScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.Brown40
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -59,6 +63,7 @@ fun FirstStepsScreen(
     onNavigateToMyHands: () -> Unit = {},
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToFirstHands: () -> Unit = {},
+    onNavigateToCountingWithBones: () -> Unit = {},
     onNavigateToFirstVoice: () -> Unit = {},
     onNavigateToDrawingAndCouting: () -> Unit = {},
     onNavigateToNumbers: () -> Unit = {},
@@ -83,7 +88,7 @@ fun FirstStepsScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game", "sequence_game_families", "family_part1", "building", "natural_families_part2", "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"),
+            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands", "counting_with_bones", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game", "sequence_game_families", "family_part1", "building", "natural_families_part2", "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"),
             completedSections
         )
     }
@@ -371,6 +376,75 @@ fun FirstStepsScreen(
 
             Text(
                 text = xs.firstHands,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(48.dp))
+
+            FilledIconButton(
+                onClick = { onNavigateToCountingWithBones() },
+                modifier = Modifier
+                    .size(96.dp)
+                    .semantics { contentDescription = xs.countingWithBones },
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (completedSections.contains("counting_with_bones")) ButtonYellowDark else ButtonYellow
+                )
+            ) {
+                Canvas(modifier = Modifier.size(52.dp)) {
+                    val boneColor = OnButtonYellow
+                    val markColor = Brown40
+                    val cx = center.x
+                    val cy = center.y
+                    val shaftHalf = size.width * 0.30f
+                    val knobRadius = size.width * 0.11f
+                    drawLine(
+                        color = boneColor,
+                        start = Offset(cx - shaftHalf, cy),
+                        end = Offset(cx + shaftHalf, cy),
+                        strokeWidth = size.width * 0.14f,
+                        cap = StrokeCap.Round
+                    )
+                    listOf(-1f, 1f).forEach { dir ->
+                        val ex = cx + dir * shaftHalf
+                        drawCircle(
+                            color = boneColor,
+                            radius = knobRadius,
+                            center = Offset(ex, cy - knobRadius * 0.8f)
+                        )
+                        drawCircle(
+                            color = boneColor,
+                            radius = knobRadius,
+                            center = Offset(ex, cy + knobRadius * 0.8f)
+                        )
+                    }
+                    val barHalf = size.height * 0.13f
+                    val barOffset = size.width * 0.09f
+                    drawLine(
+                        color = markColor,
+                        start = Offset(cx - barOffset, cy - barHalf),
+                        end = Offset(cx - barOffset, cy + barHalf),
+                        strokeWidth = size.width * 0.06f,
+                        cap = StrokeCap.Round
+                    )
+                    drawLine(
+                        color = markColor,
+                        start = Offset(cx + barOffset, cy - barHalf),
+                        end = Offset(cx + barOffset, cy + barHalf),
+                        strokeWidth = size.width * 0.06f,
+                        cap = StrokeCap.Round
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = xs.countingWithBones,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,

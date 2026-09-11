@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 private val firstStepsSectionIds = listOf(
     "i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands",
-    "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game",
+    "counting_with_bones", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game",
     "family_part1", "sequence_game_families", "building", "natural_families_part2",
     "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"
 )
@@ -59,6 +59,10 @@ private val yupanaSectionIds = listOf(
 
 private val roadToSomewhereSectionIds = listOf(
     "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "running_among_numbers", "practicing_addition"
+)
+
+private val whereAreWeFromSectionIds = listOf(
+    "shared_origin", "matter_energy"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
@@ -94,7 +98,8 @@ fun IndexScreen(
     onNavigateToAbacus: () -> Unit = {},
     onNavigateToYupana: () -> Unit = {},
     onNavigateToRoadToSomewhere: () -> Unit = {},
-    onNavigateToRunningAndGrowing: () -> Unit = {}
+    onNavigateToRunningAndGrowing: () -> Unit = {},
+    onNavigateToWhereAreWeFrom: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -108,6 +113,7 @@ fun IndexScreen(
     val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -117,6 +123,7 @@ fun IndexScreen(
     val abacusDone = abacusSectionIds.all { it in completedAbacus }
     val yupanaDone = yupanaSectionIds.all { it in completedYupana }
     val roadToSomewhereDone = roadToSomewhereSectionIds.all { it in completedRoadToSomewhere }
+    val whereAreWeFromDone = whereAreWeFromSectionIds.all { it in completedWhereAreWeFrom }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -242,10 +249,10 @@ fun IndexScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledTonalButton(
-                onClick = { /* TODO */ },
+                onClick = { onNavigateToWhereAreWeFrom() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (whereAreWeFromDone) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {
