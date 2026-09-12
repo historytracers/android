@@ -17,9 +17,29 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import kotlin.math.roundToInt
 
-private fun wrapHtml(body: String): String =
-    """
+private val SVG_FONT_SIZE_REGEX = Regex("""font-size="(\d+(?:\.\d+)?)"""")
+
+private val SVG_BOTTOM_LABEL_REGEX = Regex("""(<text\b[^>]*\by="275"[^>]*font-size=")\d+(")""")
+
+private const val SVG_FONT_SCALE = 1.5f
+
+private const val SVG_BOTTOM_LABEL_FONT_SIZE = 24
+
+private fun enlargeSvgFontSizes(html: String): String {
+    val scaled = SVG_FONT_SIZE_REGEX.replace(html) { match ->
+        val size = match.groupValues[1].toFloatOrNull() ?: return@replace match.value
+        "font-size=\"${(size * SVG_FONT_SCALE).roundToInt()}\""
+    }
+    return SVG_BOTTOM_LABEL_REGEX.replace(scaled) { match ->
+        match.groupValues[1] + SVG_BOTTOM_LABEL_FONT_SIZE + match.groupValues[2]
+    }
+}
+
+private fun wrapHtml(body: String, scaleSvgText: Boolean): String {
+    val content = if (scaleSvgText) enlargeSvgFontSizes(body) else body
+    return """
     <!DOCTYPE html>
     <html>
     <head>
@@ -45,12 +65,13 @@ private fun wrapHtml(body: String): String =
             }
         </style>
     </head>
-    <body>$body</body>
+    <body>$content</body>
     </html>
     """.trimIndent()
+}
 
 @Composable
-fun HtmlRenderer(html: String, modifier: Modifier = Modifier) {
+fun HtmlRenderer(html: String, modifier: Modifier = Modifier, scaleSvgText: Boolean = false) {
     val configuration = LocalConfiguration.current
     val maxHeight = with(LocalDensity.current) { (configuration.screenHeightDp * 0.5f).dp }
     var lastLoadedHtml by remember { mutableStateOf("") }
@@ -73,7 +94,7 @@ fun HtmlRenderer(html: String, modifier: Modifier = Modifier) {
                 lastLoadedHtml = html
                 webView.loadDataWithBaseURL(
                     null,
-                    wrapHtml(html),
+                    wrapHtml(html, scaleSvgText),
                     "text/html",
                     "UTF-8",
                     null
