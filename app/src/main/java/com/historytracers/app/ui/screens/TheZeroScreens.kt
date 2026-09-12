@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,14 +20,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
+import com.historytracers.app.R
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
@@ -44,8 +47,6 @@ import com.historytracers.common.SMGameFile
 private const val SMARTPHONE_GAME_FILE = "db7a36be-0e75-4b2d-826f-9356ea89ef00"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val THE_NUMBER_CONTENT_ID = "92eef5b8-4108-4379-99d1-6363b4f5d61f"
-
-private val IMG_TAG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
 
 @Composable
 fun TheZeroIntroScreen(
@@ -170,40 +171,16 @@ private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
 @Composable
-private fun OriginalSizeImage(html: String, imgDesc: String?, modifier: Modifier = Modifier) {
-    val s = LocalUiStrings.current
-    val url = IMG_TAG_REGEX.find(html)?.groupValues?.get(1) ?: return
-    SubcomposeAsyncImage(
-        model = url,
-        contentDescription = imgDesc,
+private fun MayaZeroShell(contentDescription: String?, modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_maya_zero_shell),
+        contentDescription = contentDescription,
         modifier = modifier
-            .size(56.dp, 62.dp)
+            .width(160.dp)
+            .height(96.dp)
             .padding(vertical = 8.dp),
         contentScale = ContentScale.Fit,
-        loading = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 96.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        },
-        error = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 96.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = s.common.imageOfflineMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
     )
 }
 
@@ -308,9 +285,8 @@ private fun TheZeroGameContent(
                         if (text == null) return@forEach
                         when {
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
-                            contentId == THE_NUMBER_CONTENT_ID && isImgHtml(text.text) -> OriginalSizeImage(
-                                html = text.text ?: "",
-                                imgDesc = text.imgdesc
+                            contentId == THE_NUMBER_CONTENT_ID && isImgHtml(text.text) -> MayaZeroShell(
+                                contentDescription = text.imgdesc
                             )
                             isImgHtml(text.text) -> ResponsiveImage(
                                 html = text.text ?: "",

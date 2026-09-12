@@ -10,12 +10,16 @@ private val LOCAL_ASSET_IMAGES = mapOf(
         to "ESA/Planck_s_view_of_the_cosmic_microwave_background.jpg",
     "https://www.historytracers.org/images/MexicoCityMuseo/HomoSapiens.jpg"
         to "MexicoCityMuseo/HomoSapiens.jpg",
+    "https://www.historytracers.org/images/MexicoCityMuseo/Oaxaca.jpg"
+        to "MexicoCityMuseo/Oaxaca.jpg",
     "https://www.historytracers.org/images/DonsMaps/img_6652habilissm.jpg"
         to "DonsMaps/img_6652habilissm.jpg",
     "https://www.historytracers.org/images/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
         to "ResearchGate/Figura-9-Hueso-de-Lebombo.png",
     "https://www.historytracers.org/images/TaiChimpanzeeProject/c4b711_0ebd581742a8483e90a28c521cadd3cb~mv2.jpeg"
-        to "TaiChimpanzeeProject/c4b711_0ebd581742a8483e90a28c521cadd3cb~mv2.jpeg"
+        to "TaiChimpanzeeProject/c4b711_0ebd581742a8483e90a28c521cadd3cb~mv2.jpeg",
+    "https://www.historytracers.org/images/Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg"
+        to "Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg"
 )
 
 fun resolveImageSource(url: String): Any =
