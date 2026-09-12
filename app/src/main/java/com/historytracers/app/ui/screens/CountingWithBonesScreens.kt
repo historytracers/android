@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
@@ -101,8 +102,10 @@ fun CountingWithBonesIntroScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BoneSectionTitle(xs.whyTitle)
-                BodyText(xs.whyText)
+                MarkdownText(
+                    text = "#### ${xs.whyTitle}",
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 ResponsiveImage(
                     html = "<img src=\"$LEBOMBO_BONE_IMAGE_URL\">",
@@ -118,7 +121,10 @@ fun CountingWithBonesIntroScreen(
                 )
 
                 Spacer(Modifier.height(12.dp))
-                BodyText(xs.boneLookText)
+                MarkdownText(
+                    text = xs.boneLookText,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(Modifier.height(24.dp))
                 FilledTonalButton(

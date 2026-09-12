@@ -6,7 +6,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 data class CountingWithBonesScreenStrings(
     val title: String,
     val whyTitle: String,
-    val whyText: String,
     val boneFigureCaption: String,
     val boneLookText: String,
     val gameRulesTitle: String,
@@ -30,8 +29,7 @@ data class CountingWithBonesScreenStrings(
 
 val EnCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     title = "Counting with Bones",
-    whyTitle = "Why Play?",
-    whyText = "The need to count did not appear recently. It has existed for a long time, since before there were cities or houses. We know this because of scientists who found bones with marks in different places.",
+    whyTitle = "Counting Like Ancient Humans",
     boneFigureCaption = "Figure 1: A bone with marks. The marks look like our fingers.",
     boneLookText = "Look at the marks on the bone. They look like our fingers. In this game, we do the opposite: we look at hands with raised fingers and we place marks on a bone until the marks match the raised fingers.",
     gameRulesTitle = "Objective and Rules",
@@ -55,8 +53,7 @@ val EnCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
 
 val PtCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     title = "Contando com Ossos",
-    whyTitle = "Por Que Jogar?",
-    whyText = "A necessidade de contar n\u00e3o surgiu recentemente. Ela existe h\u00e1 muito tempo, desde antes de existirem cidades ou casas. Sabemos disso por causa dos cientistas que encontraram ossos com marcas em diferentes lugares.",
+    whyTitle = "Contando Como os Humanos Antigos",
     boneFigureCaption = "Figura 1: Um osso com marcas. As marcas parecem nossos dedos.",
     boneLookText = "Observe as marcas no osso. Elas parecem nossos dedos. Neste jogo, fazemos o contr\u00e1rio: olhamos m\u00e3os com dedos levantados e colocamos marcas em um osso at\u00e9 que elas coincidam com os dedos levantados.",
     gameRulesTitle = "Objetivo e Regras",
@@ -80,8 +77,7 @@ val PtCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
 
 val EsCountingWithBonesScreenStrings = CountingWithBonesScreenStrings(
     title = "Contando con Huesos",
-    whyTitle = "\u00bfPor Qu\u00e9 Jugar?",
-    whyText = "La necesidad de contar no apareci\u00f3 recientemente. Existe desde hace mucho tiempo, desde antes de que hubiera ciudades o casas. Lo sabemos gracias a los cient\u00edficos que encontraron huesos con marcas en diferentes lugares.",
+    whyTitle = "Contando Como los Humanos Antiguos",
     boneFigureCaption = "Figura 1: Un hueso con marcas. Las marcas se parecen a nuestros dedos.",
     boneLookText = "Mira las marcas del hueso. Se parecen a nuestros dedos. En este juego hacemos lo contrario: miramos manos con dedos levantados y colocamos marcas en un hueso hasta que coinciden con los dedos levantados.",
     gameRulesTitle = "Objetivo y Reglas",
