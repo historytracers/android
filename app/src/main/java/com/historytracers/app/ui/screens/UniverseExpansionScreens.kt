@@ -60,7 +60,9 @@ private data class UniverseSource(val label: String, val url: String)
 @Composable
 fun UniverseExpansionScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToWhereAreWeFrom: () -> Unit = {}
+    onNavigateToWhereAreWeFrom: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -209,7 +211,12 @@ fun UniverseExpansionScreen(
                         Text(s.common.previous, fontWeight = FontWeight.Bold)
                     }
                     FilledTonalButton(
-                        onClick = { if (step < lastStep) step++ },
+                        onClick = {
+                            if (step < lastStep) {
+                                onScoreChanged(currentScore + 1)
+                                step++
+                            }
+                        },
                         enabled = step < lastStep,
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = Color(0xFF4CAF50),

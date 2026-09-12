@@ -617,6 +617,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.UniverseExpansion.route) {
                         UniverseExpansionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { navController.popBackStack() },
                             onNavigateToWhereAreWeFrom = {
                                 if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
