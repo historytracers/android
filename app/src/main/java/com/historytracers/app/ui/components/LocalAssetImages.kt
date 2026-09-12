@@ -19,7 +19,9 @@ private val LOCAL_ASSET_IMAGES = mapOf(
     "https://www.historytracers.org/images/TaiChimpanzeeProject/c4b711_0ebd581742a8483e90a28c521cadd3cb~mv2.jpeg"
         to "TaiChimpanzeeProject/c4b711_0ebd581742a8483e90a28c521cadd3cb~mv2.jpeg",
     "https://www.historytracers.org/images/Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg"
-        to "Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg"
+        to "Mapswire/mapswire-continent_na-printable-map-north-america-robinson-269_mesoamerica2.jpg",
+    "https://www.historytracers.org/images/Copan/CopanAltarGenealogy0.jpg"
+        to "Copan/CopanAltarGenealogy0.jpg"
 )
 
 fun resolveImageSource(url: String): Any =
