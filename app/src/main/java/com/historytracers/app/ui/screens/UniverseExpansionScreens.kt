@@ -40,6 +40,7 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
+import kotlinx.coroutines.flow.first
 
 private const val UNIVERSE_IMAGE_URL = "https://www.historytracers.org/images/ESA/Planck_history_of_Universe.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=57091b10-84a4-468c-b81a-56bccfa2cd4a"
@@ -78,13 +79,23 @@ fun UniverseExpansionScreen(
     val questionStep = xs.eraTitles.size
     val conclusionStep = questionStep + 1
     val lastStep = conclusionStep
+    var stateRestored by remember { mutableStateOf(false) }
 
-    LaunchedEffect(step) {
+    LaunchedEffect(Unit) {
+        step = preferences.universeExpansionStep.first().coerceIn(0, conclusionStep)
+        stateRestored = true
+    }
+
+    LaunchedEffect(step, stateRestored) {
+        if (!stateRestored) return@LaunchedEffect
+        preferences.setUniverseExpansionStep(step)
         if (step == conclusionStep) {
             preferences.markWhereAreWeFromSectionCompleted("everything_together")
             preferences.recordLessonCompletion()
         }
     }
+
+    if (!stateRestored) return
 
     val configuration = LocalConfiguration.current
     val viewHeight = (configuration.screenHeightDp * 0.42f).dp
