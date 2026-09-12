@@ -53,7 +53,7 @@ import kotlin.random.Random
 
 private const val MAX_BONE_MARKS = 20
 private const val MAX_BONE_LEVELS = 4
-private const val LEBOMBO_BONE_IMAGE_URL = "https://www.historytracers.org/images/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
+private const val LEBOMBO_BONE_IMAGE_URL = "file:///android_asset/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=7d2fd4de-5c10-4811-957c-8233bc8d21de"
 private const val GONZALEZ_REDONDO_2010_URL = "https://doi.org/10.4321/S0211-95362010000100007"
 private const val GONZALEZ_REDONDO_2024_URL = "https://www.youtube.com/watch?v=RFui5Z52pUY"
@@ -301,8 +301,9 @@ fun CountingWithBonesGameScreen(
             if (won) {
                 Spacer(Modifier.height(16.dp))
                 FilledTonalButton(
-                    onClick = onNavigateNext,
-                    enabled = won && level == MAX_BONE_LEVELS,
+                    onClick = {
+                        if (level < MAX_BONE_LEVELS) newChallenge(level + 1) else onNavigateNext()
+                    },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = Color(0xFF4CAF50),
                         contentColor = Color.White
