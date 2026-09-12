@@ -180,6 +180,7 @@ import com.historytracers.app.ui.screens.MatterAndEnergyQuestionScreen
 import com.historytracers.app.ui.screens.MatterAndEnergyEnergyScreen
 import com.historytracers.app.ui.screens.MatterAndEnergyTogetherScreen
 import com.historytracers.app.ui.screens.MatterAndEnergyConclusionScreen
+import com.historytracers.app.ui.screens.UniverseExpansionScreen
 import com.historytracers.app.ui.screens.CountingWithBonesIntroScreen
 import com.historytracers.app.ui.screens.CountingWithBonesGameScreen
 import com.historytracers.app.ui.screens.CountingWithBonesPracticeScreen
@@ -610,7 +611,18 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToSharedOrigin = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
-                            onNavigateToMatterAndEnergy = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } }
+                            onNavigateToMatterAndEnergy = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
+                            onNavigateToEverythingWasTogether = { navController.navigate(Screen.UniverseExpansion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.UniverseExpansion.route) {
+                        UniverseExpansionScreen(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToWhereAreWeFrom = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            }
                         )
                     }
                     composable(Screen.SharedOriginIntro.route) {
@@ -4759,6 +4771,7 @@ fun AppNavigation() {
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
                             onNavigateToCountingWithBonesIntro = { navController.navigate(Screen.CountingWithBonesIntro.route) { launchSingleTop = true } },
+                            onNavigateToEverythingWasTogether = { navController.navigate(Screen.UniverseExpansion.route) { launchSingleTop = true } },
                             onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } }

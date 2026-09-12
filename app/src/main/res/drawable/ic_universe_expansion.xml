@@ -1,0 +1,71 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- space background -->
+    <path
+        android:fillColor="#0D1B3E"
+        android:pathData="M4,60 a56,56 0 1,0 112,0 a56,56 0 1,0 -112,0Z" />
+    <!-- expanding universe rings -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#3FBFA8"
+        android:strokeWidth="3"
+        android:pathData="M46,60 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4A78D0"
+        android:strokeWidth="3"
+        android:pathData="M34,60 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#9B6BD6"
+        android:strokeWidth="3"
+        android:pathData="M22,60 a38,38 0 1,0 76,0 a38,38 0 1,0 -76,0Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#F29B3B"
+        android:strokeWidth="3"
+        android:pathData="M12,60 a48,48 0 1,0 96,0 a48,48 0 1,0 -96,0Z" />
+    <!-- expansion arrows -->
+    <path
+        android:fillColor="#F2E14C"
+        android:pathData="M60,2 L65,13 L55,13Z" />
+    <path
+        android:fillColor="#F2E14C"
+        android:pathData="M60,118 L65,107 L55,107Z" />
+    <path
+        android:fillColor="#F2E14C"
+        android:pathData="M2,60 L13,55 L13,65Z" />
+    <path
+        android:fillColor="#F2E14C"
+        android:pathData="M118,60 L107,55 L107,65Z" />
+    <!-- scattered galaxies -->
+    <path
+        android:fillColor="#5B8DEF"
+        android:pathData="M84,40 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0Z" />
+    <path
+        android:fillColor="#F2E14C"
+        android:pathData="M28,80 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0Z" />
+    <path
+        android:fillColor="#4CC9C0"
+        android:pathData="M38,34 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0Z" />
+    <path
+        android:fillColor="#E8742C"
+        android:pathData="M78,82 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0Z" />
+    <path
+        android:fillColor="#9B6BD6"
+        android:pathData="M30,50 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0Z" />
+    <!-- big bang core -->
+    <path
+        android:fillColor="#F2A03C"
+        android:pathData="M48,60 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0Z" />
+    <path
+        android:fillColor="#FFF3B0"
+        android:pathData="M53,60 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M57,60 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0Z" />
+</vector>

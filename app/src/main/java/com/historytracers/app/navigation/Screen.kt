@@ -150,6 +150,7 @@ sealed class Screen(val route: String) {
     data object MatterAndEnergyEnergy : Screen("matter_and_energy_energy")
     data object MatterAndEnergyTogether : Screen("matter_and_energy_together")
     data object MatterAndEnergyConclusion : Screen("matter_and_energy_conclusion")
+    data object UniverseExpansion : Screen("universe_expansion")
     data object CountingWithBonesIntro : Screen("counting_with_bones_intro")
     data object CountingWithBonesGame : Screen("counting_with_bones_game")
     data object CountingWithBonesPractice : Screen("counting_with_bones_practice")

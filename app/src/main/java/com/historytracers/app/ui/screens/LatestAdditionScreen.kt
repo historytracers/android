@@ -29,10 +29,9 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
-import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
+import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -57,6 +56,7 @@ fun LatestAdditionScreen(
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
     onNavigateToCountingWithBonesIntro: () -> Unit = {},
+    onNavigateToEverythingWasTogether: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -66,10 +66,9 @@ fun LatestAdditionScreen(
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
-    val pwas = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
-    val rts = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
+    val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -78,6 +77,20 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "everything_together",
+            label = ues.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_universe_expansion),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "everything_together" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("everything_together") },
+            onNavigate = onNavigateToEverythingWasTogether
+        ),
         LatestAdditionEntry(
             sectionId = "counting_with_bones",
             label = cwbs.title,
@@ -127,22 +140,6 @@ fun LatestAdditionScreen(
             isCompleted = { "running_among_numbers" in completedRoadToSomewhere },
             markCompleted = { preferences.markRoadToSomewhereSectionCompleted("running_among_numbers") },
             onNavigate = onNavigateToRunningAmongNumbersIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "playing_with_axioms",
-            label = pwas.title,
-            icon = {
-                Text(
-                    text = rts.axiomsExpression,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "playing_with_axioms" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms") },
-            onNavigate = onNavigateToPlayingWithAxioms
         )
     )
 
