@@ -9,7 +9,9 @@ private val LOCAL_ASSET_IMAGES = mapOf(
     "https://www.historytracers.org/images/ESA/Planck_s_view_of_the_cosmic_microwave_background.jpg"
         to "ESA/Planck_s_view_of_the_cosmic_microwave_background.jpg",
     "https://www.historytracers.org/images/MexicoCityMuseo/HomoSapiens.jpg"
-        to "MexicoCityMuseo/HomoSapiens.jpg"
+        to "MexicoCityMuseo/HomoSapiens.jpg",
+    "https://www.historytracers.org/images/DonsMaps/img_6652habilissm.jpg"
+        to "DonsMaps/img_6652habilissm.jpg"
 )
 
 fun resolveImageSource(url: String): Any =
