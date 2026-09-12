@@ -85,8 +85,10 @@ fun UniverseExpansionScreen(
     val configuration = LocalConfiguration.current
     val viewHeight = (configuration.screenHeightDp * 0.42f).dp
     val eraRange = universeEraRanges.getOrElse(step) { universeEraRanges.last() }
-    val eraCenter = ((eraRange.first + eraRange.second) / 2f) / UNIVERSE_SOURCE_WIDTH
-    val animatedCenter by animateFloatAsState(targetValue = eraCenter)
+    val eraStart = eraRange.first / UNIVERSE_SOURCE_WIDTH
+    val eraEnd = eraRange.second / UNIVERSE_SOURCE_WIDTH
+    val animatedCenter by animateFloatAsState(targetValue = (eraStart + eraEnd) / 2f)
+    val animatedSpan by animateFloatAsState(targetValue = eraEnd - eraStart)
     val universeImage = remember {
         context.assets.open("ESA/planck_history_of_universe.jpg").use { input ->
             BitmapFactory.decodeStream(input)?.asImageBitmap()
@@ -134,21 +136,21 @@ fun UniverseExpansionScreen(
                     ) {
                         val bitmapWidth = image.width.toFloat()
                         val bitmapHeight = image.height.toFloat()
-                        val scale = size.height / bitmapHeight
-                        val dstWidth = bitmapWidth * scale
+                        val spanPx = (animatedSpan * bitmapWidth).coerceIn(1f, bitmapWidth)
+                        val centerPx = animatedCenter * bitmapWidth
+                        val srcLeft = (centerPx - spanPx / 2f)
+                            .coerceIn(0f, (bitmapWidth - spanPx).coerceAtLeast(0f))
+                        val scale = minOf(size.width / spanPx, size.height / bitmapHeight)
+                        val dstWidth = spanPx * scale
                         val dstHeight = bitmapHeight * scale
-                        val targetLeft = size.width / 2f - animatedCenter * dstWidth
-                        val dstLeft = if (dstWidth <= size.width) {
-                            (size.width - dstWidth) / 2f
-                        } else {
-                            targetLeft.coerceIn(size.width - dstWidth, 0f)
-                        }
+                        val dstLeft = (size.width - dstWidth) / 2f
+                        val dstTop = (size.height - dstHeight) / 2f
                         drawImage(
                             image = image,
-                            srcOffset = IntOffset(0, 0),
-                            srcSize = IntSize(image.width, image.height),
-                            dstOffset = IntOffset(dstLeft.toInt(), 0),
-                            dstSize = IntSize(dstWidth.toInt(), dstHeight.toInt()),
+                            srcOffset = IntOffset(srcLeft.toInt(), 0),
+                            srcSize = IntSize(spanPx.toInt().coerceAtLeast(1), image.height),
+                            dstOffset = IntOffset(dstLeft.toInt(), dstTop.toInt()),
+                            dstSize = IntSize(dstWidth.toInt().coerceAtLeast(1), dstHeight.toInt().coerceAtLeast(1)),
                             filterQuality = FilterQuality.Medium
                         )
                     }
