@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
@@ -53,6 +54,7 @@ import com.historytracers.common.SMGameFile
 
 private const val SMARTPHONE_GAME_FILE = "a3946fd3-a94c-410b-aec8-3dec5055cdf3"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
+private const val TENDENCIES_IN_PRACTICE_CONTENT_ID = "cf776dbb-ab51-4a8c-9984-749e367c34bf"
 
 @Composable
 fun LimitsMinMaxBetweenBothScreen(
@@ -264,7 +266,11 @@ private fun buildFootToeTips(scale: Float = 0.1f, flipY: Boolean = true): List<O
 }
 
 @Composable
-private fun CountingHandsAndFeet(modifier: Modifier = Modifier) {
+private fun CountingHandsAndFeet(
+    modifier: Modifier = Modifier,
+    handCenterY: Float = 120f,
+    handLift: Dp = 0.dp
+) {
     val s = LocalUiStrings.current
     val handPath = remember { buildHandPath() }
     val footResult = remember { buildFootPath() }
@@ -311,7 +317,7 @@ private fun CountingHandsAndFeet(modifier: Modifier = Modifier) {
             }
 
             val handScale = 0.55f * scale
-            val handCy = 120f * scale
+            val handCy = handCenterY * scale - handLift.toPx()
             val leftCx = cx - 100.dp.toPx()
             val rightCx = cx + 100.dp.toPx()
 
@@ -499,7 +505,9 @@ private fun LimitsMinMaxGameContent(
                         when {
                             text.format?.contains("markdown") == true -> MarkdownText(text = text.text ?: "")
                             isHandsFeetSvg(text.text) -> CountingHandsAndFeet(
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                handCenterY = if (contentId == TENDENCIES_IN_PRACTICE_CONTENT_ID) 80f else 120f,
+                                handLift = if (contentId == TENDENCIES_IN_PRACTICE_CONTENT_ID) 60.dp else 0.dp
                             )
                             isSvgStyle(text.text) -> Unit
                             isImgHtml(text.text) -> ResponsiveImage(
