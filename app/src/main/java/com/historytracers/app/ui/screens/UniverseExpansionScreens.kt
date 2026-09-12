@@ -75,10 +75,12 @@ fun UniverseExpansionScreen(
     )
 
     var step by remember { mutableIntStateOf(0) }
-    val lastStep = xs.eraTitles.lastIndex
+    val questionStep = xs.eraTitles.size
+    val conclusionStep = questionStep + 1
+    val lastStep = conclusionStep
 
     LaunchedEffect(step) {
-        if (step == lastStep) {
+        if (step == conclusionStep) {
             preferences.markWhereAreWeFromSectionCompleted("everything_together")
             preferences.recordLessonCompletion()
         }
@@ -86,7 +88,11 @@ fun UniverseExpansionScreen(
 
     val configuration = LocalConfiguration.current
     val viewHeight = (configuration.screenHeightDp * 0.42f).dp
-    val eraRange = universeEraRanges.getOrElse(step) { universeEraRanges.last() }
+    val eraRange = if (step == questionStep) {
+        0f to UNIVERSE_SOURCE_WIDTH
+    } else {
+        universeEraRanges.getOrElse(step) { universeEraRanges.last() }
+    }
     val eraStart = eraRange.first / UNIVERSE_SOURCE_WIDTH
     val eraEnd = eraRange.second / UNIVERSE_SOURCE_WIDTH
     val animatedCenter by animateFloatAsState(targetValue = (eraStart + eraEnd) / 2f)
@@ -128,66 +134,118 @@ fun UniverseExpansionScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                universeImage?.let { image ->
-                    Canvas(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(viewHeight)
-                            .clipToBounds()
-                            .semantics { contentDescription = xs.title }
-                    ) {
-                        val bitmapWidth = image.width.toFloat()
-                        val bitmapHeight = image.height.toFloat()
-                        val spanPx = (animatedSpan * bitmapWidth).coerceIn(1f, bitmapWidth)
-                        val centerPx = animatedCenter * bitmapWidth
-                        val srcLeft = (centerPx - spanPx / 2f)
-                            .coerceIn(0f, (bitmapWidth - spanPx).coerceAtLeast(0f))
-                        val scale = minOf(size.width / spanPx, size.height / bitmapHeight)
-                        val dstWidth = spanPx * scale
-                        val dstHeight = bitmapHeight * scale
-                        val dstLeft = (size.width - dstWidth) / 2f
-                        val dstTop = (size.height - dstHeight) / 2f
-                        drawImage(
-                            image = image,
-                            srcOffset = IntOffset(srcLeft.toInt(), 0),
-                            srcSize = IntSize(spanPx.toInt().coerceAtLeast(1), image.height),
-                            dstOffset = IntOffset(dstLeft.toInt(), dstTop.toInt()),
-                            dstSize = IntSize(dstWidth.toInt().coerceAtLeast(1), dstHeight.toInt().coerceAtLeast(1)),
-                            filterQuality = FilterQuality.Medium
+                if (step != conclusionStep) {
+                    universeImage?.let { image ->
+                        val canvasModifier = if (step == questionStep) {
+                            Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(image.width.toFloat() / image.height.toFloat())
+                        } else {
+                            Modifier
+                                .fillMaxWidth()
+                                .height(viewHeight)
+                        }
+                        Canvas(
+                            modifier = canvasModifier
+                                .clipToBounds()
+                                .semantics { contentDescription = xs.title }
+                        ) {
+                            val bitmapWidth = image.width.toFloat()
+                            val bitmapHeight = image.height.toFloat()
+                            val spanPx = (animatedSpan * bitmapWidth).coerceIn(1f, bitmapWidth)
+                            val centerPx = animatedCenter * bitmapWidth
+                            val srcLeft = (centerPx - spanPx / 2f)
+                                .coerceIn(0f, (bitmapWidth - spanPx).coerceAtLeast(0f))
+                            val scale = minOf(size.width / spanPx, size.height / bitmapHeight)
+                            val dstWidth = spanPx * scale
+                            val dstHeight = bitmapHeight * scale
+                            val dstLeft = (size.width - dstWidth) / 2f
+                            val dstTop = (size.height - dstHeight) / 2f
+                            drawImage(
+                                image = image,
+                                srcOffset = IntOffset(srcLeft.toInt(), 0),
+                                srcSize = IntSize(spanPx.toInt().coerceAtLeast(1), image.height),
+                                dstOffset = IntOffset(dstLeft.toInt(), dstTop.toInt()),
+                                dstSize = IntSize(dstWidth.toInt().coerceAtLeast(1), dstHeight.toInt().coerceAtLeast(1)),
+                                filterQuality = FilterQuality.Medium
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = xs.caption,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                Spacer(Modifier.height(16.dp))
+                when {
+                    step < questionStep -> {
+                        Text(
+                            text = String.format(xs.stepCounter, step + 1, xs.eraTitles.size),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = xs.eraTitles[step],
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = xs.eraTexts[step],
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    step == questionStep -> {
+                        Text(
+                            text = xs.questionText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = xs.questionPrompt,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        UniverseQuestionSection(
+                            correctAnswer = true,
+                            wrongAnswerMessage = xs.wrongAnswerMessage,
+                            scoreDoubledMessage = xs.scoreDoubledMessage,
+                            onCorrect = { onScoreChanged(currentScore + 1) }
+                        )
+                    }
+                    else -> {
+                        Text(
+                            text = xs.conclusionTitle,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = xs.conclusionText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
-
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = xs.caption,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    text = String.format(xs.stepCounter, step + 1, xs.eraTitles.size),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = xs.eraTitles[step],
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = xs.eraTexts[step],
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
 
                 Spacer(Modifier.height(24.dp))
                 Row(
@@ -254,6 +312,76 @@ fun UniverseExpansionScreen(
             sources = sources,
             modifier = Modifier.align(Alignment.BottomStart)
         )
+    }
+}
+
+@Composable
+private fun UniverseQuestionSection(
+    correctAnswer: Boolean,
+    wrongAnswerMessage: String,
+    scoreDoubledMessage: String,
+    onCorrect: () -> Unit
+) {
+    val s = LocalUiStrings.current
+    var selected by remember { mutableStateOf<String?>(null) }
+    var hasSubmitted by remember { mutableStateOf(false) }
+    var awarded by remember { mutableStateOf(false) }
+
+    fun submit(answer: String) {
+        selected = answer
+        hasSubmitted = true
+        if (!awarded) {
+            awarded = true
+            if ((answer == "yes") == correctAnswer) {
+                onCorrect()
+            }
+        }
+    }
+
+    if (!hasSubmitted) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(
+                onClick = { submit("yes") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(s.common.yes)
+            }
+            Button(
+                onClick = { submit("no") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(s.common.no)
+            }
+        }
+    } else {
+        val isCorrect = (selected == "yes") == correctAnswer
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text(
+                text = if (isCorrect) "\uD83C\uDF89 ${s.common.correct} \uD83C\uDF89" else wrongAnswerMessage,
+                color = if (isCorrect) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            if (isCorrect) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = scoreDoubledMessage,
+                    color = Color(0xFF2E7D32),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 

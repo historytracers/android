@@ -10,6 +10,12 @@ data class UniverseExpansionScreenStrings(
     val stepCounter: String,
     val eraTitles: List<String>,
     val eraTexts: List<String>,
+    val questionText: String,
+    val questionPrompt: String,
+    val wrongAnswerMessage: String,
+    val scoreDoubledMessage: String,
+    val conclusionTitle: String,
+    val conclusionText: String,
 )
 
 val EnUniverseExpansionScreenStrings = UniverseExpansionScreenStrings(
@@ -35,6 +41,12 @@ val EnUniverseExpansionScreenStrings = UniverseExpansionScreenStrings(
         "As the universe cools, energy turns into the first particles: protons, neutrons and electrons, together with their antiparticles. Matter and antimatter mostly annihilate, leaving a small surplus of matter that will build everything we see.",
         "Everything that exists begins in an extremely hot and dense point. In a fraction of a second, cosmic inflation stretches space faster than light, smoothing it out and creating the tiny seeds of all the structures to come.",
     ),
+    questionText = "The image we observed in this class shows us that the information we obtain from the universe indicates that everything was concentrated at the beginning.",
+    questionPrompt = "Do these measurements agree with the understanding of Lavoisier that we studied in previous classes?",
+    wrongAnswerMessage = "This is not the expected answer. But you have learned something new in your life, so keep paying attention and learning!",
+    scoreDoubledMessage = "Great! Because you answered correctly, your score for this screen will be doubled. Keep paying attention and learning!",
+    conclusionTitle = "Conclusion",
+    conclusionText = "In the beginning, everything in the universe was one. Matter and energy were united in a single, extremely hot and dense point. The measurements we observe today, together with what Lavoisier taught us \u2014 nothing is lost, nothing is created, everything is transformed \u2014 show us that we and all things around us share the same origin.",
 )
 
 val PtUniverseExpansionScreenStrings = UniverseExpansionScreenStrings(
@@ -60,6 +72,12 @@ val PtUniverseExpansionScreenStrings = UniverseExpansionScreenStrings(
         "\u00c0 medida que o universo esfria, a energia transforma-se nas primeiras part\u00edculas: pr\u00f3tons, n\u00eautrons e el\u00e9trons, al\u00e9m das suas antipart\u00edculas. Mat\u00e9ria e antimat\u00e9ria aniquilam-se em grande parte, deixando um pequeno excedente de mat\u00e9ria que construir\u00e1 tudo o que vemos.",
         "Tudo o que existe come\u00e7a num ponto extremamente quente e denso. Numa fra\u00e7\u00e3o de segundo, a infla\u00e7\u00e3o c\u00f3smica estica o espa\u00e7o mais r\u00e1pido que a luz, alisando-o e criando as pequenas sementes de todas as estruturas futuras.",
     ),
+    questionText = "A imagem que observamos nesta aula mostra-nos que as informa\u00e7\u00f5es que obtemos do universo indicam que tudo estava concentrado no in\u00edcio.",
+    questionPrompt = "Estas medi\u00e7\u00f5es concordam com o entendimento de Lavoisier que estudamos nas aulas anteriores?",
+    wrongAnswerMessage = "Esta n\u00e3o \u00e9 a resposta esperada. Mas voc\u00ea aprendeu algo novo, ent\u00e3o continue prestando aten\u00e7\u00e3o e aprendendo!",
+    scoreDoubledMessage = "\u00d3timo! Como voc\u00ea respondeu corretamente, sua pontua\u00e7\u00e3o nesta tela ser\u00e1 dobrada. Continue prestando aten\u00e7\u00e3o e aprendendo!",
+    conclusionTitle = "Conclus\u00e3o",
+    conclusionText = "No in\u00edcio, tudo o que existe no universo era um s\u00f3. Mat\u00e9ria e energia estavam unidas num \u00fanico ponto extremamente quente e denso. As medi\u00e7\u00f5es que observamos hoje, juntamente com o que Lavoisier nos ensinou \u2014 nada se perde, nada se cria, tudo se transforma \u2014 mostram que n\u00f3s e todas as coisas ao nosso redor compartilham a mesma origem.",
 )
 
 val EsUniverseExpansionScreenStrings = UniverseExpansionScreenStrings(
@@ -85,6 +103,12 @@ val EsUniverseExpansionScreenStrings = UniverseExpansionScreenStrings(
         "A medida que el universo se enfr\u00eda, la energ\u00eda se transforma en las primeras part\u00edculas: protones, neutrones y electrones, junto con sus antipart\u00edculas. Materia y antimateria se aniquilan en su mayor\u00eda, dejando un peque\u00f1o excedente de materia que construir\u00e1 todo lo que vemos.",
         "Todo lo que existe comienza en un punto extremadamente caliente y denso. En una fracci\u00f3n de segundo, la inflaci\u00f3n c\u00f3smica estira el espacio m\u00e1s r\u00e1pido que la luz, alis\u00e1ndolo y creando las peque\u00f1as semillas de todas las estructuras futuras.",
     ),
+    questionText = "La imagen que observamos en esta clase nos muestra que la informaci\u00f3n que obtenemos del universo indica que todo estaba concentrado en el principio.",
+    questionPrompt = "\u00bfEstas mediciones concuerdan con el entendimiento de Lavoisier que estudiamos en clases anteriores?",
+    wrongAnswerMessage = "Esta no es la respuesta esperada. Pero has aprendido algo nuevo, \u00a1as\u00ed que sigue prestando atenci\u00f3n y aprendiendo!",
+    scoreDoubledMessage = "\u00a1Genial! Como respondiste correctamente, tu puntuaci\u00f3n en esta pantalla se duplicar\u00e1. \u00a1Sigue prestando atenci\u00f3n y aprendiendo!",
+    conclusionTitle = "Conclusi\u00f3n",
+    conclusionText = "En el principio, todo lo que existe en el universo era uno solo. Materia y energ\u00eda estaban unidas en un \u00fanico punto extremadamente caliente y denso. Las mediciones que observamos hoy, junto con lo que nos ense\u00f1\u00f3 Lavoisier \u2014 nada se pierde, nada se crea, todo se transforma \u2014 muestran que nosotros y todas las cosas a nuestro alrededor compartimos el mismo origen.",
 )
 
 val LocalUniverseExpansionScreenStrings = staticCompositionLocalOf { EnUniverseExpansionScreenStrings }
