@@ -28,7 +28,7 @@ fun ResponsiveImage(html: String, imgDesc: String?, modifier: Modifier = Modifie
     val configuration = LocalConfiguration.current
     val maxHeight = with(LocalDensity.current) { (configuration.screenHeightDp * 0.4f).dp }
     SubcomposeAsyncImage(
-        model = url,
+        model = resolveImageSource(url),
         contentDescription = imgDesc,
         modifier = modifier
             .fillMaxWidth()
