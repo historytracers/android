@@ -46,13 +46,13 @@ private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html
 private const val UNIVERSE_SOURCE_WIDTH = 5305f
 
 private val universeEraRanges = listOf(
-    350f to 650f,
-    650f to 750f,
-    750f to 1150f,
-    1150f to 1700f,
-    1700f to 2050f,
-    2050f to 3000f,
     3000f to 5000f,
+    2050f to 3000f,
+    1700f to 2050f,
+    1150f to 1700f,
+    750f to 1150f,
+    650f to 750f,
+    350f to 650f,
 )
 
 private data class UniverseSource(val label: String, val url: String)
