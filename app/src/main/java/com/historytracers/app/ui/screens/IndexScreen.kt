@@ -62,7 +62,7 @@ private val roadToSomewhereSectionIds = listOf(
 )
 
 private val whereAreWeFromSectionIds = listOf(
-    "shared_origin", "matter_energy"
+    "shared_origin", "matter_energy", "everything_together"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).

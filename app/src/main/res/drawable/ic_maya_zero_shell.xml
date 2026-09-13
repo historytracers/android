@@ -1,0 +1,25 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="72dp"
+    android:viewportWidth="120"
+    android:viewportHeight="72">
+    <!-- shell outline: a horizontal ellipse -->
+    <path
+        android:pathData="M60,40 m-52,0 a52,25 0 1,0 104,0 a52,25 0 1,0 -104,0Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeWidth="3" />
+    <!-- central line crossing the shell from side to side -->
+    <path
+        android:pathData="M8,40 L112,40"
+        android:strokeColor="#000000"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+    <!-- three ribs from the top edge down to the central line -->
+    <path
+        android:pathData="M45,16 L45,40 M60,15 L60,40 M75,16 L75,40"
+        android:strokeColor="#000000"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+</vector>

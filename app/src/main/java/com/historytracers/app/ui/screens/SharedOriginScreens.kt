@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -328,6 +329,7 @@ private fun SharedOriginGameContent(
     onNavigateNext: (() -> Unit)? = null,
     onNavigateToWhereAreWeFrom: (() -> Unit)? = null
 ) {
+    BackHandler { onNavigateBack() }
     val s = LocalUiStrings.current
     val xs = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -335,8 +337,6 @@ private fun SharedOriginGameContent(
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
-    val scope = rememberCoroutineScope()
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -355,6 +355,8 @@ private fun SharedOriginGameContent(
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     fun award(points: Int) {
         if (points <= 0) return
@@ -365,8 +367,8 @@ private fun SharedOriginGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            if (!preferences.arrivalAwardedScreens.first().contains(node.id)) {
-                award(node.score)
+            if (node.id !in preferences.arrivalAwardedScreens.first()) {
+                award(1)
                 preferences.markArrivalAwarded(node.id)
             }
             if (onNavigateToWhereAreWeFrom != null) {
@@ -545,6 +547,7 @@ private fun SharedOriginAnswerSection(
     val xs = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
+    var awarded by remember { mutableStateOf(false) }
 
     val correctAnswer = when (val answer = content.answer) {
         is Boolean -> answer
@@ -555,9 +558,12 @@ private fun SharedOriginAnswerSection(
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        val answeredCorrectly = (answer == "yes") == correctAnswer
-        val points = if (answeredCorrectly) content.score else content.score / 2
-        onAnswered(points)
+        if (!awarded) {
+            awarded = true
+            val answeredCorrectly = (answer == "yes") == correctAnswer
+            val points = if (answeredCorrectly) 1 else 0
+            onAnswered(points)
+        }
     }
 
     Spacer(Modifier.height(16.dp))

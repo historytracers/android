@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
@@ -52,7 +53,7 @@ import kotlin.random.Random
 
 private const val MAX_BONE_MARKS = 20
 private const val MAX_BONE_LEVELS = 4
-private const val LEBOMBO_BONE_IMAGE_URL = "https://www.historytracers.org/images/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
+private const val LEBOMBO_BONE_IMAGE_URL = "file:///android_asset/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=7d2fd4de-5c10-4811-957c-8233bc8d21de"
 private const val GONZALEZ_REDONDO_2010_URL = "https://doi.org/10.4321/S0211-95362010000100007"
 private const val GONZALEZ_REDONDO_2024_URL = "https://www.youtube.com/watch?v=RFui5Z52pUY"
@@ -101,8 +102,10 @@ fun CountingWithBonesIntroScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BoneSectionTitle(xs.whyTitle)
-                BodyText(xs.whyText)
+                MarkdownText(
+                    text = "#### ${xs.whyTitle}",
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 ResponsiveImage(
                     html = "<img src=\"$LEBOMBO_BONE_IMAGE_URL\">",
@@ -118,7 +121,10 @@ fun CountingWithBonesIntroScreen(
                 )
 
                 Spacer(Modifier.height(12.dp))
-                BodyText(xs.boneLookText)
+                MarkdownText(
+                    text = xs.boneLookText,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(Modifier.height(24.dp))
                 FilledTonalButton(
@@ -295,8 +301,9 @@ fun CountingWithBonesGameScreen(
             if (won) {
                 Spacer(Modifier.height(16.dp))
                 FilledTonalButton(
-                    onClick = onNavigateNext,
-                    enabled = won && level == MAX_BONE_LEVELS,
+                    onClick = {
+                        if (level < MAX_BONE_LEVELS) newChallenge(level + 1) else onNavigateNext()
+                    },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = Color(0xFF4CAF50),
                         contentColor = Color.White

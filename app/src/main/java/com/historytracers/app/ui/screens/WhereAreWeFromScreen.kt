@@ -33,7 +33,8 @@ import kotlinx.coroutines.launch
 fun WhereAreWeFromScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToSharedOrigin: () -> Unit = {},
-    onNavigateToMatterAndEnergy: () -> Unit = {}
+    onNavigateToMatterAndEnergy: () -> Unit = {},
+    onNavigateToEverythingWasTogether: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -150,6 +151,35 @@ fun WhereAreWeFromScreen(
 
                 Text(
                     text = xs.matterAndEnergy,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToEverythingWasTogether,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("everything_together" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_universe_expansion),
+                        contentDescription = xs.everythingWasTogether,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(52.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.everythingWasTogether,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

@@ -52,7 +52,7 @@ private fun HtmlWithImages(text: String, imgDesc: String?) {
             )
         }
         SubcomposeAsyncImage(
-            model = match.groupValues[1],
+            model = resolveImageSource(match.groupValues[1]),
             contentDescription = imgDesc,
             modifier = Modifier
                 .fillMaxWidth()

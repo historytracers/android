@@ -61,6 +61,7 @@ class UserPreferences(private val context: Context) {
         private val WORKOUT_SCROLL_KEY = intPreferencesKey("workout_scroll")
         private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
         private val YUPANA_SCROLL_KEY = intPreferencesKey("yupana_scroll")
+        private val UNIVERSE_EXPANSION_STEP_KEY = intPreferencesKey("universe_expansion_step")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
@@ -272,6 +273,16 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val universeExpansionStep: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[UNIVERSE_EXPANSION_STEP_KEY] ?: 0
+    }
+
+    suspend fun setUniverseExpansionStep(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[UNIVERSE_EXPANSION_STEP_KEY] = value
+        }
+    }
+
     val completedWorkoutSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
         preferences[WORKOUT_SECTIONS_KEY] ?: emptySet()
     }
@@ -443,6 +454,7 @@ class UserPreferences(private val context: Context) {
             preferences[CLAIMED_LEVELS_KEY] = emptySet()
             preferences[AWARDED_SCREENS_KEY] = emptySet()
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
+            preferences[UNIVERSE_EXPANSION_STEP_KEY] = 0
         }
     }
 }
