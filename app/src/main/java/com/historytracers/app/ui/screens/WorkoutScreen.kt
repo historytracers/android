@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,19 +8,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Accessibility
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PanTool
-import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +28,6 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.workoutScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
@@ -58,7 +51,6 @@ fun WorkoutScreen(
     val s = LocalUiStrings.current
     val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
-    val xs = workoutScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedWorkoutSections.collectAsState(initial = emptySet())
@@ -76,9 +68,16 @@ fun WorkoutScreen(
             completedSections
         )
     }
+    val group3Controller = remember {
+        LevelGroupController(
+            listOf("exercising_multiplication", "exercising_multiplication_l2"),
+            completedSections
+        )
+    }
     LaunchedEffect(completedSections) {
         group1Controller.syncFromPersisted(completedSections)
         group2Controller.syncFromPersisted(completedSections)
+        group3Controller.syncFromPersisted(completedSections)
     }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
@@ -146,50 +145,6 @@ fun WorkoutScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = { },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
-                )
-            ) {
-                Box(
-                    modifier = Modifier.size(52.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.Face,
-                        contentDescription = null,
-                        modifier = Modifier.size(52.dp),
-                        tint = OnButtonYellow
-                    )
-                    Canvas(modifier = Modifier.size(52.dp)) {
-                        val mouthRadius = size.width * 0.10f
-                        val mouthCenter = Offset(size.width * 0.5f, size.height * 0.68f)
-                        drawCircle(
-                            color = OnButtonYellow,
-                            radius = mouthRadius,
-                            center = mouthCenter,
-                            style = Stroke(width = 2.dp.toPx())
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = xs.voice,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
                 onClick = onNavigateToClap,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -209,35 +164,6 @@ fun WorkoutScreen(
 
             Text(
                 text = bs.exercisingHands,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
-                onClick = { },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
-                )
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Filled.DirectionsWalk,
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = bs.walking,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -311,35 +237,6 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = { },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
-                )
-            ) {
-                Text(
-                    text = hts.whoWalkFirstButton,
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = hts.whoWalkFirst,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
                 onClick = onNavigateToExercisingAddition,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -403,35 +300,6 @@ fun WorkoutScreen(
             Spacer(Modifier.height(32.dp))
 
             FilledIconButton(
-                onClick = {},
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("relationship")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Icon(
-                    painterResource(R.drawable.ic_dna),
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = Color.Unspecified
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = bs.relationship,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
                 onClick = onNavigateToRelationship,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
@@ -451,35 +319,6 @@ fun WorkoutScreen(
 
             Text(
                 text = bs.exercisingMultiplication,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
-                onClick = {},
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
-                )
-            ) {
-                Icon(
-                    Icons.Default.Psychology,
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = Color.Unspecified
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = xs.thinking,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -521,6 +360,40 @@ fun WorkoutScreen(
 
             Text(
                 text = bs.exercisingMultiplicationL2,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            FilledIconButton(
+                onClick = {
+                    claimLevel("workout_group3")
+                    onNavigateToCongratulation()
+                },
+                enabled = group3Controller.allCompleted,
+                modifier = Modifier.size(96.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if ("workout_group3" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                    disabledContainerColor = FlagBlueLight
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_flag),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Unspecified
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = s.common.nextLevel,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
