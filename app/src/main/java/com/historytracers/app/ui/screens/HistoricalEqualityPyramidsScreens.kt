@@ -38,6 +38,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.DateUtils
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
+import com.historytracers.app.ui.components.resolveImageSource
 import com.historytracers.app.ui.features.historicalEqualityPyramidsScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.common.HTDate
@@ -215,7 +216,7 @@ private fun PyramidResponsiveImage(url: String, imgDesc: String?, modifier: Modi
     val configuration = LocalConfiguration.current
     val maxHeight = (configuration.screenHeightDp * 0.4f).dp
     SubcomposeAsyncImage(
-        model = httpsImageUrl(url),
+        model = resolveImageSource(httpsImageUrl(url)),
         contentDescription = imgDesc,
         modifier = modifier
             .fillMaxWidth()

@@ -33,7 +33,17 @@ private val LOCAL_ASSET_IMAGES = mapOf(
     "https://www.historytracers.org/images/Ashmolean/KingList.jpg"
         to "Ashmolean/KingList.jpg",
     "https://www.historytracers.org/images/DonsMaps/1594.jpg"
-        to "DonsMaps/1594.jpg"
+        to "DonsMaps/1594.jpg",
+    "https://www.historytracers.org/images/SanJoseCRMuseo/SanJoseCRAntropologia.jpg"
+        to "SanJoseCRMuseo/SanJoseCRAntropologia.jpg",
+    "https://www.historytracers.org/images/HistoryTracers/pentagonal_pyramid.jpg"
+        to "HistoryTracers/pentagonal_pyramid.jpg",
+    "https://www.historytracers.org/images/Xunantunich/WitzXunantunich.jpg"
+        to "Xunantunich/WitzXunantunich.jpg",
+    "https://historytracers.org/images/Copan/Temple16Copan.png"
+        to "Copan/Temple16Copan.png",
+    "https://www.historytracers.org/images/Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
+        to "Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
 )
 
 fun resolveImageSource(url: String): Any =
