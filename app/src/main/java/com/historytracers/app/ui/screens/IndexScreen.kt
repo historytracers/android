@@ -65,6 +65,11 @@ private val whereAreWeFromSectionIds = listOf(
     "shared_origin", "matter_energy", "everything_together"
 )
 
+private val runningAndGrowingSectionIds = listOf(
+    "adding_the_same_number", "the_result_is", "inversion",
+    "connecting_the_multiplication", "drawing_multiplication"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // This list is intentionally empty: no main-screen hub button was newly introduced
 // by the current release (the five wired hubs already existed), and the four
@@ -114,6 +119,7 @@ fun IndexScreen(
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val completedRunningAndGrowing by preferences.completedRunningAndGrowingSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -124,6 +130,7 @@ fun IndexScreen(
     val yupanaDone = yupanaSectionIds.all { it in completedYupana }
     val roadToSomewhereDone = roadToSomewhereSectionIds.all { it in completedRoadToSomewhere }
     val whereAreWeFromDone = whereAreWeFromSectionIds.all { it in completedWhereAreWeFrom }
+    val runningAndGrowingDone = runningAndGrowingSectionIds.all { it in completedRunningAndGrowing }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -228,7 +235,7 @@ fun IndexScreen(
                 onClick = { onNavigateToRunningAndGrowing() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (runningAndGrowingDone) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {

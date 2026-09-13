@@ -32,10 +32,11 @@ import coil.request.ImageRequest
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.resolveImageSource
 import com.historytracers.app.ui.features.handsOnYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 
-private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire//mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
+private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=ea01ab6c-26af-4c7a-ba06-5c1731c83d4d"
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,11 +87,13 @@ fun HandsOnYupanaScreen(
             ) {
                 Text(
                     text = ys.tawantsuyu,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
                 )
 
                 Text(
@@ -126,7 +129,7 @@ fun HandsOnYupanaScreen(
                     val maxHeight = with(LocalDensity.current) { (configuration.screenHeightDp * 0.4f).dp }
                     AsyncImage(
                         model = ImageRequest.Builder(context)
-                            .data(IMAGE_URL)
+                            .data(resolveImageSource(IMAGE_URL))
                             .crossfade(true)
                             .build(),
                         contentDescription = ys.handsOnYupana,
