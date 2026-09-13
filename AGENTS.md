@@ -47,6 +47,15 @@
 - Use `%d` / `%s` format specifiers (Kotlin style) for interpolated values.
 - **English titles use Title Case.** Screen titles and hub button labels (both the top app bar and the label below each button) must capitalize every word except short function words — articles (`a`, `an`, `the`), conjunctions (`and`, `or`, `but`), and prepositions (`in`, `on`, `at`, `to`, `of`, `for`, `with`, `by`, `from`, `without`) — which stay lowercase. The first and last word are always capitalized. Examples: "Building Game", "First Steps (Counting)", "Learning in Layers", "Multiplying with Yupana", "Complement to 10", "Where Are We From?". This rule applies to English only; Portuguese and Spanish follow their own conventions.
 
+## Screen Title Rules
+
+- **Every screen must show a title.** No screen may begin directly with body or question text without a title above it.
+- **sm_game / markdown content screens:** the first markdown `text` entry of every screen must start with a `#### <Title>` heading, followed by a blank line, then the body/question text (e.g. `"#### Let Us Think!\n\n<question>"`). `MarkdownText` renders `####` headings as bold, left-aligned titles. This applies to **all** screens — explanations, conclusions, tables, and especially question screens (`answer != null`), which are the most common offenders. Never rely on `TextRenderer`/HTML to produce a title.
+- **Kotlin-built screens:** the top app bar must render the screen's localized title from its own `<Screen>ScreenStrings.kt` (e.g. `xs.title`), and any in-content title must be a left-aligned `Text`.
+- **Add the title for all languages.** For sm_game JSON, add the heading to `en-US`, `pt-BR`, and `es-ES` in `common/src/smartphone/{lang}/<uuid>.json`. For Kotlin screens, add the title to the `En`/`Pt`/`Es` objects in the screen's strings file.
+- **Use a contextual title** derived from the screen's subject (e.g. "Let Us Think!", "Is There a Limit?", "Counting with Our Feet"), not a bare placeholder. Apply the English Title Case rule above.
+- When creating, porting, or reviewing a screen, always inspect every content screen in its JSON for a leading `####` heading and add one if missing; also verify the Kotlin top app bar renders a title. Fix missing titles in all three locales.
+
 ## Sources Menu
 
 - Every exercise screen (Clap, FeetAndHands, ExercisingAddition, ExercisingMultiplication, etc.) can have a Sources menu in the bottom-left corner.
@@ -257,6 +266,7 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 - Create one file with a public composable per `SMGameContent` delegating to a shared private loader composable keyed by `contentId`.
 - Each screen must include:
   - Top bar (back arrow + title) using `s.common.*`.
+  - **A content title: the first markdown `text` entry must start with a `#### <Title>` heading followed by a blank line** (question screens included). See **Screen Title Rules**. Add it in all three locales (`en-US`, `pt-BR`, `es-ES`).
   - Text rendered via `MarkdownText` when `format == "markdown"`, else `TextRenderer` (this renders any `<img>` tags as images). Markdown lines starting with a single `*` are image captions and are automatically styled centered/italic/smaller by `MarkdownText`.
   - Green buttons (`#4CAF50` container, `Color.White` content) everywhere buttons act on the game flow:
     - Previous/Next use `ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)`.
