@@ -44,6 +44,8 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "af0fcbef-3b19-4cf0-b100-93fafd9d9039"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -268,6 +270,8 @@ private fun MatterAndEnergyGameContent(
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     fun award(points: Int) {
         if (points <= 0) return
@@ -278,7 +282,10 @@ private fun MatterAndEnergyGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            award(1)
+            if (node.id !in preferences.arrivalAwardedScreens.first()) {
+                award(1)
+                preferences.markArrivalAwarded(node.id)
+            }
             if (onNavigateToWhereAreWeFrom != null) {
                 preferences.markWhereAreWeFromSectionCompleted("matter_energy")
                 preferences.recordLessonCompletion()
@@ -356,7 +363,12 @@ private fun MatterAndEnergyGameContent(
                     if (content.answer != null) {
                         MatterAndEnergyAnswerSection(
                             content = content,
-                            onAnswered = { points -> award(points) }
+                            onAnswered = { points ->
+                                if (content.id !in awardedScreens) {
+                                    award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
+                                }
+                            }
                         )
                     }
 

@@ -41,6 +41,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private const val UNIVERSE_IMAGE_URL = "https://www.historytracers.org/images/ESA/Planck_history_of_Universe.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=57091b10-84a4-468c-b81a-56bccfa2cd4a"
@@ -63,7 +64,8 @@ fun UniverseExpansionScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWhereAreWeFrom: () -> Unit = {},
     currentScore: Int = 0,
-    onScoreChanged: (Int) -> Unit = {}
+    onScoreChanged: (Int) -> Unit = {},
+    restoreStep: Boolean = false
 ) {
     val s = LocalUiStrings.current
     val xs = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -80,9 +82,15 @@ fun UniverseExpansionScreen(
     val conclusionStep = questionStep + 1
     val lastStep = conclusionStep
     var stateRestored by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(Unit) {
-        step = preferences.universeExpansionStep.first().coerceIn(0, conclusionStep)
+        step = if (restoreStep) {
+            preferences.universeExpansionStep.first().coerceIn(0, conclusionStep)
+        } else {
+            0
+        }
         stateRestored = true
     }
 
@@ -237,7 +245,13 @@ fun UniverseExpansionScreen(
                             correctAnswer = true,
                             wrongAnswerMessage = xs.wrongAnswerMessage,
                             scoreDoubledMessage = xs.scoreDoubledMessage,
-                            onCorrect = { onScoreChanged(currentScore + 1) }
+                            onCorrect = {
+                                val awardKey = "universe_expansion_question"
+                                if (awardKey !in awardedScreens) {
+                                    scope.launch { preferences.markScreenAwarded(awardKey) }
+                                    onScoreChanged(currentScore + 1)
+                                }
+                            }
                         )
                     }
                     else -> {
@@ -282,8 +296,13 @@ fun UniverseExpansionScreen(
                     FilledTonalButton(
                         onClick = {
                             if (step < lastStep) {
-                                onScoreChanged(currentScore + 1)
-                                step++
+                                val nextStep = step + 1
+                                val awardKey = "universe_expansion_step_$nextStep"
+                                if (awardKey !in awardedScreens) {
+                                    scope.launch { preferences.markScreenAwarded(awardKey) }
+                                    onScoreChanged(currentScore + 1)
+                                }
+                                step = nextStep
                             }
                         },
                         enabled = step < lastStep,

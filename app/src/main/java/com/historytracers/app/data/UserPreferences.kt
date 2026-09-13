@@ -454,6 +454,7 @@ class UserPreferences(private val context: Context) {
             preferences[CLAIMED_LEVELS_KEY] = emptySet()
             preferences[AWARDED_SCREENS_KEY] = emptySet()
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
+            preferences[UNIVERSE_EXPANSION_STEP_KEY] = 0
         }
     }
 }

@@ -52,6 +52,8 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "7cc05340-732f-4c3d-b260-5437670fbc99"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -353,6 +355,8 @@ private fun SharedOriginGameContent(
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     fun award(points: Int) {
         if (points <= 0) return
@@ -363,7 +367,10 @@ private fun SharedOriginGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            award(1)
+            if (node.id !in preferences.arrivalAwardedScreens.first()) {
+                award(1)
+                preferences.markArrivalAwarded(node.id)
+            }
             if (onNavigateToWhereAreWeFrom != null) {
                 preferences.markWhereAreWeFromSectionCompleted("shared_origin")
                 preferences.recordLessonCompletion()
@@ -443,7 +450,12 @@ private fun SharedOriginGameContent(
                     if (content.answer != null) {
                         SharedOriginAnswerSection(
                             content = content,
-                            onAnswered = { points -> award(points) }
+                            onAnswered = { points ->
+                                if (content.id !in awardedScreens) {
+                                    award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
+                                }
+                            }
                         )
                     }
 

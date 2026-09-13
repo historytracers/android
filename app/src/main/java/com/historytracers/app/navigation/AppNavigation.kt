@@ -619,7 +619,15 @@ fun AppNavigation() {
                         UniverseExpansionScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackStack() },
+                            restoreStep = navController.previousBackStackEntry == null,
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateToWhereAreWeFrom = {
                                 if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
                                     navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
