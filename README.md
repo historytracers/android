@@ -44,16 +44,16 @@ Or open the project in Android Studio and sync Gradle.
 After a successful build, the APK is produced at:
 
 ```sh
-app/build/outputs/apk/debug/app-debug.apk
+app/build/outputs/apk/debug/historytracers-debug.apk
 ```
 
 The same build also produces the App Bundle (AAB) at:
 
 ```sh
-app/build/outputs/bundle/debug/app-debug.aab
+app/build/outputs/bundle/debug/historytracers-debug.aab
 ```
 
-The release build produces `app/build/outputs/apk/release/app-release.apk` and `app/build/outputs/bundle/release/app-release.aab`. Upload the AAB to Google Play; keep using the APK for direct device installs, since AAB files cannot be installed with `adb install` directly.
+The release build produces `app/build/outputs/apk/release/historytracers-release.apk` and `app/build/outputs/bundle/release/historytracers-release.aab`. Upload the AAB to Google Play; keep using the APK for direct device installs, since AAB files cannot be installed with `adb install` directly.
 
 Install it on a connected device or emulator:
 

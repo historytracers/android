@@ -36,7 +36,7 @@ if (-not $adbPath) {
 Write-Output "=== Using adb: $adbPath ==="
 
 # --- Locate APK ---
-$apkPath = "$ScriptDir\app\build\outputs\apk\debug\app-debug.apk"
+$apkPath = "$ScriptDir\app\build\outputs\apk\debug\historytracers-debug.apk"
 if (-not (Test-Path $apkPath)) {
     Write-Error "APK not found. Run the build script first."
     Write-Error "  Expected: $apkPath"

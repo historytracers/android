@@ -105,11 +105,11 @@ if (-not (Test-Path $wrapperJar)) {
 # artifacts (needs keystore.properties or HT_* env vars, else unsigned).
 $buildTasks = "assembleDebug", "bundleDebug"
 $apkDir = "app\build\outputs\apk\debug\"
-$aabFile = "app\build\outputs\bundle\debug\app-debug.aab"
+$aabFile = "app\build\outputs\bundle\debug\historytracers-debug.aab"
 if ($Release) {
     $buildTasks = "assembleRelease", "bundleRelease"
     $apkDir = "app\build\outputs\apk\release\"
-    $aabFile = "app\build\outputs\bundle\release\app-release.aab"
+    $aabFile = "app\build\outputs\bundle\release\historytracers-release.aab"
 }
 Write-Output "=== Building Android app ($($buildTasks -join ' '))... ==="
 & "$ScriptDir\gradlew.bat" $buildTasks

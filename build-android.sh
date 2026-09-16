@@ -212,11 +212,11 @@ fi
 # artifacts (needs keystore.properties or HT_* env vars, else unsigned).
 BUILD_TASKS="assembleDebug bundleDebug"
 APK_DIR="app/build/outputs/apk/debug/"
-AAB_FILE="app/build/outputs/bundle/debug/app-debug.aab"
+AAB_FILE="app/build/outputs/bundle/debug/historytracers-debug.aab"
 if [ "${1:-}" = "--release" ]; then
     BUILD_TASKS="assembleRelease bundleRelease"
     APK_DIR="app/build/outputs/apk/release/"
-    AAB_FILE="app/build/outputs/bundle/release/app-release.aab"
+    AAB_FILE="app/build/outputs/bundle/release/historytracers-release.aab"
 fi
 # shellcheck disable=SC2086
 echo "=== Building Android app ($BUILD_TASKS)... ==="

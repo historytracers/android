@@ -26,6 +26,11 @@ val hasReleaseSigning = keystoreProp("ht.store.file") != null &&
     keystoreProp("ht.key.alias") != null &&
     keystoreProp("ht.key.password") != null
 
+// APK and AAB files are named historytracers-<variant>.<apk|aab>.
+base {
+    archivesName.set("historytracers")
+}
+
 android {
     namespace = "com.historytracers.app"
     compileSdk = 36

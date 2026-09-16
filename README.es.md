@@ -44,21 +44,21 @@ O abra el proyecto en Android Studio y sincronice Gradle.
 Después de una compilación exitosa, el APK se genera en:
 
 ```sh
-app/build/outputs/apk/debug/app-debug.apk
+app/build/outputs/apk/debug/historytracers-debug.apk
 ```
 
 La misma compilación también genera el App Bundle (AAB) en:
 
 ```sh
-app/build/outputs/bundle/debug/app-debug.aab
+app/build/outputs/bundle/debug/historytracers-debug.aab
 ```
 
-La compilación release genera `app/build/outputs/apk/release/app-release.apk` y `app/build/outputs/bundle/release/app-release.aab`. Suba el AAB a Google Play; siga usando el APK para instalaciones directas en dispositivos, ya que los archivos AAB no se pueden instalar directamente con `adb install`.
+La compilación release genera `app/build/outputs/apk/release/historytracers-release.apk` y `app/build/outputs/bundle/release/historytracers-release.aab`. Suba el AAB a Google Play; siga usando el APK para instalaciones directas en dispositivos, ya que los archivos AAB no se pueden instalar directamente con `adb install`.
 
 Instálelo en un dispositivo o emulador conectado:
 
 ```sh
-adb install app/build/outputs/apk/debug/app-debug.apk
+adb install app/build/outputs/apk/debug/historytracers-debug.apk
 ```
 
 El AAR de la biblioteca común se genera en:
