@@ -2,6 +2,10 @@
 
 # History Tracers Android - cross-platform build script for Windows
 
+param(
+    [switch]$Release
+)
+
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Set-Location -LiteralPath $ScriptDir
 
@@ -96,9 +100,21 @@ if (-not (Test-Path $wrapperJar)) {
 }
 
 # --- Build ---
-Write-Output "=== Building Android app (assembleDebug)... ==="
-& "$ScriptDir\gradlew.bat" assembleDebug
+# Default builds debug APK (local install via install-apk.ps1) and debug AAB
+# (same content, Play Bundle format). Pass -Release for signed release
+# artifacts (needs keystore.properties or HT_* env vars, else unsigned).
+$buildTasks = "assembleDebug", "bundleDebug"
+$apkDir = "app\build\outputs\apk\debug\"
+$aabFile = "app\build\outputs\bundle\debug\app-debug.aab"
+if ($Release) {
+    $buildTasks = "assembleRelease", "bundleRelease"
+    $apkDir = "app\build\outputs\apk\release\"
+    $aabFile = "app\build\outputs\bundle\release\app-release.aab"
+}
+Write-Output "=== Building Android app ($($buildTasks -join ' '))... ==="
+& "$ScriptDir\gradlew.bat" $buildTasks
 if ($?) {
     Write-Output "=== Build complete ==="
-    Write-Output "APK location: app\build\outputs\apk\debug\"
+    Write-Output "APK location (local install): $apkDir"
+    Write-Output "AAB location (Play Store upload): $aabFile"
 }

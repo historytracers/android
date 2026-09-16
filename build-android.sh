@@ -207,7 +207,20 @@ if [ ! -f "$SCRIPT_DIR/gradle/wrapper/gradle-wrapper.jar" ]; then
 fi
 
 # --- Build ---
-echo "=== Building Android app (assembleDebug)... ==="
-"$SCRIPT_DIR/gradlew" assembleDebug
+# Default builds debug APK (local install via install-apk.sh) and debug AAB
+# (same content, Play Bundle format). Pass --release for signed release
+# artifacts (needs keystore.properties or HT_* env vars, else unsigned).
+BUILD_TASKS="assembleDebug bundleDebug"
+APK_DIR="app/build/outputs/apk/debug/"
+AAB_FILE="app/build/outputs/bundle/debug/app-debug.aab"
+if [ "${1:-}" = "--release" ]; then
+    BUILD_TASKS="assembleRelease bundleRelease"
+    APK_DIR="app/build/outputs/apk/release/"
+    AAB_FILE="app/build/outputs/bundle/release/app-release.aab"
+fi
+# shellcheck disable=SC2086
+echo "=== Building Android app ($BUILD_TASKS)... ==="
+"$SCRIPT_DIR/gradlew" $BUILD_TASKS
 echo "=== Build complete ==="
-echo "APK location: app/build/outputs/apk/debug/"
+echo "APK location (local install): $APK_DIR"
+echo "AAB location (Play Store upload): $AAB_FILE"
