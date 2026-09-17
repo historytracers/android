@@ -62,7 +62,7 @@ private val roadToSomewhereSectionIds = listOf(
 )
 
 private val whereAreWeFromSectionIds = listOf(
-    "shared_origin", "matter_energy", "everything_together"
+    "shared_origin", "matter_energy", "everything_together", "sharing_with_whom"
 )
 
 private val runningAndGrowingSectionIds = listOf(

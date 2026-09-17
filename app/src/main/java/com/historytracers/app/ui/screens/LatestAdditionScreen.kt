@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
@@ -31,6 +32,7 @@ import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
+import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -57,6 +59,7 @@ fun LatestAdditionScreen(
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
     onNavigateToCountingWithBonesIntro: () -> Unit = {},
     onNavigateToEverythingWasTogether: () -> Unit = {},
+    onNavigateToSharingWithWhomIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -68,6 +71,7 @@ fun LatestAdditionScreen(
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
+    val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -77,6 +81,21 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "sharing_with_whom",
+            label = swws.title,
+            icon = {
+                Text(
+                    text = "?",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "sharing_with_whom" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("sharing_with_whom") },
+            onNavigate = onNavigateToSharingWithWhomIntro
+        ),
         LatestAdditionEntry(
             sectionId = "everything_together",
             label = ues.title,
@@ -132,14 +151,6 @@ fun LatestAdditionScreen(
             isCompleted = { "shared_origin" in completedWhereAreWeFrom },
             markCompleted = { preferences.markWhereAreWeFromSectionCompleted("shared_origin") },
             onNavigate = onNavigateToSharedOriginIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "running_among_numbers",
-            label = rnas.title,
-            icon = { Icon(Icons.AutoMirrored.Filled.DirectionsRun, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
-            isCompleted = { "running_among_numbers" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("running_among_numbers") },
-            onNavigate = onNavigateToRunningAmongNumbersIntro
         )
     )
 

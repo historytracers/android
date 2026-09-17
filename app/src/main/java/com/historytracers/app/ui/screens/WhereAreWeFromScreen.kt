@@ -35,7 +35,8 @@ fun WhereAreWeFromScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToSharedOrigin: () -> Unit = {},
     onNavigateToMatterAndEnergy: () -> Unit = {},
-    onNavigateToEverythingWasTogether: () -> Unit = {}
+    onNavigateToEverythingWasTogether: () -> Unit = {},
+    onNavigateToSharingWithWhom: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -191,11 +192,11 @@ fun WhereAreWeFromScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = onNavigateToSharingWithWhom,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("sharing_with_whom" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
