@@ -167,6 +167,13 @@ import com.historytracers.app.ui.screens.WhereAreTheyUniverseScreen
 import com.historytracers.app.ui.screens.WhereAreTheyConclusionScreen
 import com.historytracers.app.ui.screens.WhereAreWeFromScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
+import com.historytracers.app.ui.screens.QuipusIntroScreen
+import com.historytracers.app.ui.screens.QuipusOneOfTheFirstScreen
+import com.historytracers.app.ui.screens.QuipusHowItWorksScreen
+import com.historytracers.app.ui.screens.QuipusSmallNumbersScreen
+import com.historytracers.app.ui.screens.QuipusLargeNumbersScreen
+import com.historytracers.app.ui.screens.QuipusQuestionScreen
+import com.historytracers.app.ui.screens.QuipusConclusionScreen
 import com.historytracers.app.ui.screens.SharedOriginIntroScreen
 import com.historytracers.app.ui.screens.SharedOriginExpandingScreen
 import com.historytracers.app.ui.screens.SharedOriginThinkScreen
@@ -304,6 +311,8 @@ fun AppNavigation() {
            "matter_and_energy_energy", "matter_and_energy_together", "matter_and_energy_conclusion",
            "sharing_with_whom_intro", "sharing_with_whom_nobody", "sharing_with_whom_think",
            "sharing_with_whom_scenario", "sharing_with_whom_empty_region", "sharing_with_whom_conclusion",
+           "quipus_intro", "quipus_one_of_the_first", "quipus_how_it_works", "quipus_small_numbers",
+           "quipus_large_numbers", "quipus_question", "quipus_conclusion",
            "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count")
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
@@ -634,6 +643,125 @@ fun AppNavigation() {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
+                                }
+                            },
+                            onNavigateToQuipus = { navController.navigate(Screen.QuipusIntro.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusIntro.route) {
+                        QuipusIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.QuipusOneOfTheFirst.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusOneOfTheFirst.route) {
+                        QuipusOneOfTheFirstScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.QuipusIntro.route, false)) {
+                                    navController.navigate(Screen.QuipusIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.QuipusHowItWorks.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusHowItWorks.route) {
+                        QuipusHowItWorksScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.QuipusOneOfTheFirst.route, false)) {
+                                    navController.navigate(Screen.QuipusOneOfTheFirst.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.QuipusSmallNumbers.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusSmallNumbers.route) {
+                        QuipusSmallNumbersScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.QuipusHowItWorks.route, false)) {
+                                    navController.navigate(Screen.QuipusHowItWorks.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.QuipusLargeNumbers.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusLargeNumbers.route) {
+                        QuipusLargeNumbersScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.QuipusSmallNumbers.route, false)) {
+                                    navController.navigate(Screen.QuipusSmallNumbers.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.QuipusQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusQuestion.route) {
+                        QuipusQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.QuipusLargeNumbers.route, false)) {
+                                    navController.navigate(Screen.QuipusLargeNumbers.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.QuipusConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.QuipusConclusion.route) {
+                        QuipusConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.QuipusQuestion.route, false)) {
+                                    navController.navigate(Screen.QuipusQuestion.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToAnotherWayToCount = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             }
                         )
@@ -4907,6 +5035,7 @@ fun AppNavigation() {
                             onNavigateToCountingWithBonesIntro = { navController.navigate(Screen.CountingWithBonesIntro.route) { launchSingleTop = true } },
                             onNavigateToEverythingWasTogether = { navController.navigate(Screen.UniverseExpansion.route) { launchSingleTop = true } },
                             onNavigateToSharingWithWhomIntro = { navController.navigate(Screen.SharingWithWhomIntro.route) { launchSingleTop = true } },
+                            onNavigateToQuipusIntro = { navController.navigate(Screen.QuipusIntro.route) { launchSingleTop = true } },
                             onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } }

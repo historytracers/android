@@ -30,6 +30,7 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.quipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -60,6 +61,7 @@ fun LatestAdditionScreen(
     onNavigateToCountingWithBonesIntro: () -> Unit = {},
     onNavigateToEverythingWasTogether: () -> Unit = {},
     onNavigateToSharingWithWhomIntro: () -> Unit = {},
+    onNavigateToQuipusIntro: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -72,15 +74,31 @@ fun LatestAdditionScreen(
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
+    val qs = quipusScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "quipus",
+            label = qs.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_quipu_knot),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "quipus" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("quipus") },
+            onNavigate = onNavigateToQuipusIntro
+        ),
         LatestAdditionEntry(
             sectionId = "sharing_with_whom",
             label = swws.title,
@@ -137,20 +155,6 @@ fun LatestAdditionScreen(
             isCompleted = { "matter_energy" in completedWhereAreWeFrom },
             markCompleted = { preferences.markWhereAreWeFromSectionCompleted("matter_energy") },
             onNavigate = onNavigateToMatterAndEnergyIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "shared_origin",
-            label = sos.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_cmb),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "shared_origin" in completedWhereAreWeFrom },
-            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("shared_origin") },
-            onNavigate = onNavigateToSharedOriginIntro
         )
     )
 

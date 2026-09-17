@@ -26,11 +26,13 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import kotlinx.coroutines.launch
 
 @Composable
 fun AnotherWayToCountScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToQuipus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -38,6 +40,7 @@ fun AnotherWayToCountScreen(
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    val completedSections by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -98,11 +101,11 @@ fun AnotherWayToCountScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 FilledIconButton(
-                    onClick = { },
+                    onClick = onNavigateToQuipus,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("quipus" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Image(

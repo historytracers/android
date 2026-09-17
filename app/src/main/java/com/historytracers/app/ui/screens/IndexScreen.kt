@@ -65,19 +65,20 @@ private val whereAreWeFromSectionIds = listOf(
     "shared_origin", "matter_energy", "everything_together", "sharing_with_whom"
 )
 
+private val anotherWayToCountSectionIds = listOf(
+    "quipus"
+)
+
 private val runningAndGrowingSectionIds = listOf(
     "adding_the_same_number", "the_result_is", "inversion",
     "connecting_the_multiplication", "drawing_multiplication"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
-// This list is intentionally empty: no main-screen hub button was newly introduced
-// by the current release (the five wired hubs already existed), and the four
-// placeholder buttons are not complete, so they must NOT be added here.
 // When a new, fully functional hub button is added to this screen, insert its id
-// (e.g. "workout") here so isNewHub flags it; the badge hides once the user taps
-// it (persisted via UserPreferences.markNewHubSeen).
-private val newHubIds = setOf<String>()
+// here so isNewHub flags it; the badge hides once the user taps it (persisted via
+// UserPreferences.markNewHubSeen).
+private val newHubIds = setOf("another_way_to_count")
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
     hubId in newHubIds && hubId !in seenNewHubs
@@ -121,6 +122,7 @@ fun IndexScreen(
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedRunningAndGrowing by preferences.completedRunningAndGrowingSections.collectAsState(initial = emptySet())
+    val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -132,12 +134,14 @@ fun IndexScreen(
     val roadToSomewhereDone = roadToSomewhereSectionIds.all { it in completedRoadToSomewhere }
     val whereAreWeFromDone = whereAreWeFromSectionIds.all { it in completedWhereAreWeFrom }
     val runningAndGrowingDone = runningAndGrowingSectionIds.all { it in completedRunningAndGrowing }
+    val anotherWayToCountDone = anotherWayToCountSectionIds.all { it in completedAnotherWayToCount }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
     val workoutNew = isNewHub("workout", seenNewHubs)
     val yupanaNew = isNewHub("yupana", seenNewHubs)
     val abacusNew = isNewHub("abacus", seenNewHubs)
+    val anotherWayToCountNew = isNewHub("another_way_to_count", seenNewHubs)
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -179,26 +183,31 @@ fun IndexScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            FilledTonalButton(
-                onClick = { onNavigateToAnotherWayToCount() },
-                modifier = Modifier.padding(horizontal = 32.dp),
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
-                    contentColor = OnButtonYellow
-                )
-            ) {
-                Icon(
-                    painterResource(R.drawable.ic_maya_thirteen),
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = Color.Unspecified
-                )
-                Spacer(Modifier.width(12.dp))
-                Text(
-                    text = hts.anotherWayToCount,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            Box(modifier = Modifier.padding(horizontal = 32.dp)) {
+                FilledTonalButton(
+                    onClick = {
+                        if (anotherWayToCountNew) scope.launch { preferences.markNewHubSeen("another_way_to_count") }
+                        onNavigateToAnotherWayToCount()
+                    },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = if (anotherWayToCountNew) ButtonYellow else if (anotherWayToCountDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_maya_thirteen),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = hts.anotherWayToCount,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                if (anotherWayToCountNew) NewHubSunBadge()
             }
 
             Spacer(Modifier.height(16.dp))
