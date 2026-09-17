@@ -32,7 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AnotherWayToCountScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToQuipus: () -> Unit = {}
+    onNavigateToQuipus: () -> Unit = {},
+    onNavigateToPracticingWithQuipus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -130,11 +131,11 @@ fun AnotherWayToCountScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = onNavigateToPracticingWithQuipus,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("practicing_with_quipus" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Image(

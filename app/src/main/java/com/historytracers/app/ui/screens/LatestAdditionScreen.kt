@@ -30,6 +30,7 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -62,6 +63,7 @@ fun LatestAdditionScreen(
     onNavigateToEverythingWasTogether: () -> Unit = {},
     onNavigateToSharingWithWhomIntro: () -> Unit = {},
     onNavigateToQuipusIntro: () -> Unit = {},
+    onNavigateToPracticingWithQuipus: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -75,6 +77,7 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val qs = quipusScreenStringsForLanguage(LocalAppLanguage.current)
+    val pwqs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -85,6 +88,20 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_with_quipus",
+            label = pwqs.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_quipu_practice),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "practicing_with_quipus" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus") },
+            onNavigate = onNavigateToPracticingWithQuipus
+        ),
         LatestAdditionEntry(
             sectionId = "quipus",
             label = qs.title,
@@ -141,20 +158,6 @@ fun LatestAdditionScreen(
             isCompleted = { "counting_with_bones" in completedFirstSteps },
             markCompleted = { preferences.markFirstStepsSectionCompleted("counting_with_bones") },
             onNavigate = onNavigateToCountingWithBonesIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "matter_energy",
-            label = maes.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_matter_energy),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "matter_energy" in completedWhereAreWeFrom },
-            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("matter_energy") },
-            onNavigate = onNavigateToMatterAndEnergyIntro
         )
     )
 

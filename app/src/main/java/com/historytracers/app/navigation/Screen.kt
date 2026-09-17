@@ -144,6 +144,7 @@ sealed class Screen(val route: String) {
     data object QuipusLargeNumbers : Screen("quipus_large_numbers")
     data object QuipusQuestion : Screen("quipus_question")
     data object QuipusConclusion : Screen("quipus_conclusion")
+    data object PracticingWithQuipus : Screen("practicing_with_quipus")
     data object SharedOriginIntro : Screen("shared_origin_intro")
     data object SharedOriginExpanding : Screen("shared_origin_expanding")
     data object SharedOriginThink : Screen("shared_origin_think")
