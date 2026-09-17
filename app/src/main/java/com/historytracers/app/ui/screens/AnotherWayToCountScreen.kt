@@ -126,6 +126,35 @@ fun AnotherWayToCountScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = { },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_quipu_practice),
+                        contentDescription = xs.practicingWithQuipus,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(52.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.practicingWithQuipus,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
             }
         }
     }
