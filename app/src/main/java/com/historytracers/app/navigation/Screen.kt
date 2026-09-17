@@ -136,6 +136,7 @@ sealed class Screen(val route: String) {
     data object WhereAreTheyUniverse : Screen("where_are_they_universe")
     data object WhereAreTheyConclusion : Screen("where_are_they_conclusion")
     data object WhereAreWeFrom : Screen("where_are_we_from")
+    data object AnotherWayToCount : Screen("another_way_to_count")
     data object SharedOriginIntro : Screen("shared_origin_intro")
     data object SharedOriginExpanding : Screen("shared_origin_expanding")
     data object SharedOriginThink : Screen("shared_origin_think")

@@ -166,6 +166,7 @@ import com.historytracers.app.ui.screens.WhereAreTheySpeciesScreen
 import com.historytracers.app.ui.screens.WhereAreTheyUniverseScreen
 import com.historytracers.app.ui.screens.WhereAreTheyConclusionScreen
 import com.historytracers.app.ui.screens.WhereAreWeFromScreen
+import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.SharedOriginIntroScreen
 import com.historytracers.app.ui.screens.SharedOriginExpandingScreen
 import com.historytracers.app.ui.screens.SharedOriginThinkScreen
@@ -303,7 +304,7 @@ fun AppNavigation() {
            "matter_and_energy_energy", "matter_and_energy_together", "matter_and_energy_conclusion",
            "sharing_with_whom_intro", "sharing_with_whom_nobody", "sharing_with_whom_think",
            "sharing_with_whom_scenario", "sharing_with_whom_empty_region", "sharing_with_whom_conclusion",
-           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion")
+           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count")
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -605,7 +606,8 @@ fun AppNavigation() {
                             onNavigateToYupana = { navController.navigate(Screen.Yupana.route) { launchSingleTop = true } },
                             onNavigateToRoadToSomewhere = { navController.navigate(Screen.RoadToSomewhere.route) { launchSingleTop = true } },
                             onNavigateToRunningAndGrowing = { navController.navigate(Screen.RunningAndGrowing.route) { launchSingleTop = true } },
-                            onNavigateToWhereAreWeFrom = { navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true } }
+                            onNavigateToWhereAreWeFrom = { navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true } },
+                            onNavigateToAnotherWayToCount = { navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.WhereAreWeFrom.route) {
@@ -622,6 +624,18 @@ fun AppNavigation() {
                             onNavigateToMatterAndEnergy = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
                             onNavigateToEverythingWasTogether = { navController.navigate(Screen.UniverseExpansion.route) { launchSingleTop = true } },
                             onNavigateToSharingWithWhom = { navController.navigate(Screen.SharingWithWhomIntro.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AnotherWayToCount.route) {
+                        AnotherWayToCountScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.UniverseExpansion.route) {
