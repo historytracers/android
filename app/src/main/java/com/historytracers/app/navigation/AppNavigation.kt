@@ -4886,6 +4886,14 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToPichana = { navController.navigate(Screen.PichanaMovement.route) { launchSingleTop = true } },
+                            onNavigateToYupana = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Yupana.route, false)) {
                                     navController.navigate(Screen.Yupana.route) {

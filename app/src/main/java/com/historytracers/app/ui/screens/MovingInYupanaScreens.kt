@@ -41,6 +41,7 @@ import com.historytracers.app.ui.components.drawOneHand
 import com.historytracers.app.ui.components.drawYupanaRow
 import com.historytracers.app.ui.components.getMarkersForDigit
 import com.historytracers.app.ui.features.movingInYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.parseHexColor
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=c742c649-bf12-4d3f-ba8c-52f91455fc95"
@@ -223,7 +224,8 @@ fun KinkinMovementScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    onNavigateToPichana: () -> Unit = {}
+    onNavigateToPichana: () -> Unit = {},
+    onNavigateToYupana: (() -> Unit)? = null
 ) {
     val xs = movingInYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     YupanaMovementContent(
@@ -247,7 +249,8 @@ fun KinkinMovementScreen(
         prevLabel = xs.pichanaTitle,
         onNavigatePrev = onNavigateToPichana,
         leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f)),
-        isLastScreen = true
+        isLastScreen = true,
+        onNavigateToYupana = onNavigateToYupana
     )
 }
 
@@ -279,10 +282,12 @@ private fun YupanaMovementContent(
     leftNumberExtraOffsets: Map<Int, Offset> = emptyMap(),
     belowContentOffset: Dp = (-70).dp,
     handOffsetY: Dp = 0.dp,
-    isLastScreen: Boolean = false
+    isLastScreen: Boolean = false,
+    onNavigateToYupana: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val xs = movingInYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     var moved by remember { mutableStateOf(false) }
@@ -609,6 +614,19 @@ private fun YupanaMovementContent(
                                 Spacer(Modifier.width(8.dp))
                                 Text(text = nextLabel, fontWeight = FontWeight.Bold)
                             }
+                        }
+                    }
+
+                    if (onNavigateToYupana != null) {
+                        Spacer(Modifier.height(16.dp))
+                        FilledTonalButton(
+                            onClick = onNavigateToYupana,
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = ys.yupana, fontWeight = FontWeight.Bold)
                         }
                     }
 
