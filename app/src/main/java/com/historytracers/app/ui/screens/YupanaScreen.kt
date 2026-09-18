@@ -139,35 +139,6 @@ fun YupanaScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 FilledIconButton(
-                    onClick = { },
-                    modifier = Modifier.size(96.dp),
-                    shape = CircleShape,
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
-                    )
-                ) {
-                    Icon(
-                        painterResource(R.drawable.ic_knot),
-                        contentDescription = null,
-                        modifier = Modifier.size(52.dp),
-                        tint = Color.Unspecified
-                    )
-                }
-
-                Spacer(Modifier.height(24.dp))
-
-                Text(
-                    text = xs.quipu,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-
-                Spacer(Modifier.height(32.dp))
-
-                FilledIconButton(
                     onClick = onNavigateToHandsOnYupana,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,

@@ -16,37 +16,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import kotlinx.coroutines.launch
 
 @Composable
-fun WhereAreWeFromScreen(
+fun AnotherWayToCountScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToSharedOrigin: () -> Unit = {},
-    onNavigateToMatterAndEnergy: () -> Unit = {},
-    onNavigateToEverythingWasTogether: () -> Unit = {},
-    onNavigateToSharingWithWhom: () -> Unit = {}
+    onNavigateToQuipus: () -> Unit = {},
+    onNavigateToPracticingWithQuipus: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
-    val xs = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
-    val completedSections by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val completedSections by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -68,7 +63,7 @@ fun WhereAreWeFromScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = hts.whereAreWeFrom,
+                    text = hts.anotherWayToCount,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -107,16 +102,16 @@ fun WhereAreWeFromScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 FilledIconButton(
-                    onClick = onNavigateToSharedOrigin,
+                    onClick = onNavigateToQuipus,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if ("shared_origin" in completedSections) ButtonYellowDark else ButtonYellow
+                        containerColor = if ("quipus" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.ic_cmb),
-                        contentDescription = xs.sharedOrigin,
+                        painter = painterResource(R.drawable.ic_quipu_knot),
+                        contentDescription = xs.quipus,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.size(52.dp)
                     )
@@ -125,7 +120,7 @@ fun WhereAreWeFromScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = xs.sharedOrigin,
+                    text = xs.quipus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -136,16 +131,16 @@ fun WhereAreWeFromScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = onNavigateToMatterAndEnergy,
+                    onClick = onNavigateToPracticingWithQuipus,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if ("matter_energy" in completedSections) ButtonYellowDark else ButtonYellow
+                        containerColor = if ("practicing_with_quipus" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.ic_matter_energy),
-                        contentDescription = xs.matterAndEnergy,
+                        painter = painterResource(R.drawable.ic_quipu_practice),
+                        contentDescription = xs.practicingWithQuipus,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.size(52.dp)
                     )
@@ -154,66 +149,7 @@ fun WhereAreWeFromScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = xs.matterAndEnergy,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-
-                Spacer(Modifier.height(32.dp))
-
-                FilledIconButton(
-                    onClick = onNavigateToEverythingWasTogether,
-                    modifier = Modifier.size(96.dp),
-                    shape = CircleShape,
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if ("everything_together" in completedSections) ButtonYellowDark else ButtonYellow
-                    )
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_universe_expansion),
-                        contentDescription = xs.everythingWasTogether,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(52.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(24.dp))
-
-                Text(
-                    text = xs.everythingWasTogether,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 32.dp)
-                )
-
-                Spacer(Modifier.height(32.dp))
-
-                FilledIconButton(
-                    onClick = onNavigateToSharingWithWhom,
-                    modifier = Modifier
-                        .size(96.dp)
-                        .semantics { contentDescription = xs.sharedWithWho },
-                    shape = CircleShape,
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if ("sharing_with_whom" in completedSections) ButtonYellowDark else ButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = "?",
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(Modifier.height(24.dp))
-
-                Text(
-                    text = xs.sharedWithWho,
+                    text = xs.practicingWithQuipus,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

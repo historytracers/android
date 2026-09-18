@@ -4,6 +4,8 @@ package com.historytracers.app.ui.components
 private const val ANDROID_ASSET_PREFIX = "file:///android_asset/"
 
 private val LOCAL_ASSET_IMAGES = mapOf(
+    "https://www.historytracers.org/images/Caral/QuipuPanel.png"
+        to "Caral/QuipuPanel.png",
     "https://www.historytracers.org/images/ESA/Planck_history_of_Universe.jpg"
         to "ESA/planck_history_of_universe.jpg",
     "https://www.historytracers.org/images/ESA/Planck_s_view_of_the_cosmic_microwave_background.jpg"

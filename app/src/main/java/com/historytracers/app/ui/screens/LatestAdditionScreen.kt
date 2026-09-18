@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
@@ -29,8 +30,11 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
+import com.historytracers.app.ui.features.quipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
+import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -57,6 +61,9 @@ fun LatestAdditionScreen(
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
     onNavigateToCountingWithBonesIntro: () -> Unit = {},
     onNavigateToEverythingWasTogether: () -> Unit = {},
+    onNavigateToSharingWithWhomIntro: () -> Unit = {},
+    onNavigateToQuipusIntro: () -> Unit = {},
+    onNavigateToPracticingWithQuipus: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
@@ -68,15 +75,62 @@ fun LatestAdditionScreen(
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
+    val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
+    val qs = quipusScreenStringsForLanguage(LocalAppLanguage.current)
+    val pwqs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_with_quipus",
+            label = pwqs.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_quipu_practice),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "practicing_with_quipus" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus") },
+            onNavigate = onNavigateToPracticingWithQuipus
+        ),
+        LatestAdditionEntry(
+            sectionId = "quipus",
+            label = qs.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_quipu_knot),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "quipus" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("quipus") },
+            onNavigate = onNavigateToQuipusIntro
+        ),
+        LatestAdditionEntry(
+            sectionId = "sharing_with_whom",
+            label = swws.title,
+            icon = {
+                Text(
+                    text = "?",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "sharing_with_whom" in completedWhereAreWeFrom },
+            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("sharing_with_whom") },
+            onNavigate = onNavigateToSharingWithWhomIntro
+        ),
         LatestAdditionEntry(
             sectionId = "everything_together",
             label = ues.title,
@@ -104,42 +158,6 @@ fun LatestAdditionScreen(
             isCompleted = { "counting_with_bones" in completedFirstSteps },
             markCompleted = { preferences.markFirstStepsSectionCompleted("counting_with_bones") },
             onNavigate = onNavigateToCountingWithBonesIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "matter_energy",
-            label = maes.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_matter_energy),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "matter_energy" in completedWhereAreWeFrom },
-            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("matter_energy") },
-            onNavigate = onNavigateToMatterAndEnergyIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "shared_origin",
-            label = sos.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_cmb),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "shared_origin" in completedWhereAreWeFrom },
-            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("shared_origin") },
-            onNavigate = onNavigateToSharedOriginIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "running_among_numbers",
-            label = rnas.title,
-            icon = { Icon(Icons.AutoMirrored.Filled.DirectionsRun, contentDescription = null, modifier = Modifier.size(48.dp), tint = OnButtonYellow) },
-            isCompleted = { "running_among_numbers" in completedRoadToSomewhere },
-            markCompleted = { preferences.markRoadToSomewhereSectionCompleted("running_among_numbers") },
-            onNavigate = onNavigateToRunningAmongNumbersIntro
         )
     )
 

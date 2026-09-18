@@ -1,0 +1,45 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- first quipu: two knots -->
+    <path
+        android:strokeColor="#8B6914"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M8,22 L52,22" />
+    <path
+        android:strokeColor="#C49A6C"
+        android:strokeWidth="4"
+        android:pathData="M30,22 L30,106" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M30,50 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M30,74 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+    <!-- second quipu: four knots -->
+    <path
+        android:strokeColor="#8B6914"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M68,22 L112,22" />
+    <path
+        android:strokeColor="#C49A6C"
+        android:strokeWidth="4"
+        android:pathData="M90,22 L90,106" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M90,38 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M90,55 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M90,72 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M90,89 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0Z" />
+</vector>

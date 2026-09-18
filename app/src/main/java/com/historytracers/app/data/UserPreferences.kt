@@ -62,6 +62,7 @@ class UserPreferences(private val context: Context) {
         private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
         private val YUPANA_SCROLL_KEY = intPreferencesKey("yupana_scroll")
         private val UNIVERSE_EXPANSION_STEP_KEY = intPreferencesKey("universe_expansion_step")
+        private val QUIPU_PRACTICE_STATE_KEY = stringPreferencesKey("quipu_practice_state")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
@@ -70,6 +71,7 @@ class UserPreferences(private val context: Context) {
         private val ROAD_TO_SOMEWHERE_SECTIONS_KEY = stringSetPreferencesKey("road_to_somewhere_sections")
         private val RUNNING_AND_GROWING_SECTIONS_KEY = stringSetPreferencesKey("running_and_growing_sections")
         private val WHERE_ARE_WE_FROM_SECTIONS_KEY = stringSetPreferencesKey("where_are_we_from_sections")
+        private val ANOTHER_WAY_TO_COUNT_SECTIONS_KEY = stringSetPreferencesKey("another_way_to_count_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
@@ -283,6 +285,16 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val quipuPracticeState: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[QUIPU_PRACTICE_STATE_KEY] ?: ""
+    }
+
+    suspend fun setQuipuPracticeState(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[QUIPU_PRACTICE_STATE_KEY] = value
+        }
+    }
+
     val completedWorkoutSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
         preferences[WORKOUT_SECTIONS_KEY] ?: emptySet()
     }
@@ -360,6 +372,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markWhereAreWeFromSectionCompleted(section: String) {
         context.dataStore.edit { preferences ->
             preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = (preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedAnotherWayToCountSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markAnotherWayToCountSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = (preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 
@@ -451,10 +473,12 @@ class UserPreferences(private val context: Context) {
             preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = emptySet()
             preferences[RUNNING_AND_GROWING_SECTIONS_KEY] = emptySet()
             preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = emptySet()
+            preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()
             preferences[CLAIMED_LEVELS_KEY] = emptySet()
             preferences[AWARDED_SCREENS_KEY] = emptySet()
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
             preferences[UNIVERSE_EXPANSION_STEP_KEY] = 0
+            preferences[QUIPU_PRACTICE_STATE_KEY] = ""
         }
     }
 }

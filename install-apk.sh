@@ -43,7 +43,7 @@ ADB=$(find_adb) || { echo "ERROR: adb not found. Set ANDROID_HOME or install pla
 echo "=== Using adb: $ADB ==="
 
 # --- Locate APK ---
-APK="$SCRIPT_DIR/app/build/outputs/apk/debug/app-debug.apk"
+APK="$SCRIPT_DIR/app/build/outputs/apk/debug/historytracers-debug.apk"
 if [ ! -f "$APK" ]; then
     echo "ERROR: APK not found. Run the build script first."
     echo "  Expected: $APK"

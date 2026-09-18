@@ -25,6 +25,18 @@ On Windows (PowerShell):
 .\build-android.ps1
 ```
 
+For release artifacts (APK + AAB):
+
+```sh
+./build-android.sh --release      # Linux, macOS, Git Bash / MSYS2
+```
+
+On Windows (PowerShell):
+
+```powershell
+.\build-android.ps1 -Release
+```
+
 Or open the project in Android Studio and sync Gradle.
 
 ## Testing the build
@@ -32,8 +44,16 @@ Or open the project in Android Studio and sync Gradle.
 After a successful build, the APK is produced at:
 
 ```sh
-app/build/outputs/apk/debug/app-debug.apk
+app/build/outputs/apk/debug/historytracers-debug.apk
 ```
+
+The same build also produces the App Bundle (AAB) at:
+
+```sh
+app/build/outputs/bundle/debug/historytracers-debug.aab
+```
+
+The release build produces `app/build/outputs/apk/release/historytracers-release.apk` and `app/build/outputs/bundle/release/historytracers-release.aab`. Upload the AAB to Google Play; keep using the APK for direct device installs, since AAB files cannot be installed with `adb install` directly.
 
 Install it on a connected device or emulator:
 
@@ -52,6 +72,25 @@ The common library AAR is produced at:
 ```sh
 common/src/android/build/outputs/aar/common-debug.aar
 ```
+
+## Signing the release build
+
+Without signing credentials the release build is unsigned (fine for local testing, not for Play Store uploads). To sign it, create a keystore:
+
+```sh
+keytool -genkeypair -v -keystore historytracers.keystore -alias historytracers -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Then create a gitignored `keystore.properties` file in the project root:
+
+```properties
+ht.store.file=/absolute/path/to/historytracers.keystore
+ht.store.password=<store-password>
+ht.key.alias=historytracers
+ht.key.password=<key-password>
+```
+
+Alternatively, set the `HT_STORE_FILE`, `HT_STORE_PASSWORD`, `HT_KEY_ALIAS` and `HT_KEY_PASSWORD` environment variables with the same values.
 
 ## Project structure
 

@@ -25,6 +25,18 @@ No Windows (PowerShell):
 .\build-android.ps1
 ```
 
+Para artefatos release (APK + AAB):
+
+```sh
+./build-android.sh --release      # Linux, macOS, Git Bash / MSYS2
+```
+
+No Windows (PowerShell):
+
+```powershell
+.\build-android.ps1 -Release
+```
+
 Ou abra o projeto no Android Studio e sincronize o Gradle.
 
 ## Testando a compilação
@@ -32,13 +44,21 @@ Ou abra o projeto no Android Studio e sincronize o Gradle.
 Após uma compilação bem-sucedida, o APK é gerado em:
 
 ```sh
-app/build/outputs/apk/debug/app-debug.apk
+app/build/outputs/apk/debug/historytracers-debug.apk
 ```
+
+A mesma compilação também gera o App Bundle (AAB) em:
+
+```sh
+app/build/outputs/bundle/debug/historytracers-debug.aab
+```
+
+A compilação release gera `app/build/outputs/apk/release/historytracers-release.apk` e `app/build/outputs/bundle/release/historytracers-release.aab`. Envie o AAB para o Google Play; continue usando o APK para instalações diretas em dispositivos, pois arquivos AAB não podem ser instalados diretamente com `adb install`.
 
 Instale em um dispositivo ou emulador conectado:
 
 ```sh
-adb install app/build/outputs/apk/debug/app-debug.apk
+adb install app/build/outputs/apk/debug/historytracers-debug.apk
 ```
 
 O AAR da biblioteca comum é gerado em:
@@ -46,6 +66,25 @@ O AAR da biblioteca comum é gerado em:
 ```sh
 common/src/android/build/outputs/aar/common-debug.aar
 ```
+
+## Assinatura da compilação release
+
+Sem credenciais de assinatura, a compilação release não é assinada (serve para testes locais, não para envios à Play Store). Para assiná-la, crie um keystore:
+
+```sh
+keytool -genkeypair -v -keystore historytracers.keystore -alias historytracers -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Em seguida, crie um arquivo `keystore.properties` (ignorado pelo git) na raiz do projeto:
+
+```properties
+ht.store.file=/caminho/absoluto/para/historytracers.keystore
+ht.store.password=<senha-do-keystore>
+ht.key.alias=historytracers
+ht.key.password=<senha-da-chave>
+```
+
+Como alternativa, defina as variáveis de ambiente `HT_STORE_FILE`, `HT_STORE_PASSWORD`, `HT_KEY_ALIAS` e `HT_KEY_PASSWORD` com os mesmos valores.
 
 ## Estrutura do projeto
 
