@@ -219,8 +219,8 @@ fun PracticingWithQuipusScreen(
             preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus")
             preferences.recordLessonCompletion()
             if (PRACTICE_AWARD_ID !in preferences.awardedScreens.first()) {
-                onScoreChanged(currentScore + 2)
                 preferences.markScreenAwarded(PRACTICE_AWARD_ID)
+                onScoreChanged(currentScore + 2)
             }
         }
     }
