@@ -649,6 +649,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.AnotherWayToCount.route) {
                         AnotherWayToCountScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -657,6 +659,7 @@ fun AppNavigation() {
                                     }
                                 }
                             },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToQuipus = { navController.navigate(Screen.QuipusIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingWithQuipus = { navController.navigate(Screen.PracticingWithQuipus.route) { launchSingleTop = true } }
                         )
