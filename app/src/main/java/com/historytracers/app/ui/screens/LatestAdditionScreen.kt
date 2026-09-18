@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -31,6 +34,7 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipusScreenStringsForLanguage
@@ -60,6 +64,7 @@ fun LatestAdditionScreen(
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToLargeNumbersIntro: () -> Unit = {},
     onNavigateToQuipuOnTheYupana: () -> Unit = {},
+    onNavigateToMesoamericanSymbols: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
@@ -85,6 +90,7 @@ fun LatestAdditionScreen(
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val lns = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val qys = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val mss = mesoamericanSymbolsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -95,6 +101,31 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "mesoamerican_symbols",
+            label = mss.title,
+            icon = {
+                Canvas(modifier = Modifier.size(48.dp)) {
+                    val radius = size.minDimension * 0.16f
+                    val left = size.width * 0.3f
+                    val right = size.width * 0.7f
+                    val top = size.height * 0.3f
+                    val bottom = size.height * 0.7f
+                    val dotColor = Color(0xFF8B1A1A)
+                    listOf(
+                        Offset(left, top),
+                        Offset(right, top),
+                        Offset(left, bottom),
+                        Offset(right, bottom)
+                    ).forEach { center ->
+                        drawCircle(color = dotColor, radius = radius, center = center)
+                    }
+                }
+            },
+            isCompleted = { "mesoamerican_symbols" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("mesoamerican_symbols") },
+            onNavigate = onNavigateToMesoamericanSymbols
+        ),
         LatestAdditionEntry(
             sectionId = "quipu_on_the_yupana",
             label = qys.title,
@@ -150,21 +181,6 @@ fun LatestAdditionScreen(
             isCompleted = { "quipus" in completedAnotherWayToCount },
             markCompleted = { preferences.markAnotherWayToCountSectionCompleted("quipus") },
             onNavigate = onNavigateToQuipusIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "sharing_with_whom",
-            label = swws.title,
-            icon = {
-                Text(
-                    text = "?",
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "sharing_with_whom" in completedWhereAreWeFrom },
-            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("sharing_with_whom") },
-            onNavigate = onNavigateToSharingWithWhomIntro
         )
     )
 

@@ -44,7 +44,8 @@ fun AnotherWayToCountScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToQuipus: () -> Unit = {},
-    onNavigateToPracticingWithQuipus: () -> Unit = {}
+    onNavigateToPracticingWithQuipus: () -> Unit = {},
+    onNavigateToMesoamericanSymbols: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -219,11 +220,11 @@ fun AnotherWayToCountScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = onNavigateToMesoamericanSymbols,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("mesoamerican_symbols" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Canvas(modifier = Modifier.size(52.dp)) {
