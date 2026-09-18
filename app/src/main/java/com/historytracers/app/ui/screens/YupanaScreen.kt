@@ -45,7 +45,8 @@ fun YupanaScreen(
     onNavigateToPracticingAdditionYupana: () -> Unit = {},
     onNavigateToPracticingMultiplicationYupana: () -> Unit = {},
     onNavigateToHandsOnYupana: () -> Unit = {},
-    onNavigateToMovingInYupana: () -> Unit = {}
+    onNavigateToMovingInYupana: () -> Unit = {},
+    onNavigateToLargeNumbers: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -59,7 +60,7 @@ fun YupanaScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("hands_on_yupana"),
+            listOf("hands_on_yupana", "large_numbers"),
             completedSections
         )
     }
@@ -168,11 +169,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = onNavigateToLargeNumbers,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("large_numbers")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(

@@ -264,4 +264,10 @@ sealed class Screen(val route: String) {
     data object PisqaMovement : Screen("pisqa_movement")
     data object PichanaMovement : Screen("pichana_movement")
     data object KinkinMovement : Screen("kinkin_movement")
+    data object LargeNumbersIntro : Screen("large_numbers_intro")
+    data object LargeNumbersQuipu : Screen("large_numbers_quipu")
+    data object LargeNumbersGrowing : Screen("large_numbers_growing")
+    data object LargeNumbersPattern : Screen("large_numbers_pattern")
+    data object LargeNumbersApp : Screen("large_numbers_app")
+    data object LargeNumbersConclusion : Screen("large_numbers_conclusion")
 }
