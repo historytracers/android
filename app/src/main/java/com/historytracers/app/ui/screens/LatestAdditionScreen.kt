@@ -32,6 +32,7 @@ import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
+import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -58,6 +59,7 @@ fun LatestAdditionScreen(
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToLargeNumbersIntro: () -> Unit = {},
+    onNavigateToQuipuOnTheYupana: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
@@ -82,6 +84,7 @@ fun LatestAdditionScreen(
     val pwqs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val lns = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    val qys = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -92,6 +95,20 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "quipu_on_the_yupana",
+            label = qys.title,
+            icon = {
+                Image(
+                    painter = painterResource(R.drawable.ic_quipu_knot),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "quipu_on_the_yupana" in completedYupana },
+            markCompleted = { preferences.markYupanaSectionCompleted("quipu_on_the_yupana") },
+            onNavigate = onNavigateToQuipuOnTheYupana
+        ),
         LatestAdditionEntry(
             sectionId = "large_numbers",
             label = lns.title,
@@ -148,20 +165,6 @@ fun LatestAdditionScreen(
             isCompleted = { "sharing_with_whom" in completedWhereAreWeFrom },
             markCompleted = { preferences.markWhereAreWeFromSectionCompleted("sharing_with_whom") },
             onNavigate = onNavigateToSharingWithWhomIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "everything_together",
-            label = ues.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_universe_expansion),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "everything_together" in completedWhereAreWeFrom },
-            markCompleted = { preferences.markWhereAreWeFromSectionCompleted("everything_together") },
-            onNavigate = onNavigateToEverythingWasTogether
         )
     )
 

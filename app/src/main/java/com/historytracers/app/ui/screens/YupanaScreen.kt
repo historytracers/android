@@ -47,7 +47,8 @@ fun YupanaScreen(
     onNavigateToPracticingMultiplicationYupana: () -> Unit = {},
     onNavigateToHandsOnYupana: () -> Unit = {},
     onNavigateToMovingInYupana: () -> Unit = {},
-    onNavigateToLargeNumbers: () -> Unit = {}
+    onNavigateToLargeNumbers: () -> Unit = {},
+    onNavigateToQuipuOnTheYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -199,11 +200,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 Button(
-                    onClick = { },
+                    onClick = onNavigateToQuipuOnTheYupana,
                     modifier = Modifier.height(96.dp),
                     shape = RoundedCornerShape(24.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = ButtonYellow,
+                        containerColor = if (completedSections.contains("quipu_on_the_yupana")) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     ),
                     contentPadding = PaddingValues(horizontal = 24.dp)
