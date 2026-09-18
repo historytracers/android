@@ -246,7 +246,8 @@ fun KinkinMovementScreen(
         onScoreChanged = onScoreChanged,
         prevLabel = xs.pichanaTitle,
         onNavigatePrev = onNavigateToPichana,
-        leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f))
+        leftNumberExtraOffsets = mapOf(1 to Offset(40f, 0f)),
+        isLastScreen = true
     )
 }
 
@@ -277,7 +278,8 @@ private fun YupanaMovementContent(
     optionSelector: (@Composable () -> Unit)? = null,
     leftNumberExtraOffsets: Map<Int, Offset> = emptyMap(),
     belowContentOffset: Dp = (-70).dp,
-    handOffsetY: Dp = 0.dp
+    handOffsetY: Dp = 0.dp,
+    isLastScreen: Boolean = false
 ) {
     val s = LocalUiStrings.current
     val xs = movingInYupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -292,7 +294,10 @@ private fun YupanaMovementContent(
     val handPath = remember { buildHandPath() }
 
     LaunchedEffect(Unit) {
-        preferences.markYupanaSectionCompleted("moving_in_yupana")
+        if (isLastScreen) {
+            preferences.markYupanaSectionCompleted("moving_in_yupana")
+            preferences.recordLessonCompletion()
+        }
         onScoreChanged(currentScore + 1)
     }
 

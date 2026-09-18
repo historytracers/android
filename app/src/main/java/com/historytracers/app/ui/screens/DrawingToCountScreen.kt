@@ -75,6 +75,7 @@ fun DrawingToCountScreen(
             nineReached = true
             onScoreChanged(currentScore + 1)
             scope.launch { preferences.recordLessonCompletion() }
+            scope.launch { preferences.markYupanaSectionCompleted("hands_on_yupana") }
         } else if (counter == 0) {
             nineReached = false
         }
