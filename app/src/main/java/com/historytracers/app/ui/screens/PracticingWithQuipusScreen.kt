@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.gson.Gson
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -38,10 +39,12 @@ import com.historytracers.app.ui.features.PracticingWithQuipusScreenStrings
 import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.flow.first
 import kotlin.random.Random
 
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val QUIPU_LESSON_UUID = "7aec6487-c20c-490d-a9af-21e0b8bcc7f7"
+private const val PRACTICE_AWARD_ID = "practicing_with_quipus_complete"
 
 private const val STRING_WIDTH_DP = 84
 private const val ORDER_HEIGHT_DP = 120
@@ -103,11 +106,67 @@ private fun orderName(position: Int, xs: PracticingWithQuipusScreenStrings): Str
     else -> xs.orderHundreds
 }
 
+private data class QuipuSavedString(val target: Int, val knots: List<Int>)
+
+private data class QuipuSavedState(
+    val levelIndex: Int,
+    val strings: List<QuipuSavedString>?,
+    val message: String?,
+    val showCongrats: Boolean,
+    val finalCongratsShown: Boolean,
+    val completedLevels: List<Int>?,
+)
+
+private val quipuGson = Gson()
+
+private fun encodeQuipuState(
+    levelIndex: Int,
+    states: List<QuipuStringState>,
+    message: String,
+    showCongrats: Boolean,
+    finalCongratsShown: Boolean,
+    completedLevels: Set<Int>,
+): String = quipuGson.toJson(
+    QuipuSavedState(
+        levelIndex = levelIndex,
+        strings = states.map { QuipuSavedString(it.target, it.knots) },
+        message = message,
+        showCongrats = showCongrats,
+        finalCongratsShown = finalCongratsShown,
+        completedLevels = completedLevels.toList(),
+    )
+)
+
+private fun decodeQuipuState(raw: String): QuipuSavedState? = try {
+    quipuGson.fromJson(raw, QuipuSavedState::class.java)
+} catch (e: Exception) {
+    null
+}
+
+private fun restoreQuipuStates(saved: QuipuSavedState): List<QuipuStringState> {
+    val level = QUIPU_LEVELS.getOrNull(saved.levelIndex) ?: return emptyList()
+    return (saved.strings ?: emptyList()).map { savedString ->
+        val knots = List(level.positions) { index ->
+            savedString.knots.getOrElse(index) { 0 }.coerceIn(0, 9)
+        }
+        withActive(
+            QuipuStringState(
+                target = savedString.target,
+                digits = digitsOf(savedString.target, level.positions),
+                knots = knots,
+                active = 0,
+                done = false,
+            )
+        )
+    }
+}
+
 @Composable
 fun PracticingWithQuipusScreen(
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
-    onScoreChanged: (Int) -> Unit = {}
+    onScoreChanged: (Int) -> Unit = {},
+    restoreStep: Boolean = false
 ) {
     val s = LocalUiStrings.current
     val xs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
@@ -119,31 +178,76 @@ fun PracticingWithQuipusScreen(
     var message by remember { mutableStateOf("") }
     var showCongrats by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
+    var completedLevels by remember { mutableStateOf(setOf<Int>()) }
+    var stateRestored by remember { mutableStateOf(false) }
 
-    LaunchedEffect(finalCongratsShown) {
-        if (finalCongratsShown) {
+    LaunchedEffect(Unit) {
+        if (restoreStep) {
+            val saved = preferences.quipuPracticeState.first()
+            if (saved.isNotEmpty()) {
+                decodeQuipuState(saved)?.let { decoded ->
+                    if (decoded.levelIndex in QUIPU_LEVELS.indices) {
+                        val restored = restoreQuipuStates(decoded)
+                        if (restored.isNotEmpty()) {
+                            levelIndex = decoded.levelIndex
+                            states = restored
+                            message = decoded.message ?: ""
+                            showCongrats = decoded.showCongrats
+                            finalCongratsShown = decoded.finalCongratsShown
+                            completedLevels = (decoded.completedLevels ?: emptyList()).toSet()
+                        }
+                    }
+                }
+            }
+        }
+        stateRestored = true
+    }
+
+    LaunchedEffect(
+        levelIndex, states, message, showCongrats, finalCongratsShown, completedLevels, stateRestored
+    ) {
+        if (!stateRestored) return@LaunchedEffect
+        preferences.setQuipuPracticeState(
+            encodeQuipuState(
+                levelIndex, states, message, showCongrats, finalCongratsShown, completedLevels
+            )
+        )
+    }
+
+    LaunchedEffect(finalCongratsShown, completedLevels) {
+        if (finalCongratsShown && completedLevels.size == QUIPU_LEVELS.size) {
             preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus")
             preferences.recordLessonCompletion()
-            onScoreChanged(currentScore + 2)
+            if (PRACTICE_AWARD_ID !in preferences.awardedScreens.first()) {
+                onScoreChanged(currentScore + 2)
+                preferences.markScreenAwarded(PRACTICE_AWARD_ID)
+            }
         }
     }
+
+    if (!stateRestored) return
 
     val level = QUIPU_LEVELS[levelIndex]
     val activeIndex = states.indexOfFirst { !it.done }
     val canAdd = activeIndex >= 0
     val canRemove = states.any { st -> st.knots.any { it > 0 } }
 
-    fun newNumber(levelToUse: QuipuLevel) {
-        states = generateStates(levelToUse)
+    fun generateFor(levelIdx: Int) {
+        states = generateStates(QUIPU_LEVELS[levelIdx])
         message = ""
         showCongrats = false
-        finalCongratsShown = false
+    }
+
+    fun newNumber() {
+        completedLevels = completedLevels - levelIndex
+        generateFor(levelIndex)
     }
 
     fun nextLevel() {
+        if (!states.all { it.done }) return
         val newIndex = (levelIndex + 1) % QUIPU_LEVELS.size
         levelIndex = newIndex
-        newNumber(QUIPU_LEVELS[newIndex])
+        generateFor(newIndex)
     }
 
     fun addKnot() {
@@ -161,7 +265,9 @@ fun PracticingWithQuipusScreen(
         if (states.all { it.done }) {
             message = ""
             showCongrats = true
-            if (levelIndex == QUIPU_LEVELS.size - 1) finalCongratsShown = true
+            val updatedCompleted = completedLevels + levelIndex
+            completedLevels = updatedCompleted
+            if (updatedCompleted.size == QUIPU_LEVELS.size) finalCongratsShown = true
         } else if (updated.done) {
             message = xs.feedbackString
         } else if (filled && updated.active > previousActive) {
@@ -196,7 +302,9 @@ fun PracticingWithQuipusScreen(
         message = ""
     }
 
-    val congratsText = if (levelIndex == QUIPU_LEVELS.size - 1) xs.feedbackAllLevels else xs.feedbackLevel
+    val currentLevelDone = states.all { it.done }
+    val allLevelsCompleted = completedLevels.size == QUIPU_LEVELS.size
+    val congratsText = if (allLevelsCompleted) xs.feedbackAllLevels else xs.feedbackLevel
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -330,7 +438,7 @@ fun PracticingWithQuipusScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FilledTonalButton(
-                        onClick = { newNumber(level) },
+                        onClick = { newNumber() },
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = ButtonYellow,
@@ -346,6 +454,7 @@ fun PracticingWithQuipusScreen(
                     }
                     FilledTonalButton(
                         onClick = { nextLevel() },
+                        enabled = currentLevelDone,
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = ButtonYellow,

@@ -773,6 +773,7 @@ fun AppNavigation() {
                         PracticingWithQuipusScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
+                            restoreStep = navController.previousBackStackEntry == null,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
