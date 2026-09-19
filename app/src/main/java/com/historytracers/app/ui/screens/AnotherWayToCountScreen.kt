@@ -38,7 +38,7 @@ import com.historytracers.app.ui.theme.FlagBlueLight
 import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
-private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits")
+private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -49,7 +49,8 @@ fun AnotherWayToCountScreen(
     onNavigateToQuipus: () -> Unit = {},
     onNavigateToPracticingWithQuipus: () -> Unit = {},
     onNavigateToMesoamericanSymbols: () -> Unit = {},
-    onNavigateToOvercomingLimits: () -> Unit = {}
+    onNavigateToOvercomingLimits: () -> Unit = {},
+    onNavigateToBuildingLikeAMesoamerican: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -301,6 +302,54 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.overcomingLimits,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToBuildingLikeAMesoamerican,
+                    modifier = Modifier.size(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("building_like_a_mesoamerican" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Canvas(modifier = Modifier.size(52.dp)) {
+                        val brickColor = Color(0xFF8B1A1A)
+                        val gap = size.minDimension * 0.05f
+                        val rows = 3
+                        val rowHeight = (size.height - gap * (rows - 1)) / rows
+                        val brickWidth = size.width / 3f
+                        for (row in 0 until rows) {
+                            val y = row * (rowHeight + gap)
+                            val startX = if (row % 2 == 0) 0f else -brickWidth / 2f
+                            var x = startX
+                            while (x < size.width) {
+                                val left = maxOf(x, 0f)
+                                val right = minOf(x + brickWidth - gap, size.width)
+                                if (right > left) {
+                                    drawRoundRect(
+                                        color = brickColor,
+                                        topLeft = Offset(left, y),
+                                        size = Size(right - left, rowHeight),
+                                        cornerRadius = CornerRadius(rowHeight * 0.2f)
+                                    )
+                                }
+                                x += brickWidth
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.buildingLikeAMesoamerican,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

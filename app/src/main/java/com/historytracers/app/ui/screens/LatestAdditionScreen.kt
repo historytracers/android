@@ -32,13 +32,13 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.buildingLikeAMesoamericanScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLanguage
 import com.historytracers.app.ui.features.overcomingLimitsScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -68,6 +68,7 @@ fun LatestAdditionScreen(
     onNavigateToQuipuOnTheYupana: () -> Unit = {},
     onNavigateToMesoamericanSymbols: () -> Unit = {},
     onNavigateToOvercomingLimits: () -> Unit = {},
+    onNavigateToBuildingLikeAMesoamerican: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
@@ -88,12 +89,12 @@ fun LatestAdditionScreen(
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
-    val pwqs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val lns = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val qys = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val mss = mesoamericanSymbolsScreenStringsForLanguage(LocalAppLanguage.current)
     val ols = overcomingLimitsScreenStringsForLanguage(LocalAppLanguage.current)
+    val blams = buildingLikeAMesoamericanScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -104,6 +105,40 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "building_like_a_mesoamerican",
+            label = blams.title,
+            icon = {
+                Canvas(modifier = Modifier.size(48.dp)) {
+                    val brickColor = Color(0xFF8B1A1A)
+                    val gap = size.minDimension * 0.05f
+                    val rows = 3
+                    val rowHeight = (size.height - gap * (rows - 1)) / rows
+                    val brickWidth = size.width / 3f
+                    for (row in 0 until rows) {
+                        val y = row * (rowHeight + gap)
+                        val startX = if (row % 2 == 0) 0f else -brickWidth / 2f
+                        var x = startX
+                        while (x < size.width) {
+                            val left = maxOf(x, 0f)
+                            val right = minOf(x + brickWidth - gap, size.width)
+                            if (right > left) {
+                                drawRoundRect(
+                                    color = brickColor,
+                                    topLeft = Offset(left, y),
+                                    size = Size(right - left, rowHeight),
+                                    cornerRadius = CornerRadius(rowHeight * 0.2f)
+                                )
+                            }
+                            x += brickWidth
+                        }
+                    }
+                }
+            },
+            isCompleted = { "building_like_a_mesoamerican" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("building_like_a_mesoamerican") },
+            onNavigate = onNavigateToBuildingLikeAMesoamerican
+        ),
         LatestAdditionEntry(
             sectionId = "overcoming_limits",
             label = ols.title,
@@ -193,20 +228,6 @@ fun LatestAdditionScreen(
             isCompleted = { "large_numbers" in completedYupana },
             markCompleted = { preferences.markYupanaSectionCompleted("large_numbers") },
             onNavigate = onNavigateToLargeNumbersIntro
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_with_quipus",
-            label = pwqs.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_quipu_practice),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "practicing_with_quipus" in completedAnotherWayToCount },
-            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus") },
-            onNavigate = onNavigateToPracticingWithQuipus
         )
     )
 
