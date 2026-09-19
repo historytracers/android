@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,7 +15,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -243,6 +246,56 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.theMesoamericanSymbols,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {},
+                    modifier = Modifier.size(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = ButtonYellow)
+                ) {
+                    Canvas(modifier = Modifier.size(52.dp)) {
+                        val ink = Color(0xFF8B1A1A)
+                        val dotRadius = size.minDimension * 0.07f
+                        val gap = size.height * 0.06f
+                        val barWidth = 4 * dotRadius * 2f + 3 * gap
+                        val barHeight = size.height * 0.14f
+                        val bars = 3
+                        val dots = 4
+                        val barsHeight = bars * barHeight + (bars - 1) * gap
+                        val dotsHeight = dotRadius * 2f + gap
+                        val contentHeight = barsHeight + dotsHeight
+                        var y = size.height - size.height * 0.05f - contentHeight
+                        val totalWidth = dots * dotRadius * 2f + (dots - 1) * gap
+                        var x = center.x - totalWidth / 2f + dotRadius
+                        repeat(dots) {
+                            drawCircle(color = ink, radius = dotRadius, center = Offset(x, y + dotRadius))
+                            x += dotRadius * 2f + gap
+                        }
+                        y += dotRadius * 2f + gap
+                        repeat(bars) {
+                            drawRoundRect(
+                                color = ink,
+                                topLeft = Offset(center.x - barWidth / 2f, y),
+                                size = Size(barWidth, barHeight),
+                                cornerRadius = CornerRadius(barHeight / 2f)
+                            )
+                            y += barHeight + gap
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.overcomingLimits,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
