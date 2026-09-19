@@ -5036,7 +5036,7 @@ fun AppNavigation() {
                                     navController.navigate(Screen.MesoamericanSymbolsZero.route) { launchSingleTop = true }
                                 }
                             },
-                            onNavigateNext = { navController.navigate(Screen.MesoamericanSymbolsThinking.route) { launchSingleTop = true } }
+                            onNavigateNext = { navController.navigate(Screen.MesoamericanSymbolsVertical.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.MesoamericanSymbolsThinking.route) {
@@ -5049,11 +5049,11 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = {
-                                if (!navController.popBackStack(Screen.MesoamericanSymbolsWrite.route, false)) {
-                                    navController.navigate(Screen.MesoamericanSymbolsWrite.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.MesoamericanSymbolsVertical.route, false)) {
+                                    navController.navigate(Screen.MesoamericanSymbolsVertical.route) { launchSingleTop = true }
                                 }
                             },
-                            onNavigateNext = { navController.navigate(Screen.MesoamericanSymbolsVertical.route) { launchSingleTop = true } }
+                            onNavigateNext = { navController.navigate(Screen.MesoamericanSymbolsConclusion.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.MesoamericanSymbolsVertical.route) {
@@ -5066,11 +5066,11 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = {
-                                if (!navController.popBackStack(Screen.MesoamericanSymbolsThinking.route, false)) {
-                                    navController.navigate(Screen.MesoamericanSymbolsThinking.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.MesoamericanSymbolsWrite.route, false)) {
+                                    navController.navigate(Screen.MesoamericanSymbolsWrite.route) { launchSingleTop = true }
                                 }
                             },
-                            onNavigateNext = { navController.navigate(Screen.MesoamericanSymbolsConclusion.route) { launchSingleTop = true } }
+                            onNavigateNext = { navController.navigate(Screen.MesoamericanSymbolsThinking.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.MesoamericanSymbolsConclusion.route) {
@@ -5083,8 +5083,8 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = {
-                                if (!navController.popBackStack(Screen.MesoamericanSymbolsVertical.route, false)) {
-                                    navController.navigate(Screen.MesoamericanSymbolsVertical.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.MesoamericanSymbolsThinking.route, false)) {
+                                    navController.navigate(Screen.MesoamericanSymbolsThinking.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
