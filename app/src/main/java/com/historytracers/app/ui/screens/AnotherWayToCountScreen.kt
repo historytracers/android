@@ -37,7 +37,8 @@ import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import kotlinx.coroutines.launch
 
-private val anotherWayToCountSectionIds = listOf("quipus", "practicing_with_quipus", "mesoamerican_symbols")
+private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
+private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -47,7 +48,8 @@ fun AnotherWayToCountScreen(
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToQuipus: () -> Unit = {},
     onNavigateToPracticingWithQuipus: () -> Unit = {},
-    onNavigateToMesoamericanSymbols: () -> Unit = {}
+    onNavigateToMesoamericanSymbols: () -> Unit = {},
+    onNavigateToOvercomingLimits: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -58,16 +60,17 @@ fun AnotherWayToCountScreen(
     val completedSections by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val allSectionsCompleted = anotherWayToCountSectionIds.all { it in completedSections }
+    val firstGroupCompleted = anotherWayToCountFirstGroupIds.all { it in completedSections }
+    val secondGroupCompleted = anotherWayToCountSecondGroupIds.all { it in completedSections }
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
-    fun claimLevel() {
-        if ("another_way_to_count" in claimedLevels) return
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
         onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed("another_way_to_count") }
+        scope.launch { preferences.markLevelClaimed(levelId) }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -184,10 +187,10 @@ fun AnotherWayToCountScreen(
 
                 FilledIconButton(
                     onClick = {
-                        claimLevel()
+                        claimLevel("another_way_to_count")
                         onNavigateToCongratulation()
                     },
-                    enabled = allSectionsCompleted,
+                    enabled = firstGroupCompleted,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
@@ -256,10 +259,12 @@ fun AnotherWayToCountScreen(
                 Spacer(Modifier.height(48.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = onNavigateToOvercomingLimits,
                     modifier = Modifier.size(96.dp),
                     shape = RoundedCornerShape(24.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = ButtonYellow)
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("overcoming_limits" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
                 ) {
                     Canvas(modifier = Modifier.size(52.dp)) {
                         val ink = Color(0xFF8B1A1A)
@@ -296,6 +301,40 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.overcomingLimits,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("another_way_to_count_2")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = secondGroupCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("another_way_to_count_2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

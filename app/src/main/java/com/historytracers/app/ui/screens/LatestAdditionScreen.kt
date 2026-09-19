@@ -15,7 +15,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -35,9 +37,9 @@ import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLanguage
+import com.historytracers.app.ui.features.overcomingLimitsScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
-import com.historytracers.app.ui.features.quipusScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -65,6 +67,7 @@ fun LatestAdditionScreen(
     onNavigateToLargeNumbersIntro: () -> Unit = {},
     onNavigateToQuipuOnTheYupana: () -> Unit = {},
     onNavigateToMesoamericanSymbols: () -> Unit = {},
+    onNavigateToOvercomingLimits: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
@@ -85,12 +88,12 @@ fun LatestAdditionScreen(
     val rnas = runningAmongNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
-    val qs = quipusScreenStringsForLanguage(LocalAppLanguage.current)
     val pwqs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val lns = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val qys = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val mss = mesoamericanSymbolsScreenStringsForLanguage(LocalAppLanguage.current)
+    val ols = overcomingLimitsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -101,6 +104,43 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "overcoming_limits",
+            label = ols.title,
+            icon = {
+                Canvas(modifier = Modifier.size(48.dp)) {
+                    val ink = Color(0xFF8B1A1A)
+                    val dotRadius = size.minDimension * 0.07f
+                    val gap = size.height * 0.06f
+                    val barWidth = 4 * dotRadius * 2f + 3 * gap
+                    val barHeight = size.height * 0.14f
+                    val bars = 3
+                    val dots = 4
+                    val barsHeight = bars * barHeight + (bars - 1) * gap
+                    val dotsHeight = dotRadius * 2f + gap
+                    var y = size.height - size.height * 0.05f - (barsHeight + dotsHeight)
+                    val totalWidth = dots * dotRadius * 2f + (dots - 1) * gap
+                    var x = center.x - totalWidth / 2f + dotRadius
+                    repeat(dots) {
+                        drawCircle(color = ink, radius = dotRadius, center = Offset(x, y + dotRadius))
+                        x += dotRadius * 2f + gap
+                    }
+                    y += dotRadius * 2f + gap
+                    repeat(bars) {
+                        drawRoundRect(
+                            color = ink,
+                            topLeft = Offset(center.x - barWidth / 2f, y),
+                            size = Size(barWidth, barHeight),
+                            cornerRadius = CornerRadius(barHeight / 2f)
+                        )
+                        y += barHeight + gap
+                    }
+                }
+            },
+            isCompleted = { "overcoming_limits" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("overcoming_limits") },
+            onNavigate = onNavigateToOvercomingLimits
+        ),
         LatestAdditionEntry(
             sectionId = "mesoamerican_symbols",
             label = mss.title,
@@ -167,20 +207,6 @@ fun LatestAdditionScreen(
             isCompleted = { "practicing_with_quipus" in completedAnotherWayToCount },
             markCompleted = { preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus") },
             onNavigate = onNavigateToPracticingWithQuipus
-        ),
-        LatestAdditionEntry(
-            sectionId = "quipus",
-            label = qs.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_quipu_knot),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "quipus" in completedAnotherWayToCount },
-            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("quipus") },
-            onNavigate = onNavigateToQuipusIntro
         )
     )
 

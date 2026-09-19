@@ -291,6 +291,12 @@ import com.historytracers.app.ui.screens.MesoamericanSymbolsThreeScreen
 import com.historytracers.app.ui.screens.MesoamericanSymbolsVerticalScreen
 import com.historytracers.app.ui.screens.MesoamericanSymbolsWriteScreen
 import com.historytracers.app.ui.screens.MesoamericanSymbolsZeroScreen
+import com.historytracers.app.ui.screens.OvercomingLimitsConclusionScreen
+import com.historytracers.app.ui.screens.OvercomingLimitsIntroScreen
+import com.historytracers.app.ui.screens.OvercomingLimitsLastFootScreen
+import com.historytracers.app.ui.screens.OvercomingLimitsLogicScreen
+import com.historytracers.app.ui.screens.OvercomingLimitsNextFiveScreen
+import com.historytracers.app.ui.screens.OvercomingLimitsPreviousNumbersScreen
 import com.historytracers.app.ui.screens.QuipuOnTheYupanaScreen
 import com.historytracers.app.ui.screens.RoadToSomewhereScreen
 import com.historytracers.app.ui.screens.RunningAmongNumbersAddingScreen
@@ -334,6 +340,8 @@ fun AppNavigation() {
            "mesoamerican_symbols_intro", "mesoamerican_symbols_system", "mesoamerican_symbols_three",
            "mesoamerican_symbols_zero", "mesoamerican_symbols_write", "mesoamerican_symbols_thinking",
            "mesoamerican_symbols_vertical", "mesoamerican_symbols_conclusion",
+           "overcoming_limits_intro", "overcoming_limits_previous", "overcoming_limits_next_five",
+           "overcoming_limits_logic", "overcoming_limits_last_foot", "overcoming_limits_conclusion",
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
            "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count")
@@ -673,7 +681,8 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToQuipus = { navController.navigate(Screen.QuipusIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingWithQuipus = { navController.navigate(Screen.PracticingWithQuipus.route) { launchSingleTop = true } },
-                            onNavigateToMesoamericanSymbols = { navController.navigate(Screen.MesoamericanSymbolsIntro.route) { launchSingleTop = true } }
+                            onNavigateToMesoamericanSymbols = { navController.navigate(Screen.MesoamericanSymbolsIntro.route) { launchSingleTop = true } },
+                            onNavigateToOvercomingLimits = { navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.QuipusIntro.route) {
@@ -5094,6 +5103,107 @@ fun AppNavigation() {
                             }
                         )
                     }
+                    composable(Screen.OvercomingLimitsIntro.route) {
+                        OvercomingLimitsIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.OvercomingLimitsPreviousNumbers.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.OvercomingLimitsPreviousNumbers.route) {
+                        OvercomingLimitsPreviousNumbersScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.OvercomingLimitsIntro.route, false)) {
+                                    navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.OvercomingLimitsNextFive.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.OvercomingLimitsNextFive.route) {
+                        OvercomingLimitsNextFiveScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.OvercomingLimitsPreviousNumbers.route, false)) {
+                                    navController.navigate(Screen.OvercomingLimitsPreviousNumbers.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.OvercomingLimitsLogic.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.OvercomingLimitsLogic.route) {
+                        OvercomingLimitsLogicScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.OvercomingLimitsNextFive.route, false)) {
+                                    navController.navigate(Screen.OvercomingLimitsNextFive.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.OvercomingLimitsLastFoot.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.OvercomingLimitsLastFoot.route) {
+                        OvercomingLimitsLastFootScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.OvercomingLimitsLogic.route, false)) {
+                                    navController.navigate(Screen.OvercomingLimitsLogic.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.OvercomingLimitsConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.OvercomingLimitsConclusion.route) {
+                        OvercomingLimitsConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.OvercomingLimitsLastFoot.route, false)) {
+                                    navController.navigate(Screen.OvercomingLimitsLastFoot.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToAnotherWayToCount = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
                     composable(Screen.LargeNumbersIntro.route) {
                         LargeNumbersIntroScreen(
                             currentScore = counter,
@@ -5353,6 +5463,7 @@ fun AppNavigation() {
                             onNavigateToLargeNumbersIntro = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToQuipuOnTheYupana = { navController.navigate(Screen.QuipuOnTheYupana.route) { launchSingleTop = true } },
                             onNavigateToMesoamericanSymbols = { navController.navigate(Screen.MesoamericanSymbolsIntro.route) { launchSingleTop = true } },
+                            onNavigateToOvercomingLimits = { navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
