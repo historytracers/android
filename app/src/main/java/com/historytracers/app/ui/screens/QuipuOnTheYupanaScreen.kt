@@ -92,6 +92,7 @@ fun QuipuOnTheYupanaScreen(
     var red by remember { mutableStateOf(emptyRed()) }
     var message by remember { mutableStateOf("") }
     var levelDone by remember { mutableStateOf(false) }
+    var solvedLevels by remember { mutableStateOf(emptySet<Int>()) }
     var sectionMarked by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
 
@@ -141,10 +142,15 @@ fun QuipuOnTheYupanaScreen(
 
         if (totalValue() == target) {
             levelDone = true
+            val isNewSolve = level !in solvedLevels
+            solvedLevels = solvedLevels + level
             val isLastLevel = level >= LEVEL_POSITIONS.size - 1
+            val allSolved = LEVEL_POSITIONS.indices.all { it in solvedLevels }
             message = if (isLastLevel) xs.msgAllLevels else xs.msgLevelComplete
-            award(1)
-            if (isLastLevel && !sectionMarked) {
+            if (isNewSolve) {
+                award(1)
+            }
+            if (allSolved && !sectionMarked) {
                 sectionMarked = true
                 scope.launch { preferences.markYupanaSectionCompleted("quipu_on_the_yupana") }
                 scope.launch { preferences.recordLessonCompletion() }
@@ -240,6 +246,7 @@ fun QuipuOnTheYupanaScreen(
                             val next = if (level >= LEVEL_POSITIONS.size - 1) 0 else level + 1
                             startLevel(next)
                         },
+                        enabled = levelDone,
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = ButtonYellow,

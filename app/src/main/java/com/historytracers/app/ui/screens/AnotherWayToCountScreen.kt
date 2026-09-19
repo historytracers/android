@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
-import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -35,7 +34,7 @@ import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import kotlinx.coroutines.launch
 
-private val anotherWayToCountSectionIds = listOf("quipus", "practicing_with_quipus")
+private val anotherWayToCountSectionIds = listOf("quipus", "practicing_with_quipus", "mesoamerican_symbols")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -56,12 +55,7 @@ fun AnotherWayToCountScreen(
     val completedSections by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val controller = remember {
-        LevelGroupController(anotherWayToCountSectionIds, completedSections)
-    }
-    LaunchedEffect(completedSections) {
-        controller.syncFromPersisted(completedSections)
-    }
+    val allSectionsCompleted = anotherWayToCountSectionIds.all { it in completedSections }
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -190,7 +184,7 @@ fun AnotherWayToCountScreen(
                         claimLevel()
                         onNavigateToCongratulation()
                     },
-                    enabled = controller.allCompleted,
+                    enabled = allSectionsCompleted,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(

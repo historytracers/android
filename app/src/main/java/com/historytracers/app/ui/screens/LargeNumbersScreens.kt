@@ -51,6 +51,7 @@ import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "2a1fc4cb-1047-48d0-be47-aa9c5d586430"
@@ -419,16 +420,20 @@ private fun LargeNumbersGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    var answeredHandled by remember(contentId) { mutableStateOf(false) }
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(content) {
         val node = content
         if (node != null && !arrivalHandled) {
             arrivalHandled = true
-            award(node.score)
             if (onNavigateToYupana != null) {
                 preferences.markYupanaSectionCompleted("large_numbers")
                 preferences.recordLessonCompletion()
+            }
+            val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
+            if (!arrivalAlreadyAwarded) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
             }
         }
     }
@@ -496,9 +501,9 @@ private fun LargeNumbersGameContent(
                         LargeNumbersAnswerSection(
                             content = content,
                             onAnswered = { points ->
-                                if (!answeredHandled) {
-                                    answeredHandled = true
+                                if (content.id !in awardedScreens) {
                                     award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
                                 }
                             }
                         )
@@ -593,12 +598,17 @@ private fun LargeNumbersAnswerSection(
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val answer = content.answer) {
+        is Boolean -> answer
+        is String -> answer.equals("yes", ignoreCase = true)
+        else -> null
+    }
 
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        val points = if (answer == correctAnswer) content.score else content.score / 2
+        val answeredCorrectly = (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else content.score / 2
         onAnswered(points)
     }
 
@@ -626,7 +636,7 @@ private fun LargeNumbersAnswerSection(
             }
         }
     } else {
-        val isCorrect = selected == correctAnswer
+        val isCorrect = (selected == "yes") == correctAnswer
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)

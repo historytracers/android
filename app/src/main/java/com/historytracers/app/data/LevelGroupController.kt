@@ -25,7 +25,7 @@ class LevelGroupController(
     val totalCount: Int get() = sectionIds.size
 
     fun syncFromPersisted(persisted: Set<String>) {
-        _completed.value = _completed.value + persisted
+        _completed.value = persisted.toSet()
     }
 
     fun reset() {

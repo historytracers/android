@@ -48,6 +48,7 @@ import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLan
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "5a3ab520-1c8c-4f40-94d7-96c109ad9ba3"
@@ -402,16 +403,20 @@ private fun MesoamericanSymbolsGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    var answeredHandled by remember(contentId) { mutableStateOf(false) }
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(content) {
         val node = content
         if (node != null && !arrivalHandled) {
             arrivalHandled = true
-            award(node.score)
             if (onNavigateToAnotherWayToCount != null) {
                 preferences.markAnotherWayToCountSectionCompleted("mesoamerican_symbols")
                 preferences.recordLessonCompletion()
+            }
+            val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
+            if (!arrivalAlreadyAwarded) {
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
             }
         }
     }
@@ -480,9 +485,9 @@ private fun MesoamericanSymbolsGameContent(
                         MesoamericanAnswerSection(
                             content = content,
                             onAnswered = { points ->
-                                if (!answeredHandled) {
-                                    answeredHandled = true
+                                if (content.id !in awardedScreens) {
                                     award(points)
+                                    scope.launch { preferences.markScreenAwarded(content.id) }
                                 }
                             }
                         )
@@ -577,12 +582,17 @@ private fun MesoamericanAnswerSection(
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val answer = content.answer) {
+        is Boolean -> answer
+        is String -> answer.equals("yes", ignoreCase = true)
+        else -> null
+    }
 
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        val points = if (answer == correctAnswer) content.score else content.score / 2
+        val answeredCorrectly = (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else content.score / 2
         onAnswered(points)
     }
 
@@ -610,7 +620,7 @@ private fun MesoamericanAnswerSection(
             }
         }
     } else {
-        val isCorrect = selected == correctAnswer
+        val isCorrect = (selected == "yes") == correctAnswer
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
