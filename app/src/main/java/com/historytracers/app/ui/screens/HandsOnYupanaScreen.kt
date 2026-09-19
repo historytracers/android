@@ -29,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.resolveImageSource
@@ -49,17 +48,12 @@ fun HandsOnYupanaScreen(
     val xs = handsOnYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
-    val preferences = remember { UserPreferences(context) }
 
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showMapswireSubmenu by remember { mutableStateOf(false) }
     var imageFailed by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
-
-    LaunchedEffect(Unit) {
-        preferences.markYupanaSectionCompleted("hands_on_yupana")
-    }
 
     Scaffold(
         topBar = {

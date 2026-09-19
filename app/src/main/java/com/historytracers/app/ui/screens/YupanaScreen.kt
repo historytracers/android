@@ -5,6 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -45,7 +46,9 @@ fun YupanaScreen(
     onNavigateToPracticingAdditionYupana: () -> Unit = {},
     onNavigateToPracticingMultiplicationYupana: () -> Unit = {},
     onNavigateToHandsOnYupana: () -> Unit = {},
-    onNavigateToMovingInYupana: () -> Unit = {}
+    onNavigateToMovingInYupana: () -> Unit = {},
+    onNavigateToLargeNumbers: () -> Unit = {},
+    onNavigateToQuipuOnTheYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -59,7 +62,7 @@ fun YupanaScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("hands_on_yupana"),
+            listOf("hands_on_yupana", "large_numbers", "quipu_on_the_yupana"),
             completedSections
         )
     }
@@ -168,11 +171,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = onNavigateToLargeNumbers,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("large_numbers")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Icon(
@@ -187,6 +190,48 @@ fun YupanaScreen(
 
                 Text(
                     text = aws.largeNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                Button(
+                    onClick = onNavigateToQuipuOnTheYupana,
+                    modifier = Modifier.height(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (completedSections.contains("quipu_on_the_yupana")) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    ),
+                    contentPadding = PaddingValues(horizontal = 24.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.ic_quipu_knot),
+                            contentDescription = null,
+                            modifier = Modifier.size(52.dp),
+                            tint = Color.Unspecified
+                        )
+                        Icon(
+                            painterResource(R.drawable.ic_grid_2x4),
+                            contentDescription = null,
+                            modifier = Modifier.size(52.dp),
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.quipuOnTheYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

@@ -54,7 +54,7 @@ private val abacusSectionIds = listOf(
 )
 
 private val yupanaSectionIds = listOf(
-    "hands_on_yupana", "moving_in_yupana", "practicing_addition"
+    "hands_on_yupana", "large_numbers", "quipu_on_the_yupana", "moving_in_yupana", "practicing_addition"
 )
 
 private val roadToSomewhereSectionIds = listOf(
@@ -66,7 +66,7 @@ private val whereAreWeFromSectionIds = listOf(
 )
 
 private val anotherWayToCountSectionIds = listOf(
-    "quipus", "practicing_with_quipus"
+    "quipus", "practicing_with_quipus", "mesoamerican_symbols"
 )
 
 private val runningAndGrowingSectionIds = listOf(

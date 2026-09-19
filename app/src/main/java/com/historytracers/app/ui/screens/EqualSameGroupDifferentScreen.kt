@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,7 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -251,18 +253,24 @@ private fun CompFigure(item: GameItem, modifier: Modifier = Modifier) {
 
 @Composable
 private fun MayaNumber(value: Int, modifier: Modifier = Modifier) {
+    val ink = Color(0xFF5A3F2C)
+    if (value == 0) {
+        Image(
+            painter = painterResource(R.drawable.ic_maya_zero_shell),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(ink),
+            modifier = modifier
+        )
+        return
+    }
     Canvas(modifier = modifier) {
-        val ink = Color(0xFF5A3F2C)
         val dotRadius = size.minDimension * 0.07f
         val gap = size.height * 0.06f
         val barWidth = 4 * dotRadius * 2f + 3 * gap
         val barHeight = size.height * 0.14f
         val bars = value / 5
         val dots = value % 5
-        if (value == 0) {
-            drawOval(color = ink, style = Stroke(width = size.minDimension * 0.04f))
-            return@Canvas
-        }
         val barsHeight = if (bars > 0) bars * barHeight + (bars - 1) * gap else 0f
         val dotsHeight = if (dots > 0) dotRadius * 2f + gap else 0f
         val contentHeight = barsHeight + dotsHeight

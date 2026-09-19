@@ -6,21 +6,25 @@ import androidx.compose.runtime.staticCompositionLocalOf
 data class AnotherWayToCountScreenStrings(
     val quipus: String,
     val practicingWithQuipus: String,
+    val theMesoamericanSymbols: String,
 )
 
 val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     quipus = "Quipus",
     practicingWithQuipus = "Practicing with Quipus",
+    theMesoamericanSymbols = "The Mesoamerican Symbols",
 )
 
 val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     quipus = "Quipus",
     practicingWithQuipus = "Praticando com Quipus",
+    theMesoamericanSymbols = "Os S\u00edmbolos Mesoamericanos",
 )
 
 val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     quipus = "Quipus",
     practicingWithQuipus = "Practicando con Quipus",
+    theMesoamericanSymbols = "Los S\u00edmbolos Mesoamericanos",
 )
 
 val LocalAnotherWayToCountScreenStrings = staticCompositionLocalOf { EnAnotherWayToCountScreenStrings }

@@ -94,15 +94,18 @@
   4. On the hub button, set `containerColor = if (<hub>Done) ButtonYellowDark else ButtonYellow`.
 - Do not gate the main-screen button color on `LevelGroupController.allCompleted`: it reads a `MutableStateFlow` that Compose does not observe, so the color would not refresh after the persisted state loads. Always derive the flag from a `collectAsState`-observed set.
 - When a new section/button is added to a hub, the section must record completion in its exercise screen (via `mark[Hub]SectionCompleted`) **and** be added to the corresponding `<hub>SectionIds` list on the main screen — otherwise the main button never reflects full completion.
+- **Whenever a new button/class is added inside a hub, reset the hub's main-screen color.** Add the new section id to the hub's `<hub>SectionIds` list so the main button returns to `ButtonYellow` (incomplete) until the new class is completed — even if the user had already finished every previous section. Forgetting this leaves the button stuck in `ButtonYellowDark` after a new task is added.
 - The rule only applies to buttons that lead to real hubs; buttons without internal screens (e.g. unimplemented placeholders) keep a static color.
 - Current section lists to keep in sync:
   - **First Steps** (20): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `counting_with_bones`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
   - **I Am (Not) Like You** (5): `to_be_or_not_to_be`, `totally_equal`, `equality_in_history_metate`, `equality_in_history`, `equal_same_group_or_different`
   - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
   - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
-  - **Yupana** (3): `hands_on_yupana`, `moving_in_yupana`, `practicing_addition`
+  - **Yupana** (5): `hands_on_yupana`, `large_numbers`, `quipu_on_the_yupana`, `moving_in_yupana`, `practicing_addition`
   - **Road to Somewhere** (6): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `running_among_numbers`, `practicing_addition`
-  - **Where Are We From** (2): `shared_origin`, `matter_energy`
+  - **Where Are We From** (4): `shared_origin`, `matter_energy`, `everything_together`, `sharing_with_whom`
+  - **Another Way to Count** (3): `quipus`, `practicing_with_quipus`, `mesoamerican_symbols`
+  - **Running and Growing** (5): `adding_the_same_number`, `the_result_is`, `inversion`, `connecting_the_multiplication`, `drawing_multiplication`
 
 ## Reset Classes Menu
 
