@@ -547,7 +547,7 @@ fun AnotherWayToCountScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("i_prefer_this" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
