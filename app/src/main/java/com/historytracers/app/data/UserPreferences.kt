@@ -61,6 +61,7 @@ class UserPreferences(private val context: Context) {
         private val WORKOUT_SCROLL_KEY = intPreferencesKey("workout_scroll")
         private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
         private val YUPANA_SCROLL_KEY = intPreferencesKey("yupana_scroll")
+        private val ANOTHER_WAY_TO_COUNT_SCROLL_KEY = intPreferencesKey("another_way_to_count_scroll")
         private val UNIVERSE_EXPANSION_STEP_KEY = intPreferencesKey("universe_expansion_step")
         private val QUIPU_PRACTICE_STATE_KEY = stringPreferencesKey("quipu_practice_state")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
@@ -272,6 +273,16 @@ class UserPreferences(private val context: Context) {
     suspend fun setYupanaScroll(value: Int) {
         context.dataStore.edit { preferences ->
             preferences[YUPANA_SCROLL_KEY] = value
+        }
+    }
+
+    val anotherWayToCountScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[ANOTHER_WAY_TO_COUNT_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setAnotherWayToCountScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[ANOTHER_WAY_TO_COUNT_SCROLL_KEY] = value
         }
     }
 

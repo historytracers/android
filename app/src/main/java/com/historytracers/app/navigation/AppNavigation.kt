@@ -450,11 +450,13 @@ fun AppNavigation() {
     val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
     val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
     val savedYupanaScroll by preferences.yupanaScroll.collectAsState(initial = 0)
+    val savedAnotherWayToCountScroll by preferences.anotherWayToCountScroll.collectAsState(initial = 0)
 
     val firstStepsScrollState = remember { ScrollState(0) }
     val workoutScrollState = remember { ScrollState(0) }
     val abacusScrollState = remember { ScrollState(0) }
     val yupanaScrollState = remember { ScrollState(0) }
+    val anotherWayToCountScrollState = remember { ScrollState(0) }
 
     LaunchedEffect(savedFirstStepsScroll) {
         if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
@@ -467,6 +469,9 @@ fun AppNavigation() {
     }
     LaunchedEffect(savedYupanaScroll) {
         if (savedYupanaScroll > 0) yupanaScrollState.scrollTo(savedYupanaScroll)
+    }
+    LaunchedEffect(savedAnotherWayToCountScroll) {
+        if (savedAnotherWayToCountScroll > 0) anotherWayToCountScrollState.scrollTo(savedAnotherWayToCountScroll)
     }
 
     LaunchedEffect(Unit) {
@@ -484,6 +489,10 @@ fun AppNavigation() {
     LaunchedEffect(Unit) {
         snapshotFlow { yupanaScrollState.value }
             .collect { preferences.setYupanaScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { anotherWayToCountScrollState.value }
+            .collect { preferences.setAnotherWayToCountScroll(it) }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -710,6 +719,7 @@ fun AppNavigation() {
                         AnotherWayToCountScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
+                            scrollState = anotherWayToCountScrollState,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {

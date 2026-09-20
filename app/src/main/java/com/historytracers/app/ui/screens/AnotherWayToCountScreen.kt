@@ -4,6 +4,7 @@ package com.historytracers.app.ui.screens
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,6 +48,7 @@ private val anotherWayToCountThirdGroupIds = listOf("text_or_number")
 fun AnotherWayToCountScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
+    scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToQuipus: () -> Unit = {},
@@ -56,7 +58,8 @@ fun AnotherWayToCountScreen(
     onNavigateToBuildingLikeAMesoamerican: () -> Unit = {},
     onNavigateToMesoamericanOrder: () -> Unit = {},
     onNavigateToTextOrNumber: () -> Unit = {},
-    onNavigateToTheMissingNumbers: () -> Unit = {}
+    onNavigateToTheMissingNumbers: () -> Unit = {},
+    onNavigateToIPreferThis: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -131,7 +134,7 @@ fun AnotherWayToCountScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -515,7 +518,7 @@ fun AnotherWayToCountScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("missing_numbers" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
@@ -530,6 +533,36 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.theMissingNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToIPreferThis,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "IV or IIII",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.iPreferThis,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
