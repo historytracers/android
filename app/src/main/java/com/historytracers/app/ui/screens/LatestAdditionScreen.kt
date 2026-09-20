@@ -37,7 +37,7 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.mesoamericanOrdersScreenStringsForLanguage
-import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLanguage
+import com.historytracers.app.ui.features.missingNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.overcomingLimitsScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -79,7 +79,8 @@ fun LatestAdditionScreen(
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {},
-    onNavigateToTextOrNumber: () -> Unit = {}
+    onNavigateToTextOrNumber: () -> Unit = {},
+    onNavigateToTheMissingNumbers: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -90,11 +91,11 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val mss = mesoamericanSymbolsScreenStringsForLanguage(LocalAppLanguage.current)
     val ols = overcomingLimitsScreenStringsForLanguage(LocalAppLanguage.current)
     val blams = buildingLikeAMesoamericanScreenStringsForLanguage(LocalAppLanguage.current)
     val mos = mesoamericanOrdersScreenStringsForLanguage(LocalAppLanguage.current)
     val tons = textOrNumberScreenStringsForLanguage(LocalAppLanguage.current)
+    val mns = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -103,6 +104,20 @@ fun LatestAdditionScreen(
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "missing_numbers",
+            label = mns.title,
+            icon = {
+                Text(
+                    text = "I...X",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF8B1A1A)
+                )
+            },
+            isCompleted = { "missing_numbers" in completedAnotherWayToCount },
+            onNavigate = onNavigateToTheMissingNumbers
+        ),
         LatestAdditionEntry(
             sectionId = "text_or_number",
             label = tons.title,
@@ -251,30 +266,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "overcoming_limits" in completedAnotherWayToCount },
             onNavigate = onNavigateToOvercomingLimits
-        ),
-        LatestAdditionEntry(
-            sectionId = "mesoamerican_symbols",
-            label = mss.title,
-            icon = {
-                Canvas(modifier = Modifier.size(48.dp)) {
-                    val radius = size.minDimension * 0.16f
-                    val left = size.width * 0.3f
-                    val right = size.width * 0.7f
-                    val top = size.height * 0.3f
-                    val bottom = size.height * 0.7f
-                    val dotColor = Color(0xFF8B1A1A)
-                    listOf(
-                        Offset(left, top),
-                        Offset(right, top),
-                        Offset(left, bottom),
-                        Offset(right, bottom)
-                    ).forEach { center ->
-                        drawCircle(color = dotColor, radius = radius, center = center)
-                    }
-                }
-            },
-            isCompleted = { "mesoamerican_symbols" in completedAnotherWayToCount },
-            onNavigate = onNavigateToMesoamericanSymbols
         )
     )
 

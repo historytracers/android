@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
+private val anotherWayToCountThirdGroupIds = listOf("text_or_number")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -54,7 +55,8 @@ fun AnotherWayToCountScreen(
     onNavigateToOvercomingLimits: () -> Unit = {},
     onNavigateToBuildingLikeAMesoamerican: () -> Unit = {},
     onNavigateToMesoamericanOrder: () -> Unit = {},
-    onNavigateToTextOrNumber: () -> Unit = {}
+    onNavigateToTextOrNumber: () -> Unit = {},
+    onNavigateToTheMissingNumbers: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -67,6 +69,7 @@ fun AnotherWayToCountScreen(
 
     val firstGroupCompleted = anotherWayToCountFirstGroupIds.all { it in completedSections }
     val secondGroupCompleted = anotherWayToCountSecondGroupIds.all { it in completedSections }
+    val thirdGroupCompleted = anotherWayToCountThirdGroupIds.all { it in completedSections }
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -481,7 +484,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToTextOrNumber,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("text_or_number" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -498,6 +501,69 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.textOrNumber,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToTheMissingNumbers,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "I...X",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.theMissingNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("another_way_to_count_3")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = thirdGroupCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("another_way_to_count_3" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
