@@ -421,7 +421,7 @@ private fun IPreferThisGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
+    val awardedScreens by preferences.awardedScreens.collectAsState(initial = null)
 
     LaunchedEffect(content) {
         val node = content
@@ -499,11 +499,12 @@ private fun IPreferThisGameContent(
                         Spacer(Modifier.height(8.dp))
                     }
 
-                    if (content.answer != null) {
+                    val loadedAwardedScreens = awardedScreens
+                    if (content.answer != null && loadedAwardedScreens != null) {
                         IPreferThisAnswerSection(
                             content = content,
                             onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
+                                if (content.id !in loadedAwardedScreens) {
                                     award(points)
                                     scope.launch { preferences.markScreenAwarded(content.id) }
                                 }
@@ -599,6 +600,7 @@ private fun IPreferThisAnswerSection(
     val xs = iPreferThisScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
+    var awarded by remember { mutableStateOf(false) }
 
     val correctAnswer = when (val answer = content.answer) {
         is Boolean -> answer
@@ -609,9 +611,12 @@ private fun IPreferThisAnswerSection(
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        val answeredCorrectly = (answer == "yes") == correctAnswer
-        val points = if (answeredCorrectly) content.score else content.score / 2
-        onAnswered(points)
+        if (!awarded) {
+            awarded = true
+            val answeredCorrectly = (answer == "yes") == correctAnswer
+            val points = if (answeredCorrectly) content.score else content.score / 2
+            onAnswered(points)
+        }
     }
 
     Spacer(Modifier.height(16.dp))
