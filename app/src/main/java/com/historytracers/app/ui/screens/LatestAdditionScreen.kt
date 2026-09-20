@@ -19,6 +19,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -34,9 +36,9 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.buildingLikeAMesoamericanScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.mesoamericanOrdersScreenStringsForLanguage
 import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLanguage
 import com.historytracers.app.ui.features.overcomingLimitsScreenStringsForLanguage
 import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
@@ -69,6 +71,7 @@ fun LatestAdditionScreen(
     onNavigateToMesoamericanSymbols: () -> Unit = {},
     onNavigateToOvercomingLimits: () -> Unit = {},
     onNavigateToBuildingLikeAMesoamerican: () -> Unit = {},
+    onNavigateToMesoamericanOrders: () -> Unit = {},
     onNavigateToRunningAmongNumbersIntro: () -> Unit = {},
     onNavigateToSharedOriginIntro: () -> Unit = {},
     onNavigateToMatterAndEnergyIntro: () -> Unit = {},
@@ -90,11 +93,11 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val lns = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val qys = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val mss = mesoamericanSymbolsScreenStringsForLanguage(LocalAppLanguage.current)
     val ols = overcomingLimitsScreenStringsForLanguage(LocalAppLanguage.current)
     val blams = buildingLikeAMesoamericanScreenStringsForLanguage(LocalAppLanguage.current)
+    val mos = mesoamericanOrdersScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -105,6 +108,73 @@ fun LatestAdditionScreen(
     val scope = rememberCoroutineScope()
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "mesoamerican_orders",
+            label = mos.title,
+            icon = {
+                Canvas(modifier = Modifier.size(48.dp)) {
+                    val ink = Color(0xFF8B1A1A)
+                    val strokeWidth = size.minDimension * 0.055f
+                    val left = size.width * 0.15f
+                    val right = size.width * 0.85f
+                    val top = size.height * 0.26f
+                    val bottom = size.height * 0.88f
+                    val corner = size.minDimension * 0.12f
+                    val bodyWidth = right - left
+                    val bodyHeight = bottom - top
+                    drawRoundRect(
+                        color = ink,
+                        topLeft = Offset(left, top),
+                        size = Size(bodyWidth, bodyHeight),
+                        cornerRadius = CornerRadius(corner),
+                        style = Stroke(width = strokeWidth)
+                    )
+                    val headerHeight = bodyHeight * 0.3f
+                    drawRoundRect(
+                        color = ink,
+                        topLeft = Offset(left, top),
+                        size = Size(bodyWidth, headerHeight),
+                        cornerRadius = CornerRadius(corner)
+                    )
+                    val ringX1 = left + bodyWidth * 0.3f
+                    val ringX2 = left + bodyWidth * 0.7f
+                    val ringTop = top - size.height * 0.12f
+                    val ringBottom = top + headerHeight * 0.3f
+                    drawLine(
+                        color = ink,
+                        start = Offset(ringX1, ringTop),
+                        end = Offset(ringX1, ringBottom),
+                        strokeWidth = strokeWidth * 1.4f,
+                        cap = StrokeCap.Round
+                    )
+                    drawLine(
+                        color = ink,
+                        start = Offset(ringX2, ringTop),
+                        end = Offset(ringX2, ringBottom),
+                        strokeWidth = strokeWidth * 1.4f,
+                        cap = StrokeCap.Round
+                    )
+                    val dotRadius = size.minDimension * 0.035f
+                    val cols = 3
+                    val rowCount = 2
+                    val gridAreaTop = top + headerHeight
+                    val gridTop = gridAreaTop + (bottom - gridAreaTop) * 0.2f
+                    val gridBottom = bottom - (bottom - gridAreaTop) * 0.2f
+                    val x0 = left + bodyWidth * 0.18f
+                    val x1 = right - bodyWidth * 0.18f
+                    for (r in 0 until rowCount) {
+                        for (c in 0 until cols) {
+                            val x = x0 + (x1 - x0) * c / (cols - 1)
+                            val y = gridTop + (gridBottom - gridTop) * r / (rowCount - 1)
+                            drawCircle(color = ink, radius = dotRadius, center = Offset(x, y))
+                        }
+                    }
+                }
+            },
+            isCompleted = { "mesoamerican_orders" in completedAnotherWayToCount },
+            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("mesoamerican_orders") },
+            onNavigate = onNavigateToMesoamericanOrders
+        ),
         LatestAdditionEntry(
             sectionId = "building_like_a_mesoamerican",
             label = blams.title,
@@ -214,20 +284,6 @@ fun LatestAdditionScreen(
             isCompleted = { "quipu_on_the_yupana" in completedYupana },
             markCompleted = { preferences.markYupanaSectionCompleted("quipu_on_the_yupana") },
             onNavigate = onNavigateToQuipuOnTheYupana
-        ),
-        LatestAdditionEntry(
-            sectionId = "large_numbers",
-            label = lns.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_grid_2x4),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "large_numbers" in completedYupana },
-            markCompleted = { preferences.markYupanaSectionCompleted("large_numbers") },
-            onNavigate = onNavigateToLargeNumbersIntro
         )
     )
 

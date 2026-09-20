@@ -40,7 +40,7 @@ import com.historytracers.app.ui.theme.FlagBlueLight
 import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
-private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican")
+private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -367,7 +367,7 @@ fun AnotherWayToCountScreen(
                     modifier = Modifier.size(96.dp),
                     shape = RoundedCornerShape(24.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("mesoamerican_orders" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Canvas(modifier = Modifier.size(52.dp)) {
