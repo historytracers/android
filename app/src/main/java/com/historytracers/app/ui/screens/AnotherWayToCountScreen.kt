@@ -53,7 +53,8 @@ fun AnotherWayToCountScreen(
     onNavigateToMesoamericanSymbols: () -> Unit = {},
     onNavigateToOvercomingLimits: () -> Unit = {},
     onNavigateToBuildingLikeAMesoamerican: () -> Unit = {},
-    onNavigateToMesoamericanOrder: () -> Unit = {}
+    onNavigateToMesoamericanOrder: () -> Unit = {},
+    onNavigateToTextOrNumber: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -468,6 +469,35 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToTextOrNumber,
+                    modifier = Modifier.size(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("text_or_number" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "VI",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.textOrNumber,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

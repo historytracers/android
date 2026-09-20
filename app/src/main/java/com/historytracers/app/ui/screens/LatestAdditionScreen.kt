@@ -2,7 +2,6 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -41,10 +39,10 @@ import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguag
 import com.historytracers.app.ui.features.mesoamericanOrdersScreenStringsForLanguage
 import com.historytracers.app.ui.features.mesoamericanSymbolsScreenStringsForLanguage
 import com.historytracers.app.ui.features.overcomingLimitsScreenStringsForLanguage
-import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
+import com.historytracers.app.ui.features.textOrNumberScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -80,7 +78,8 @@ fun LatestAdditionScreen(
     onNavigateToPracticingWithQuipus: () -> Unit = {},
     onNavigateToEqualityIntro: () -> Unit = {},
     onNavigateToHistoricalEqualityIntro: () -> Unit = {},
-    onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {}
+    onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {},
+    onNavigateToTextOrNumber: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -91,20 +90,33 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val qys = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val mss = mesoamericanSymbolsScreenStringsForLanguage(LocalAppLanguage.current)
     val ols = overcomingLimitsScreenStringsForLanguage(LocalAppLanguage.current)
     val blams = buildingLikeAMesoamericanScreenStringsForLanguage(LocalAppLanguage.current)
     val mos = mesoamericanOrdersScreenStringsForLanguage(LocalAppLanguage.current)
+    val tons = textOrNumberScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "text_or_number",
+            label = tons.title,
+            icon = {
+                Text(
+                    text = "VI",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF8B1A1A)
+                )
+            },
+            isCompleted = { "text_or_number" in completedAnotherWayToCount },
+            onNavigate = onNavigateToTextOrNumber
+        ),
         LatestAdditionEntry(
             sectionId = "mesoamerican_orders",
             label = mos.title,
@@ -263,19 +275,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "mesoamerican_symbols" in completedAnotherWayToCount },
             onNavigate = onNavigateToMesoamericanSymbols
-        ),
-        LatestAdditionEntry(
-            sectionId = "quipu_on_the_yupana",
-            label = qys.title,
-            icon = {
-                Image(
-                    painter = painterResource(R.drawable.ic_quipu_knot),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "quipu_on_the_yupana" in completedYupana },
-            onNavigate = onNavigateToQuipuOnTheYupana
         )
     )
 

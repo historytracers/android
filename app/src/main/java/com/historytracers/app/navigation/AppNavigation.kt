@@ -323,6 +323,14 @@ import com.historytracers.app.ui.screens.WalkAmongNumbersIncaRoadsScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersIntroScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersQuestionScreen
 import com.historytracers.app.ui.screens.WalkAmongNumbersRoadsScreen
+import com.historytracers.app.ui.screens.TextOrNumberBorrowingScreen
+import com.historytracers.app.ui.screens.TextOrNumberConclusionScreen
+import com.historytracers.app.ui.screens.TextOrNumberIntroScreen
+import com.historytracers.app.ui.screens.TextOrNumberMemoryScreen
+import com.historytracers.app.ui.screens.TextOrNumberOriginScreen
+import com.historytracers.app.ui.screens.TextOrNumberThinkingScreen
+import com.historytracers.app.ui.screens.TextOrNumberTodayScreen
+import com.historytracers.app.ui.screens.TextOrNumberWhatWeSeeScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -360,7 +368,11 @@ fun AppNavigation() {
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
            Screen.MesoamericanOrdersDifferent.route, Screen.MesoamericanOrdersNextOrders.route,
            Screen.MesoamericanOrdersThinking.route, Screen.MesoamericanOrdersNotLikeThis.route,
-           Screen.MesoamericanOrdersConclusion.route)
+           Screen.MesoamericanOrdersConclusion.route,
+           Screen.TextOrNumberIntro.route, Screen.TextOrNumberMemory.route,
+           Screen.TextOrNumberToday.route, Screen.TextOrNumberOrigin.route,
+           Screen.TextOrNumberWhatWeSee.route, Screen.TextOrNumberThinking.route,
+           Screen.TextOrNumberBorrowing.route, Screen.TextOrNumberConclusion.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -700,7 +712,8 @@ fun AppNavigation() {
                             onNavigateToMesoamericanSymbols = { navController.navigate(Screen.MesoamericanSymbolsIntro.route) { launchSingleTop = true } },
                             onNavigateToOvercomingLimits = { navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true } },
                             onNavigateToBuildingLikeAMesoamerican = { navController.navigate(Screen.BuildingLikeAMesoamerican.route) { launchSingleTop = true } },
-                            onNavigateToMesoamericanOrder = { navController.navigate(Screen.MesoamericanOrdersIntro.route) { launchSingleTop = true } }
+                            onNavigateToMesoamericanOrder = { navController.navigate(Screen.MesoamericanOrdersIntro.route) { launchSingleTop = true } },
+                            onNavigateToTextOrNumber = { navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.BuildingLikeAMesoamerican.route) {
@@ -857,6 +870,141 @@ fun AppNavigation() {
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MesoamericanOrdersNotLikeThis.route, false)) {
                                     navController.navigate(Screen.MesoamericanOrdersNotLikeThis.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToAnotherWayToCount = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.TextOrNumberIntro.route) {
+                        TextOrNumberIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberMemory.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberMemory.route) {
+                        TextOrNumberMemoryScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberIntro.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberToday.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberToday.route) {
+                        TextOrNumberTodayScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberMemory.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberMemory.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberOrigin.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberOrigin.route) {
+                        TextOrNumberOriginScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberToday.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberToday.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberWhatWeSee.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberWhatWeSee.route) {
+                        TextOrNumberWhatWeSeeScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberOrigin.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberOrigin.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberThinking.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberThinking.route) {
+                        TextOrNumberThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberWhatWeSee.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberWhatWeSee.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberBorrowing.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberBorrowing.route) {
+                        TextOrNumberBorrowingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberThinking.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberThinking.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.TextOrNumberConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.TextOrNumberConclusion.route) {
+                        TextOrNumberConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.TextOrNumberBorrowing.route, false)) {
+                                    navController.navigate(Screen.TextOrNumberBorrowing.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
@@ -5647,6 +5795,7 @@ fun AppNavigation() {
                             onNavigateToOvercomingLimits = { navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true } },
                             onNavigateToBuildingLikeAMesoamerican = { navController.navigate(Screen.BuildingLikeAMesoamerican.route) { launchSingleTop = true } },
                             onNavigateToMesoamericanOrders = { navController.navigate(Screen.MesoamericanOrdersIntro.route) { launchSingleTop = true } },
+                            onNavigateToTextOrNumber = { navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
