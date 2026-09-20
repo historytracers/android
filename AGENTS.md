@@ -2,6 +2,10 @@
 
 - Always use LF line endings when creating or editing files. Never use CRLF. The repo enforces this via `.gitattributes` (`* text=auto eol=lf`); a CRLF working copy triggers git warnings and creates diff noise.
 
+## Commit Rules
+
+- Never commit, amend, or push anywhere — including inside git submodules such as `common/`. Leave all edits as uncommitted working-tree changes in both the parent repo and any submodule.
+
 ## Score Rules
 
 - Never create a local score variable. Always update the global score via `onScoreChanged(currentScore + N)` (the `currentScore` / `onScoreChanged` pattern wired through `AppNavigation.kt`), which persists to DataStore and displays in the top app bar across all screens.
@@ -126,7 +130,7 @@
 
 - The main menu (drawer) must always contain a "Latest addition" entry (`Screen.LatestAddition` → `LatestAdditionScreen.kt`), so users get one-tap access to the newest content.
 - `LatestAdditionScreen` lists the **5 most recently added screens**, with the latest always on top. The list is a hardcoded ordered list in `LatestAdditionScreen.kt`; it is **not** derived at runtime.
-- Each entry is a button that navigates directly to that screen and marks its section completed on tap (`mark[Hub]SectionCompleted(sectionId)`); its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
+- Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
 - Current list (latest first): `counting_with_bones` (Counting with Bones), `matter_energy` (Matter and Energy), `shared_origin` (Shared Origin), `running_among_numbers` (Running Among Numbers), `playing_with_axioms` (Practicing the Axioms of Addition).

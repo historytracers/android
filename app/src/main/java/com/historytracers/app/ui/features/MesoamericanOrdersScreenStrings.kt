@@ -50,7 +50,7 @@ val PtMesoamericanOrdersScreenStrings = MesoamericanOrdersScreenStrings(
 
 val EsMesoamericanOrdersScreenStrings = MesoamericanOrdersScreenStrings(
     title = "\u00d3rdenes Mesoamericanos",
-    hinduArabicLabel = "Indo\u00e1rabe",
+    hinduArabicLabel = "Indo\u00e1rabigo",
     mesoamericanLabel = "Mesoamericano",
     orderLabel = "Orden",
     factorLabel = "Factor",

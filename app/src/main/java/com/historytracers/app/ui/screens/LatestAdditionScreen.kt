@@ -49,14 +49,12 @@ import com.historytracers.app.ui.features.universeExpansionScreenStringsForLangu
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
-import kotlinx.coroutines.launch
 
 private data class LatestAdditionEntry(
     val sectionId: String,
     val label: String,
     val icon: @Composable () -> Unit,
     val isCompleted: () -> Boolean,
-    val markCompleted: suspend () -> Unit,
     val onNavigate: () -> Unit
 )
 
@@ -105,7 +103,6 @@ fun LatestAdditionScreen(
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
-    val scope = rememberCoroutineScope()
 
     val entries = listOf(
         LatestAdditionEntry(
@@ -172,7 +169,6 @@ fun LatestAdditionScreen(
                 }
             },
             isCompleted = { "mesoamerican_orders" in completedAnotherWayToCount },
-            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("mesoamerican_orders") },
             onNavigate = onNavigateToMesoamericanOrders
         ),
         LatestAdditionEntry(
@@ -206,7 +202,6 @@ fun LatestAdditionScreen(
                 }
             },
             isCompleted = { "building_like_a_mesoamerican" in completedAnotherWayToCount },
-            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("building_like_a_mesoamerican") },
             onNavigate = onNavigateToBuildingLikeAMesoamerican
         ),
         LatestAdditionEntry(
@@ -243,7 +238,6 @@ fun LatestAdditionScreen(
                 }
             },
             isCompleted = { "overcoming_limits" in completedAnotherWayToCount },
-            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("overcoming_limits") },
             onNavigate = onNavigateToOvercomingLimits
         ),
         LatestAdditionEntry(
@@ -268,7 +262,6 @@ fun LatestAdditionScreen(
                 }
             },
             isCompleted = { "mesoamerican_symbols" in completedAnotherWayToCount },
-            markCompleted = { preferences.markAnotherWayToCountSectionCompleted("mesoamerican_symbols") },
             onNavigate = onNavigateToMesoamericanSymbols
         ),
         LatestAdditionEntry(
@@ -282,7 +275,6 @@ fun LatestAdditionScreen(
                 )
             },
             isCompleted = { "quipu_on_the_yupana" in completedYupana },
-            markCompleted = { preferences.markYupanaSectionCompleted("quipu_on_the_yupana") },
             onNavigate = onNavigateToQuipuOnTheYupana
         )
     )
@@ -319,12 +311,7 @@ fun LatestAdditionScreen(
         ) {
             entries.forEach { entry ->
                 FilledIconButton(
-                    onClick = {
-                        scope.launch {
-                            entry.markCompleted()
-                            entry.onNavigate()
-                        }
-                    },
+                    onClick = { entry.onNavigate() },
                     modifier = Modifier
                         .size(96.dp)
                         .semantics { contentDescription = entry.label },

@@ -354,7 +354,13 @@ fun AppNavigation() {
            "overcoming_limits_logic", "overcoming_limits_last_foot", "overcoming_limits_conclusion",
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
-           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count")
+           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count",
+           Screen.BuildingLikeAMesoamerican.route,
+           Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
+           Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
+           Screen.MesoamericanOrdersDifferent.route, Screen.MesoamericanOrdersNextOrders.route,
+           Screen.MesoamericanOrdersThinking.route, Screen.MesoamericanOrdersNotLikeThis.route,
+           Screen.MesoamericanOrdersConclusion.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -702,7 +708,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             }
@@ -713,7 +719,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -725,7 +731,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -742,7 +748,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -759,7 +765,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -776,7 +782,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -793,7 +799,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -810,7 +816,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -827,7 +833,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -844,7 +850,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -865,7 +871,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -877,7 +883,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -894,7 +900,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -911,7 +917,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -928,7 +934,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -945,7 +951,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -962,7 +968,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -984,7 +990,7 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             restoreStep = navController.previousBackStackEntry == null,
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             }
@@ -5134,7 +5140,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.Yupana.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
@@ -5148,7 +5154,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5160,7 +5166,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5177,7 +5183,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5194,7 +5200,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5211,7 +5217,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5228,7 +5234,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5245,7 +5251,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5262,7 +5268,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5283,7 +5289,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5295,7 +5301,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5312,7 +5318,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5329,7 +5335,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5346,7 +5352,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
@@ -5363,7 +5369,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
