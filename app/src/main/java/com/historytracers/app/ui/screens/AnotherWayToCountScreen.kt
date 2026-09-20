@@ -19,6 +19,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,7 +52,8 @@ fun AnotherWayToCountScreen(
     onNavigateToPracticingWithQuipus: () -> Unit = {},
     onNavigateToMesoamericanSymbols: () -> Unit = {},
     onNavigateToOvercomingLimits: () -> Unit = {},
-    onNavigateToBuildingLikeAMesoamerican: () -> Unit = {}
+    onNavigateToBuildingLikeAMesoamerican: () -> Unit = {},
+    onNavigateToMesoamericanOrder: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -350,6 +353,87 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.buildingLikeAMesoamerican,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToMesoamericanOrder,
+                    modifier = Modifier.size(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Canvas(modifier = Modifier.size(52.dp)) {
+                        val ink = Color(0xFF8B1A1A)
+                        val stroke = size.minDimension * 0.055f
+                        val left = size.width * 0.15f
+                        val right = size.width * 0.85f
+                        val top = size.height * 0.26f
+                        val bottom = size.height * 0.88f
+                        val corner = size.minDimension * 0.12f
+                        val bodyWidth = right - left
+                        val bodyHeight = bottom - top
+                        drawRoundRect(
+                            color = ink,
+                            topLeft = Offset(left, top),
+                            size = Size(bodyWidth, bodyHeight),
+                            cornerRadius = CornerRadius(corner),
+                            style = Stroke(width = stroke)
+                        )
+                        val headerHeight = bodyHeight * 0.3f
+                        drawRoundRect(
+                            color = ink,
+                            topLeft = Offset(left, top),
+                            size = Size(bodyWidth, headerHeight),
+                            cornerRadius = CornerRadius(corner)
+                        )
+                        val ringX1 = left + bodyWidth * 0.3f
+                        val ringX2 = left + bodyWidth * 0.7f
+                        val ringTop = top - size.height * 0.12f
+                        val ringBottom = top + headerHeight * 0.3f
+                        drawLine(
+                            color = ink,
+                            start = Offset(ringX1, ringTop),
+                            end = Offset(ringX1, ringBottom),
+                            strokeWidth = stroke * 1.4f,
+                            cap = StrokeCap.Round
+                        )
+                        drawLine(
+                            color = ink,
+                            start = Offset(ringX2, ringTop),
+                            end = Offset(ringX2, ringBottom),
+                            strokeWidth = stroke * 1.4f,
+                            cap = StrokeCap.Round
+                        )
+                        val dotRadius = size.minDimension * 0.035f
+                        val cols = 3
+                        val rows = 2
+                        val gridAreaTop = top + headerHeight
+                        val gridTop = gridAreaTop + (bottom - gridAreaTop) * 0.2f
+                        val gridBottom = bottom - (bottom - gridAreaTop) * 0.2f
+                        val x0 = left + bodyWidth * 0.18f
+                        val x1 = right - bodyWidth * 0.18f
+                        for (r in 0 until rows) {
+                            for (c in 0 until cols) {
+                                val x = x0 + (x1 - x0) * c / (cols - 1)
+                                val y = gridTop + (gridBottom - gridTop) * r / (rows - 1)
+                                drawCircle(color = ink, radius = dotRadius, center = Offset(x, y))
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.mesoamericanOrder,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

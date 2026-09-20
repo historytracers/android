@@ -9,6 +9,7 @@ data class AnotherWayToCountScreenStrings(
     val theMesoamericanSymbols: String,
     val overcomingLimits: String,
     val buildingLikeAMesoamerican: String,
+    val mesoamericanOrder: String,
 )
 
 val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -17,6 +18,7 @@ val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     theMesoamericanSymbols = "The Mesoamerican Symbols",
     overcomingLimits = "Overcoming Limits",
     buildingLikeAMesoamerican = "Building Like an Mesoamerican",
+    mesoamericanOrder = "Mesoamerican Order",
 )
 
 val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -25,6 +27,7 @@ val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     theMesoamericanSymbols = "Os S\u00edmbolos Mesoamericanos",
     overcomingLimits = "Superando os Limites",
     buildingLikeAMesoamerican = "Construindo Como Um Mesoamericano",
+    mesoamericanOrder = "Ordem Mesoamericana",
 )
 
 val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -33,6 +36,7 @@ val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     theMesoamericanSymbols = "Los S\u00edmbolos Mesoamericanos",
     overcomingLimits = "Superando los L\u00edmites",
     buildingLikeAMesoamerican = "Construyendo Como Un Mesoamericano",
+    mesoamericanOrder = "Orden Mesoamericano",
 )
 
 val LocalAnotherWayToCountScreenStrings = staticCompositionLocalOf { EnAnotherWayToCountScreenStrings }
