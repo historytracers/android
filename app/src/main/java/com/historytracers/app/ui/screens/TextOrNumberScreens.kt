@@ -431,7 +431,6 @@ private fun TextOrNumberGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = null)
 
     LaunchedEffect(content) {
         val node = content
@@ -441,11 +440,8 @@ private fun TextOrNumberGameContent(
                 preferences.markAnotherWayToCountSectionCompleted(SECTION_ID)
                 preferences.recordLessonCompletion()
             }
-            val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!arrivalAlreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 
@@ -509,16 +505,10 @@ private fun TextOrNumberGameContent(
                         Spacer(Modifier.height(8.dp))
                     }
 
-                    val loadedAwardedScreens = awardedScreens
-                    if (content.answer != null && loadedAwardedScreens != null) {
+                    if (content.answer != null) {
                         TextOrNumberAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in loadedAwardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 

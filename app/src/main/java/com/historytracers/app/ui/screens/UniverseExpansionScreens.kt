@@ -83,7 +83,6 @@ fun UniverseExpansionScreen(
     val lastStep = conclusionStep
     var stateRestored by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(Unit) {
         step = if (restoreStep) {
@@ -247,10 +246,8 @@ fun UniverseExpansionScreen(
                             scoreDoubledMessage = xs.scoreDoubledMessage,
                             onCorrect = {
                                 val awardKey = "universe_expansion_question"
-                                if (awardKey !in awardedScreens) {
-                                    scope.launch { preferences.markScreenAwarded(awardKey) }
-                                    onScoreChanged(currentScore + 1)
-                                }
+                                scope.launch { preferences.markScreenAwarded(awardKey) }
+                                onScoreChanged(currentScore + 1)
                             }
                         )
                     }
@@ -298,10 +295,8 @@ fun UniverseExpansionScreen(
                             if (step < lastStep) {
                                 val nextStep = step + 1
                                 val awardKey = "universe_expansion_step_$nextStep"
-                                if (awardKey !in awardedScreens) {
-                                    scope.launch { preferences.markScreenAwarded(awardKey) }
-                                    onScoreChanged(currentScore + 1)
-                                }
+                                scope.launch { preferences.markScreenAwarded(awardKey) }
+                                onScoreChanged(currentScore + 1)
                                 step = nextStep
                             }
                         },

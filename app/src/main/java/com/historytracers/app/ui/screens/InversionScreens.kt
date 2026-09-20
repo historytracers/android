@@ -215,11 +215,8 @@ private fun InversionGameContent(
                 preferences.markRunningAndGrowingSectionCompleted("inversion")
                 preferences.recordLessonCompletion()
             }
-            val alreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!alreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 

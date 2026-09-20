@@ -9,6 +9,7 @@
 ## Score Rules
 
 - Never create a local score variable. Always update the global score via `onScoreChanged(currentScore + N)` (the `currentScore` / `onScoreChanged` pattern wired through `AppNavigation.kt`), which persists to DataStore and displays in the top app bar across all screens.
+- **Re-doing a class must award its points again.** This is intentional: users reinforce their knowledge by repeating lessons. Never gate arrival/answer awards behind persisted "already awarded" sets (`awardedScreens` / `arrivalAwardedScreens`); the global score updates every time a user completes a class. Local one-shot guards (e.g. `arrivalHandled`, an `awarded` flag inside an answer section) are fine to prevent duplicate awards within a single visit, but must not block a later visit.
 
 ## Streak Rules
 

@@ -174,13 +174,10 @@ fun PlayingWithAxiomsGameScreen(
     LaunchedEffect(gameCompleteShown) {
         if (gameCompleteShown) {
             completionScope.launch {
-                val alreadyScored = preferences.awardedScreens.first().contains("playing_with_axioms")
-                if (!alreadyScored) {
-                    preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms")
-                    preferences.recordLessonCompletion()
-                    preferences.markScreenAwarded("playing_with_axioms")
-                    onScoreChanged(currentScore + 2)
-                }
+                preferences.markRoadToSomewhereSectionCompleted("playing_with_axioms")
+                preferences.recordLessonCompletion()
+                preferences.markScreenAwarded("playing_with_axioms")
+                onScoreChanged(currentScore + 2)
             }
         }
     }

@@ -366,11 +366,8 @@ private fun AddingSameNumbersGameContent(
                 preferences.markRunningAndGrowingSectionCompleted("adding_the_same_number")
                 preferences.recordLessonCompletion()
             }
-            val alreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!alreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 

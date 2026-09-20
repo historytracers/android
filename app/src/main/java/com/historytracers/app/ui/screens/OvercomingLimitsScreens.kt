@@ -330,7 +330,6 @@ private fun OvercomingLimitsGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(content) {
         val node = content
@@ -340,11 +339,8 @@ private fun OvercomingLimitsGameContent(
                 preferences.markAnotherWayToCountSectionCompleted("overcoming_limits")
                 preferences.recordLessonCompletion()
             }
-            val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!arrivalAlreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 
@@ -410,12 +406,7 @@ private fun OvercomingLimitsGameContent(
                     if (content.answer != null) {
                         OvercomingLimitsAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 

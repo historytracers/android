@@ -259,7 +259,6 @@ private fun SharingWithWhomGameContent(
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(content) {
         val node = content
@@ -270,17 +269,11 @@ private fun SharingWithWhomGameContent(
                 preferences.recordLessonCompletion()
             }
             if (node.answer == null) {
-                val alreadyScored = preferences.awardedScreens.first().contains(node.id)
-                if (!alreadyScored) {
-                    award(1)
-                    preferences.markScreenAwarded(node.id)
-                }
+                award(1)
+                preferences.markScreenAwarded(node.id)
             } else {
-                val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-                if (!arrivalAlreadyAwarded) {
-                    award(node.score)
-                    preferences.markArrivalAwarded(node.id)
-                }
+                award(node.score)
+                preferences.markArrivalAwarded(node.id)
             }
         }
     }
@@ -354,12 +347,7 @@ private fun SharingWithWhomGameContent(
                     if (content.answer != null) {
                         SharingWithWhomAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 

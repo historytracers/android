@@ -434,7 +434,6 @@ private fun MesoamericanOrdersGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(content) {
         val node = content
@@ -444,11 +443,8 @@ private fun MesoamericanOrdersGameContent(
                 preferences.markAnotherWayToCountSectionCompleted("mesoamerican_orders")
                 preferences.recordLessonCompletion()
             }
-            val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!arrivalAlreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 
@@ -515,12 +511,7 @@ private fun MesoamericanOrdersGameContent(
                     if (content.answer != null) {
                         MesoamericanOrdersAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 
