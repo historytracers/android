@@ -218,10 +218,8 @@ fun PracticingWithQuipusScreen(
         if (finalCongratsShown && completedLevels.size == QUIPU_LEVELS.size) {
             preferences.markAnotherWayToCountSectionCompleted("practicing_with_quipus")
             preferences.recordLessonCompletion()
-            if (PRACTICE_AWARD_ID !in preferences.awardedScreens.first()) {
-                preferences.markScreenAwarded(PRACTICE_AWARD_ID)
-                onScoreChanged(currentScore + 2)
-            }
+            preferences.markScreenAwarded(PRACTICE_AWARD_ID)
+            onScoreChanged(currentScore + 2)
         }
     }
 

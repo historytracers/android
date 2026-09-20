@@ -271,7 +271,6 @@ private fun MatterAndEnergyGameContent(
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     fun award(points: Int) {
         if (points <= 0) return
@@ -282,10 +281,8 @@ private fun MatterAndEnergyGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            if (node.id !in preferences.arrivalAwardedScreens.first()) {
-                award(1)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(1)
+            preferences.markArrivalAwarded(node.id)
             if (onNavigateToWhereAreWeFrom != null) {
                 preferences.markWhereAreWeFromSectionCompleted("matter_energy")
                 preferences.recordLessonCompletion()
@@ -363,12 +360,7 @@ private fun MatterAndEnergyGameContent(
                     if (content.answer != null) {
                         MatterAndEnergyAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 

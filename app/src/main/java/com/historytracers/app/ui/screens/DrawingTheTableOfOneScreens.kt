@@ -233,11 +233,8 @@ private fun DrawingTheTableOfOneGameContent(
                 preferences.markRunningAndGrowingSectionCompleted("drawing_multiplication")
                 preferences.recordLessonCompletion()
             }
-            val alreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!alreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 

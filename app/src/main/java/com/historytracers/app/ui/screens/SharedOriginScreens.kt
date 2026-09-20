@@ -356,7 +356,6 @@ private fun SharedOriginGameContent(
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     fun award(points: Int) {
         if (points <= 0) return
@@ -367,10 +366,8 @@ private fun SharedOriginGameContent(
     LaunchedEffect(content) {
         val node = content
         if (node != null) {
-            if (node.id !in preferences.arrivalAwardedScreens.first()) {
-                award(1)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(1)
+            preferences.markArrivalAwarded(node.id)
             if (onNavigateToWhereAreWeFrom != null) {
                 preferences.markWhereAreWeFromSectionCompleted("shared_origin")
                 preferences.recordLessonCompletion()
@@ -450,12 +447,7 @@ private fun SharedOriginGameContent(
                     if (content.answer != null) {
                         SharedOriginAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 

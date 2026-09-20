@@ -9,6 +9,7 @@
 ## Score Rules
 
 - Never create a local score variable. Always update the global score via `onScoreChanged(currentScore + N)` (the `currentScore` / `onScoreChanged` pattern wired through `AppNavigation.kt`), which persists to DataStore and displays in the top app bar across all screens.
+- **Re-doing a class must award its points again.** This is intentional: users reinforce their knowledge by repeating lessons. Never gate arrival/answer awards behind persisted "already awarded" sets (`awardedScreens` / `arrivalAwardedScreens`); the global score updates every time a user completes a class. Local one-shot guards (e.g. `arrivalHandled`, an `awarded` flag inside an answer section) are fine to prevent duplicate awards within a single visit, but must not block a later visit.
 
 ## Streak Rules
 
@@ -108,7 +109,7 @@
   - **Yupana** (5): `hands_on_yupana`, `large_numbers`, `quipu_on_the_yupana`, `moving_in_yupana`, `practicing_addition`
   - **Road to Somewhere** (6): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `running_among_numbers`, `practicing_addition`
   - **Where Are We From** (4): `shared_origin`, `matter_energy`, `everything_together`, `sharing_with_whom`
-  - **Another Way to Count** (3): `quipus`, `practicing_with_quipus`, `mesoamerican_symbols`
+  - **Another Way to Count** (9): `quipus`, `practicing_with_quipus`, `mesoamerican_symbols`, `overcoming_limits`, `building_like_a_mesoamerican`, `mesoamerican_orders`, `text_or_number`, `missing_numbers`, `i_prefer_this`
   - **Running and Growing** (5): `adding_the_same_number`, `the_result_is`, `inversion`, `connecting_the_multiplication`, `drawing_multiplication`
 
 ## Reset Classes Menu
@@ -133,7 +134,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `counting_with_bones` (Counting with Bones), `matter_energy` (Matter and Energy), `shared_origin` (Shared Origin), `running_among_numbers` (Running Among Numbers), `playing_with_axioms` (Practicing the Axioms of Addition).
+- Current list (latest first): `i_prefer_this` (I Prefer This), `missing_numbers` (The Missing Numbers), `text_or_number` (Text or Number), `mesoamerican_orders` (Mesoamerican Orders), `overcoming_limits` (Overcoming Limits).
 
 ## New Main-Screen Buttons (Sun Badge)
 

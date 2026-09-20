@@ -403,7 +403,6 @@ private fun MesoamericanSymbolsGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    val awardedScreens by preferences.awardedScreens.collectAsState(initial = emptySet())
 
     LaunchedEffect(content) {
         val node = content
@@ -413,11 +412,8 @@ private fun MesoamericanSymbolsGameContent(
                 preferences.markAnotherWayToCountSectionCompleted("mesoamerican_symbols")
                 preferences.recordLessonCompletion()
             }
-            val arrivalAlreadyAwarded = preferences.arrivalAwardedScreens.first().contains(node.id)
-            if (!arrivalAlreadyAwarded) {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 
@@ -484,12 +480,7 @@ private fun MesoamericanSymbolsGameContent(
                     if (content.answer != null) {
                         MesoamericanAnswerSection(
                             content = content,
-                            onAnswered = { points ->
-                                if (content.id !in awardedScreens) {
-                                    award(points)
-                                    scope.launch { preferences.markScreenAwarded(content.id) }
-                                }
-                            }
+                            onAnswered = { points -> award(points) }
                         )
                     }
 

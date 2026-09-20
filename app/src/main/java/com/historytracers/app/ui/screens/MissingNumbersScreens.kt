@@ -5,10 +5,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,10 +21,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,35 +34,48 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
-import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.components.DateUtils
-import com.historytracers.app.ui.components.HtmlRenderer
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.common.HTDate
+import com.historytracers.app.ui.features.missingNumbersScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-private const val SMARTPHONE_GAME_FILE = "58da6d75-ce8a-45f5-b57f-1f0763ee3568"
+private const val SMARTPHONE_GAME_FILE = "d603e3a0-cf2a-497d-9fc3-cfed73743515"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
+private const val SECTION_ID = "missing_numbers"
+
+private const val INTRO_CONTENT_ID = "50acf0cf-dbe3-4bef-bae8-0e77834d6dde"
+private const val ONE_BY_ONE_CONTENT_ID = "ae87710b-08a2-42a9-a796-2dc74e2befe0"
+private const val DIFFERENT_SYMBOLS_CONTENT_ID = "26ca7465-708f-4ec0-b56d-e04ec5a1ca04"
+private const val NEXT_NUMBERS_CONTENT_ID = "2ea7e2aa-4103-4334-8323-0026216f106b"
+private const val THINKING_CONTENT_ID = "f403c4d1-e1f0-40a7-a19f-d0cabf2d7313"
+private const val LACK_OF_EVIDENCE_CONTENT_ID = "4d2971d9-d6d6-4e7f-9f49-d2ee220d6d2e"
+private const val NUMBER_TEN_CONTENT_ID = "4d9543db-8997-4f15-bf3e-4ceafe3ee925"
+private const val CONCLUSION_CONTENT_ID = "27d5eb4b-f9a9-4816-b211-ab7c94aaecfc"
+
+private const val MARKER_TABLE_1 = "missing-numbers-table-1"
+private const val MARKER_FIVE = "missing-numbers-five"
+private const val MARKER_TABLE_2 = "missing-numbers-table-2"
+private const val MARKER_TEN = "missing-numbers-ten"
+
+private val MAYA_INK = Color(0xFF5A3F2C)
 
 @Composable
-fun SharingWithWhomIntroScreen(
+fun MissingNumbersIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SharingWithWhomGameContent(
-        contentId = "e61483cb-3fe5-48e9-ae23-1d64a2a5d149",
+    MissingNumbersGameContent(
+        contentId = INTRO_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -67,15 +84,15 @@ fun SharingWithWhomIntroScreen(
 }
 
 @Composable
-fun SharingWithWhomNobodyScreen(
+fun MissingNumbersOneByOneScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SharingWithWhomGameContent(
-        contentId = "d49ef0a0-49b6-465d-a7f8-fd6d8a563c6b",
+    MissingNumbersGameContent(
+        contentId = ONE_BY_ONE_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -85,15 +102,15 @@ fun SharingWithWhomNobodyScreen(
 }
 
 @Composable
-fun SharingWithWhomThinkScreen(
+fun MissingNumbersDifferentSymbolsScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SharingWithWhomGameContent(
-        contentId = "070951b5-5b4c-4622-9380-ad81313f6564",
+    MissingNumbersGameContent(
+        contentId = DIFFERENT_SYMBOLS_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -103,15 +120,15 @@ fun SharingWithWhomThinkScreen(
 }
 
 @Composable
-fun SharingWithWhomScenarioScreen(
+fun MissingNumbersNextNumbersScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SharingWithWhomGameContent(
-        contentId = "9163665b-ce43-486d-a897-0f7222aecbf2",
+    MissingNumbersGameContent(
+        contentId = NEXT_NUMBERS_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -121,15 +138,15 @@ fun SharingWithWhomScenarioScreen(
 }
 
 @Composable
-fun SharingWithWhomEmptyRegionScreen(
+fun MissingNumbersThinkingScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    SharingWithWhomGameContent(
-        contentId = "f2c64edb-48ba-4c2b-8ec3-34bc421eae27",
+    MissingNumbersGameContent(
+        contentId = THINKING_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -139,20 +156,56 @@ fun SharingWithWhomEmptyRegionScreen(
 }
 
 @Composable
-fun SharingWithWhomConclusionScreen(
+fun MissingNumbersLackOfEvidenceScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToWhereAreWeFrom: () -> Unit = {}
+    onNavigateNext: () -> Unit = {}
 ) {
-    SharingWithWhomGameContent(
-        contentId = "7774dba9-d4ae-4f34-ae97-c3e35bf5b92e",
+    MissingNumbersGameContent(
+        contentId = LACK_OF_EVIDENCE_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToWhereAreWeFrom = onNavigateToWhereAreWeFrom
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun MissingNumbersNumberTenScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    MissingNumbersGameContent(
+        contentId = NUMBER_TEN_CONTENT_ID,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun MissingNumbersConclusionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateToAnotherWayToCount: () -> Unit = {}
+) {
+    MissingNumbersGameContent(
+        contentId = CONCLUSION_CONTENT_ID,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateToAnotherWayToCount = onNavigateToAnotherWayToCount
     )
 }
 
@@ -169,69 +222,202 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
-private val IMG_TAG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
-private val TAG_STRIP_REGEX = Regex("""<[^>]+>""")
-private val HTCITE_REGEX = Regex("""<htcite(\d+)>""")
-private val HTCITE_PLAIN_REGEX = Regex("""<htcite\d+>""")
+private fun containsMarker(text: String?, marker: String): Boolean =
+    text?.contains("data-custom=\"$marker\"") == true
 
-private fun hasImgSrc(text: String?): Boolean =
-    text != null && IMG_TAG_REGEX.containsMatchIn(text)
-
-private fun isDescHtml(text: String?): Boolean =
-    text?.contains("class=\"desc\"") == true
-
-private fun stripTags(html: String): String = TAG_STRIP_REGEX.replace(html, "").trim()
+private fun hasImgSrc(text: String?): Boolean = text?.contains("<img") == true
 
 @Composable
-private fun resolveRichText(
-    text: String,
-    dates: List<HTDate>?,
-    sources: List<HTSource>?
-): String {
-    val common = LocalUiStrings.current.common
-    val calendar = LocalAppCalendar.current
-    var result = text
-    DateUtils.formatDate(dates, calendar, common)?.forEachIndexed { index, formatted ->
-        result = result.replace("<htdate$index>", formatted)
+private fun MayaNumber(value: Int, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val dotRadius = size.minDimension * 0.09f
+        val gap = size.height * 0.08f
+        val barWidth = 4 * dotRadius * 2f + 3 * gap
+        val barHeight = size.height * 0.16f
+        val bars = value / 5
+        val dots = value % 5
+        val barsHeight = if (bars > 0) bars * barHeight + (bars - 1) * gap else 0f
+        val dotsHeight = if (dots > 0) dotRadius * 2f + gap else 0f
+        val contentHeight = barsHeight + dotsHeight
+        var y = size.height - size.height * 0.05f - contentHeight
+        if (dots > 0) {
+            val totalWidth = dots * dotRadius * 2f + (dots - 1) * gap
+            var x = center.x - totalWidth / 2f + dotRadius
+            repeat(dots) {
+                drawCircle(color = MAYA_INK, radius = dotRadius, center = Offset(x, y + dotRadius))
+                x += dotRadius * 2f + gap
+            }
+            y += dotRadius * 2f + gap
+        }
+        repeat(bars) {
+            drawRoundRect(
+                color = MAYA_INK,
+                topLeft = Offset(center.x - barWidth / 2f, y),
+                size = Size(barWidth, barHeight),
+                cornerRadius = CornerRadius(barHeight / 2f)
+            )
+            y += barHeight + gap
+        }
     }
-    result = HTCITE_REGEX.replace(result) { m ->
-        val index = m.groupValues[1].toIntOrNull() ?: return@replace ""
-        sources?.getOrNull(index)?.text ?: ""
-    }
-    result = HTCITE_PLAIN_REGEX.replace(result, "")
-    return result
 }
 
 @Composable
-private fun CaptionText(text: String, modifier: Modifier = Modifier) {
-    if (text.isEmpty()) return
+private fun TableValue(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier.fillMaxWidth()
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
 @Composable
-private fun SharingWithWhomGameContent(
+private fun ComparisonTable(
+    rowLabels: List<String>,
+    columnCount: Int,
+    modifier: Modifier = Modifier,
+    cell: @Composable (row: Int, col: Int) -> Unit
+) {
+    val valueCellWidth = 56.dp
+    val labelCellWidth = 116.dp
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(12.dp)
+        ) {
+            rowLabels.forEachIndexed { rowIndex, label ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.width(labelCellWidth)
+                    )
+                    repeat(columnCount) { col ->
+                        Box(
+                            modifier = Modifier.width(valueCellWidth),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            cell(rowIndex, col)
+                        }
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun NumbersOneToFourTable() {
+    val xs = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    val roman = listOf("I", "II", "III", "IIII")
+    ComparisonTable(
+        rowLabels = listOf(xs.etruscanRoman, xs.hinduArabic, xs.mesoamerican),
+        columnCount = 4
+    ) { row, col ->
+        when (row) {
+            0 -> TableValue(roman[col])
+            1 -> TableValue("${col + 1}")
+            else -> MayaNumber(value = col + 1, modifier = Modifier.size(44.dp))
+        }
+    }
+}
+
+@Composable
+private fun NumbersFiveToNineTable() {
+    val xs = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    val firstGroupRoman = listOf("V", "VI", "VII")
+    val secondGroupRoman = listOf("VIII", "VIIII")
+    val rowLabels = listOf(xs.etruscanRoman, xs.hinduArabic, xs.mesoamerican)
+    Column(modifier = Modifier.fillMaxWidth()) {
+        ComparisonTable(
+            rowLabels = rowLabels,
+            columnCount = 3
+        ) { row, col ->
+            when (row) {
+                0 -> TableValue(firstGroupRoman[col])
+                1 -> TableValue("${col + 5}")
+                else -> MayaNumber(value = col + 5, modifier = Modifier.size(44.dp))
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        ComparisonTable(
+            rowLabels = rowLabels,
+            columnCount = 2
+        ) { row, col ->
+            when (row) {
+                0 -> TableValue(secondGroupRoman[col])
+                1 -> TableValue("${col + 8}")
+                else -> MayaNumber(value = col + 8, modifier = Modifier.size(44.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun NumberSymbols(hinduArabic: String, mayaValue: Int, roman: String) {
+    val xs = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FiveSymbol(label = xs.hinduArabic) { TableValue(hinduArabic) }
+            FiveSymbol(label = xs.mesoamerican) { MayaNumber(value = mayaValue, modifier = Modifier.size(44.dp)) }
+            FiveSymbol(label = xs.etruscanRoman) { TableValue(roman) }
+        }
+    }
+}
+
+@Composable
+private fun FiveSymbol(label: String, symbol: @Composable () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(modifier = Modifier.size(56.dp), contentAlignment = Alignment.Center) {
+            symbol()
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun MissingNumbersGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToWhereAreWeFrom: (() -> Unit)? = null
+    onNavigateToAnotherWayToCount: (() -> Unit)? = null
 ) {
-    BackHandler { onNavigateBack() }
     val s = LocalUiStrings.current
-    val xs = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -258,23 +444,17 @@ private fun SharingWithWhomGameContent(
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(content) {
         val node = content
         if (node != null && !arrivalHandled) {
             arrivalHandled = true
-            if (onNavigateToWhereAreWeFrom != null) {
-                preferences.markWhereAreWeFromSectionCompleted("sharing_with_whom")
+            if (onNavigateToAnotherWayToCount != null) {
+                preferences.markAnotherWayToCountSectionCompleted(SECTION_ID)
                 preferences.recordLessonCompletion()
             }
-            if (node.answer == null) {
-                award(1)
-                preferences.markScreenAwarded(node.id)
-            } else {
-                award(node.score)
-                preferences.markArrivalAwarded(node.id)
-            }
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
         }
     }
 
@@ -328,24 +508,19 @@ private fun SharingWithWhomGameContent(
                         if (text == null) return@forEach
                         val html = text.text ?: ""
                         when {
-                            hasImgSrc(html) -> {
-                                ResponsiveImage(html = html, imgDesc = text.imgdesc)
-                                CaptionText(stripTags(resolveRichText(html, text.fillDates, text.source)))
-                            }
-                            isDescHtml(html) -> CaptionText(stripTags(resolveRichText(html, text.fillDates, text.source)))
-                            text.format?.contains("markdown") == true -> MarkdownText(
-                                text = resolveRichText(html, text.fillDates, text.source)
-                            )
-                            text.format?.contains("html") == true -> HtmlRenderer(
-                                html = resolveRichText(html, text.fillDates, text.source)
-                            )
+                            containsMarker(html, MARKER_TABLE_1) -> NumbersOneToFourTable()
+                            containsMarker(html, MARKER_FIVE) -> NumberSymbols(hinduArabic = "5", mayaValue = 5, roman = "V")
+                            containsMarker(html, MARKER_TABLE_2) -> NumbersFiveToNineTable()
+                            containsMarker(html, MARKER_TEN) -> NumberSymbols(hinduArabic = "10", mayaValue = 10, roman = "X")
+                            text.format?.contains("markdown") == true -> MarkdownText(text = html)
+                            hasImgSrc(html) -> ResponsiveImage(html = html, imgDesc = text.imgdesc)
                             else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
 
                     if (content.answer != null) {
-                        SharingWithWhomAnswerSection(
+                        MissingNumbersAnswerSection(
                             content = content,
                             onAnswered = { points -> award(points) }
                         )
@@ -393,16 +568,16 @@ private fun SharingWithWhomGameContent(
                         }
                     }
 
-                    if (onNavigateToWhereAreWeFrom != null) {
+                    if (onNavigateToAnotherWayToCount != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToWhereAreWeFrom,
+                            onClick = onNavigateToAnotherWayToCount,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.whereAreWeFrom, fontWeight = FontWeight.Bold)
+                            Text(text = hts.anotherWayToCount, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -421,7 +596,7 @@ private fun SharingWithWhomGameContent(
             }
 
             content?.sourceMenu?.takeIf { it.isNotEmpty() }?.let { sources ->
-                SharingWithWhomSourcesMenu(
+                MissingNumbersSourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -431,24 +606,29 @@ private fun SharingWithWhomGameContent(
 }
 
 @Composable
-private fun SharingWithWhomAnswerSection(
+private fun MissingNumbersAnswerSection(
     content: SMGameContent,
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val answer = content.answer) {
+        is Boolean -> answer
+        is String -> answer.equals("yes", ignoreCase = true)
+        else -> null
+    }
 
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
         if (!awarded) {
             awarded = true
-            val points = if (answer == correctAnswer) content.score else content.score / 2
+            val answeredCorrectly = (answer == "yes") == correctAnswer
+            val points = if (answeredCorrectly) content.score else content.score / 2
             onAnswered(points)
         }
     }
@@ -477,7 +657,7 @@ private fun SharingWithWhomAnswerSection(
             }
         }
     } else {
-        val isCorrect = selected == correctAnswer
+        val isCorrect = (selected == "yes") == correctAnswer
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -503,7 +683,7 @@ private fun SharingWithWhomAnswerSection(
 }
 
 @Composable
-private fun SharingWithWhomSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
+private fun MissingNumbersSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -550,7 +730,7 @@ private fun SharingWithWhomSourcesMenu(sources: List<HTSource>, modifier: Modifi
 
         DropdownMenu(
             expanded = showSourcesMenu && activeSource != null,
-            onDismissRequest = { activeSource = null }
+            onDismissRequest = { showSourcesMenu = false; activeSource = null }
         ) {
             activeSource?.let { source ->
                 val url = sourceUrl(source.page)
