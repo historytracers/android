@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -272,7 +271,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToOvercomingLimits,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("overcoming_limits" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -324,7 +323,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToBuildingLikeAMesoamerican,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("building_like_a_mesoamerican" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -372,7 +371,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToMesoamericanOrder,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("mesoamerican_orders" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -563,6 +562,54 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.iPreferThis,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {},
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Canvas(modifier = Modifier.size(52.dp)) {
+                        val brickColor = Color(0xFF8B1A1A)
+                        val gap = size.minDimension * 0.05f
+                        val rows = 3
+                        val rowHeight = (size.height - gap * (rows - 1)) / rows
+                        val brickWidth = size.width / 3f
+                        for (row in 0 until rows) {
+                            val y = row * (rowHeight + gap)
+                            val startX = if (row % 2 == 0) 0f else -brickWidth / 2f
+                            var x = startX
+                            while (x < size.width) {
+                                val left = maxOf(x, 0f)
+                                val right = minOf(x + brickWidth - gap, size.width)
+                                if (right > left) {
+                                    drawRoundRect(
+                                        color = brickColor,
+                                        topLeft = Offset(left, y),
+                                        size = Size(right - left, rowHeight),
+                                        cornerRadius = CornerRadius(rowHeight * 0.2f)
+                                    )
+                                }
+                                x += brickWidth
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.buildingLikeEtruscanRomans,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
