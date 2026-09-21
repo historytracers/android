@@ -32,13 +32,13 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.buildingLikeEtruscanRomansScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.iPreferThisScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.mesoamericanOrdersScreenStringsForLanguage
 import com.historytracers.app.ui.features.missingNumbersScreenStringsForLanguage
-import com.historytracers.app.ui.features.overcomingLimitsScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -81,7 +81,8 @@ fun LatestAdditionScreen(
     onNavigateToHistoricalEqualityPyramidsIntro: () -> Unit = {},
     onNavigateToTextOrNumber: () -> Unit = {},
     onNavigateToTheMissingNumbers: () -> Unit = {},
-    onNavigateToIPreferThis: () -> Unit = {}
+    onNavigateToIPreferThis: () -> Unit = {},
+    onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -92,11 +93,11 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ols = overcomingLimitsScreenStringsForLanguage(LocalAppLanguage.current)
     val mos = mesoamericanOrdersScreenStringsForLanguage(LocalAppLanguage.current)
     val tons = textOrNumberScreenStringsForLanguage(LocalAppLanguage.current)
     val mns = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val ipts = iPreferThisScreenStringsForLanguage(LocalAppLanguage.current)
+    val bers = buildingLikeEtruscanRomansScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -105,6 +106,39 @@ fun LatestAdditionScreen(
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "building_like_etruscan_romans",
+            label = bers.title,
+            icon = {
+                Canvas(modifier = Modifier.size(48.dp)) {
+                    val brickColor = Color(0xFF8B1A1A)
+                    val gap = size.minDimension * 0.05f
+                    val rows = 3
+                    val rowHeight = (size.height - gap * (rows - 1)) / rows
+                    val brickWidth = size.width / 3f
+                    for (row in 0 until rows) {
+                        val y = row * (rowHeight + gap)
+                        val startX = if (row % 2 == 0) 0f else -brickWidth / 2f
+                        var x = startX
+                        while (x < size.width) {
+                            val left = maxOf(x, 0f)
+                            val right = minOf(x + brickWidth - gap, size.width)
+                            if (right > left) {
+                                drawRoundRect(
+                                    color = brickColor,
+                                    topLeft = Offset(left, y),
+                                    size = Size(right - left, rowHeight),
+                                    cornerRadius = CornerRadius(rowHeight * 0.2f)
+                                )
+                            }
+                            x += brickWidth
+                        }
+                    }
+                }
+            },
+            isCompleted = { "building_like_etruscan_romans" in completedAnotherWayToCount },
+            onNavigate = onNavigateToBuildingLikeEtruscanRomans
+        ),
         LatestAdditionEntry(
             sectionId = "i_prefer_this",
             label = ipts.title,
@@ -213,42 +247,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "mesoamerican_orders" in completedAnotherWayToCount },
             onNavigate = onNavigateToMesoamericanOrders
-        ),
-        LatestAdditionEntry(
-            sectionId = "overcoming_limits",
-            label = ols.title,
-            icon = {
-                Canvas(modifier = Modifier.size(48.dp)) {
-                    val ink = Color(0xFF8B1A1A)
-                    val dotRadius = size.minDimension * 0.07f
-                    val gap = size.height * 0.06f
-                    val barWidth = 4 * dotRadius * 2f + 3 * gap
-                    val barHeight = size.height * 0.14f
-                    val bars = 3
-                    val dots = 4
-                    val barsHeight = bars * barHeight + (bars - 1) * gap
-                    val dotsHeight = dotRadius * 2f + gap
-                    var y = size.height - size.height * 0.05f - (barsHeight + dotsHeight)
-                    val totalWidth = dots * dotRadius * 2f + (dots - 1) * gap
-                    var x = center.x - totalWidth / 2f + dotRadius
-                    repeat(dots) {
-                        drawCircle(color = ink, radius = dotRadius, center = Offset(x, y + dotRadius))
-                        x += dotRadius * 2f + gap
-                    }
-                    y += dotRadius * 2f + gap
-                    repeat(bars) {
-                        drawRoundRect(
-                            color = ink,
-                            topLeft = Offset(center.x - barWidth / 2f, y),
-                            size = Size(barWidth, barHeight),
-                            cornerRadius = CornerRadius(barHeight / 2f)
-                        )
-                        y += barHeight + gap
-                    }
-                }
-            },
-            isCompleted = { "overcoming_limits" in completedAnotherWayToCount },
-            onNavigate = onNavigateToOvercomingLimits
         )
     )
 

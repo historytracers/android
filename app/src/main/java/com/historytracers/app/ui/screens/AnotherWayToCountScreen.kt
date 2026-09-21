@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
-private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this")
+private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "building_like_etruscan_romans")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -58,7 +58,8 @@ fun AnotherWayToCountScreen(
     onNavigateToMesoamericanOrder: () -> Unit = {},
     onNavigateToTextOrNumber: () -> Unit = {},
     onNavigateToTheMissingNumbers: () -> Unit = {},
-    onNavigateToIPreferThis: () -> Unit = {}
+    onNavigateToIPreferThis: () -> Unit = {},
+    onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -572,11 +573,11 @@ fun AnotherWayToCountScreen(
                 Spacer(Modifier.height(48.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = onNavigateToBuildingLikeEtruscanRomans,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("building_like_etruscan_romans" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Canvas(modifier = Modifier.size(52.dp)) {

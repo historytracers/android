@@ -168,6 +168,7 @@ import com.historytracers.app.ui.screens.WhereAreTheyConclusionScreen
 import com.historytracers.app.ui.screens.WhereAreWeFromScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.BuildingLikeAMesoamericanScreen
+import com.historytracers.app.ui.screens.BuildingLikeEtruscanRomansScreen
 import com.historytracers.app.ui.screens.MesoamericanOrdersAncientCalendarScreen
 import com.historytracers.app.ui.screens.MesoamericanOrdersConclusionScreen
 import com.historytracers.app.ui.screens.MesoamericanOrdersDifferentIsNotWrongScreen
@@ -378,7 +379,7 @@ fun AppNavigation() {
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
            "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count",
-           Screen.BuildingLikeAMesoamerican.route,
+           Screen.BuildingLikeAMesoamerican.route, Screen.BuildingLikeEtruscanRomans.route,
            Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
            Screen.MesoamericanOrdersDifferent.route, Screen.MesoamericanOrdersNextOrders.route,
@@ -748,7 +749,8 @@ fun AppNavigation() {
                             onNavigateToMesoamericanOrder = { navController.navigate(Screen.MesoamericanOrdersIntro.route) { launchSingleTop = true } },
                             onNavigateToTextOrNumber = { navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true } },
                             onNavigateToTheMissingNumbers = { navController.navigate(Screen.MissingNumbersIntro.route) { launchSingleTop = true } },
-                            onNavigateToIPreferThis = { navController.navigate(Screen.IPreferThisIntro.route) { launchSingleTop = true } }
+                            onNavigateToIPreferThis = { navController.navigate(Screen.IPreferThisIntro.route) { launchSingleTop = true } },
+                            onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.BuildingLikeAMesoamerican.route) {
@@ -757,6 +759,17 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.BuildingLikeEtruscanRomans.route) {
+                        BuildingLikeEtruscanRomansScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             }
@@ -6086,6 +6099,7 @@ fun AppNavigation() {
                             onNavigateToTextOrNumber = { navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true } },
                             onNavigateToTheMissingNumbers = { navController.navigate(Screen.MissingNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToIPreferThis = { navController.navigate(Screen.IPreferThisIntro.route) { launchSingleTop = true } },
+                            onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
