@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
-private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "building_like_etruscan_romans")
+private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -59,7 +60,8 @@ fun AnotherWayToCountScreen(
     onNavigateToTextOrNumber: () -> Unit = {},
     onNavigateToTheMissingNumbers: () -> Unit = {},
     onNavigateToIPreferThis: () -> Unit = {},
-    onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {}
+    onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
+    onNavigateToTensAndHundreds: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -563,6 +565,38 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.iPreferThis,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                Button(
+                    onClick = onNavigateToTensAndHundreds,
+                    modifier = Modifier
+                        .width(160.dp)
+                        .height(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if ("etruscan_roman_tens" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "X .. XCIX",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.etruscanRomanTens,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

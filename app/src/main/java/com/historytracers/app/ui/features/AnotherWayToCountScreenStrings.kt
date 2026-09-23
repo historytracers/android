@@ -14,6 +14,7 @@ data class AnotherWayToCountScreenStrings(
     val theMissingNumbers: String,
     val iPreferThis: String,
     val buildingLikeEtruscanRomans: String,
+    val etruscanRomanTens: String,
 )
 
 val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -27,6 +28,7 @@ val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     theMissingNumbers = "The Missing Numbers",
     iPreferThis = "I Prefer This",
     buildingLikeEtruscanRomans = "Building Like Etruscan-Romans",
+    etruscanRomanTens = "Etruscan-Roman Tens",
 )
 
 val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -40,6 +42,7 @@ val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     theMissingNumbers = "Os N\u00fameros Que Faltam",
     iPreferThis = "Eu Prefiro Este",
     buildingLikeEtruscanRomans = "Construindo Como Etrusco-Romanos",
+    etruscanRomanTens = "Dezenas Etrusco-Romanas",
 )
 
 val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -53,6 +56,7 @@ val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     theMissingNumbers = "Los N\u00fameros Que Faltan",
     iPreferThis = "Yo Prefiero Este",
     buildingLikeEtruscanRomans = "Construyendo Como Etrusco-Romanos",
+    etruscanRomanTens = "Decenas Etrusco-Romanas",
 )
 
 val LocalAnotherWayToCountScreenStrings = staticCompositionLocalOf { EnAnotherWayToCountScreenStrings }

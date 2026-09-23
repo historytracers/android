@@ -66,7 +66,7 @@ private val whereAreWeFromSectionIds = listOf(
 )
 
 private val anotherWayToCountSectionIds = listOf(
-    "quipus", "practicing_with_quipus", "mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders", "text_or_number", "missing_numbers", "i_prefer_this", "building_like_etruscan_romans"
+    "quipus", "practicing_with_quipus", "mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders", "text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans"
 )
 
 private val runningAndGrowingSectionIds = listOf(
