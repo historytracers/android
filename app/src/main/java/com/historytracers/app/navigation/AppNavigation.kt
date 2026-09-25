@@ -177,6 +177,7 @@ import com.historytracers.app.ui.screens.HundredsAndThousandsModifyScreen
 import com.historytracers.app.ui.screens.HundredsAndThousandsNewOldLogicScreen
 import com.historytracers.app.ui.screens.HundredsAndThousandsNewOrdersScreen
 import com.historytracers.app.ui.screens.HundredsAndThousandsThinkingScreen
+import com.historytracers.app.ui.screens.RepresentYouScreen
 import com.historytracers.app.ui.screens.EtruscanRomanTensAndNowScreen
 import com.historytracers.app.ui.screens.EtruscanRomanTensBetweenScreen
 import com.historytracers.app.ui.screens.EtruscanRomanTensConclusionScreen
@@ -420,7 +421,8 @@ fun AppNavigation() {
             Screen.HundredsAndThousandsIntro.route, Screen.HundredsAndThousandsAppend.route,
             Screen.HundredsAndThousandsNewOrders.route, Screen.HundredsAndThousandsThinking.route,
             Screen.HundredsAndThousandsContinue.route, Screen.HundredsAndThousandsModify.route,
-            Screen.HundredsAndThousandsNewOldLogic.route, Screen.HundredsAndThousandsConclusion.route)
+             Screen.HundredsAndThousandsNewOldLogic.route, Screen.HundredsAndThousandsConclusion.route,
+             Screen.IRepresentYou.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -776,7 +778,8 @@ fun AppNavigation() {
                             onNavigateToIPreferThis = { navController.navigate(Screen.IPreferThisIntro.route) { launchSingleTop = true } },
                             onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
                             onNavigateToTensAndHundreds = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
-                            onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } }
+                            onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
+                            onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.BuildingLikeAMesoamerican.route) {
@@ -1065,6 +1068,17 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.IRepresentYou.route) {
+                        RepresentYouScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
                                 if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
@@ -6398,6 +6412,7 @@ fun AppNavigation() {
                             onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
                             onNavigateToEtruscanRomanTens = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
+                            onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },

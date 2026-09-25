@@ -39,7 +39,7 @@ import com.historytracers.app.ui.features.hundredsAndThousandsScreenStringsForLa
 import com.historytracers.app.ui.features.iPreferThisScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.missingNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -84,7 +84,8 @@ fun LatestAdditionScreen(
     onNavigateToIPreferThis: () -> Unit = {},
     onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
     onNavigateToEtruscanRomanTens: () -> Unit = {},
-    onNavigateToHundredsAndThousands: () -> Unit = {}
+    onNavigateToHundredsAndThousands: () -> Unit = {},
+    onNavigateToRepresentYou: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -95,11 +96,11 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val mns = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val ipts = iPreferThisScreenStringsForLanguage(LocalAppLanguage.current)
     val bers = buildingLikeEtruscanRomansScreenStringsForLanguage(LocalAppLanguage.current)
     val erts = etruscanRomanTensScreenStringsForLanguage(LocalAppLanguage.current)
     val hats = hundredsAndThousandsScreenStringsForLanguage(LocalAppLanguage.current)
+    val rys = representYouScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -108,6 +109,21 @@ fun LatestAdditionScreen(
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "i_represent_you",
+            label = rys.title,
+            icon = {
+                Text(
+                    text = "10 = X",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = Color(0xFF8B1A1A)
+                )
+            },
+            isCompleted = { "i_represent_you" in completedAnotherWayToCount },
+            onNavigate = onNavigateToRepresentYou
+        ),
         LatestAdditionEntry(
             sectionId = "hundreds_and_thousands",
             label = hats.title,
@@ -185,20 +201,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "i_prefer_this" in completedAnotherWayToCount },
             onNavigate = onNavigateToIPreferThis
-        ),
-        LatestAdditionEntry(
-            sectionId = "missing_numbers",
-            label = mns.title,
-            icon = {
-                Text(
-                    text = "I...X",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF8B1A1A)
-                )
-            },
-            isCompleted = { "missing_numbers" in completedAnotherWayToCount },
-            onNavigate = onNavigateToTheMissingNumbers
         )
     )
 
