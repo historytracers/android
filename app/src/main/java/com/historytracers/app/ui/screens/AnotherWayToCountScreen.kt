@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -42,7 +41,7 @@ import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
-private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this")
+private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans", "hundreds_and_thousands", "i_represent_you")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -59,7 +58,11 @@ fun AnotherWayToCountScreen(
     onNavigateToMesoamericanOrder: () -> Unit = {},
     onNavigateToTextOrNumber: () -> Unit = {},
     onNavigateToTheMissingNumbers: () -> Unit = {},
-    onNavigateToIPreferThis: () -> Unit = {}
+    onNavigateToIPreferThis: () -> Unit = {},
+    onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
+    onNavigateToTensAndHundreds: () -> Unit = {},
+    onNavigateToHundredsAndThousands: () -> Unit = {},
+    onNavigateToRepresentYou: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -272,7 +275,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToOvercomingLimits,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("overcoming_limits" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -324,7 +327,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToBuildingLikeAMesoamerican,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("building_like_a_mesoamerican" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -372,7 +375,7 @@ fun AnotherWayToCountScreen(
                 FilledIconButton(
                     onClick = onNavigateToMesoamericanOrder,
                     modifier = Modifier.size(96.dp),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("mesoamerican_orders" in completedSections) ButtonYellowDark else ButtonYellow
                     )
@@ -563,6 +566,144 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.iPreferThis,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToTensAndHundreds,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("etruscan_roman_tens" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "X .. XCIX",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.etruscanRomanTens,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToBuildingLikeEtruscanRomans,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("building_like_etruscan_romans" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Canvas(modifier = Modifier.size(52.dp)) {
+                        val brickColor = Color(0xFF8B1A1A)
+                        val gap = size.minDimension * 0.05f
+                        val rows = 3
+                        val rowHeight = (size.height - gap * (rows - 1)) / rows
+                        val brickWidth = size.width / 3f
+                        for (row in 0 until rows) {
+                            val y = row * (rowHeight + gap)
+                            val startX = if (row % 2 == 0) 0f else -brickWidth / 2f
+                            var x = startX
+                            while (x < size.width) {
+                                val left = maxOf(x, 0f)
+                                val right = minOf(x + brickWidth - gap, size.width)
+                                if (right > left) {
+                                    drawRoundRect(
+                                        color = brickColor,
+                                        topLeft = Offset(left, y),
+                                        size = Size(right - left, rowHeight),
+                                        cornerRadius = CornerRadius(rowHeight * 0.2f)
+                                    )
+                                }
+                                x += brickWidth
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.buildingLikeEtruscanRomans,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToHundredsAndThousands,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("hundreds_and_thousands" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "C ... M",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.hundredsAndThousands,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToRepresentYou,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("i_represent_you" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "10 = X",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF8B1A1A)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.iRepresentYou,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

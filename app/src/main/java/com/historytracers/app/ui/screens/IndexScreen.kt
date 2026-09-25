@@ -50,7 +50,7 @@ private val abacusSectionIds = listOf(
     "soroban_writing", "suanpan_writing", "schyoty_writing", "large_numbers_writing",
     "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "practicing_addition",
     "multiplication_table", "carrying", "multiplying_with_abacus", "multiplying_with_abacus_l2",
-    "multiplying_without_limits", "subtracting_with_abacus"
+    "multiplying_without_limits", "subtracting_with_abacus", "abacus_history"
 )
 
 private val yupanaSectionIds = listOf(
@@ -66,7 +66,7 @@ private val whereAreWeFromSectionIds = listOf(
 )
 
 private val anotherWayToCountSectionIds = listOf(
-    "quipus", "practicing_with_quipus", "mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders", "text_or_number", "missing_numbers", "i_prefer_this"
+    "quipus", "practicing_with_quipus", "mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders", "text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans", "hundreds_and_thousands", "i_represent_you"
 )
 
 private val runningAndGrowingSectionIds = listOf(
