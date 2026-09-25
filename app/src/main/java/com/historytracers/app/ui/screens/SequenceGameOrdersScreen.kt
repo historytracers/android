@@ -31,6 +31,7 @@ import com.historytracers.app.ui.features.sequenceGameOrdersScreenStringsForLang
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlin.random.Random
 import kotlinx.coroutines.launch
 
 private val allOrderNumbers = listOf(
@@ -49,8 +50,16 @@ private fun formatOrderNumber(value: Long, language: String): String {
     return value.toString().reversed().chunked(3).joinToString(separator).reversed()
 }
 
+// Picks a random number that belongs to the given order: Units (1..9),
+// Tens (10..99), Hundreds (100..999), and so on.
+private fun randomNumberForOrder(orderIndex: Int): Long {
+    val min = allOrderNumbers[orderIndex]
+    val max = min * 10L - 1L
+    return min + Random.nextLong(max - min + 1L)
+}
+
 private fun buildLeftItems(ids: List<Int>, language: String): List<OrderLeftItem> =
-    ids.shuffled().map { OrderLeftItem(formatOrderNumber(allOrderNumbers[it], language), it) }
+    ids.shuffled().map { OrderLeftItem(formatOrderNumber(randomNumberForOrder(it), language), it) }
 
 private fun buildRightItems(names: List<String>, ids: List<Int>): List<OrderRightItem> =
     ids.shuffled().map { OrderRightItem(names[it], it) }
