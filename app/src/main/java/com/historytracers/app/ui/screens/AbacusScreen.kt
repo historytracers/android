@@ -59,7 +59,8 @@ fun AbacusScreen(
     onNavigateToSubtractingWithAbacus: () -> Unit = {},
     onNavigateToAddingWithAbacus: () -> Unit = {},
     onNavigateToComplementToTen: () -> Unit = {},
-    onNavigateToAddingLargeNumbers: () -> Unit = {}
+    onNavigateToAddingLargeNumbers: () -> Unit = {},
+    onNavigateToHistory: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
@@ -170,11 +171,11 @@ fun AbacusScreen(
             verticalArrangement = Arrangement.Center
         ) {
             FilledIconButton(
-                onClick = { },
+                onClick = onNavigateToHistory,
                 modifier = Modifier.size(96.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = ButtonYellow
+                    containerColor = if (completedSections.contains("abacus_history")) ButtonYellowDark else ButtonYellow
                 )
             ) {
                 Icon(

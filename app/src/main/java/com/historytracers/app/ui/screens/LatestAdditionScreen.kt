@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -31,12 +32,12 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.buildingLikeEtruscanRomansScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.etruscanRomanTensScreenStringsForLanguage
 import com.historytracers.app.ui.features.hundredsAndThousandsScreenStringsForLanguage
-import com.historytracers.app.ui.features.iPreferThisScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
@@ -85,7 +86,8 @@ fun LatestAdditionScreen(
     onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
     onNavigateToEtruscanRomanTens: () -> Unit = {},
     onNavigateToHundredsAndThousands: () -> Unit = {},
-    onNavigateToRepresentYou: () -> Unit = {}
+    onNavigateToRepresentYou: () -> Unit = {},
+    onNavigateToAbacusHistory: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -96,7 +98,7 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ipts = iPreferThisScreenStringsForLanguage(LocalAppLanguage.current)
+    val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
     val bers = buildingLikeEtruscanRomansScreenStringsForLanguage(LocalAppLanguage.current)
     val erts = etruscanRomanTensScreenStringsForLanguage(LocalAppLanguage.current)
     val hats = hundredsAndThousandsScreenStringsForLanguage(LocalAppLanguage.current)
@@ -107,8 +109,22 @@ fun LatestAdditionScreen(
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
+    val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "abacus_history",
+            label = ahs.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_feather),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "abacus_history" in completedAbacus },
+            onNavigate = onNavigateToAbacusHistory
+        ),
         LatestAdditionEntry(
             sectionId = "i_represent_you",
             label = rys.title,
@@ -186,21 +202,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "building_like_etruscan_romans" in completedAnotherWayToCount },
             onNavigate = onNavigateToBuildingLikeEtruscanRomans
-        ),
-        LatestAdditionEntry(
-            sectionId = "i_prefer_this",
-            label = ipts.title,
-            icon = {
-                Text(
-                    text = "IV or IIII",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = Color(0xFF8B1A1A)
-                )
-            },
-            isCompleted = { "i_prefer_this" in completedAnotherWayToCount },
-            onNavigate = onNavigateToIPreferThis
         )
     )
 
