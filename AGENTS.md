@@ -105,11 +105,11 @@
   - **First Steps** (20): `i_dont_know`, `learning_in_shells`, `how_do_i_learn`, `my_hands`, `first_hands`, `counting_with_bones`, `first_voice`, `my_body`, `drawing`, `numbers`, `the_zero`, `sequence_game`, `family_part1`, `sequence_game_families`, `building`, `natural_families_part2`, `sequence_game_orders`, `going_to_infinity`, `limits_min_max`, `where_are_they`
   - **I Am (Not) Like You** (5): `to_be_or_not_to_be`, `totally_equal`, `equality_in_history_metate`, `equality_in_history`, `equal_same_group_or_different`
   - **Workout** (5): `exercising_hands`, `exercising_feet_and_hands`, `exercising_addition`, `exercising_multiplication`, `exercising_multiplication_l2`
-  - **Abacus** (14): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`
+  - **Abacus** (15): `soroban_writing`, `suanpan_writing`, `schyoty_writing`, `large_numbers_writing`, `adding_with_abacus`, `complement_to_ten`, `adding_large_numbers`, `practicing_addition`, `multiplication_table`, `carrying`, `multiplying_with_abacus`, `multiplying_with_abacus_l2`, `multiplying_without_limits`, `subtracting_with_abacus`, `abacus_history`
   - **Yupana** (5): `hands_on_yupana`, `large_numbers`, `quipu_on_the_yupana`, `moving_in_yupana`, `practicing_addition`
   - **Road to Somewhere** (6): `walk_among_numbers`, `carrying_in_addition`, `order_of_addition`, `playing_with_axioms`, `running_among_numbers`, `practicing_addition`
   - **Where Are We From** (4): `shared_origin`, `matter_energy`, `everything_together`, `sharing_with_whom`
-  - **Another Way to Count** (11): `quipus`, `practicing_with_quipus`, `mesoamerican_symbols`, `overcoming_limits`, `building_like_a_mesoamerican`, `mesoamerican_orders`, `text_or_number`, `missing_numbers`, `i_prefer_this`, `etruscan_roman_tens`, `building_like_etruscan_romans`
+  - **Another Way to Count** (13): `quipus`, `practicing_with_quipus`, `mesoamerican_symbols`, `overcoming_limits`, `building_like_a_mesoamerican`, `mesoamerican_orders`, `text_or_number`, `missing_numbers`, `i_prefer_this`, `etruscan_roman_tens`, `building_like_etruscan_romans`, `hundreds_and_thousands`, `i_represent_you`
   - **Running and Growing** (5): `adding_the_same_number`, `the_result_is`, `inversion`, `connecting_the_multiplication`, `drawing_multiplication`
 
 ## Reset Classes Menu
@@ -134,7 +134,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `etruscan_roman_tens` (Etruscan-Roman Tens), `building_like_etruscan_romans` (Building Like Etruscan-Romans), `i_prefer_this` (I Prefer This), `missing_numbers` (The Missing Numbers), `text_or_number` (Text or Number).
+- Current list (latest first): `abacus_history` (History of the Abacus), `i_represent_you` (I Represent You), `hundreds_and_thousands` (Hundreds and Thousands), `etruscan_roman_tens` (Etruscan-Roman Tens), `building_like_etruscan_romans` (Building Like Etruscan-Romans).
 
 ## New Main-Screen Buttons (Sun Badge)
 
