@@ -35,6 +35,7 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.buildingLikeEtruscanRomansScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.etruscanRomanTensScreenStringsForLanguage
+import com.historytracers.app.ui.features.hundredsAndThousandsScreenStringsForLanguage
 import com.historytracers.app.ui.features.iPreferThisScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
@@ -42,7 +43,6 @@ import com.historytracers.app.ui.features.missingNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.app.ui.features.textOrNumberScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -83,7 +83,8 @@ fun LatestAdditionScreen(
     onNavigateToTheMissingNumbers: () -> Unit = {},
     onNavigateToIPreferThis: () -> Unit = {},
     onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
-    onNavigateToEtruscanRomanTens: () -> Unit = {}
+    onNavigateToEtruscanRomanTens: () -> Unit = {},
+    onNavigateToHundredsAndThousands: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -94,11 +95,11 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val tons = textOrNumberScreenStringsForLanguage(LocalAppLanguage.current)
     val mns = missingNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val ipts = iPreferThisScreenStringsForLanguage(LocalAppLanguage.current)
     val bers = buildingLikeEtruscanRomansScreenStringsForLanguage(LocalAppLanguage.current)
     val erts = etruscanRomanTensScreenStringsForLanguage(LocalAppLanguage.current)
+    val hats = hundredsAndThousandsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -107,6 +108,21 @@ fun LatestAdditionScreen(
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "hundreds_and_thousands",
+            label = hats.title,
+            icon = {
+                Text(
+                    text = "C ... M",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = Color(0xFF8B1A1A)
+                )
+            },
+            isCompleted = { "hundreds_and_thousands" in completedAnotherWayToCount },
+            onNavigate = onNavigateToHundredsAndThousands
+        ),
         LatestAdditionEntry(
             sectionId = "etruscan_roman_tens",
             label = erts.title,
@@ -183,20 +199,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "missing_numbers" in completedAnotherWayToCount },
             onNavigate = onNavigateToTheMissingNumbers
-        ),
-        LatestAdditionEntry(
-            sectionId = "text_or_number",
-            label = tons.title,
-            icon = {
-                Text(
-                    text = "VI",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF8B1A1A)
-                )
-            },
-            isCompleted = { "text_or_number" in completedAnotherWayToCount },
-            onNavigate = onNavigateToTextOrNumber
         )
     )
 

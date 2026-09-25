@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
-private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans")
+private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans", "hundreds_and_thousands")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -60,7 +60,8 @@ fun AnotherWayToCountScreen(
     onNavigateToTheMissingNumbers: () -> Unit = {},
     onNavigateToIPreferThis: () -> Unit = {},
     onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
-    onNavigateToTensAndHundreds: () -> Unit = {}
+    onNavigateToTensAndHundreds: () -> Unit = {},
+    onNavigateToHundredsAndThousands: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -652,11 +653,11 @@ fun AnotherWayToCountScreen(
                 Spacer(Modifier.height(48.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = onNavigateToHundredsAndThousands,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("hundreds_and_thousands" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
