@@ -351,4 +351,12 @@ sealed class Screen(val route: String) {
     data object MultiplyingWithYupanaThinking : Screen("multiplying_with_yupana_thinking")
     data object MultiplyingWithYupanaProcess : Screen("multiplying_with_yupana_process")
     data object MultiplyingWithYupanaConclusion : Screen("multiplying_with_yupana_conclusion")
+    data object ReverseMovementIntro : Screen("reverse_movement_intro")
+    data object ReverseMovementIskay : Screen("reverse_movement_iskay")
+    data object ReverseMovementKimsa : Screen("reverse_movement_kimsa")
+    data object ReverseMovementPisqa : Screen("reverse_movement_pisqa")
+    data object ReverseMovementPichana : Screen("reverse_movement_pichana")
+    data object ReverseMovementCancellation : Screen("reverse_movement_cancellation")
+    data object ReverseMovementQuestion : Screen("reverse_movement_question")
+    data object ReverseMovementConclusion : Screen("reverse_movement_conclusion")
 }

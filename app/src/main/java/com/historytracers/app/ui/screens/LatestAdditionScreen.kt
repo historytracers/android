@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.DirectionsRun
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,12 +30,12 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.etruscanRomanTensScreenStringsForLanguage
 import com.historytracers.app.ui.features.hundredsAndThousandsScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
+import com.historytracers.app.ui.features.reverseMovementScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -82,7 +83,8 @@ fun LatestAdditionScreen(
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToRepresentYou: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
-    onNavigateToMultiplyingWithYupana: () -> Unit = {}
+    onNavigateToMultiplyingWithYupana: () -> Unit = {},
+    onNavigateToReverseMovements: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -94,7 +96,7 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
-    val erts = etruscanRomanTensScreenStringsForLanguage(LocalAppLanguage.current)
+    val rms = reverseMovementScreenStringsForLanguage(LocalAppLanguage.current)
     val hats = hundredsAndThousandsScreenStringsForLanguage(LocalAppLanguage.current)
     val rys = representYouScreenStringsForLanguage(LocalAppLanguage.current)
     val mwys = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -108,6 +110,29 @@ fun LatestAdditionScreen(
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "reverse_movements",
+            label = rms.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            },
+            isCompleted = { "reverse_movements" in completedYupana },
+            onNavigate = onNavigateToReverseMovements
+        ),
         LatestAdditionEntry(
             sectionId = "multiplying_with_yupana",
             label = mwys.title,
@@ -163,21 +188,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "hundreds_and_thousands" in completedAnotherWayToCount },
             onNavigate = onNavigateToHundredsAndThousands
-        ),
-        LatestAdditionEntry(
-            sectionId = "etruscan_roman_tens",
-            label = erts.title,
-            icon = {
-                Text(
-                    text = "X .. XCIX",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = Color(0xFF8B1A1A)
-                )
-            },
-            isCompleted = { "etruscan_roman_tens" in completedAnotherWayToCount },
-            onNavigate = onNavigateToEtruscanRomanTens
         )
     )
 

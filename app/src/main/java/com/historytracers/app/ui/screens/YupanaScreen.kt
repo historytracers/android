@@ -50,7 +50,8 @@ fun YupanaScreen(
     onNavigateToMovingInYupana: () -> Unit = {},
     onNavigateToLargeNumbers: () -> Unit = {},
     onNavigateToQuipuOnTheYupana: () -> Unit = {},
-    onNavigateToMultiplyingWithYupana: () -> Unit = {}
+    onNavigateToMultiplyingWithYupana: () -> Unit = {},
+    onNavigateToReverseMovements: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -469,11 +470,11 @@ fun YupanaScreen(
                 Spacer(Modifier.height(48.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = { onNavigateToReverseMovements() },
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
+                        containerColor = if (completedSections.contains("reverse_movements")) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {
