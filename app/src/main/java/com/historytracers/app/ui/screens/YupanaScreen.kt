@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -458,6 +459,47 @@ fun YupanaScreen(
 
                 Text(
                     text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = { },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(34.dp),
+                            tint = OnButtonYellow
+                        )
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            modifier = Modifier.size(34.dp),
+                            tint = OnButtonYellow
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.reverseMovements,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
