@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,12 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -34,12 +28,12 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.buildingLikeEtruscanRomansScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.etruscanRomanTensScreenStringsForLanguage
 import com.historytracers.app.ui.features.hundredsAndThousandsScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -87,7 +81,8 @@ fun LatestAdditionScreen(
     onNavigateToEtruscanRomanTens: () -> Unit = {},
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToRepresentYou: () -> Unit = {},
-    onNavigateToAbacusHistory: () -> Unit = {}
+    onNavigateToAbacusHistory: () -> Unit = {},
+    onNavigateToMultiplyingWithYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -99,10 +94,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
-    val bers = buildingLikeEtruscanRomansScreenStringsForLanguage(LocalAppLanguage.current)
     val erts = etruscanRomanTensScreenStringsForLanguage(LocalAppLanguage.current)
     val hats = hundredsAndThousandsScreenStringsForLanguage(LocalAppLanguage.current)
     val rys = representYouScreenStringsForLanguage(LocalAppLanguage.current)
+    val mwys = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -110,8 +105,22 @@ fun LatestAdditionScreen(
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
+    val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "multiplying_with_yupana",
+            label = mwys.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_five_circles),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "multiplying_with_yupana" in completedYupana },
+            onNavigate = onNavigateToMultiplyingWithYupana
+        ),
         LatestAdditionEntry(
             sectionId = "abacus_history",
             label = ahs.title,
@@ -169,39 +178,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "etruscan_roman_tens" in completedAnotherWayToCount },
             onNavigate = onNavigateToEtruscanRomanTens
-        ),
-        LatestAdditionEntry(
-            sectionId = "building_like_etruscan_romans",
-            label = bers.title,
-            icon = {
-                Canvas(modifier = Modifier.size(48.dp)) {
-                    val brickColor = Color(0xFF8B1A1A)
-                    val gap = size.minDimension * 0.05f
-                    val rows = 3
-                    val rowHeight = (size.height - gap * (rows - 1)) / rows
-                    val brickWidth = size.width / 3f
-                    for (row in 0 until rows) {
-                        val y = row * (rowHeight + gap)
-                        val startX = if (row % 2 == 0) 0f else -brickWidth / 2f
-                        var x = startX
-                        while (x < size.width) {
-                            val left = maxOf(x, 0f)
-                            val right = minOf(x + brickWidth - gap, size.width)
-                            if (right > left) {
-                                drawRoundRect(
-                                    color = brickColor,
-                                    topLeft = Offset(left, y),
-                                    size = Size(right - left, rowHeight),
-                                    cornerRadius = CornerRadius(rowHeight * 0.2f)
-                                )
-                            }
-                            x += brickWidth
-                        }
-                    }
-                }
-            },
-            isCompleted = { "building_like_etruscan_romans" in completedAnotherWayToCount },
-            onNavigate = onNavigateToBuildingLikeEtruscanRomans
         )
     )
 

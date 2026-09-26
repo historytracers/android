@@ -344,4 +344,11 @@ sealed class Screen(val route: String) {
     data object LargeNumbersPattern : Screen("large_numbers_pattern")
     data object LargeNumbersApp : Screen("large_numbers_app")
     data object LargeNumbersConclusion : Screen("large_numbers_conclusion")
+    data object MultiplyingWithYupanaIntro : Screen("multiplying_with_yupana_intro")
+    data object MultiplyingWithYupanaFirstValues : Screen("multiplying_with_yupana_first_values")
+    data object MultiplyingWithYupanaNextStep : Screen("multiplying_with_yupana_next_step")
+    data object MultiplyingWithYupanaOrganizing : Screen("multiplying_with_yupana_organizing")
+    data object MultiplyingWithYupanaThinking : Screen("multiplying_with_yupana_thinking")
+    data object MultiplyingWithYupanaProcess : Screen("multiplying_with_yupana_process")
+    data object MultiplyingWithYupanaConclusion : Screen("multiplying_with_yupana_conclusion")
 }
