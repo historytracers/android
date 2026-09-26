@@ -263,6 +263,7 @@ import com.historytracers.app.ui.screens.ExercisingMultiplicationL2Screen
 import com.historytracers.app.ui.screens.YupanaScreen
 import com.historytracers.app.ui.screens.PracticingAdditionYupanaScreen
 import com.historytracers.app.ui.screens.PracticingMultiplicationYupanaScreen
+import com.historytracers.app.ui.screens.PracticingSubtractionYupanaScreen
 import com.historytracers.app.ui.screens.HandsOnYupanaScreen
 import com.historytracers.app.ui.screens.DrawingToCountScreen
 import com.historytracers.app.ui.screens.IskayMovementScreen
@@ -453,7 +454,8 @@ fun AppNavigation() {
                Screen.ReverseMovementIntro.route, Screen.ReverseMovementIskay.route,
                Screen.ReverseMovementKimsa.route, Screen.ReverseMovementPisqa.route,
                Screen.ReverseMovementPichana.route, Screen.ReverseMovementCancellation.route,
-               Screen.ReverseMovementQuestion.route, Screen.ReverseMovementConclusion.route)
+               Screen.ReverseMovementQuestion.route, Screen.ReverseMovementConclusion.route,
+               Screen.PracticingSubtractionYupana.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -5783,7 +5785,8 @@ fun AppNavigation() {
                             onNavigateToLargeNumbers = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToQuipuOnTheYupana = { navController.navigate(Screen.QuipuOnTheYupana.route) { launchSingleTop = true } },
                             onNavigateToMultiplyingWithYupana = { navController.navigate(Screen.MultiplyingWithYupanaIntro.route) { launchSingleTop = true } },
-                            onNavigateToReverseMovements = { navController.navigate(Screen.ReverseMovementIntro.route) { launchSingleTop = true } }
+                            onNavigateToReverseMovements = { navController.navigate(Screen.ReverseMovementIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingSubtractionYupana = { navController.navigate(Screen.PracticingSubtractionYupana.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.HandsOnYupana.route) {
@@ -6618,6 +6621,20 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
+                    composable(Screen.PracticingSubtractionYupana.route) {
+                        PracticingSubtractionYupanaScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
+                                    navController.navigate(Screen.Yupana.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
                     composable(Screen.SorobanWriting.route) {
                         SorobanWritingScreen(
                             onNavigateBack = {
@@ -6889,6 +6906,7 @@ fun AppNavigation() {
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToMultiplyingWithYupana = { navController.navigate(Screen.MultiplyingWithYupanaIntro.route) { launchSingleTop = true } },
                             onNavigateToReverseMovements = { navController.navigate(Screen.ReverseMovementIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingSubtractionYupana = { navController.navigate(Screen.PracticingSubtractionYupana.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },

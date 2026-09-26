@@ -30,10 +30,10 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.hundredsAndThousandsScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
 import com.historytracers.app.ui.features.reverseMovementScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
@@ -84,7 +84,8 @@ fun LatestAdditionScreen(
     onNavigateToRepresentYou: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
     onNavigateToMultiplyingWithYupana: () -> Unit = {},
-    onNavigateToReverseMovements: () -> Unit = {}
+    onNavigateToReverseMovements: () -> Unit = {},
+    onNavigateToPracticingSubtractionYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -97,7 +98,7 @@ fun LatestAdditionScreen(
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
     val rms = reverseMovementScreenStringsForLanguage(LocalAppLanguage.current)
-    val hats = hundredsAndThousandsScreenStringsForLanguage(LocalAppLanguage.current)
+    val pss = practicingSubtractionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val rys = representYouScreenStringsForLanguage(LocalAppLanguage.current)
     val mwys = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
@@ -110,6 +111,19 @@ fun LatestAdditionScreen(
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction_yupana",
+            label = pss.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_knot),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "practicing_subtraction_yupana" in completedYupana },
+            onNavigate = onNavigateToPracticingSubtractionYupana
+        ),
         LatestAdditionEntry(
             sectionId = "reverse_movements",
             label = rms.title,
@@ -173,21 +187,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "i_represent_you" in completedAnotherWayToCount },
             onNavigate = onNavigateToRepresentYou
-        ),
-        LatestAdditionEntry(
-            sectionId = "hundreds_and_thousands",
-            label = hats.title,
-            icon = {
-                Text(
-                    text = "C ... M",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = Color(0xFF8B1A1A)
-                )
-            },
-            isCompleted = { "hundreds_and_thousands" in completedAnotherWayToCount },
-            onNavigate = onNavigateToHundredsAndThousands
         )
     )
 

@@ -55,7 +55,8 @@ private val abacusSectionIds = listOf(
 
 private val yupanaSectionIds = listOf(
     "hands_on_yupana", "large_numbers", "quipu_on_the_yupana", "moving_in_yupana", "practicing_addition",
-    "multiplying_with_yupana", "practicing_multiplication_yupana", "reverse_movements"
+    "multiplying_with_yupana", "practicing_multiplication_yupana", "reverse_movements",
+    "practicing_subtraction_yupana"
 )
 
 private val roadToSomewhereSectionIds = listOf(
