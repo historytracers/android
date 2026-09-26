@@ -73,9 +73,16 @@ fun YupanaScreen(
             completedSections
         )
     }
+    val controller3 = remember {
+        LevelGroupController(
+            listOf("multiplying_with_yupana", "practicing_multiplication_yupana"),
+            completedSections
+        )
+    }
     LaunchedEffect(completedSections) {
         controller.syncFromPersisted(completedSections)
         controller2.syncFromPersisted(completedSections)
+        controller3.syncFromPersisted(completedSections)
     }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
@@ -402,7 +409,7 @@ fun YupanaScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (completedSections.contains("practicing_multiplication_yupana")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(
@@ -417,6 +424,40 @@ fun YupanaScreen(
 
                 Text(
                     text = xs.practicingMultiplicationYupana,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("yupana_group3")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = controller3.allCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("yupana_group3" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

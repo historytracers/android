@@ -208,6 +208,7 @@ fun PracticingMultiplicationYupanaScreen(
         if (iteration >= totalIterations) {
             finalCongratsShown = true
             onScoreChanged(currentScore + 2)
+            scope.launch { preferences.markYupanaSectionCompleted("practicing_multiplication_yupana") }
             scope.launch { preferences.recordLessonCompletion() }
             feedbackMessage = xs.ypMultiplyPerfectMessage.format(exercise.first, exercise.second, runningTotal)
             isFeedbackPositive = true
