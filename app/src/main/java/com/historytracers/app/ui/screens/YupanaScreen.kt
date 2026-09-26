@@ -51,7 +51,8 @@ fun YupanaScreen(
     onNavigateToLargeNumbers: () -> Unit = {},
     onNavigateToQuipuOnTheYupana: () -> Unit = {},
     onNavigateToMultiplyingWithYupana: () -> Unit = {},
-    onNavigateToReverseMovements: () -> Unit = {}
+    onNavigateToReverseMovements: () -> Unit = {},
+    onNavigateToPracticingSubtractionYupana: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
@@ -414,11 +415,11 @@ fun YupanaScreen(
                         containerColor = if (completedSections.contains("practicing_multiplication_yupana")) ButtonYellowDark else ButtonYellow
                     )
                 ) {
-                    Text(
-                        text = "7 \u00D7 7",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = OnButtonYellow
+                    Icon(
+                        painterResource(R.drawable.ic_quipu_practice),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
                     )
                 }
 
@@ -501,6 +502,35 @@ fun YupanaScreen(
 
                 Text(
                     text = xs.reverseMovements,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = { onNavigateToPracticingSubtractionYupana() },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("practicing_subtraction_yupana")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_knot),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.practicingSubtractionYupana,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
