@@ -881,7 +881,7 @@ private fun AbacusHistoryGameContent(
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(text = hts.abacus, fontWeight = FontWeight.Bold)
+                            Text(text = hts.anotherWayToCount, fontWeight = FontWeight.Bold)
                         }
                     }
 

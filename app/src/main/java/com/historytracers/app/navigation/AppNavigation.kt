@@ -6643,8 +6643,8 @@ fun AppNavigation() {
                     composable(Screen.SorobanWriting.route) {
                         SorobanWritingScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6657,8 +6657,8 @@ fun AppNavigation() {
                     composable(Screen.SuanpanWriting.route) {
                         SuanpanWritingScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6671,8 +6671,8 @@ fun AppNavigation() {
                     composable(Screen.SchyotyWriting.route) {
                         SchyotyWritingScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6685,8 +6685,8 @@ fun AppNavigation() {
                     composable(Screen.LargeNumbersWriting.route) {
                         LargeNumbersWritingScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6701,8 +6701,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigateNext = { navController.navigate(Screen.AbacusHistorySuanpan.route) { launchSingleTop = true } }
@@ -6713,8 +6713,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6730,8 +6730,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6747,8 +6747,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6764,8 +6764,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6781,8 +6781,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6798,8 +6798,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6815,8 +6815,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigatePrev = {
@@ -6825,8 +6825,8 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToAbacus = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
                             }
                         )
