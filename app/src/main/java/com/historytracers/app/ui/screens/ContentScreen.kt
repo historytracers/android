@@ -415,25 +415,28 @@ private fun SMGameScreen(data: SMGameFile, repo: ContentRepository, s: UiStrings
                         .padding(12.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    currentNode?.prev?.let { prevId ->
+                    val prevId = currentNode?.prev?.takeIf { it.isNotBlank() && contentMap.containsKey(it) }
+                    val jumpId = currentNode?.jumpTo?.takeIf { it.isNotBlank() && contentMap.containsKey(it) }
+                    val nextId = currentNode?.next?.takeIf { it.isNotBlank() && contentMap.containsKey(it) }
+                    prevId?.let { target ->
                         Button(
-                            onClick = { currentNodeId = prevId },
+                            onClick = { currentNodeId = target },
                             modifier = Modifier.weight(1f).padding(end = 4.dp)
                         ) {
                             Text(s.common.previous)
                         }
                     }
-                    currentNode?.jumpTo?.let { jumpId ->
+                    jumpId?.let { target ->
                         OutlinedButton(
-                            onClick = { currentNodeId = jumpId },
+                            onClick = { currentNodeId = target },
                             modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                         ) {
                             Text(s.common.jump)
                         }
                     }
-                    currentNode?.next?.let { nextId ->
+                    nextId?.let { target ->
                         Button(
-                            onClick = { currentNodeId = nextId },
+                            onClick = { currentNodeId = target },
                             modifier = Modifier.weight(1f).padding(start = 4.dp)
                         ) {
                             Text(s.common.next)
