@@ -5,6 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 data class HubTitleStrings(
     val aRoadToSomewhere: String,
+    val aroundTheWorld: String,
     val runningAndGrowing: String,
     val birth: String,
     val death: String,
@@ -46,6 +47,7 @@ data class HubTitleStrings(
 
 val EnHubTitleStrings = HubTitleStrings(
     aRoadToSomewhere = "A Road to Somewhere",
+    aroundTheWorld = "Around the World",
     runningAndGrowing = "Running and Growing",
     birth = "Birth",
     death = "Death",
@@ -87,6 +89,7 @@ val EnHubTitleStrings = HubTitleStrings(
 
 val PtHubTitleStrings = HubTitleStrings(
     aRoadToSomewhere = "Uma estrada para algum lugar",
+    aroundTheWorld = "Ao redor do mundo",
     runningAndGrowing = "Correndo e crescendo",
     birth = "Nascimento",
     death = "Morte",
@@ -128,6 +131,7 @@ val PtHubTitleStrings = HubTitleStrings(
 
 val EsHubTitleStrings = HubTitleStrings(
     aRoadToSomewhere = "Un camino a alg\u00fan lugar",
+    aroundTheWorld = "Alrededor del mundo",
     runningAndGrowing = "Corriendo y creciendo",
     birth = "Nacimiento",
     death = "Muerte",

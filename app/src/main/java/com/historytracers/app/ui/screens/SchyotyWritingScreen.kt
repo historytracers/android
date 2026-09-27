@@ -55,10 +55,8 @@ fun SchyotyWritingScreen(
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val xs = schyotyWritingScreenStringsForLanguage(LocalAppLanguage.current)
     val beads = remember { mutableStateOf(List(ROWS) { 0 }) }
-    val targetLevel = remember { mutableStateOf(0) }
-    val targetValue = remember { mutableStateOf(targetNumber(0)) }
+    val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
-    val showAllLevels = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -76,19 +74,8 @@ fun SchyotyWritingScreen(
 
     fun newExercise() {
         beads.value = List(ROWS) { 0 }
-        val lvl = targetLevel.value
-        targetValue.value = targetNumber(lvl)
+        targetValue.value = Random.nextInt(1, 10)
         showCongrats.value = false
-        showAllLevels.value = false
-    }
-
-    fun nextLevel() {
-        val nextLvl = (targetLevel.value + 1) % ROWS
-        targetLevel.value = nextLvl
-        beads.value = List(ROWS) { 0 }
-        targetValue.value = targetNumber(nextLvl)
-        showCongrats.value = false
-        showAllLevels.value = false
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -256,54 +243,23 @@ fun SchyotyWritingScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                FilledTonalButton(
+                    onClick = { newExercise() },
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
                 ) {
-                    FilledTonalButton(
-                        onClick = { newExercise() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Text(
-                            text = s.common.newExercise,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-
-                    FilledTonalButton(
-                        onClick = { nextLevel() },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Text(
-                            text = s.common.nextLevel,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                }
-
-                if (showAllLevels.value) {
-                    Spacer(Modifier.height(16.dp))
                     Text(
-                        text = xs.schyotyAllLevelsComplete,
+                        text = s.common.newExercise,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 32.dp)
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
-                } else if (showCongrats.value) {
+                }
+
+                if (showCongrats.value) {
                     Spacer(Modifier.height(16.dp))
                     Text(
                         text = "\u2705 ${s.common.correct}!",
@@ -423,29 +379,14 @@ fun SchyotyWritingScreen(
     }
 }
 
-if (totalValue() == targetValue.value.toLong() && !showCongrats.value && !showAllLevels.value) {
-    if (targetLevel.value == ROWS - 1) {
-        showAllLevels.value = true
-        onScoreChanged(currentScore + 5)
-        scope.launch {
-            preferences.recordLessonCompletion()
-            preferences.markAbacusSectionCompleted("schyoty_writing")
-        }
-    } else {
-        showCongrats.value = true
-        onScoreChanged(currentScore + 2)
-        scope.launch {
-            preferences.recordLessonCompletion()
-            preferences.markAbacusSectionCompleted("schyoty_writing")
-        }
+if (totalValue() == targetValue.value.toLong() && !showCongrats.value) {
+    showCongrats.value = true
+    onScoreChanged(currentScore + 2)
+    scope.launch {
+        preferences.recordLessonCompletion()
+        preferences.markAbacusSectionCompleted("schyoty_writing")
     }
 }
-}
-
-private fun targetNumber(level: Int): Int {
-    val minV = Math.pow(10.0, level.toDouble()).toInt()
-    val maxV = Math.pow(10.0, level + 1.0).toInt() - 1
-    return Random.nextInt(minV, maxV + 1)
 }
 
 private fun DrawScope.drawSchyotyBead(x: Float, y: Float, r: Float, active: Boolean, idx: Int) {
