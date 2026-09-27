@@ -25,7 +25,6 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.miscStringsForLanguage
@@ -63,7 +62,6 @@ fun AbacusScreen(
     onNavigateToHistory: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
-    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val bs = bodyExerciseStringsForLanguage(LocalAppLanguage.current)
     val pas = practicingAdditionStringsForLanguage(LocalAppLanguage.current)
@@ -75,12 +73,6 @@ fun AbacusScreen(
     val completedSections by preferences.completedAbacusSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val group1Controller = remember {
-        LevelGroupController(
-            listOf("soroban_writing", "suanpan_writing", "schyoty_writing", "large_numbers_writing"),
-            completedSections
-        )
-    }
     val group2Controller = remember {
         LevelGroupController(
             listOf("adding_with_abacus", "complement_to_ten", "adding_large_numbers", "practicing_addition"),
@@ -100,7 +92,6 @@ fun AbacusScreen(
         )
     }
     LaunchedEffect(completedSections) {
-        group1Controller.syncFromPersisted(completedSections)
         group2Controller.syncFromPersisted(completedSections)
         group3Controller.syncFromPersisted(completedSections)
         group4Controller.syncFromPersisted(completedSections)
@@ -170,186 +161,6 @@ fun AbacusScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            FilledIconButton(
-                onClick = onNavigateToHistory,
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("abacus_history")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Icon(
-                    painterResource(R.drawable.ic_feather),
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = hts.history,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
-                onClick = onNavigateToSorobanWriting,
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("soroban_writing")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Text(
-                    text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = aws.writingToSoroban,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            FilledIconButton(
-                onClick = onNavigateToSuanpanWriting,
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("suanpan_writing")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Text(
-                    text = "\u7B97\u76E4",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = aws.writingToSuanpan,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-                FilledIconButton(
-                    onClick = onNavigateToSchyotyWriting,
-                    modifier = Modifier.size(96.dp),
-                    shape = CircleShape,
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (completedSections.contains("schyoty_writing")) ButtonYellowDark else ButtonYellow,
-                        contentColor = OnButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = aws.schyoty,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = OnButtonYellow
-                    )
-                }
-
-            Spacer(Modifier.height(12.dp))
-
-            Text(
-                text = aws.writingToSchyoty,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(24.dp))
-
-            FilledIconButton(
-                onClick = onNavigateToLargeNumbersWriting,
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("large_numbers_writing")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Text(
-                    text = "99",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = aws.writingLargeNumbers,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(48.dp))
-
-            FilledIconButton(
-                onClick = {
-                    claimLevel("abacus_group1")
-                    onNavigateToCongratulation()
-                },
-                enabled = group1Controller.allCompleted,
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if ("abacus_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,
-                    disabledContainerColor = FlagBlueLight
-                )
-            ) {
-                Icon(
-                    painterResource(R.drawable.ic_flag),
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = Color.Unspecified
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = s.common.nextLevel,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(48.dp))
-
             FilledIconButton(
                 onClick = onNavigateToAddingWithAbacus,
                 modifier = Modifier.size(96.dp),

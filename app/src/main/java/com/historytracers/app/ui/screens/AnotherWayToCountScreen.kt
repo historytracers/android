@@ -28,15 +28,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
+import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
@@ -62,21 +65,38 @@ fun AnotherWayToCountScreen(
     onNavigateToBuildingLikeEtruscanRomans: () -> Unit = {},
     onNavigateToTensAndHundreds: () -> Unit = {},
     onNavigateToHundredsAndThousands: () -> Unit = {},
-    onNavigateToRepresentYou: () -> Unit = {}
+    onNavigateToRepresentYou: () -> Unit = {},
+    onNavigateToAbacusHistory: () -> Unit = {},
+    onNavigateToSorobanWriting: () -> Unit = {},
+    onNavigateToSuanpanWriting: () -> Unit = {},
+    onNavigateToSchyotyWriting: () -> Unit = {},
+    onNavigateToLargeNumbersWriting: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
+    val completedAbacusSections by preferences.completedAbacusSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
     val firstGroupCompleted = anotherWayToCountFirstGroupIds.all { it in completedSections }
     val secondGroupCompleted = anotherWayToCountSecondGroupIds.all { it in completedSections }
     val thirdGroupCompleted = anotherWayToCountThirdGroupIds.all { it in completedSections }
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    val abacusGroup1Controller = remember {
+        LevelGroupController(
+            listOf("soroban_writing", "suanpan_writing", "schyoty_writing", "large_numbers_writing"),
+            completedAbacusSections
+        )
+    }
+    LaunchedEffect(completedAbacusSections) {
+        abacusGroup1Controller.syncFromPersisted(completedAbacusSections)
+    }
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -209,6 +229,186 @@ fun AnotherWayToCountScreen(
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("another_way_to_count" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToAbacusHistory,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("abacus_history" in completedAbacusSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_feather),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hts.history,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSorobanWriting,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("soroban_writing" in completedAbacusSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u7B97\u76E4",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = aws.writingToSoroban,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSuanpanWriting,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("suanpan_writing" in completedAbacusSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u7B97\u76E4",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = aws.writingToSuanpan,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSchyotyWriting,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("schyoty_writing" in completedAbacusSections) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = aws.schyoty,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                Text(
+                    text = aws.writingToSchyoty,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(24.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToLargeNumbersWriting,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("large_numbers_writing" in completedAbacusSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "99",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = aws.writingLargeNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("abacus_group1")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = abacusGroup1Controller.allCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("abacus_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,
                         disabledContainerColor = FlagBlueLight
                     )
                 ) {

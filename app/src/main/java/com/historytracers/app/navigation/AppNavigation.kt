@@ -812,7 +812,12 @@ fun AppNavigation() {
                             onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
                             onNavigateToTensAndHundreds = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
-                            onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } }
+                            onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } },
+                            onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
+                            onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) },
+                            onNavigateToSuanpanWriting = { navController.navigate(Screen.SuanpanWriting.route) },
+                            onNavigateToSchyotyWriting = { navController.navigate(Screen.SchyotyWriting.route) },
+                            onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) }
                         )
                     }
                     composable(Screen.BuildingLikeAMesoamerican.route) {
