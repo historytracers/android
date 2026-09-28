@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -35,6 +36,8 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.yupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
@@ -45,6 +48,7 @@ import kotlinx.coroutines.launch
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
 private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans", "hundreds_and_thousands", "i_represent_you", "calculi")
+private val anotherWayToCountYupanaGroupIds = listOf("hands_on_yupana", "large_numbers", "quipu_on_the_yupana")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -67,6 +71,9 @@ fun AnotherWayToCountScreen(
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToRepresentYou: () -> Unit = {},
     onNavigateToCalculi: () -> Unit = {},
+    onNavigateToHandsOnYupana: () -> Unit = {},
+    onNavigateToLargeNumbers: () -> Unit = {},
+    onNavigateToQuipuOnTheYupana: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
     onNavigateToSuanpanWriting: () -> Unit = {},
@@ -77,6 +84,8 @@ fun AnotherWayToCountScreen(
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val qs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -97,6 +106,16 @@ fun AnotherWayToCountScreen(
     }
     LaunchedEffect(completedAbacusSections) {
         abacusGroup1Controller.syncFromPersisted(completedAbacusSections)
+    }
+
+    val yupanaGroupController = remember {
+        LevelGroupController(
+            anotherWayToCountYupanaGroupIds,
+            completedSections
+        )
+    }
+    LaunchedEffect(completedSections) {
+        yupanaGroupController.syncFromPersisted(completedSections)
     }
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -235,6 +254,140 @@ fun AnotherWayToCountScreen(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToHandsOnYupana,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("hands_on_yupana" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_two_circles),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = ys.handsOnYupana,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToLargeNumbers,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("large_numbers" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_grid_2x4),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = aws.largeNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                Button(
+                    onClick = onNavigateToQuipuOnTheYupana,
+                    modifier = Modifier.height(96.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if ("quipu_on_the_yupana" in completedSections) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    ),
+                    contentPadding = PaddingValues(horizontal = 24.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.ic_quipu_knot),
+                            contentDescription = null,
+                            modifier = Modifier.size(52.dp),
+                            tint = Color.Unspecified
+                        )
+                        Icon(
+                            painterResource(R.drawable.ic_grid_2x4),
+                            contentDescription = null,
+                            modifier = Modifier.size(52.dp),
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = qs.quipuOnTheYupana,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("yupana")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = yupanaGroupController.allCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("yupana" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
                         contentDescription = null,
                         modifier = Modifier.size(52.dp),
                         tint = Color.Unspecified

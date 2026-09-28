@@ -46,6 +46,7 @@ import com.historytracers.app.ui.components.drawYupanaBackground
 import com.historytracers.app.ui.components.drawYupanaFrame
 import com.historytracers.app.ui.components.drawYupanaRow
 import com.historytracers.app.ui.components.getMarkersForDigit
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.common.HTSource
@@ -389,6 +390,7 @@ private fun LargeNumbersGameContent(
     val s = LocalUiStrings.current
     val xs = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
@@ -426,7 +428,7 @@ private fun LargeNumbersGameContent(
         if (node != null && !arrivalHandled) {
             arrivalHandled = true
             if (onNavigateToYupana != null) {
-                preferences.markYupanaSectionCompleted("large_numbers")
+                preferences.markAnotherWayToCountSectionCompleted("large_numbers")
                 preferences.recordLessonCompletion()
             }
             award(node.score)
@@ -551,7 +553,7 @@ private fun LargeNumbersGameContent(
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(text = ys.yupana, fontWeight = FontWeight.Bold)
+                            Text(text = hts.anotherWayToCount, fontWeight = FontWeight.Bold)
                         }
                     }
 

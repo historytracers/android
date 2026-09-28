@@ -815,6 +815,9 @@ fun AppNavigation() {
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
                             onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } },
                             onNavigateToCalculi = { navController.navigate(Screen.Calculi.route) { launchSingleTop = true } },
+                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } },
+                            onNavigateToLargeNumbers = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },
+                            onNavigateToQuipuOnTheYupana = { navController.navigate(Screen.QuipuOnTheYupana.route) { launchSingleTop = true } },
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) },
                             onNavigateToSuanpanWriting = { navController.navigate(Screen.SuanpanWriting.route) },
@@ -5787,10 +5790,7 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) },
                             onNavigateToPracticingAdditionYupana = { navController.navigate(Screen.PracticingAdditionYupana.route) },
                             onNavigateToPracticingMultiplicationYupana = { navController.navigate(Screen.PracticingMultiplicationYupana.route) },
-                            onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } },
                             onNavigateToMovingInYupana = { navController.navigate(Screen.IskayMovement.route) { launchSingleTop = true } },
-                            onNavigateToLargeNumbers = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },
-                            onNavigateToQuipuOnTheYupana = { navController.navigate(Screen.QuipuOnTheYupana.route) { launchSingleTop = true } },
                             onNavigateToMultiplyingWithYupana = { navController.navigate(Screen.MultiplyingWithYupanaIntro.route) { launchSingleTop = true } },
                             onNavigateToReverseMovements = { navController.navigate(Screen.ReverseMovementIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionYupana = { navController.navigate(Screen.PracticingSubtractionYupana.route) { launchSingleTop = true } }
@@ -5799,8 +5799,8 @@ fun AppNavigation() {
                     composable(Screen.HandsOnYupana.route) {
                         HandsOnYupanaScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -5814,16 +5814,16 @@ fun AppNavigation() {
                             skinColor = skinColor,
                             onNavigateToHandsOnYupana = { navController.navigate(Screen.HandsOnYupana.route) { launchSingleTop = true } },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
                                 }
                             },
                             onNavigateToYupana = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -5944,7 +5944,7 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack()) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6193,8 +6193,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6208,8 +6208,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6228,8 +6228,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6248,8 +6248,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6268,8 +6268,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6288,8 +6288,8 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -6301,8 +6301,8 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToYupana = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }

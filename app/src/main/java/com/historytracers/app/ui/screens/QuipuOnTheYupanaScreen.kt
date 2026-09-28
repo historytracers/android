@@ -152,7 +152,7 @@ fun QuipuOnTheYupanaScreen(
             }
             if (allSolved && !sectionMarked) {
                 sectionMarked = true
-                scope.launch { preferences.markYupanaSectionCompleted("quipu_on_the_yupana") }
+                scope.launch {                 preferences.markAnotherWayToCountSectionCompleted("quipu_on_the_yupana") }
                 scope.launch { preferences.recordLessonCompletion() }
             }
         } else {
