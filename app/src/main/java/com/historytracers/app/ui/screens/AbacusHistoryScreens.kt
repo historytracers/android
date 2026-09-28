@@ -21,9 +21,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -42,6 +44,7 @@ import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
+import com.historytracers.app.ui.features.calculiScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -50,6 +53,7 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlin.math.abs
 import kotlin.math.sqrt
+import kotlin.random.Random
 import kotlinx.coroutines.launch
 
 private const val SMARTPHONE_GAME_FILE = "973b0f27-bd58-443b-a780-bd9e22aed8bd"
@@ -72,6 +76,22 @@ private const val MARKER_CALCULI = "abacus-calculi"
 
 private val calculiHeadings = listOf("(((I)))", "((I))", "(I)", "C", "X", "I")
 private val calculiPlaces = listOf(100000L, 10000L, 1000L, 100L, 10L, 1L)
+
+private const val CALCULI_MIN_LEVEL = 1
+private const val CALCULI_MAX_LEVEL = 5
+
+private fun calculiLevelRange(level: Int): LongRange = when (level) {
+    1 -> 1L..9L
+    2 -> 10L..99L
+    3 -> 100L..999L
+    4 -> 1000L..9999L
+    else -> 10000L..99999L
+}
+
+private fun randomCalculiTarget(level: Int): Long {
+    val range = calculiLevelRange(level)
+    return Random.nextLong(range.first, range.last + 1)
+}
 
 @Composable
 fun AbacusHistoryIntroScreen(
@@ -218,16 +238,283 @@ fun AbacusHistoryConclusionScreen(
 private data class AbacusColumnState(val upper: Int = 0, val lower: Int = 0)
 
 @Composable
+fun CalculiAbacusIcon(
+    modifier: Modifier = Modifier,
+    color: Color = Color(0xFF8B1A1A)
+) {
+    Canvas(modifier = modifier) {
+        val stroke = size.minDimension * 0.055f
+        val frameLeft = size.width * 0.08f
+        val frameTop = size.height * 0.08f
+        val frameRight = size.width * 0.92f
+        val frameBottom = size.height * 0.92f
+        val frameW = frameRight - frameLeft
+        val frameH = frameBottom - frameTop
+        drawRoundRect(
+            color = color,
+            topLeft = Offset(frameLeft, frameTop),
+            size = Size(frameW, frameH),
+            cornerRadius = CornerRadius(stroke * 1.5f),
+            style = Stroke(width = stroke)
+        )
+        val beamY = frameTop + frameH * 0.40f
+        drawRoundRect(
+            color = color,
+            topLeft = Offset(frameLeft, beamY - stroke * 0.6f),
+            size = Size(frameW, stroke * 1.2f),
+            cornerRadius = CornerRadius(stroke * 0.6f)
+        )
+        val rodCount = 3
+        val rodX0 = frameLeft + frameW * 0.22f
+        val rodX1 = frameRight - frameW * 0.22f
+        val beadR = stroke * 1.05f
+        for (i in 0 until rodCount) {
+            val x = rodX0 + (rodX1 - rodX0) * i / (rodCount - 1)
+            drawLine(
+                color = color,
+                start = Offset(x, frameTop),
+                end = Offset(x, frameBottom),
+                strokeWidth = stroke * 0.7f,
+                cap = StrokeCap.Round
+            )
+            drawCircle(color = color, radius = beadR, center = Offset(x, beamY - frameH * 0.17f))
+            drawCircle(color = color, radius = beadR, center = Offset(x, beamY + frameH * 0.13f))
+            drawCircle(color = color, radius = beadR, center = Offset(x, beamY + frameH * 0.31f))
+        }
+    }
+}
+
+@Composable
+fun CalculiScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {}
+) {
+    val s = LocalUiStrings.current
+    val xs = calculiScreenStringsForLanguage(LocalAppLanguage.current)
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+
+    val initialScore = remember { currentScore }
+    var totalAwarded by remember { mutableIntStateOf(0) }
+
+    var level by remember { mutableIntStateOf(CALCULI_MIN_LEVEL) }
+    var target by remember { mutableStateOf(randomCalculiTarget(CALCULI_MIN_LEVEL)) }
+    var exerciseKey by remember { mutableIntStateOf(0) }
+    var value by remember { mutableStateOf(0L) }
+    var solved by remember { mutableStateOf(false) }
+    var finalCongratsShown by remember { mutableStateOf(false) }
+    var feedbackMessage by remember { mutableStateOf("") }
+
+    fun startLevel(newLevel: Int) {
+        level = newLevel
+        target = randomCalculiTarget(newLevel)
+        exerciseKey++
+        value = 0L
+        solved = false
+        finalCongratsShown = false
+        feedbackMessage = ""
+    }
+
+    fun newExercise() {
+        target = randomCalculiTarget(level)
+        exerciseKey++
+        value = 0L
+        solved = false
+        finalCongratsShown = false
+        feedbackMessage = ""
+    }
+
+    LaunchedEffect(value, target) {
+        if (!solved && target != 0L && value == target) {
+            solved = true
+            totalAwarded += 2
+            onScoreChanged(initialScore + totalAwarded)
+            if (level == CALCULI_MAX_LEVEL) {
+                finalCongratsShown = true
+                feedbackMessage = xs.finalCongrats
+                scope.launch {
+                    preferences.recordLessonCompletion()
+                    preferences.markAnotherWayToCountSectionCompleted("calculi")
+                }
+            } else {
+                feedbackMessage = xs.correctMessage
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                    }
+                    Text(
+                        text = xs.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = xs.instruction,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+                )
+
+                Text(
+                    text = xs.beadValues,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = "${s.common.levelPrefix}$level/$CALCULI_MAX_LEVEL",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = xs.represent.format(target),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                AbacusApp(
+                    columns = 6,
+                    upperMax = 1,
+                    lowerMax = 4,
+                    columnHeadings = calculiHeadings,
+                    columnPlaces = calculiPlaces,
+                    frozen = solved,
+                    resetKey = exerciseKey,
+                    showReset = false,
+                    onValueChange = { value = it }
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilledTonalButton(
+                        onClick = { newExercise() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.common.newExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+
+                    if (solved && level < CALCULI_MAX_LEVEL) {
+                        FilledTonalButton(
+                            onClick = { startLevel(level + 1) },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                text = s.common.nextLevel,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+
+                    if (finalCongratsShown) {
+                        FilledTonalButton(
+                            onClick = { startLevel(CALCULI_MIN_LEVEL) },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                text = xs.playAgain,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+                }
+
+                if (feedbackMessage.isNotEmpty()) {
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = feedbackMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+            }
+        }
+    }
+}
+
+@Composable
 private fun AbacusApp(
     columns: Int,
     upperMax: Int,
     lowerMax: Int,
     columnHeadings: List<String> = emptyList(),
     columnPlaces: List<Long>? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    frozen: Boolean = false,
+    resetKey: Any? = null,
+    showReset: Boolean = true,
+    onValueChange: ((Long) -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    var state by remember(columns) { mutableStateOf(List(columns) { AbacusColumnState() }) }
+    var state by remember(columns, resetKey) { mutableStateOf(List(columns) { AbacusColumnState() }) }
 
     val currentValue: Long = if (columnPlaces != null) {
         var sum = 0L
@@ -241,6 +528,10 @@ private fun AbacusApp(
             result = result * 10 + (col.upper * 5 + col.lower).coerceIn(0, 9)
         }
         result
+    }
+
+    LaunchedEffect(currentValue) {
+        onValueChange?.invoke(currentValue)
     }
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -279,8 +570,9 @@ private fun AbacusApp(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
                 .aspectRatio(860f / 400f)
-                .pointerInput(columns, upperMax, lowerMax) {
+                .pointerInput(columns, upperMax, lowerMax, frozen) {
                     detectTapGestures { offset ->
+                        if (frozen) return@detectTapGestures
                         val cw = size.width.toFloat()
                         val ch = size.height.toFloat()
                         val margin = 28f / 860f * cw
@@ -428,20 +720,22 @@ private fun AbacusApp(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                 )
             }
-            FilledTonalButton(
-                onClick = { state = List(columns) { AbacusColumnState() } },
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
-                    contentColor = OnButtonYellow
-                )
-            ) {
-                Text(
-                    text = s.common.reset,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
+            if (showReset) {
+                FilledTonalButton(
+                    onClick = { state = List(columns) { AbacusColumnState() } },
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = s.common.reset,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                }
             }
         }
     }

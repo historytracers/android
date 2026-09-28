@@ -298,6 +298,7 @@ sealed class Screen(val route: String) {
     data object AbacusHistorySchyoty : Screen("abacus_history_schyoty")
     data object AbacusHistoryCalculi : Screen("abacus_history_calculi")
     data object AbacusHistoryConclusion : Screen("abacus_history_conclusion")
+    data object Calculi : Screen("calculi")
     data object SuanpanWriting : Screen("suanpan_writing")
     data object SchyotyWriting : Screen("schyoty_writing")
     data object LargeNumbersWriting : Screen("large_numbers_writing")

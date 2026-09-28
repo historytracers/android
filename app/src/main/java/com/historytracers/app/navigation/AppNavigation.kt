@@ -247,6 +247,7 @@ import com.historytracers.app.ui.screens.AbacusHistorySchyotyScreen
 import com.historytracers.app.ui.screens.AbacusHistorySimilaritiesScreen
 import com.historytracers.app.ui.screens.AbacusHistorySorobanScreen
 import com.historytracers.app.ui.screens.AbacusHistorySuanpanScreen
+import com.historytracers.app.ui.screens.CalculiScreen
 import com.historytracers.app.ui.screens.AbacusHistoryThinkingScreen
 import com.historytracers.app.ui.screens.PracticingAdditionScreen
 import com.historytracers.app.ui.screens.MultiplicationTableScreen
@@ -813,6 +814,7 @@ fun AppNavigation() {
                             onNavigateToTensAndHundreds = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
                             onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } },
+                            onNavigateToCalculi = { navController.navigate(Screen.Calculi.route) { launchSingleTop = true } },
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToSorobanWriting = { navController.navigate(Screen.SorobanWriting.route) },
                             onNavigateToSuanpanWriting = { navController.navigate(Screen.SuanpanWriting.route) },
@@ -6831,6 +6833,17 @@ fun AppNavigation() {
                             }
                         )
                     }
+                    composable(Screen.Calculi.route) {
+                        CalculiScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
                     composable(
                         route = Screen.Content.route,
                         arguments = listOf(navArgument("fileName") { type = NavType.StringType })
@@ -6907,7 +6920,7 @@ fun AppNavigation() {
                             onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
                             onNavigateToEtruscanRomanTens = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
-                            onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } },
+                            onNavigateToCalculi = { navController.navigate(Screen.Calculi.route) { launchSingleTop = true } },
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToMultiplyingWithYupana = { navController.navigate(Screen.MultiplyingWithYupanaIntro.route) { launchSingleTop = true } },
                             onNavigateToReverseMovements = { navController.navigate(Screen.ReverseMovementIntro.route) { launchSingleTop = true } },

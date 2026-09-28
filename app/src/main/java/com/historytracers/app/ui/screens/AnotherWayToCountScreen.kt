@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 
 private val anotherWayToCountFirstGroupIds = listOf("quipus", "practicing_with_quipus")
 private val anotherWayToCountSecondGroupIds = listOf("mesoamerican_symbols", "overcoming_limits", "building_like_a_mesoamerican", "mesoamerican_orders")
-private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans", "hundreds_and_thousands", "i_represent_you")
+private val anotherWayToCountThirdGroupIds = listOf("text_or_number", "missing_numbers", "i_prefer_this", "etruscan_roman_tens", "building_like_etruscan_romans", "hundreds_and_thousands", "i_represent_you", "calculi")
 
 @Composable
 fun AnotherWayToCountScreen(
@@ -66,6 +66,7 @@ fun AnotherWayToCountScreen(
     onNavigateToTensAndHundreds: () -> Unit = {},
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToRepresentYou: () -> Unit = {},
+    onNavigateToCalculi: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
     onNavigateToSorobanWriting: () -> Unit = {},
     onNavigateToSuanpanWriting: () -> Unit = {},
@@ -904,6 +905,30 @@ fun AnotherWayToCountScreen(
 
                 Text(
                     text = xs.iRepresentYou,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToCalculi,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("calculi" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    CalculiAbacusIcon(modifier = Modifier.size(52.dp))
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.calculi,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
