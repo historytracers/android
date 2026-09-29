@@ -111,6 +111,7 @@
   - **Where Are We From** (4): `shared_origin`, `matter_energy`, `everything_together`, `sharing_with_whom`
   - **Another Way to Count** (13): `quipus`, `practicing_with_quipus`, `mesoamerican_symbols`, `overcoming_limits`, `building_like_a_mesoamerican`, `mesoamerican_orders`, `text_or_number`, `missing_numbers`, `i_prefer_this`, `etruscan_roman_tens`, `building_like_etruscan_romans`, `hundreds_and_thousands`, `i_represent_you`
   - **Running and Growing** (5): `adding_the_same_number`, `the_result_is`, `inversion`, `connecting_the_multiplication`, `drawing_multiplication`
+  - **Around the World** (1): `around_the_world` (a single sequential sm_game group launched from the main screen; the `around_the_world` section is marked on its conclusion screen)
 
 ## Reset Classes Menu
 
@@ -134,7 +135,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `abacus_history` (History of the Abacus), `i_represent_you` (I Represent You), `hundreds_and_thousands` (Hundreds and Thousands), `etruscan_roman_tens` (Etruscan-Roman Tens), `building_like_etruscan_romans` (Building Like Etruscan-Romans).
+- Current list (latest first): `around_the_world` (Around the World (Counting)), `calculi` (Calculi), `practicing_subtraction_yupana` (Practicing Subtraction with the Yupana), `reverse_movements` (Reverse Movements), `multiplying_with_yupana` (Multiplying with Yupana).
 
 ## New Main-Screen Buttons (Sun Badge)
 

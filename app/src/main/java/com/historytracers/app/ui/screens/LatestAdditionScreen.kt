@@ -27,10 +27,10 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
@@ -85,10 +85,12 @@ fun LatestAdditionScreen(
     onNavigateToAbacusHistory: () -> Unit = {},
     onNavigateToMultiplyingWithYupana: () -> Unit = {},
     onNavigateToReverseMovements: () -> Unit = {},
-    onNavigateToPracticingSubtractionYupana: () -> Unit = {}
+    onNavigateToPracticingSubtractionYupana: () -> Unit = {},
+    onNavigateToAroundTheWorld: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -96,7 +98,6 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
     val rms = reverseMovementScreenStringsForLanguage(LocalAppLanguage.current)
     val pss = practicingSubtractionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
@@ -107,10 +108,23 @@ fun LatestAdditionScreen(
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
     val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
+    val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "around_the_world",
+            label = hts.aroundTheWorld,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_world),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "around_the_world" in completedAroundTheWorld },
+            onNavigate = onNavigateToAroundTheWorld
+        ),
         LatestAdditionEntry(
             sectionId = "calculi",
             label = awcs.calculi,
@@ -168,19 +182,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "multiplying_with_yupana" in completedYupana },
             onNavigate = onNavigateToMultiplyingWithYupana
-        ),
-        LatestAdditionEntry(
-            sectionId = "abacus_history",
-            label = ahs.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_feather),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "abacus_history" in completedAbacus },
-            onNavigate = onNavigateToAbacusHistory
         )
     )
 

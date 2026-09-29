@@ -45,7 +45,9 @@ private val LOCAL_ASSET_IMAGES = mapOf(
     "https://historytracers.org/images/Copan/Temple16Copan.png"
         to "Copan/Temple16Copan.png",
     "https://www.historytracers.org/images/Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
-        to "Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
+        to "Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg",
+    "https://www.historytracers.org/images/Mapswire/mapswire-world-political-white-equal_earth_journey.png"
+        to "Mapswire/mapswire-world-political-white-equal_earth_journey.png"
 )
 
 fun resolveImageSource(url: String): Any =

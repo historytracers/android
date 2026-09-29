@@ -74,8 +74,8 @@ private const val MARKER_SOROBAN = "abacus-soroban"
 private const val MARKER_SCHYOTY = "abacus-schyoty"
 private const val MARKER_CALCULI = "abacus-calculi"
 
-private val calculiHeadings = listOf("(((I)))", "((I))", "(I)", "C", "X", "I")
-private val calculiPlaces = listOf(100000L, 10000L, 1000L, 100L, 10L, 1L)
+internal val calculiHeadings = listOf("(((I)))", "((I))", "(I)", "C", "X", "I")
+internal val calculiPlaces = listOf(100000L, 10000L, 1000L, 100L, 10L, 1L)
 
 private const val CALCULI_MIN_LEVEL = 1
 private const val CALCULI_MAX_LEVEL = 5
@@ -501,7 +501,7 @@ fun CalculiScreen(
 }
 
 @Composable
-private fun AbacusApp(
+internal fun AbacusApp(
     columns: Int,
     upperMax: Int,
     lowerMax: Int,
