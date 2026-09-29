@@ -643,8 +643,8 @@ private fun ReverseMovementAnswerSection(
     fun submit(answer: String) {
         selected = answer
         hasSubmitted = true
-        val answeredCorrectly = (answer == "yes") == correctAnswer
-        val points = if (answeredCorrectly) content.score else content.score / 2
+        val answeredCorrectly = correctAnswer != null && (answer == "yes") == correctAnswer
+        val points = if (answeredCorrectly) content.score else maxOf(content.score / 2, 1)
         onAnswered(points)
     }
 

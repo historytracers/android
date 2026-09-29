@@ -570,7 +570,7 @@ private fun AbacusApp(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
                 .aspectRatio(860f / 400f)
-                .pointerInput(columns, upperMax, lowerMax, frozen) {
+                .pointerInput(columns, upperMax, lowerMax, frozen, resetKey) {
                     detectTapGestures { offset ->
                         if (frozen) return@detectTapGestures
                         val cw = size.width.toFloat()

@@ -471,10 +471,11 @@ private fun MultiplyingWithYupanaAnswerSection(
     }
 
     fun submit(answer: String) {
+        val correct = correctAnswer ?: return
         selected = answer
         hasSubmitted = true
-        val answeredCorrectly = (answer == "yes") == correctAnswer
-        val points = if (answeredCorrectly) content.score else content.score / 2
+        val answeredCorrectly = (answer == "yes") == correct
+        val points = if (answeredCorrectly) content.score else maxOf(content.score / 2, 1)
         onAnswered(points)
     }
 

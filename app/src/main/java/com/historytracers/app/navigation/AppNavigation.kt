@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -456,12 +457,14 @@ fun AppNavigation() {
                Screen.ReverseMovementKimsa.route, Screen.ReverseMovementPisqa.route,
                Screen.ReverseMovementPichana.route, Screen.ReverseMovementCancellation.route,
                Screen.ReverseMovementQuestion.route, Screen.ReverseMovementConclusion.route,
-               Screen.PracticingSubtractionYupana.route)
+               Screen.PracticingSubtractionYupana.route,
+               Screen.Calculi.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(Unit) {
+        preferences.migrateMovedYupanaLessonsToAnotherWayToCount()
         val onboarded = preferences.onboardingCompleted.first()
         if (!onboarded) {
             preferences.initDefaultLanguage()
@@ -6315,12 +6318,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigateNext = { navController.navigate(Screen.MultiplyingWithYupanaFirstValues.route) { launchSingleTop = true } }
                         )
@@ -6330,12 +6332,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MultiplyingWithYupanaIntro.route, false)) {
@@ -6350,12 +6351,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MultiplyingWithYupanaFirstValues.route, false)) {
@@ -6370,12 +6370,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MultiplyingWithYupanaNextStep.route, false)) {
@@ -6390,12 +6389,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MultiplyingWithYupanaOrganizing.route, false)) {
@@ -6410,12 +6408,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MultiplyingWithYupanaThinking.route, false)) {
@@ -6430,12 +6427,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.MultiplyingWithYupanaProcess.route, false)) {
@@ -6457,12 +6453,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigateNext = { navController.navigate(Screen.ReverseMovementIskay.route) { launchSingleTop = true } }
                         )
@@ -6472,12 +6467,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementIntro.route, false)) {
@@ -6492,12 +6486,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementIskay.route, false)) {
@@ -6512,12 +6505,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementKimsa.route, false)) {
@@ -6532,12 +6524,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementPisqa.route, false)) {
@@ -6552,12 +6543,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementPichana.route, false)) {
@@ -6572,12 +6562,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementCancellation.route, false)) {
@@ -6592,12 +6581,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ReverseMovementQuestion.route, false)) {
@@ -6617,12 +6605,11 @@ fun AppNavigation() {
                     composable(Screen.PracticingMultiplicationYupana.route) {
                         PracticingMultiplicationYupanaScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -6631,12 +6618,11 @@ fun AppNavigation() {
                     composable(Screen.PracticingSubtractionYupana.route) {
                         PracticingSubtractionYupanaScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Yupana.route, false)) {
-                                    navController.navigate(Screen.Yupana.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Yupana.route,
+                                    fallback = Screen.Yupana.route
+                                )
                             },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -6838,9 +6824,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
-                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.AnotherWayToCount.route,
+                                    fallback = Screen.AnotherWayToCount.route
+                                )
                             }
                         )
                     }
@@ -7205,5 +7193,15 @@ fun AppNavigation() {
                 }
             }
         )
+    }
+}
+
+private fun NavController.popBackToOrigin(vararg origins: String, fallback: String) {
+    origins.forEach { origin ->
+        if (popBackStack(origin, false)) return
+    }
+    navigate(fallback) {
+        popUpTo(0) { inclusive = true }
+        launchSingleTop = true
     }
 }

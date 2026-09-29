@@ -355,7 +355,7 @@ fun PracticingSubtractionYupanaScreen(
                 val cur = red[stateRow]
                 val next = if (col in cur) cur - col else cur + col
                 red = red.toMutableList().also { it[stateRow] = next }
-                if (markersValue(next) == digitAt(exercise.a, stateRow)) {
+                if (next == getMarkersForDigit(digitAt(exercise.a, stateRow))) {
                     awaitingDigitStep = true
                     feedbackMessage = xs.correctMessage
                     isFeedbackPositive = true
@@ -367,7 +367,7 @@ fun PracticingSubtractionYupanaScreen(
                 val cur = blue[stateRow]
                 val next = if (col in cur) cur - col else cur + col
                 blue = blue.toMutableList().also { it[stateRow] = next }
-                if (markersValue(next) == digitAt(exercise.b, stateRow)) {
+                if (next == getMarkersForDigit(digitAt(exercise.b, stateRow))) {
                     awaitingDigitStep = true
                     feedbackMessage = xs.correctMessage
                     isFeedbackPositive = true
@@ -379,7 +379,7 @@ fun PracticingSubtractionYupanaScreen(
                     val cur = red[stateRow]
                     val next = if (col in cur) cur - col else cur + col
                     red = red.toMutableList().also { it[stateRow] = next }
-                    if (borrowRewriteTargets.all { (r, target) -> markersValue(red[r]) == target }) {
+                    if (borrowRewriteTargets.all { (r, target) -> red[r] == getMarkersForDigit(target) }) {
                         expectBorrowRewrite = false
                         borrowJustTaken = true
                         awaitingMovementStep = true
@@ -396,7 +396,7 @@ fun PracticingSubtractionYupanaScreen(
                 val dA = rowRedValue(evalCol)
                 val dB = digitAt(exercise.b, evalCol)
                 val need = if (dB > dA) dA + 10 - dB else dA - dB
-                if (markersValue(next) == need) {
+                if (next == getMarkersForDigit(need)) {
                     red = red.toMutableList().also { it[evalCol] = emptySet() }
                     blue = blue.toMutableList().also { it[evalCol] = emptySet() }
                     movementsDone = getColumnMovements(dA, dB, dB > dA)
