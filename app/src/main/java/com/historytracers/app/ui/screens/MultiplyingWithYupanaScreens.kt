@@ -4,30 +4,22 @@ package com.historytracers.app.ui.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Paint
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -45,37 +37,36 @@ import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.components.drawYupanaBackground
 import com.historytracers.app.ui.components.drawYupanaFrame
 import com.historytracers.app.ui.components.drawYupanaRow
-import com.historytracers.app.ui.components.getMarkersForDigit
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.ui.features.largeNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
-private const val SMARTPHONE_GAME_FILE = "2a1fc4cb-1047-48d0-be47-aa9c5d586430"
+private const val SMARTPHONE_GAME_FILE = "233fdde2-57df-4a0d-afee-46d23b42eacb"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
+private const val YUPANA_SECTION_ID = "multiplying_with_yupana"
 
-private const val INTRO_CONTENT_ID = "d3a26877-2ff4-4f8f-8ef8-ae39ee1de758"
-private const val QUIPU_CONTENT_ID = "861e3e84-c579-451b-8621-b3550378f913"
-private const val GROWING_CONTENT_ID = "d1b2a423-eba1-4e55-93fc-48a15142d23f"
-private const val PATTERN_CONTENT_ID = "d3fbc16b-dd85-42b2-8f62-dacf76c584aa"
-private const val APP_CONTENT_ID = "fd9bdaab-7b41-4237-8e9d-baf459c4ced4"
-private const val CONCLUSION_CONTENT_ID = "b4862c32-8691-471c-98d6-bedb4705c1cb"
+private const val INTRO_CONTENT_ID = "b8eaffac-70a4-48f9-aec8-0a1c1b3bdef8"
+private const val FIRST_VALUES_CONTENT_ID = "343ed072-18f1-45c5-8e3b-6212478b2c84"
+private const val NEXT_STEP_CONTENT_ID = "4ae84a77-c6a1-4ddd-9d81-6197bcf312b4"
+private const val ORGANIZING_CONTENT_ID = "028c56c2-c65f-48a0-9616-4fcd238f448e"
+private const val THINKING_CONTENT_ID = "c1bc5194-424d-47aa-88fe-645a12a2ffa8"
+private const val PROCESS_CONTENT_ID = "647f9e8b-4c42-46d8-92b3-e77ac1c1d4e3"
+private const val CONCLUSION_CONTENT_ID = "7e0d6d27-1fd7-43db-805a-bc6ab9283b6a"
 
-private const val QUIPU_MARKER = "data-custom=\"quipu-45\""
-private const val YUPANA_APP_MARKER = "data-custom=\"yupana-app\""
+private const val RED_3_MARKER = "data-custom=\"yupana-one-row-red-3\""
+private const val RED_BLUE_3_MARKER = "data-custom=\"yupana-one-row-red-blue-3\""
+private const val MOVED_6_MARKER = "data-custom=\"yupana-one-row-moved-6\""
 
 @Composable
-fun LargeNumbersIntroScreen(
+fun MultiplyingWithYupanaIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    LargeNumbersGameContent(
+    MultiplyingWithYupanaGameContent(
         contentId = INTRO_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
@@ -85,15 +76,15 @@ fun LargeNumbersIntroScreen(
 }
 
 @Composable
-fun LargeNumbersQuipuScreen(
+fun MultiplyingWithYupanaFirstValuesScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    LargeNumbersGameContent(
-        contentId = QUIPU_CONTENT_ID,
+    MultiplyingWithYupanaGameContent(
+        contentId = FIRST_VALUES_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -103,15 +94,15 @@ fun LargeNumbersQuipuScreen(
 }
 
 @Composable
-fun LargeNumbersGrowingScreen(
+fun MultiplyingWithYupanaNextStepScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    LargeNumbersGameContent(
-        contentId = GROWING_CONTENT_ID,
+    MultiplyingWithYupanaGameContent(
+        contentId = NEXT_STEP_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -121,15 +112,15 @@ fun LargeNumbersGrowingScreen(
 }
 
 @Composable
-fun LargeNumbersPatternScreen(
+fun MultiplyingWithYupanaOrganizingScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    LargeNumbersGameContent(
-        contentId = PATTERN_CONTENT_ID,
+    MultiplyingWithYupanaGameContent(
+        contentId = ORGANIZING_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -139,15 +130,15 @@ fun LargeNumbersPatternScreen(
 }
 
 @Composable
-fun LargeNumbersAppScreen(
+fun MultiplyingWithYupanaThinkingScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
-    LargeNumbersGameContent(
-        contentId = APP_CONTENT_ID,
+    MultiplyingWithYupanaGameContent(
+        contentId = THINKING_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -157,14 +148,32 @@ fun LargeNumbersAppScreen(
 }
 
 @Composable
-fun LargeNumbersConclusionScreen(
+fun MultiplyingWithYupanaProcessScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    MultiplyingWithYupanaGameContent(
+        contentId = PROCESS_CONTENT_ID,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun MultiplyingWithYupanaConclusionScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
     onNavigateToYupana: () -> Unit = {}
 ) {
-    LargeNumbersGameContent(
+    MultiplyingWithYupanaGameContent(
         contentId = CONCLUSION_CONTENT_ID,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
@@ -187,184 +196,43 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
-private fun isQuipuMarker(text: String?): Boolean = text?.contains(QUIPU_MARKER) == true
-
-private fun isYupanaAppMarker(text: String?): Boolean = text?.contains(YUPANA_APP_MARKER) == true
-
-private fun hasImgSrc(text: String?): Boolean =
-    text?.contains("<img") == true
-
 @Composable
-private fun QuipuFortyFive(modifier: Modifier = Modifier) {
-    val xs = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
-    val cordColor = Color(0xFF8B5E3C)
-    val knotColor = Color(0xFFC0392B)
-    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1.4f)
-        ) {
-            val w = size.width
-            val h = size.height
-            val mainY = h * 0.12f
-            val cx = w * 0.5f
-            val cordBottom = h * 0.88f
-            val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = labelColor
-                textSize = h * 0.05f
-                textAlign = Paint.Align.RIGHT
-            }
-
-            drawLine(
-                color = cordColor,
-                start = Offset(w * 0.08f, mainY),
-                end = Offset(w * 0.92f, mainY),
-                strokeWidth = h * 0.03f
-            )
-            drawLine(
-                color = cordColor,
-                start = Offset(cx, mainY),
-                end = Offset(cx, cordBottom),
-                strokeWidth = h * 0.014f
-            )
-
-            val knotRadius = h * 0.028f
-            val tensStart = h * 0.28f
-            val tensGap = h * 0.055f
-            repeat(4) { i ->
-                val y = tensStart + i * tensGap
-                drawCircle(color = knotColor, radius = knotRadius, center = Offset(cx, y))
-                drawCircle(
-                    color = Color.Black.copy(alpha = 0.2f),
-                    radius = knotRadius,
-                    center = Offset(cx, y),
-                    style = Stroke(width = h * 0.004f)
-                )
-            }
-
-            val unitsStart = h * 0.62f
-            val unitsGap = h * 0.055f
-            repeat(5) { i ->
-                val y = unitsStart + i * unitsGap
-                drawCircle(color = knotColor, radius = knotRadius, center = Offset(cx, y))
-                drawCircle(
-                    color = Color.Black.copy(alpha = 0.2f),
-                    radius = knotRadius,
-                    center = Offset(cx, y),
-                    style = Stroke(width = h * 0.004f)
-                )
-            }
-
-            val tensCenter = tensStart + (3 * tensGap) / 2f
-            val unitsCenter = unitsStart + (4 * unitsGap) / 2f
-            drawContext.canvas.nativeCanvas.drawText(xs.tens, cx - knotRadius * 3.5f, tensCenter, labelPaint)
-            drawContext.canvas.nativeCanvas.drawText(xs.units, cx - knotRadius * 3.5f, unitsCenter, labelPaint)
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Text(
-            text = "45",
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
-private fun YupanaLargeNumbersApp(modifier: Modifier = Modifier) {
-    val xs = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+private fun YupanaOneRow(
+    leftMarkers: Set<Int> = emptySet(),
+    rightMarkers: Set<Int> = emptySet(),
+    resultMarkers: Set<Int> = emptySet(),
+    modifier: Modifier = Modifier
+) {
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
-    val s = LocalUiStrings.current
-    var value by remember { mutableIntStateOf(0) }
-
-    val tens = value / 10
-    val units = value % 10
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(
-            text = "${xs.tens}: $tens    ${xs.units}: $units",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(Modifier.height(8.dp))
-
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.5f)
+                .padding(horizontal = 8.dp)
+                .aspectRatio(860f / 200f)
         ) {
             val margin = 3f / 860f * size.width
             val usableWidth = size.width - 2f * margin
             val colWidth = usableWidth / 4f
-            val rowHeight = (size.height - 6f / 480f * size.height) / 2f
+            val rowHeight = size.height - 6f / 480f * size.height
             val startX = margin
             val startY = 3f / 480f * size.height
 
             drawYupanaBackground(size)
             drawYupanaFrame(size)
-
-            drawYupanaRow(
-                cellOriginX = startX,
-                cellOriginY = startY + rowHeight,
-                cellWidth = colWidth,
-                cellHeight = rowHeight,
-                canvasSize = size,
-                leftMarkers = getMarkersForDigit(units)
-            )
             drawYupanaRow(
                 cellOriginX = startX,
                 cellOriginY = startY,
                 cellWidth = colWidth,
                 cellHeight = rowHeight,
                 canvasSize = size,
-                leftMarkers = getMarkersForDigit(tens)
+                leftMarkers = leftMarkers,
+                rightMarkers = rightMarkers,
+                resultMarkers = resultMarkers
             )
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Text(
-            text = "$value",
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            FilledIconButton(
-                onClick = { if (value > 0) value-- },
-                enabled = value > 0,
-                modifier = Modifier.size(56.dp),
-                shape = CircleShape
-            ) {
-                Icon(Icons.Filled.KeyboardArrowDown, contentDescription = s.common.previous)
-            }
-            FilledIconButton(
-                onClick = { if (value < 99) value++ },
-                enabled = value < 99,
-                modifier = Modifier.size(56.dp),
-                shape = CircleShape
-            ) {
-                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = s.common.next)
-            }
         }
 
         Spacer(Modifier.height(4.dp))
@@ -378,7 +246,7 @@ private fun YupanaLargeNumbersApp(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun LargeNumbersGameContent(
+private fun MultiplyingWithYupanaGameContent(
     contentId: String,
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
@@ -388,14 +256,12 @@ private fun LargeNumbersGameContent(
     onNavigateToYupana: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
-    val xs = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
-    val scope = rememberCoroutineScope()
     var game by remember { mutableStateOf<SMGameFile?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -428,7 +294,7 @@ private fun LargeNumbersGameContent(
         if (node != null && !arrivalHandled) {
             arrivalHandled = true
             if (onNavigateToYupana != null) {
-                preferences.markAnotherWayToCountSectionCompleted("large_numbers")
+                preferences.markYupanaSectionCompleted(YUPANA_SECTION_ID)
                 preferences.recordLessonCompletion()
             }
             award(node.score)
@@ -486,17 +352,24 @@ private fun LargeNumbersGameContent(
                         if (text == null) return@forEach
                         val html = text.text ?: ""
                         when {
-                            isQuipuMarker(html) -> QuipuFortyFive()
-                            isYupanaAppMarker(html) -> YupanaLargeNumbersApp()
+                            html.contains(RED_3_MARKER) -> YupanaOneRow(leftMarkers = setOf(2))
+                            html.contains(RED_BLUE_3_MARKER) -> YupanaOneRow(
+                                leftMarkers = setOf(2),
+                                rightMarkers = setOf(2)
+                            )
+                            html.contains(MOVED_6_MARKER) -> YupanaOneRow(
+                                leftMarkers = setOf(1),
+                                rightMarkers = setOf(4)
+                            )
                             text.format?.contains("markdown") == true -> MarkdownText(text = html)
-                            hasImgSrc(html) -> ResponsiveImage(html = html, imgDesc = text.imgdesc)
+                            html.contains("<img") -> ResponsiveImage(html = html, imgDesc = text.imgdesc)
                             else -> TextRenderer(text = text, repo = repo)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
 
                     if (content.answer != null) {
-                        LargeNumbersAnswerSection(
+                        MultiplyingWithYupanaAnswerSection(
                             content = content,
                             onAnswered = { points -> award(points) }
                         )
@@ -553,7 +426,7 @@ private fun LargeNumbersGameContent(
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(text = hts.anotherWayToCount, fontWeight = FontWeight.Bold)
+                            Text(text = ys.yupana, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -572,7 +445,7 @@ private fun LargeNumbersGameContent(
             }
 
             content?.sourceMenu?.takeIf { it.isNotEmpty() }?.let { sources ->
-                LargeNumbersSourcesMenu(
+                MultiplyingWithYupanaSourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -582,12 +455,12 @@ private fun LargeNumbersGameContent(
 }
 
 @Composable
-private fun LargeNumbersAnswerSection(
+private fun MultiplyingWithYupanaAnswerSection(
     content: SMGameContent,
     onAnswered: (Int) -> Unit
 ) {
     val s = LocalUiStrings.current
-    val xs = largeNumbersScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     var selected by remember { mutableStateOf<String?>(null) }
     var hasSubmitted by remember { mutableStateOf(false) }
 
@@ -598,10 +471,11 @@ private fun LargeNumbersAnswerSection(
     }
 
     fun submit(answer: String) {
+        val correct = correctAnswer ?: return
         selected = answer
         hasSubmitted = true
-        val answeredCorrectly = (answer == "yes") == correctAnswer
-        val points = if (answeredCorrectly) content.score else content.score / 2
+        val answeredCorrectly = (answer == "yes") == correct
+        val points = if (answeredCorrectly) content.score else maxOf(content.score / 2, 1)
         onAnswered(points)
     }
 
@@ -655,7 +529,7 @@ private fun LargeNumbersAnswerSection(
 }
 
 @Composable
-private fun LargeNumbersSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
+private fun MultiplyingWithYupanaSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) {
     val s = LocalUiStrings.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current

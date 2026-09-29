@@ -7,24 +7,32 @@ data class YupanaScreenStrings(
     val movingInYupana: String,
     val practicingMultiplicationYupana: String,
     val quipuOnTheYupana: String,
+    val reverseMovements: String,
+    val practicingSubtractionYupana: String,
 )
 
 val EnYupanaScreenStrings = YupanaScreenStrings(
     movingInYupana = "Moving in Yupana",
     practicingMultiplicationYupana = "Practicing Multiplication with Yupana",
     quipuOnTheYupana = "Quipu on the Yupana",
+    reverseMovements = "Reverse Movements",
+    practicingSubtractionYupana = "Practicing Subtraction with Yupana",
 )
 
 val PtYupanaScreenStrings = YupanaScreenStrings(
     movingInYupana = "Movendo no Yupana",
     practicingMultiplicationYupana = "Praticando Multiplica\u00e7\u00e3o com a Yupana",
     quipuOnTheYupana = "Quipu na Yupana",
+    reverseMovements = "Movimentos Reversos",
+    practicingSubtractionYupana = "Praticando Subtra\u00e7\u00e3o com a Yupana",
 )
 
 val EsYupanaScreenStrings = YupanaScreenStrings(
     movingInYupana = "Movi\u00e9ndose en Yupana",
     practicingMultiplicationYupana = "Practicando Multiplicaci\u00f3n con la Yupana",
     quipuOnTheYupana = "Quipu en la Yupana",
+    reverseMovements = "Movimientos Inversos",
+    practicingSubtractionYupana = "Practicando Resta con la Yupana",
 )
 
 val LocalYupanaScreenStrings = staticCompositionLocalOf { EnYupanaScreenStrings }

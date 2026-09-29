@@ -17,6 +17,7 @@ data class AnotherWayToCountScreenStrings(
     val etruscanRomanTens: String,
     val hundredsAndThousands: String,
     val iRepresentYou: String,
+    val calculi: String,
 )
 
 val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -33,6 +34,7 @@ val EnAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     etruscanRomanTens = "Etruscan-Roman Tens",
     hundredsAndThousands = "Hundreds and Thousands",
     iRepresentYou = "I represent you",
+    calculi = "Calculi",
 )
 
 val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -49,6 +51,7 @@ val PtAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     etruscanRomanTens = "Dezenas Etrusco-Romanas",
     hundredsAndThousands = "Centenas e Milhares",
     iRepresentYou = "Eu represento voc\u00ea",
+    calculi = "Calculi",
 )
 
 val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
@@ -65,6 +68,7 @@ val EsAnotherWayToCountScreenStrings = AnotherWayToCountScreenStrings(
     etruscanRomanTens = "Decenas Etrusco-Romanas",
     hundredsAndThousands = "Centenas y Millares",
     iRepresentYou = "Yo te represento",
+    calculi = "Calculi",
 )
 
 val LocalAnotherWayToCountScreenStrings = staticCompositionLocalOf { EnAnotherWayToCountScreenStrings }

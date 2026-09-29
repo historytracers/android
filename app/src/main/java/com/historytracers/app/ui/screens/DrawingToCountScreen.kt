@@ -38,6 +38,7 @@ import com.historytracers.app.ui.components.drawOneHand
 import com.historytracers.app.ui.components.drawYupanaRow
 import com.historytracers.app.ui.components.getMarkersForDigit
 import com.historytracers.app.ui.features.drawingToCountScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -57,6 +58,7 @@ fun DrawingToCountScreen(
     val s = LocalUiStrings.current
     val xs = drawingToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -75,7 +77,7 @@ fun DrawingToCountScreen(
             nineReached = true
             onScoreChanged(currentScore + 1)
             scope.launch { preferences.recordLessonCompletion() }
-            scope.launch { preferences.markYupanaSectionCompleted("hands_on_yupana") }
+            scope.launch { preferences.markAnotherWayToCountSectionCompleted("hands_on_yupana") }
         } else if (counter == 0) {
             nineReached = false
         }
@@ -309,7 +311,7 @@ fun DrawingToCountScreen(
                     )
                 ) {
                     Text(
-                        text = ys.yupana,
+                        text = hts.anotherWayToCount,
                         fontWeight = FontWeight.Bold
                     )
                 }

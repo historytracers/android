@@ -79,6 +79,7 @@ class UserPreferences(private val context: Context) {
         private val AWARDED_SCREENS_KEY = stringSetPreferencesKey("awarded_screens")
         private val ARRIVAL_AWARDED_SCREENS_KEY = stringSetPreferencesKey("arrival_awarded_screens")
         private val CALENDAR_KEY = stringPreferencesKey("calendar")
+        private val YUPANA_LESSONS_MIGRATED_KEY = booleanPreferencesKey("yupana_lessons_migrated_to_another_way_to_count")
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -393,6 +394,20 @@ class UserPreferences(private val context: Context) {
     suspend fun markAnotherWayToCountSectionCompleted(section: String) {
         context.dataStore.edit { preferences ->
             preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = (preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    suspend fun migrateMovedYupanaLessonsToAnotherWayToCount() {
+        val current = context.dataStore.data.first()
+        if (current[YUPANA_LESSONS_MIGRATED_KEY] == true) return
+        val movedSections = setOf("hands_on_yupana", "large_numbers", "quipu_on_the_yupana")
+        val toCopy = movedSections intersect (current[YUPANA_SECTIONS_KEY] ?: emptySet())
+        context.dataStore.edit { preferences ->
+            if (toCopy.isNotEmpty()) {
+                preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] =
+                    (preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] ?: emptySet()) + toCopy
+            }
+            preferences[YUPANA_LESSONS_MIGRATED_KEY] = true
         }
     }
 
