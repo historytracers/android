@@ -121,6 +121,18 @@ fun SequenceGameOrdersScreen(
         xs.millions, xs.tenMillions, xs.hundredMillions, xs.billions
     )
 
+    val numberDescs = listOf(
+        xs.numberDescUnits, xs.numberDescTens, xs.numberDescHundreds, xs.numberDescThousands,
+        xs.numberDescTenThousands, xs.numberDescHundredThousands, xs.numberDescMillions,
+        xs.numberDescTenMillions, xs.numberDescHundredMillions, xs.numberDescBillions
+    )
+
+    val nameDescs = listOf(
+        xs.nameDescUnits, xs.nameDescTens, xs.nameDescHundreds, xs.nameDescThousands,
+        xs.nameDescTenThousands, xs.nameDescHundredThousands, xs.nameDescMillions,
+        xs.nameDescTenMillions, xs.nameDescHundredMillions, xs.nameDescBillions
+    )
+
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
 
@@ -132,6 +144,8 @@ fun SequenceGameOrdersScreen(
     var selectedLeftId by remember { mutableStateOf<Int?>(null) }
     var selectedRightId by remember { mutableStateOf<Int?>(null) }
     var completed by remember { mutableStateOf(false) }
+    var firstSide by remember { mutableStateOf<String?>(null) }
+    var feedbackMessage by remember { mutableStateOf<String?>(null) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
 
@@ -140,6 +154,7 @@ fun SequenceGameOrdersScreen(
             matchedIds = matchedIds + leftId
             selectedLeftId = null
             selectedRightId = null
+            feedbackMessage = null
             if (matchedIds.size == orderIds.size) {
                 completed = true
                 totalAwarded += 2
@@ -150,14 +165,25 @@ fun SequenceGameOrdersScreen(
                 }
             }
         } else {
+            feedbackMessage = if (firstSide == "Left") {
+                val numberText = leftItems.firstOrNull { it.id == leftId }?.text ?: ""
+                "$numberText ${numberDescs[leftId]}."
+            } else {
+                "${nameDescs[rightId]}."
+            }
             selectedLeftId = null
             selectedRightId = null
         }
+        firstSide = null
     }
 
     fun onLeftTap(item: OrderLeftItem) {
         if (completed) return
         if (item.id in matchedIds) return
+        if (firstSide == null) {
+            firstSide = "Left"
+            feedbackMessage = null
+        }
         selectedLeftId = item.id
         val rightSel = selectedRightId
         if (rightSel != null) {
@@ -168,6 +194,10 @@ fun SequenceGameOrdersScreen(
     fun onRightTap(item: OrderRightItem) {
         if (completed) return
         if (item.id in matchedIds) return
+        if (firstSide == null) {
+            firstSide = "Right"
+            feedbackMessage = null
+        }
         selectedRightId = item.id
         val leftSel = selectedLeftId
         if (leftSel != null) {
@@ -184,6 +214,8 @@ fun SequenceGameOrdersScreen(
         selectedLeftId = null
         selectedRightId = null
         completed = false
+        firstSide = null
+        feedbackMessage = null
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -255,6 +287,18 @@ fun SequenceGameOrdersScreen(
                             )
                         }
                     }
+                }
+
+                if (feedbackMessage != null) {
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = feedbackMessage!!,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
                 }
 
                 Spacer(Modifier.height(16.dp))
