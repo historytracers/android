@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +49,7 @@ import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.components.drawYupanaRow
 import com.historytracers.app.ui.components.getMarkersForDigit
+import com.historytracers.app.ui.components.resolveImageSource
 import com.historytracers.app.ui.features.aroundTheWorldScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -55,6 +58,7 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import coil.compose.SubcomposeAsyncImage
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -65,12 +69,15 @@ private const val ATW_SECTION_ID = "around_the_world"
 private const val ATW_INTRO = "7844d3a8-bc63-4f04-9b3a-731efdcd095d"
 private const val ATW_MATH = "6bd23cf5-8b30-470d-8e72-cc3d2e763a8a"
 private const val ATW_BONES = "bead6121-9596-415c-9470-01fbb8936700"
+private const val ATW_PRACTICE_BONES = "07a61bbd-d75e-4d72-b163-dc1dd309d42f"
 private const val ATW_QUIPUS = "5f0d26b0-b463-4d1d-a643-d2bb53b7fa24"
 private const val ATW_PRACTICE_QUIPU = "4cfea7ca-4581-4ce7-8b6b-7b0cb6c0ab4c"
 private const val ATW_MESO = "9e1a6a43-6127-4773-96f8-b0c01afef69f"
+private const val ATW_PRACTICE_MESO = "47e945fd-35eb-4df3-a887-ffb03d87df96"
 private const val ATW_CALCULI = "1fac8da7-30e7-4191-88d0-77aad9f537ae"
 private const val ATW_PRACTICE_CALCULI = "0204fa36-44ce-439a-95f4-506faf2071aa"
 private const val ATW_INDIA = "fd121753-9c08-4aef-931c-a2e98ab0c827"
+private const val ATW_PRACTICE_INDIA = "c2307e16-5510-47d3-a69d-cf3fc6bf4748"
 private const val ATW_CHINA = "f229d982-20c6-4e7f-8d88-e3440b45e356"
 private const val ATW_PRACTICE_SUANPAN = "5bf9c904-3e80-4589-aabf-736e655e236a"
 private const val ATW_YUPANA = "8b6f0933-069d-419b-aa69-586eac0110d8"
@@ -80,6 +87,8 @@ private const val ATW_PRACTICE_SOROBAN = "013cfc0f-9320-400f-9cc4-11f6331514fe"
 private const val ATW_RUSSIA = "b37b0581-8eea-4c39-a0c7-3db8b9541afa"
 private const val ATW_PRACTICE_SCHYOTY = "97e8f1aa-6a33-484f-8fc1-03a40b033f67"
 private const val ATW_CONCLUSION = "82ccdca5-86a7-493b-b1d9-eab19b1fd555"
+
+private val ATW_IMG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
 
 private enum class AtwTool { BONES, QUIPU, MESO, CALCULI, SUANPAN, SOROBAN, SCHYOTY, YUPANA, SEQUENCE }
 
@@ -129,6 +138,25 @@ fun AroundTheWorldBonesScreen(
 ) {
     AtwContent(
         contentId = ATW_BONES,
+        tool = null,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun AroundTheWorldPracticeBonesScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    AtwContent(
+        contentId = ATW_PRACTICE_BONES,
         tool = AtwTool.BONES,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
@@ -186,6 +214,25 @@ fun AroundTheWorldMesoamericanScreen(
 ) {
     AtwContent(
         contentId = ATW_MESO,
+        tool = null,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun AroundTheWorldPracticeMesoamericanScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    AtwContent(
+        contentId = ATW_PRACTICE_MESO,
         tool = AtwTool.MESO,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
@@ -243,6 +290,25 @@ fun AroundTheWorldIndiaScreen(
 ) {
     AtwContent(
         contentId = ATW_INDIA,
+        tool = null,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun AroundTheWorldPracticeIndiaScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    AtwContent(
+        contentId = ATW_PRACTICE_INDIA,
         tool = AtwTool.SEQUENCE,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
@@ -449,6 +515,52 @@ private fun resolveAtwDates(text: String, dates: List<HTDate>?): String {
 }
 
 @Composable
+private fun AtwMapImage(html: String, imgDesc: String?) {
+    val s = LocalUiStrings.current
+    val url = ATW_IMG_REGEX.find(html)?.groupValues?.get(1)
+    if (url.isNullOrEmpty()) {
+        Text(text = html, style = MaterialTheme.typography.bodyMedium)
+        return
+    }
+    val configuration = LocalConfiguration.current
+    val contentWidth = (configuration.screenWidthDp - 32f).coerceAtLeast(120f)
+    val maxHeight = (contentWidth * 0.5f).dp
+    SubcomposeAsyncImage(
+        model = resolveImageSource(url),
+        contentDescription = imgDesc,
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = maxHeight)
+            .padding(vertical = 8.dp),
+        contentScale = ContentScale.Fit,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 96.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        },
+        error = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 96.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = s.common.imageOfflineMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    )
+}
+
+@Composable
 private fun AtwContent(
     contentId: String,
     tool: AtwTool?,
@@ -550,6 +662,8 @@ private fun AtwContent(
                             MarkdownText(text = resolveAtwDates(raw, text.fillDates))
                         } else if (raw.contains("<svg")) {
                             HtmlRenderer(html = raw)
+                        } else if (raw.contains("<img")) {
+                            AtwMapImage(html = raw, imgDesc = text.imgdesc)
                         } else {
                             TextRenderer(text = text, repo = repo)
                         }
@@ -645,7 +759,7 @@ private fun AtwExercise(tool: AtwTool, onSolved: () -> Unit) {
     val s = LocalUiStrings.current
     val xs = aroundTheWorldScreenStringsForLanguage(LocalAppLanguage.current)
 
-    fun randomTarget(): Int = if (tool == AtwTool.YUPANA) Random.nextInt(1, 10) else Random.nextInt(1, 11)
+    fun randomTarget(): Int = Random.nextInt(1, 11)
 
     var target by remember { mutableStateOf(randomTarget()) }
     var seqStart by remember { mutableStateOf(Random.nextInt(1, 7)) }
@@ -874,13 +988,27 @@ private fun DrawScope.drawAtwYupana(value: Int) {
     val margin = 3f / 860f * size.width
     val usableWidth = size.width - 2f * margin
     val colWidth = usableWidth / 4f
+    val top = size.height * 0.05f
+    val totalHeight = size.height * 0.9f
+    val rowGap = size.height * 0.04f
+    val rowHeight = (totalHeight - rowGap) / 2f
+    val tens = (value.coerceIn(0, 10)) / 10
+    val units = (value.coerceIn(0, 10)) % 10
     drawYupanaRow(
         cellOriginX = margin,
-        cellOriginY = size.height * 0.06f,
+        cellOriginY = top,
         cellWidth = colWidth,
-        cellHeight = size.height * 0.88f,
+        cellHeight = rowHeight,
         canvasSize = size,
-        leftMarkers = getMarkersForDigit(value)
+        leftMarkers = getMarkersForDigit(tens)
+    )
+    drawYupanaRow(
+        cellOriginX = margin,
+        cellOriginY = top + rowHeight + rowGap,
+        cellWidth = colWidth,
+        cellHeight = rowHeight,
+        canvasSize = size,
+        leftMarkers = getMarkersForDigit(units)
     )
 }
 

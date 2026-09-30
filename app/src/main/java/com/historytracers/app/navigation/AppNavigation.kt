@@ -252,12 +252,15 @@ import com.historytracers.app.ui.screens.CalculiScreen
 import com.historytracers.app.ui.screens.AroundTheWorldIntroScreen
 import com.historytracers.app.ui.screens.AroundTheWorldMathEvolutionScreen
 import com.historytracers.app.ui.screens.AroundTheWorldBonesScreen
+import com.historytracers.app.ui.screens.AroundTheWorldPracticeBonesScreen
 import com.historytracers.app.ui.screens.AroundTheWorldQuipusScreen
 import com.historytracers.app.ui.screens.AroundTheWorldPracticeQuipuScreen
 import com.historytracers.app.ui.screens.AroundTheWorldMesoamericanScreen
+import com.historytracers.app.ui.screens.AroundTheWorldPracticeMesoamericanScreen
 import com.historytracers.app.ui.screens.AroundTheWorldCalculiScreen
 import com.historytracers.app.ui.screens.AroundTheWorldPracticeCalculiScreen
 import com.historytracers.app.ui.screens.AroundTheWorldIndiaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldPracticeIndiaScreen
 import com.historytracers.app.ui.screens.AroundTheWorldChinaScreen
 import com.historytracers.app.ui.screens.AroundTheWorldPracticeSuanpanScreen
 import com.historytracers.app.ui.screens.AroundTheWorldYupanaScreen
@@ -476,7 +479,18 @@ fun AppNavigation() {
                Screen.ReverseMovementPichana.route, Screen.ReverseMovementCancellation.route,
                Screen.ReverseMovementQuestion.route, Screen.ReverseMovementConclusion.route,
                Screen.PracticingSubtractionYupana.route,
-               Screen.Calculi.route)
+               Screen.Calculi.route,
+               Screen.AroundTheWorldIntro.route, Screen.AroundTheWorldMathEvolution.route,
+               Screen.AroundTheWorldBones.route, Screen.AroundTheWorldPracticeBones.route,
+               Screen.AroundTheWorldQuipus.route, Screen.AroundTheWorldPracticeQuipu.route,
+               Screen.AroundTheWorldMesoamerican.route, Screen.AroundTheWorldPracticeMesoamerican.route,
+               Screen.AroundTheWorldCalculi.route, Screen.AroundTheWorldPracticeCalculi.route,
+               Screen.AroundTheWorldIndia.route, Screen.AroundTheWorldPracticeIndia.route,
+               Screen.AroundTheWorldChina.route, Screen.AroundTheWorldPracticeSuanpan.route,
+               Screen.AroundTheWorldYupana.route, Screen.AroundTheWorldPracticeYupana.route,
+               Screen.AroundTheWorldJapan.route, Screen.AroundTheWorldPracticeSoroban.route,
+               Screen.AroundTheWorldRussia.route, Screen.AroundTheWorldPracticeSchyoty.route,
+               Screen.AroundTheWorldConclusion.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -6874,6 +6888,15 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
                             onNavigatePrev = { navController.navigate(Screen.AroundTheWorldMathEvolution.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldPracticeBones.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldPracticeBones.route) {
+                        AroundTheWorldPracticeBonesScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldBones.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.AroundTheWorldQuipus.route) { launchSingleTop = true } }
                         )
                     }
@@ -6882,7 +6905,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
-                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldBones.route) { launchSingleTop = true } },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldPracticeBones.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.AroundTheWorldPracticeQuipu.route) { launchSingleTop = true } }
                         )
                     }
@@ -6901,6 +6924,15 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
                             onNavigatePrev = { navController.navigate(Screen.AroundTheWorldPracticeQuipu.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldPracticeMesoamerican.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldPracticeMesoamerican.route) {
+                        AroundTheWorldPracticeMesoamericanScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldMesoamerican.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.AroundTheWorldCalculi.route) { launchSingleTop = true } }
                         )
                     }
@@ -6909,7 +6941,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
-                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldMesoamerican.route) { launchSingleTop = true } },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldPracticeMesoamerican.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.AroundTheWorldPracticeCalculi.route) { launchSingleTop = true } }
                         )
                     }
@@ -6928,6 +6960,15 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
                             onNavigatePrev = { navController.navigate(Screen.AroundTheWorldPracticeCalculi.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldPracticeIndia.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldPracticeIndia.route) {
+                        AroundTheWorldPracticeIndiaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldIndia.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.AroundTheWorldChina.route) { launchSingleTop = true } }
                         )
                     }
@@ -6936,7 +6977,7 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { if (!navController.popBackStack(Screen.Index.route, false)) { navController.navigate(Screen.Index.route) { launchSingleTop = true } } },
-                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldIndia.route) { launchSingleTop = true } },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldPracticeIndia.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.AroundTheWorldPracticeSuanpan.route) { launchSingleTop = true } }
                         )
                     }
