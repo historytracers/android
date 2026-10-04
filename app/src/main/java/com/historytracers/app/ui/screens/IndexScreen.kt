@@ -113,7 +113,8 @@ fun IndexScreen(
     onNavigateToRunningAndGrowing: () -> Unit = {},
     onNavigateToWhereAreWeFrom: () -> Unit = {},
     onNavigateToAnotherWayToCount: () -> Unit = {},
-    onNavigateToAroundTheWorld: () -> Unit = {}
+    onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToReturning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -353,7 +354,7 @@ fun IndexScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledTonalButton(
-                onClick = { /* TODO */ },
+                onClick = { onNavigateToReturning() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = ButtonYellow,
