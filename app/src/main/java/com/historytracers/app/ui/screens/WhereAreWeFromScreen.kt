@@ -2,9 +2,12 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -13,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -39,7 +43,8 @@ fun WhereAreWeFromScreen(
     onNavigateToMatterAndEnergy: () -> Unit = {},
     onNavigateToEverythingWasTogether: () -> Unit = {},
     onNavigateToSharingWithWhom: () -> Unit = {},
-    onNavigateToTheSameResult: () -> Unit = {}
+    onNavigateToTheSameResult: () -> Unit = {},
+    onNavigateToHalfPiece: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -259,6 +264,41 @@ fun WhereAreWeFromScreen(
 
                 Text(
                     text = xs.theSameResult,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToHalfPiece,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val sheetModifier = Modifier
+                            .size(width = 24.dp, height = 32.dp)
+                            .background(Color.White, RoundedCornerShape(2.dp))
+                            .border(1.dp, Color(0xFFBDBDBD), RoundedCornerShape(2.dp))
+                        Box(sheetModifier)
+                        Spacer(Modifier.width(6.dp))
+                        Box(sheetModifier)
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.halfPiece,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
