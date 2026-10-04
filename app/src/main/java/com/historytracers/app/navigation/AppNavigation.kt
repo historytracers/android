@@ -230,6 +230,16 @@ import com.historytracers.app.ui.screens.TheSameResultTheyWereTogetherScreen
 import com.historytracers.app.ui.screens.TheSameResultSplittingAgainScreen
 import com.historytracers.app.ui.screens.TheSameResultThinkingScreen
 import com.historytracers.app.ui.screens.TheSameResultConclusionScreen
+import com.historytracers.app.ui.screens.HalfPieceIntroScreen
+import com.historytracers.app.ui.screens.HalfPieceOurselvesScreen
+import com.historytracers.app.ui.screens.HalfPiecePaperScreen
+import com.historytracers.app.ui.screens.HalfPieceRepresentationScreen
+import com.historytracers.app.ui.screens.HalfPieceTogetherScreen
+import com.historytracers.app.ui.screens.HalfPieceSplitScreen
+import com.historytracers.app.ui.screens.HalfPieceThinkingScreen
+import com.historytracers.app.ui.screens.HalfPieceSidesScreen
+import com.historytracers.app.ui.screens.HalfPieceAnotherScreen
+import com.historytracers.app.ui.screens.HalfPieceConclusionScreen
 import com.historytracers.app.ui.screens.UniverseExpansionScreen
 import com.historytracers.app.ui.screens.CountingWithBonesIntroScreen
 import com.historytracers.app.ui.screens.CountingWithBonesGameScreen
@@ -439,6 +449,9 @@ fun AppNavigation() {
            "sharing_with_whom_scenario", "sharing_with_whom_empty_region", "sharing_with_whom_conclusion",
            "the_same_result_intro", "the_same_result_our_body", "the_same_result_they_were_together",
            "the_same_result_splitting_again", "the_same_result_thinking", "the_same_result_conclusion",
+           "half_piece_intro", "half_piece_ourselves", "half_piece_paper", "half_piece_representation",
+           "half_piece_together", "half_piece_split", "half_piece_thinking", "half_piece_sides",
+           "half_piece_another", "half_piece_conclusion",
            "quipus_intro", "quipus_one_of_the_first", "quipus_how_it_works", "quipus_small_numbers",
            "quipus_large_numbers", "quipus_question", "quipus_conclusion",
            "practicing_with_quipus",
@@ -829,7 +842,8 @@ fun AppNavigation() {
                             onNavigateToMatterAndEnergy = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },
                             onNavigateToEverythingWasTogether = { navController.navigate(Screen.UniverseExpansion.route) { launchSingleTop = true } },
                             onNavigateToSharingWithWhom = { navController.navigate(Screen.SharingWithWhomIntro.route) { launchSingleTop = true } },
-                            onNavigateToTheSameResult = { navController.navigate(Screen.TheSameResultIntro.route) { launchSingleTop = true } }
+                            onNavigateToTheSameResult = { navController.navigate(Screen.TheSameResultIntro.route) { launchSingleTop = true } },
+                            onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.AnotherWayToCount.route) {
@@ -2292,6 +2306,175 @@ fun AppNavigation() {
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.TheSameResultThinking.route, false)) {
                                     navController.navigate(Screen.TheSameResultThinking.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToWhereAreWeFrom = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.HalfPieceIntro.route) {
+                        HalfPieceIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceOurselves.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceOurselves.route) {
+                        HalfPieceOurselvesScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceIntro.route, false)) {
+                                    navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPiecePaper.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPiecePaper.route) {
+                        HalfPiecePaperScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceOurselves.route, false)) {
+                                    navController.navigate(Screen.HalfPieceOurselves.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceRepresentation.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceRepresentation.route) {
+                        HalfPieceRepresentationScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPiecePaper.route, false)) {
+                                    navController.navigate(Screen.HalfPiecePaper.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceTogether.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceTogether.route) {
+                        HalfPieceTogetherScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceRepresentation.route, false)) {
+                                    navController.navigate(Screen.HalfPieceRepresentation.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceSplit.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceSplit.route) {
+                        HalfPieceSplitScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceTogether.route, false)) {
+                                    navController.navigate(Screen.HalfPieceTogether.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceThinking.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceThinking.route) {
+                        HalfPieceThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceSplit.route, false)) {
+                                    navController.navigate(Screen.HalfPieceSplit.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceSides.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceSides.route) {
+                        HalfPieceSidesScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceThinking.route, false)) {
+                                    navController.navigate(Screen.HalfPieceThinking.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceAnother.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceAnother.route) {
+                        HalfPieceAnotherScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceSides.route, false)) {
+                                    navController.navigate(Screen.HalfPieceSides.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.HalfPieceConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.HalfPieceConclusion.route) {
+                        HalfPieceConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.HalfPieceAnother.route, false)) {
+                                    navController.navigate(Screen.HalfPieceAnother.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigateToWhereAreWeFrom = {
@@ -7242,7 +7425,7 @@ fun AppNavigation() {
                             onNavigateToCalculi = { navController.navigate(Screen.Calculi.route) { launchSingleTop = true } },
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToTheSameResult = { navController.navigate(Screen.TheSameResultIntro.route) { launchSingleTop = true } },
-                            onNavigateToReverseMovements = { navController.navigate(Screen.ReverseMovementIntro.route) { launchSingleTop = true } },
+                            onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionYupana = { navController.navigate(Screen.PracticingSubtractionYupana.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },

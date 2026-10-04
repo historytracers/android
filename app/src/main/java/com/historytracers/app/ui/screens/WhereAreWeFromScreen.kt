@@ -278,7 +278,7 @@ fun WhereAreWeFromScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("half_piece" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Row(

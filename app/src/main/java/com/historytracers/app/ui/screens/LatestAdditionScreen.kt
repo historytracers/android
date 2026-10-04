@@ -2,9 +2,12 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,9 +36,9 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
-import com.historytracers.app.ui.features.reverseMovementScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -83,9 +86,9 @@ fun LatestAdditionScreen(
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToCalculi: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
-    onNavigateToReverseMovements: () -> Unit = {},
     onNavigateToPracticingSubtractionYupana: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
+    onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -98,10 +101,10 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val rms = reverseMovementScreenStringsForLanguage(LocalAppLanguage.current)
     val pss = practicingSubtractionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
+    val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -112,6 +115,25 @@ fun LatestAdditionScreen(
     val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "half_piece",
+            label = hps.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val sheet = Modifier
+                        .size(width = 20.dp, height = 26.dp)
+                        .background(Color.White, RoundedCornerShape(2.dp))
+                        .border(1.dp, Color(0xFFBDBDBD), RoundedCornerShape(2.dp))
+                    Box(sheet)
+                    Box(sheet)
+                }
+            },
+            isCompleted = { "half_piece" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToHalfPiece
+        ),
         LatestAdditionEntry(
             sectionId = "the_same_result",
             label = was.theSameResult,
@@ -167,29 +189,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "practicing_subtraction_yupana" in completedYupana },
             onNavigate = onNavigateToPracticingSubtractionYupana
-        ),
-        LatestAdditionEntry(
-            sectionId = "reverse_movements",
-            label = rms.title,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            },
-            isCompleted = { "reverse_movements" in completedYupana },
-            onNavigate = onNavigateToReverseMovements
         )
     )
 
