@@ -33,8 +33,8 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.features.reverseMovementScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -83,9 +83,9 @@ fun LatestAdditionScreen(
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToCalculi: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
-    onNavigateToMultiplyingWithYupana: () -> Unit = {},
     onNavigateToReverseMovements: () -> Unit = {},
     onNavigateToPracticingSubtractionYupana: () -> Unit = {},
+    onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -101,7 +101,7 @@ fun LatestAdditionScreen(
     val rms = reverseMovementScreenStringsForLanguage(LocalAppLanguage.current)
     val pss = practicingSubtractionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
-    val mwys = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -112,6 +112,27 @@ fun LatestAdditionScreen(
     val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "the_same_result",
+            label = was.theSameResult,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("\u00f7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        "1",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 2.dp)
+                    )
+                    Text("\u00d7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+            },
+            isCompleted = { "the_same_result" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToTheSameResult
+        ),
         LatestAdditionEntry(
             sectionId = "around_the_world",
             label = hts.aroundTheWorld,
@@ -169,19 +190,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "reverse_movements" in completedYupana },
             onNavigate = onNavigateToReverseMovements
-        ),
-        LatestAdditionEntry(
-            sectionId = "multiplying_with_yupana",
-            label = mwys.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_five_circles),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "multiplying_with_yupana" in completedYupana },
-            onNavigate = onNavigateToMultiplyingWithYupana
         )
     )
 
