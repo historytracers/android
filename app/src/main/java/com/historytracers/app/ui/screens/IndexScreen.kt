@@ -80,6 +80,10 @@ private val aroundTheWorldSectionIds = listOf(
     "around_the_world"
 )
 
+private val returningSectionIds = listOf(
+    "walking_backwards"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
@@ -132,6 +136,7 @@ fun IndexScreen(
     val completedRunningAndGrowing by preferences.completedRunningAndGrowingSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -145,6 +150,7 @@ fun IndexScreen(
     val runningAndGrowingDone = runningAndGrowingSectionIds.all { it in completedRunningAndGrowing }
     val anotherWayToCountDone = anotherWayToCountSectionIds.all { it in completedAnotherWayToCount }
     val aroundTheWorldDone = aroundTheWorldSectionIds.all { it in completedAroundTheWorld }
+    val returningDone = returningSectionIds.all { it in completedReturning }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -357,7 +363,7 @@ fun IndexScreen(
                 onClick = { onNavigateToReturning() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (returningDone) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {

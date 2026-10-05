@@ -70,6 +70,7 @@ class UserPreferences(private val context: Context) {
         private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
         private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
         private val ROAD_TO_SOMEWHERE_SECTIONS_KEY = stringSetPreferencesKey("road_to_somewhere_sections")
+        private val RETURNING_SECTIONS_KEY = stringSetPreferencesKey("returning_sections")
         private val RUNNING_AND_GROWING_SECTIONS_KEY = stringSetPreferencesKey("running_and_growing_sections")
         private val WHERE_ARE_WE_FROM_SECTIONS_KEY = stringSetPreferencesKey("where_are_we_from_sections")
         private val ANOTHER_WAY_TO_COUNT_SECTIONS_KEY = stringSetPreferencesKey("another_way_to_count_sections")
@@ -368,6 +369,16 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val completedReturningSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[RETURNING_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markReturningSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[RETURNING_SECTIONS_KEY] = (preferences[RETURNING_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
     val completedRunningAndGrowingSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
         preferences[RUNNING_AND_GROWING_SECTIONS_KEY] ?: emptySet()
     }
@@ -508,6 +519,7 @@ class UserPreferences(private val context: Context) {
             preferences[ABACUS_SECTIONS_KEY] = emptySet()
             preferences[YUPANA_SECTIONS_KEY] = emptySet()
             preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = emptySet()
+            preferences[RETURNING_SECTIONS_KEY] = emptySet()
             preferences[RUNNING_AND_GROWING_SECTIONS_KEY] = emptySet()
             preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = emptySet()
             preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()

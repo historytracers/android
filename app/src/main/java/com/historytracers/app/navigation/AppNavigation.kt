@@ -169,6 +169,15 @@ import com.historytracers.app.ui.screens.WhereAreTheyConclusionScreen
 import com.historytracers.app.ui.screens.WhereAreWeFromScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.ReturningScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsIntroScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsRememberingScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsFiveStepsScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsNewOperationScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsBackToOriginScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsFromAnotherBeginningScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsThinkingScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsSignalScreen
+import com.historytracers.app.ui.screens.WalkingBackwardsConclusionScreen
 import com.historytracers.app.ui.screens.BuildingLikeAMesoamericanScreen
 import com.historytracers.app.ui.screens.BuildingLikeEtruscanRomansScreen
 import com.historytracers.app.ui.screens.HundredsAndThousandsAppendScreen
@@ -465,6 +474,10 @@ fun AppNavigation() {
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
            "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning",
+           "walking_backwards_intro", "walking_backwards_remembering", "walking_backwards_five_steps",
+           "walking_backwards_new_operation", "walking_backwards_back_to_origin",
+           "walking_backwards_from_another_beginning", "walking_backwards_thinking",
+           "walking_backwards_signal", "walking_backwards_conclusion",
            Screen.BuildingLikeAMesoamerican.route, Screen.BuildingLikeEtruscanRomans.route,
            Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
@@ -835,6 +848,217 @@ fun AppNavigation() {
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsIntro.route) {
+                        WalkingBackwardsIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.WalkingBackwardsRemembering.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsRemembering.route) {
+                        WalkingBackwardsRememberingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsIntro.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsFiveSteps.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsFiveSteps.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsFiveSteps.route) {
+                        WalkingBackwardsFiveStepsScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsRemembering.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsRemembering.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsNewOperation.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsNewOperation.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsNewOperation.route) {
+                        WalkingBackwardsNewOperationScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsFiveSteps.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsFiveSteps.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsBackToOrigin.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsBackToOrigin.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsBackToOrigin.route) {
+                        WalkingBackwardsBackToOriginScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsNewOperation.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsNewOperation.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsFromAnotherBeginning.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsFromAnotherBeginning.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsFromAnotherBeginning.route) {
+                        WalkingBackwardsFromAnotherBeginningScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsBackToOrigin.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsBackToOrigin.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsThinking.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsThinking.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsThinking.route) {
+                        WalkingBackwardsThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsFromAnotherBeginning.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsFromAnotherBeginning.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsSignal.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsSignal.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsSignal.route) {
+                        WalkingBackwardsSignalScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsThinking.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsThinking.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsConclusion.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsConclusion.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.WalkingBackwardsConclusion.route) {
+                        WalkingBackwardsConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.WalkingBackwardsSignal.route, false)) {
+                                    navController.navigate(Screen.WalkingBackwardsSignal.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToReturning = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
@@ -7440,7 +7664,7 @@ fun AppNavigation() {
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToTheSameResult = { navController.navigate(Screen.TheSameResultIntro.route) { launchSingleTop = true } },
                             onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } },
-                            onNavigateToPracticingSubtractionYupana = { navController.navigate(Screen.PracticingSubtractionYupana.route) { launchSingleTop = true } },
+                            onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },

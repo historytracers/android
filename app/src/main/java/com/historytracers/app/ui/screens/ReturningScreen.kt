@@ -26,6 +26,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.returningScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.ButtonYellowDark
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,6 +41,8 @@ fun ReturningScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
+    val walkingBackwardsDone = "walking_backwards" in completedReturning
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -103,7 +106,7 @@ fun ReturningScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (walkingBackwardsDone) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Image(

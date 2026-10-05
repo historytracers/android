@@ -37,7 +37,7 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingSubtractionYupanaScreenStringsForLanguage
+import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -86,9 +86,9 @@ fun LatestAdditionScreen(
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToCalculi: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
-    onNavigateToPracticingSubtractionYupana: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
+    onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -101,20 +101,33 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val pss = practicingSubtractionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
     val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
+    val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
     val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "walking_backwards",
+            label = wbs.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_turn_left),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "walking_backwards" in completedReturning },
+            onNavigate = onNavigateToWalkingBackwards
+        ),
         LatestAdditionEntry(
             sectionId = "half_piece",
             label = hps.title,
@@ -176,19 +189,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "calculi" in completedAnotherWayToCount },
             onNavigate = onNavigateToCalculi
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_subtraction_yupana",
-            label = pss.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_knot),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "practicing_subtraction_yupana" in completedYupana },
-            onNavigate = onNavigateToPracticingSubtractionYupana
         )
     )
 

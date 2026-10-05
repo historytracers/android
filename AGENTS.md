@@ -135,7 +135,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `half_piece` (Half Piece), `the_same_result` (The Same Result), `around_the_world` (Around the World (Counting)), `calculi` (Calculi), `practicing_subtraction_yupana` (Practicing Subtraction with the Yupana).
+- Current list (latest first): `walking_backwards` (Walking Backwards), `half_piece` (Half Piece), `the_same_result` (The Same Result), `around_the_world` (Around the World (Counting)), `calculi` (Calculi).
 
 ## New Main-Screen Buttons (Sun Badge)
 
