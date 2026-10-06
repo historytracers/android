@@ -766,6 +766,7 @@ private fun AtwExercise(tool: AtwTool, onSolved: () -> Unit) {
     var missingIndex by remember { mutableStateOf(Random.nextInt(1, 4)) }
     var value by remember { mutableStateOf(0) }
     var solved by remember { mutableStateOf(false) }
+    var exerciseKey by remember { mutableIntStateOf(0) }
 
     val seq = remember(seqStart) { (seqStart..seqStart + 4).toList() }
     val effectiveTarget = if (tool == AtwTool.SEQUENCE) seq[missingIndex] else target
@@ -778,6 +779,7 @@ private fun AtwExercise(tool: AtwTool, onSolved: () -> Unit) {
     }
 
     fun newExercise() {
+        exerciseKey++
         target = randomTarget()
         seqStart = Random.nextInt(1, 7)
         missingIndex = Random.nextInt(1, 4)
@@ -835,14 +837,14 @@ private fun AtwExercise(tool: AtwTool, onSolved: () -> Unit) {
                 columnHeadings = if (tool == AtwTool.CALCULI) calculiHeadings else emptyList(),
                 columnPlaces = if (tool == AtwTool.CALCULI) calculiPlaces else null,
                 frozen = solved,
-                resetKey = target,
+                resetKey = exerciseKey,
                 showReset = false,
                 onValueChange = { value = it.toInt() }
             )
         } else if (tool == AtwTool.SCHYOTY) {
             SchyotyAbacus(
                 frozen = solved,
-                resetKey = target,
+                resetKey = exerciseKey,
                 onValueChange = { value = it.toInt() }
             )
         } else {

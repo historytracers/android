@@ -68,6 +68,7 @@ fun SchyotyWritingScreen(
     fun newExercise() {
         exerciseKey++
         targetValue.value = Random.nextInt(1, 10)
+        value = 0L
         showCongrats.value = false
     }
 

@@ -231,7 +231,9 @@ fun WhereAreWeFromScreen(
 
                 FilledIconButton(
                     onClick = onNavigateToTheSameResult,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.theSameResult },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("the_same_result" in completedSections) ButtonYellowDark else ButtonYellow
@@ -275,7 +277,9 @@ fun WhereAreWeFromScreen(
 
                 FilledIconButton(
                     onClick = onNavigateToHalfPiece,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.halfPiece },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("half_piece" in completedSections) ButtonYellowDark else ButtonYellow
