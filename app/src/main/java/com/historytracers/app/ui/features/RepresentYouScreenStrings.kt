@@ -11,6 +11,18 @@ data class RepresentYouScreenStrings(
     val levelComplete: String,
     val finalCongrats: String,
     val playAgain: String,
+    val wrongPair: String,
+    val wrongPairLeft: String,
+    val and: String,
+    val before: String,
+    val withBar: String,
+    val countTwo: String,
+    val countThree: String,
+    val placeUnits: String,
+    val placeTens: String,
+    val placeHundreds: String,
+    val group: String,
+    val groupMore: String,
 )
 
 val EnRepresentYouScreenStrings = RepresentYouScreenStrings(
@@ -21,6 +33,18 @@ val EnRepresentYouScreenStrings = RepresentYouScreenStrings(
     levelComplete = "Congratulations, you finished level %d/%d!",
     finalCongrats = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PERFECT! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nYou matched all the numbers!\nGreat job!",
     playAgain = "Play Again",
+    wrongPair = "%VALUE% is represented by %EXPLANATION%: %ROMAN%.",
+    wrongPairLeft = "%ROMAN% is represented by %VALUE%.",
+    and = "and",
+    before = "before",
+    withBar = "with a bar above",
+    countTwo = "two",
+    countThree = "three",
+    placeUnits = "units",
+    placeTens = "tens",
+    placeHundreds = "hundreds",
+    group = "%COUNT% %PLACE%",
+    groupMore = "%COUNT% more %PLACE%",
 )
 
 val PtRepresentYouScreenStrings = RepresentYouScreenStrings(
@@ -31,6 +55,18 @@ val PtRepresentYouScreenStrings = RepresentYouScreenStrings(
     levelComplete = "Parab\u00e9ns, voc\u00ea finalizou o n\u00edvel %d/%d!",
     finalCongrats = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 PERFEITO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\nVoc\u00ea ligou todos os n\u00fameros!\n\u00d3timo trabalho!",
     playAgain = "Jogar Novamente",
+    wrongPair = "%VALUE% \u00e9 representado por %EXPLANATION%: %ROMAN%.",
+    wrongPairLeft = "%ROMAN% \u00e9 representado por %VALUE%.",
+    and = "e",
+    before = "antes de",
+    withBar = "com uma barra em cima",
+    countTwo = "duas",
+    countThree = "tr\u00eas",
+    placeUnits = "unidades",
+    placeTens = "dezenas",
+    placeHundreds = "centenas",
+    group = "%COUNT% %PLACE%",
+    groupMore = "mais %COUNT% %PLACE%",
 )
 
 val EsRepresentYouScreenStrings = RepresentYouScreenStrings(
@@ -41,6 +77,18 @@ val EsRepresentYouScreenStrings = RepresentYouScreenStrings(
     levelComplete = "\u00a1Felicitaciones, terminaste el nivel %d/%d!",
     finalCongrats = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 \u00a1PERFECTO! \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\n\u00a1Emparejaste todos los n\u00fameros!\n\u00a1Gran trabajo!",
     playAgain = "Jugar de Nuevo",
+    wrongPair = "%VALUE% se representa con %EXPLANATION%: %ROMAN%.",
+    wrongPairLeft = "%ROMAN% se representa con %VALUE%.",
+    and = "y",
+    before = "antes de",
+    withBar = "con una barra encima",
+    countTwo = "dos",
+    countThree = "tres",
+    placeUnits = "unidades",
+    placeTens = "decenas",
+    placeHundreds = "centenas",
+    group = "%COUNT% %PLACE%",
+    groupMore = "%COUNT% %PLACE% m\u00e1s",
 )
 
 val LocalRepresentYouScreenStrings = staticCompositionLocalOf { EnRepresentYouScreenStrings }

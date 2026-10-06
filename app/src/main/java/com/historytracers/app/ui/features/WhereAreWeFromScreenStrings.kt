@@ -8,6 +8,8 @@ data class WhereAreWeFromScreenStrings(
     val matterAndEnergy: String,
     val everythingWasTogether: String,
     val sharedWithWho: String,
+    val theSameResult: String,
+    val halfPiece: String,
 )
 
 val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -15,6 +17,8 @@ val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     matterAndEnergy = "Matter and Energy",
     everythingWasTogether = "Everything Was Together",
     sharedWithWho = "Shared with Who?",
+    theSameResult = "The Same Result",
+    halfPiece = "Half Piece",
 )
 
 val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -22,6 +26,8 @@ val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     matterAndEnergy = "Mat\u00e9ria e Energia",
     everythingWasTogether = "Tudo Estava Junto",
     sharedWithWho = "Compartilhado com Quem?",
+    theSameResult = "O Mesmo Resultado",
+    halfPiece = "Meio Peda\u00e7o",
 )
 
 val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -29,6 +35,8 @@ val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     matterAndEnergy = "Materia y Energ\u00eda",
     everythingWasTogether = "Todo Estaba Junto",
     sharedWithWho = "\u00bfCompartido con Qui\u00e9n?",
+    theSameResult = "El Mismo Resultado",
+    halfPiece = "Medio Pedazo",
 )
 
 val LocalWhereAreWeFromScreenStrings = staticCompositionLocalOf { EnWhereAreWeFromScreenStrings }

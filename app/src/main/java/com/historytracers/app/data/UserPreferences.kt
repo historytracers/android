@@ -70,9 +70,11 @@ class UserPreferences(private val context: Context) {
         private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
         private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
         private val ROAD_TO_SOMEWHERE_SECTIONS_KEY = stringSetPreferencesKey("road_to_somewhere_sections")
+        private val RETURNING_SECTIONS_KEY = stringSetPreferencesKey("returning_sections")
         private val RUNNING_AND_GROWING_SECTIONS_KEY = stringSetPreferencesKey("running_and_growing_sections")
         private val WHERE_ARE_WE_FROM_SECTIONS_KEY = stringSetPreferencesKey("where_are_we_from_sections")
         private val ANOTHER_WAY_TO_COUNT_SECTIONS_KEY = stringSetPreferencesKey("another_way_to_count_sections")
+        private val AROUND_THE_WORLD_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
@@ -367,6 +369,16 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val completedReturningSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[RETURNING_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markReturningSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[RETURNING_SECTIONS_KEY] = (preferences[RETURNING_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
     val completedRunningAndGrowingSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
         preferences[RUNNING_AND_GROWING_SECTIONS_KEY] ?: emptySet()
     }
@@ -394,6 +406,16 @@ class UserPreferences(private val context: Context) {
     suspend fun markAnotherWayToCountSectionCompleted(section: String) {
         context.dataStore.edit { preferences ->
             preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = (preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedAroundTheWorldSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[AROUND_THE_WORLD_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markAroundTheWorldSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[AROUND_THE_WORLD_SECTIONS_KEY] = (preferences[AROUND_THE_WORLD_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 
@@ -497,9 +519,11 @@ class UserPreferences(private val context: Context) {
             preferences[ABACUS_SECTIONS_KEY] = emptySet()
             preferences[YUPANA_SECTIONS_KEY] = emptySet()
             preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = emptySet()
+            preferences[RETURNING_SECTIONS_KEY] = emptySet()
             preferences[RUNNING_AND_GROWING_SECTIONS_KEY] = emptySet()
             preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = emptySet()
             preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()
+            preferences[AROUND_THE_WORLD_SECTIONS_KEY] = emptySet()
             preferences[CLAIMED_LEVELS_KEY] = emptySet()
             preferences[AWARDED_SCREENS_KEY] = emptySet()
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()

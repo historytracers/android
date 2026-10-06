@@ -31,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -547,57 +548,61 @@ private fun BoneWithMarks(
     Canvas(
         modifier = modifier.semantics { this.contentDescription = contentDescription ?: "" }
     ) {
-        val w = size.width
-        val h = size.height
-        val boneFill = Color(0xFFF3E3C3)
-        val boneStroke = Color(0xFF8D6E63)
-        val markColor = Brown40
+        drawBoneWithMarks(markCount)
+    }
+}
 
-        val left = w * 0.10f
-        val right = w * 0.90f
-        val shaftHeight = h * 0.34f
-        val shaftTop = (h - shaftHeight) / 2f
-        val border = h * 0.025f
-        val knobRadius = shaftHeight * 0.58f
-        val knobOffsets = listOf(-1f, 1f)
-        val knobCenters = listOf(left, right).flatMap { ex ->
-            knobOffsets.map { dir -> Offset(ex, shaftTop + shaftHeight * 0.5f + dir * shaftHeight * 0.45f) }
-        }
+internal fun DrawScope.drawBoneWithMarks(markCount: Int) {
+    val w = size.width
+    val h = size.height
+    val boneFill = Color(0xFFF3E3C3)
+    val boneStroke = Color(0xFF8D6E63)
+    val markColor = Brown40
 
-        drawRoundRect(
-            color = boneStroke,
-            topLeft = Offset(left - border, shaftTop - border),
-            size = Size(right - left + 2 * border, shaftHeight + 2 * border),
-            cornerRadius = CornerRadius(shaftHeight / 2f + border)
+    val left = w * 0.10f
+    val right = w * 0.90f
+    val shaftHeight = h * 0.34f
+    val shaftTop = (h - shaftHeight) / 2f
+    val border = h * 0.025f
+    val knobRadius = shaftHeight * 0.58f
+    val knobOffsets = listOf(-1f, 1f)
+    val knobCenters = listOf(left, right).flatMap { ex ->
+        knobOffsets.map { dir -> Offset(ex, shaftTop + shaftHeight * 0.5f + dir * shaftHeight * 0.45f) }
+    }
+
+    drawRoundRect(
+        color = boneStroke,
+        topLeft = Offset(left - border, shaftTop - border),
+        size = Size(right - left + 2 * border, shaftHeight + 2 * border),
+        cornerRadius = CornerRadius(shaftHeight / 2f + border)
+    )
+    knobCenters.forEach { drawCircle(boneStroke, radius = knobRadius + border, center = it) }
+
+    drawRoundRect(
+        color = boneFill,
+        topLeft = Offset(left, shaftTop),
+        size = Size(right - left, shaftHeight),
+        cornerRadius = CornerRadius(shaftHeight / 2f)
+    )
+    knobCenters.forEach { drawCircle(boneFill, radius = knobRadius, center = it) }
+
+    val markHalf = shaftHeight * 0.64f
+    val markWidth = (w * 0.012f).coerceAtLeast(2f)
+    val markHalfWidth = markWidth / 2f
+    val knobOuter = knobRadius + border
+    val markStart = left + knobOuter + markHalfWidth
+    val markEnd = right - knobOuter - markHalfWidth
+    val markStep = if (MAX_BONE_MARKS > 1) (markEnd - markStart) / (MAX_BONE_MARKS - 1) else 0f
+    val centerY = shaftTop + shaftHeight / 2f
+    for (index in 0 until markCount.coerceIn(0, MAX_BONE_MARKS)) {
+        val x = markStart + index * markStep
+        drawLine(
+            color = markColor,
+            start = Offset(x, centerY - markHalf),
+            end = Offset(x, centerY + markHalf),
+            strokeWidth = markWidth,
+            cap = StrokeCap.Round
         )
-        knobCenters.forEach { drawCircle(boneStroke, radius = knobRadius + border, center = it) }
-
-        drawRoundRect(
-            color = boneFill,
-            topLeft = Offset(left, shaftTop),
-            size = Size(right - left, shaftHeight),
-            cornerRadius = CornerRadius(shaftHeight / 2f)
-        )
-        knobCenters.forEach { drawCircle(boneFill, radius = knobRadius, center = it) }
-
-        val markHalf = shaftHeight * 0.64f
-        val markWidth = (w * 0.012f).coerceAtLeast(2f)
-        val markHalfWidth = markWidth / 2f
-        val knobOuter = knobRadius + border
-        val markStart = left + knobOuter + markHalfWidth
-        val markEnd = right - knobOuter - markHalfWidth
-        val markStep = if (MAX_BONE_MARKS > 1) (markEnd - markStart) / (MAX_BONE_MARKS - 1) else 0f
-        val centerY = shaftTop + shaftHeight / 2f
-        for (index in 0 until markCount.coerceIn(0, MAX_BONE_MARKS)) {
-            val x = markStart + index * markStep
-            drawLine(
-                color = markColor,
-                start = Offset(x, centerY - markHalf),
-                end = Offset(x, centerY + markHalf),
-                strokeWidth = markWidth,
-                cap = StrokeCap.Round
-            )
-        }
     }
 }
 

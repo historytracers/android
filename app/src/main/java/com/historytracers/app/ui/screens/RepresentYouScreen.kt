@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.RepresentYouScreenStrings
 import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -66,6 +67,164 @@ private fun toRomanBasic(value: Int): String {
 private fun toRomanParts(value: Int): Pair<String, String> =
     toRomanBasic(value / 1000) to toRomanBasic(value % 1000)
 
+// Subtractive pairs (a smaller symbol before a bigger one) are described by naming
+// the two symbols, e.g. "I before V", never as a subtraction. Each entry maps the
+// pair to (big, small).
+private val representSubtractiveParts = mapOf(
+    "IV" to ("V" to "I"), "IX" to ("X" to "I"), "XL" to ("L" to "X"),
+    "XC" to ("C" to "X"), "CD" to ("D" to "C"), "CM" to ("M" to "C")
+)
+
+// Break a value into the same pieces the game draws: overlined thousands, additive
+// symbol groups (e.g. II) and subtractive pairs (e.g. IV).
+private sealed interface RepresentPart {
+    data class Thousands(val symbols: String) : RepresentPart
+    data class Subtractive(val symbols: String, val small: String, val big: String) : RepresentPart
+    data class Additive(val symbols: String, val count: Int, val value: Int) : RepresentPart
+}
+
+private fun decomposeRepresentParts(value: Int): List<RepresentPart> {
+    val parts = mutableListOf<RepresentPart>()
+    var remaining = value
+    if (remaining >= 1000) {
+        val thousands = remaining / 1000
+        parts.add(RepresentPart.Thousands(toRomanBasic(thousands)))
+        remaining %= 1000
+    }
+    for ((number, symbol) in romanValues) {
+        if (number >= 1000 || remaining <= 0) continue
+        if (remaining < number) continue
+        val sub = representSubtractiveParts[symbol]
+        if (sub != null) {
+            parts.add(RepresentPart.Subtractive(symbol, small = sub.second, big = sub.first))
+            remaining -= number
+        } else {
+            val count = remaining / number
+            parts.add(RepresentPart.Additive(symbol.repeat(count), count, number))
+            remaining -= count * number
+        }
+    }
+    return parts
+}
+
+private sealed interface FeedbackSeg {
+    data class Plain(val text: String) : FeedbackSeg
+    data class Overlined(val text: String) : FeedbackSeg
+}
+
+private fun representPlaceName(xs: RepresentYouScreenStrings, symbolValue: Int): String = when {
+    symbolValue >= 100 -> xs.placeHundreds
+    symbolValue >= 10 -> xs.placeTens
+    else -> xs.placeUnits
+}
+
+private fun representGroupPhrase(
+    xs: RepresentYouScreenStrings,
+    count: Int,
+    symbolValue: Int,
+    withMore: Boolean
+): String {
+    val template = if (withMore) xs.groupMore else xs.group
+    val countWord = when (count) {
+        2 -> xs.countTwo
+        3 -> xs.countThree
+        else -> ""
+    }
+    return template.replace("%COUNT%", countWord).replace("%PLACE%", representPlaceName(xs, symbolValue))
+}
+
+// Describe a value in words, e.g. "V and two more units II" or "I before V".
+private fun explainRepresent(value: Int, xs: RepresentYouScreenStrings): List<FeedbackSeg> {
+    val fragments = mutableListOf<List<FeedbackSeg>>()
+    decomposeRepresentParts(value).forEachIndexed { index, part ->
+        when (part) {
+            is RepresentPart.Thousands -> fragments.add(
+                listOf(
+                    FeedbackSeg.Overlined(part.symbols),
+                    FeedbackSeg.Plain(" " + xs.withBar)
+                )
+            )
+            is RepresentPart.Subtractive -> fragments.add(
+                listOf(FeedbackSeg.Plain(part.small + " " + xs.before + " " + part.big))
+            )
+            is RepresentPart.Additive -> if (part.count == 1) {
+                fragments.add(listOf(FeedbackSeg.Plain(part.symbols)))
+            } else {
+                fragments.add(
+                    listOf(
+                        FeedbackSeg.Plain(
+                            representGroupPhrase(xs, part.count, part.value, index > 0) + " " + part.symbols
+                        )
+                    )
+                )
+            }
+        }
+    }
+    val out = mutableListOf<FeedbackSeg>()
+    fragments.forEachIndexed { index, fragment ->
+        if (index > 0) out.add(FeedbackSeg.Plain(" " + xs.and + " "))
+        out.addAll(fragment)
+    }
+    return out
+}
+
+private fun romanFeedbackSegs(value: Int): List<FeedbackSeg> {
+    val (thousands, remainder) = toRomanParts(value)
+    return if (thousands.isEmpty()) {
+        listOf(FeedbackSeg.Plain(remainder))
+    } else {
+        listOf(FeedbackSeg.Overlined(thousands), FeedbackSeg.Plain(remainder))
+    }
+}
+
+private val feedbackTokenRegex = Regex("%[A-Z]+%")
+
+private fun substituteFeedback(
+    template: String,
+    subs: Map<String, List<FeedbackSeg>>
+): List<FeedbackSeg> {
+    val out = mutableListOf<FeedbackSeg>()
+    var pos = 0
+    for (match in feedbackTokenRegex.findAll(template)) {
+        if (match.range.first > pos) {
+            out.add(FeedbackSeg.Plain(template.substring(pos, match.range.first)))
+        }
+        out.addAll(subs[match.value] ?: listOf(FeedbackSeg.Plain(match.value)))
+        pos = match.range.last + 1
+    }
+    if (pos < template.length) {
+        out.add(FeedbackSeg.Plain(template.substring(pos)))
+    }
+    return out
+}
+
+// Explain the first selection in words: a Hindu-Arabic number is shown as the
+// Roman numerals that build it, a Roman numeral is shown as its number.
+private fun wrongPairFeedback(
+    leftId: Int,
+    rightId: Int,
+    firstSide: String?,
+    xs: RepresentYouScreenStrings
+): List<FeedbackSeg> =
+    if (firstSide == "Left") {
+        substituteFeedback(
+            xs.wrongPairLeft,
+            mapOf(
+                "%ROMAN%" to romanFeedbackSegs(leftId),
+                "%VALUE%" to listOf(FeedbackSeg.Plain(leftId.toString()))
+            )
+        )
+    } else {
+        substituteFeedback(
+            xs.wrongPair,
+            mapOf(
+                "%VALUE%" to listOf(FeedbackSeg.Plain(rightId.toString())),
+                "%EXPLANATION%" to explainRepresent(rightId, xs),
+                "%ROMAN%" to romanFeedbackSegs(rightId)
+            )
+        )
+    }
+
 private fun windowsForLevel(level: Int): List<IntRange> = when (level) {
     2 -> listOf(10..30, 20..40, 40..60, 60..80, 80..99)
     3 -> listOf(100..300, 200..400, 400..600, 600..800, 800..999)
@@ -101,7 +260,8 @@ private data class RepresentRightItem(val text: String, val id: Int)
 private fun OverlinedText(
     text: String,
     style: TextStyle,
-    lineColor: Color
+    lineColor: Color,
+    contentColor: Color = Color.Unspecified
 ) {
     val density = LocalDensity.current
     var textWidth by remember { mutableStateOf(0f) }
@@ -117,8 +277,38 @@ private fun OverlinedText(
             text = text,
             style = style,
             fontWeight = FontWeight.Bold,
+            color = contentColor,
             onTextLayout = { textWidth = it.size.width.toFloat() }
         )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun RepresentFeedback(segs: List<FeedbackSeg>) {
+    val style = MaterialTheme.typography.bodyMedium
+    val color = MaterialTheme.colorScheme.error
+    FlowRow(
+        modifier = Modifier.padding(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
+    ) {
+        segs.forEach { seg ->
+            when (seg) {
+                is FeedbackSeg.Plain -> Text(
+                    text = seg.text,
+                    style = style,
+                    fontWeight = FontWeight.Bold,
+                    color = color
+                )
+                is FeedbackSeg.Overlined -> OverlinedText(
+                    text = seg.text,
+                    style = style,
+                    lineColor = color,
+                    contentColor = color
+                )
+            }
+        }
     }
 }
 
@@ -212,6 +402,8 @@ fun RepresentYouScreen(
     var matchedIds by remember { mutableStateOf(emptySet<Int>()) }
     var selectedLeftId by remember { mutableStateOf<Int?>(null) }
     var selectedRightId by remember { mutableStateOf<Int?>(null) }
+    var firstSide by remember { mutableStateOf<String?>(null) }
+    var feedbackSegs by remember { mutableStateOf<List<FeedbackSeg>?>(null) }
     var levelCompleted by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
@@ -226,6 +418,8 @@ fun RepresentYouScreen(
         matchedIds = emptySet()
         selectedLeftId = null
         selectedRightId = null
+        firstSide = null
+        feedbackSegs = null
         levelCompleted = false
     }
 
@@ -235,6 +429,8 @@ fun RepresentYouScreen(
             matchedIds = newMatched
             selectedLeftId = null
             selectedRightId = null
+            firstSide = null
+            feedbackSegs = null
             if (newMatched.size == leftItems.size) {
                 levelCompleted = true
                 totalAwarded += 2
@@ -247,14 +443,20 @@ fun RepresentYouScreen(
                 }
             }
         } else {
+            feedbackSegs = wrongPairFeedback(leftId, rightId, firstSide, xs)
             selectedLeftId = null
             selectedRightId = null
+            firstSide = null
         }
     }
 
     fun onLeftTap(item: RepresentLeftItem) {
         if (levelCompleted) return
         if (item.id in matchedIds) return
+        feedbackSegs = null
+        if (firstSide == null) {
+            firstSide = "Left"
+        }
         selectedLeftId = item.id
         val rightSel = selectedRightId
         if (rightSel != null) {
@@ -265,6 +467,10 @@ fun RepresentYouScreen(
     fun onRightTap(item: RepresentRightItem) {
         if (levelCompleted) return
         if (item.id in matchedIds) return
+        feedbackSegs = null
+        if (firstSide == null) {
+            firstSide = "Right"
+        }
         selectedRightId = item.id
         val leftSel = selectedLeftId
         if (leftSel != null) {
@@ -373,6 +579,13 @@ fun RepresentYouScreen(
                             )
                         }
                     }
+                }
+
+                Spacer(Modifier.height(16.dp))
+
+                if (feedbackSegs != null) {
+                    Spacer(Modifier.height(4.dp))
+                    RepresentFeedback(segs = feedbackSegs!!)
                 }
 
                 Spacer(Modifier.height(16.dp))

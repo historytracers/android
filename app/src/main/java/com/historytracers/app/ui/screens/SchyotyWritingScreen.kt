@@ -54,7 +54,8 @@ fun SchyotyWritingScreen(
     val s = LocalUiStrings.current
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val xs = schyotyWritingScreenStringsForLanguage(LocalAppLanguage.current)
-    val beads = remember { mutableStateOf(List(ROWS) { 0 }) }
+    var value by remember { mutableStateOf(0L) }
+    var exerciseKey by remember { mutableIntStateOf(0) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -64,17 +65,10 @@ fun SchyotyWritingScreen(
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showJessicaSubmenu by remember { mutableStateOf(false) }
 
-    fun totalValue(): Long {
-        var v = 0L
-        for (r in 0 until ROWS) {
-            v += beads.value[r] * Math.pow(10.0, r.toDouble()).toLong()
-        }
-        return v
-    }
-
     fun newExercise() {
-        beads.value = List(ROWS) { 0 }
+        exerciseKey++
         targetValue.value = Random.nextInt(1, 10)
+        value = 0L
         showCongrats.value = false
     }
 
@@ -117,96 +111,11 @@ fun SchyotyWritingScreen(
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                 )
 
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .aspectRatio(640f / 360f)
-                        .pointerInput(Unit) {
-                            detectTapGestures { offset ->
-                                val cw = size.width.toFloat()
-                                val ch = size.height.toFloat()
-                                val M = 14f
-                                val wireL = M / 480f * cw
-                                val wireR = (cw - M / 480f * cw)
-                                val areaH = ch - 2f * M / 480f * cw
-                                val rowSp = areaH / (ROWS + 1)
-                                val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
-                                val beadStep = beadR * 2f + beadR * 0.3f
-                                val activeX0 = wireL + beadR
-                                val inactiveX0 = wireR - beadR
-
-                                for (r in 0 until ROWS) {
-                                    val y = M / 480f * cw + rowSp * (ROWS - r)
-                                    if (abs(offset.y - y) > beadR + 10f / 480f * cw) continue
-
-                                    val cnt = beads.value[r]
-
-                                    for (p in 0 until cnt) {
-                                        val x = activeX0 + p * beadStep
-                                        if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
-                                            beads.value = beads.value.toMutableList().also { it[r] = p }
-                                            return@detectTapGestures
-                                        }
-                                    }
-
-                                    for (p in 0 until BEADS_PER_ROW - cnt) {
-                                        val x = inactiveX0 - p * beadStep
-                                        if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
-                                            beads.value = beads.value.toMutableList().also { it[r] = BEADS_PER_ROW - p }
-                                            return@detectTapGestures
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                ) {
-                    val cw = size.width
-                    val ch = size.height
-                    val M = 14f / 480f * cw
-                    val wireL = M
-                    val wireR = cw - M
-                    val areaH = ch - 2f * M
-                    val rowSp = areaH / (ROWS + 1)
-                    val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
-                    val beadGap = beadR * 0.3f
-                    val beadStep = beadR * 2f + beadGap
-                    val activeX0 = wireL + beadR
-                    val inactiveX0 = wireR - beadR
-
-                    drawRect(color = Color(0xFFFEF5E0), size = size)
-
-                    drawRect(
-                        color = Color(0xFFB48B5A),
-                        topLeft = Offset(2f, 2f),
-                        size = androidx.compose.ui.geometry.Size(cw - 4f, ch - 4f),
-                        style = Stroke(width = 2f)
-                    )
-                    drawRect(
-                        color = Color(0xFFF9EEC7),
-                        topLeft = Offset(5f, 5f),
-                        size = androidx.compose.ui.geometry.Size(cw - 10f, ch - 10f),
-                        style = Stroke(width = 1.5f)
-                    )
-
-                    for (r in 0 until ROWS) {
-                        val y = M + rowSp * (ROWS - r)
-                        drawLine(color = Color(0xFFB08054), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 2f)
-                        drawLine(color = Color(0xFFE9C48B), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 1f)
-
-                        val cnt = beads.value[r]
-
-                        for (p in 0 until cnt) {
-                            val x = activeX0 + p * beadStep
-                            drawSchyotyBead(x, y, beadR, active = true, idx = p)
-                        }
-
-                        for (p in 0 until BEADS_PER_ROW - cnt) {
-                            val x = inactiveX0 - p * beadStep
-                            drawSchyotyBead(x, y, beadR, active = false, idx = 9 - p)
-                        }
-                    }
-                }
+                SchyotyAbacus(
+                    frozen = showCongrats.value,
+                    resetKey = exerciseKey,
+                    onValueChange = { value = it }
+                )
 
                 Spacer(Modifier.height(28.dp))
 
@@ -219,7 +128,7 @@ fun SchyotyWritingScreen(
                         color = Color(0xFF2E241F),
                     ) {
                         Text(
-                            text = "${s.common.value}: ${totalValue()}",
+                            text = "${s.common.value}: $value",
                             color = Color(0xFFF2ECD8),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
@@ -379,7 +288,7 @@ fun SchyotyWritingScreen(
     }
 }
 
-if (totalValue() == targetValue.value.toLong() && !showCongrats.value) {
+if (value == targetValue.value.toLong() && !showCongrats.value) {
     showCongrats.value = true
     onScoreChanged(currentScore + 2)
     scope.launch {
@@ -415,4 +324,118 @@ private fun DrawScope.drawSchyotyBead(x: Float, y: Float, r: Float, active: Bool
         radius = r * 0.25f,
         center = Offset(x - r * 0.25f, y - r * 0.25f)
     )
+}
+
+@Composable
+internal fun SchyotyAbacus(
+    modifier: Modifier = Modifier,
+    frozen: Boolean = false,
+    resetKey: Any? = null,
+    onValueChange: ((Long) -> Unit)? = null
+) {
+    var beads by remember(resetKey) { mutableStateOf(List(ROWS) { 0 }) }
+
+    val total: Long = remember(beads) {
+        var v = 0L
+        for (r in 0 until ROWS) {
+            v += beads[r] * Math.pow(10.0, r.toDouble()).toLong()
+        }
+        v
+    }
+
+    LaunchedEffect(total) {
+        onValueChange?.invoke(total)
+    }
+
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .aspectRatio(640f / 360f)
+            .pointerInput(frozen, resetKey) {
+                detectTapGestures { offset ->
+                    if (frozen) return@detectTapGestures
+                    val cw = size.width.toFloat()
+                    val ch = size.height.toFloat()
+                    val M = 14f
+                    val wireL = M / 480f * cw
+                    val wireR = (cw - M / 480f * cw)
+                    val areaH = ch - 2f * M / 480f * cw
+                    val rowSp = areaH / (ROWS + 1)
+                    val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
+                    val beadStep = beadR * 2f + beadR * 0.3f
+                    val activeX0 = wireL + beadR
+                    val inactiveX0 = wireR - beadR
+
+                    for (r in 0 until ROWS) {
+                        val y = M / 480f * cw + rowSp * (ROWS - r)
+                        if (abs(offset.y - y) > beadR + 10f / 480f * cw) continue
+
+                        val cnt = beads[r]
+
+                        for (p in 0 until cnt) {
+                            val x = activeX0 + p * beadStep
+                            if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
+                                beads = beads.toMutableList().also { it[r] = p }
+                                return@detectTapGestures
+                            }
+                        }
+
+                        for (p in 0 until BEADS_PER_ROW - cnt) {
+                            val x = inactiveX0 - p * beadStep
+                            if (abs(offset.x - x) < beadR + 5f / 480f * cw) {
+                                beads = beads.toMutableList().also { it[r] = BEADS_PER_ROW - p }
+                                return@detectTapGestures
+                            }
+                        }
+                    }
+                }
+            }
+    ) {
+        val cw = size.width
+        val ch = size.height
+        val M = 14f / 480f * cw
+        val wireL = M
+        val wireR = cw - M
+        val areaH = ch - 2f * M
+        val rowSp = areaH / (ROWS + 1)
+        val beadR = minOf((wireR - wireL) / (BEADS_PER_ROW * 2.6f), rowSp * 0.38f, 14f / 480f * cw)
+        val beadGap = beadR * 0.3f
+        val beadStep = beadR * 2f + beadGap
+        val activeX0 = wireL + beadR
+        val inactiveX0 = wireR - beadR
+
+        drawRect(color = Color(0xFFFEF5E0), size = size)
+
+        drawRect(
+            color = Color(0xFFB48B5A),
+            topLeft = Offset(2f, 2f),
+            size = androidx.compose.ui.geometry.Size(cw - 4f, ch - 4f),
+            style = Stroke(width = 2f)
+        )
+        drawRect(
+            color = Color(0xFFF9EEC7),
+            topLeft = Offset(5f, 5f),
+            size = androidx.compose.ui.geometry.Size(cw - 10f, ch - 10f),
+            style = Stroke(width = 1.5f)
+        )
+
+        for (r in 0 until ROWS) {
+            val y = M + rowSp * (ROWS - r)
+            drawLine(color = Color(0xFFB08054), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 2f)
+            drawLine(color = Color(0xFFE9C48B), start = Offset(wireL, y), end = Offset(wireR, y), strokeWidth = 1f)
+
+            val cnt = beads[r]
+
+            for (p in 0 until cnt) {
+                val x = activeX0 + p * beadStep
+                drawSchyotyBead(x, y, beadR, active = true, idx = p)
+            }
+
+            for (p in 0 until BEADS_PER_ROW - cnt) {
+                val x = inactiveX0 - p * beadStep
+                drawSchyotyBead(x, y, beadR, active = false, idx = 9 - p)
+            }
+        }
+    }
 }

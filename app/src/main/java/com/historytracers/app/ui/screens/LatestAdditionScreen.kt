@@ -2,9 +2,12 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -27,15 +30,15 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplyingWithYupanaScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingSubtractionYupanaScreenStringsForLanguage
-import com.historytracers.app.ui.features.reverseMovementScreenStringsForLanguage
+import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
+import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
+import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -83,12 +86,14 @@ fun LatestAdditionScreen(
     onNavigateToHundredsAndThousands: () -> Unit = {},
     onNavigateToCalculi: () -> Unit = {},
     onNavigateToAbacusHistory: () -> Unit = {},
-    onNavigateToMultiplyingWithYupana: () -> Unit = {},
-    onNavigateToReverseMovements: () -> Unit = {},
-    onNavigateToPracticingSubtractionYupana: () -> Unit = {}
+    onNavigateToTheSameResult: () -> Unit = {},
+    onNavigateToHalfPiece: () -> Unit = {},
+    onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToAroundTheWorld: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -96,21 +101,86 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
-    val rms = reverseMovementScreenStringsForLanguage(LocalAppLanguage.current)
-    val pss = practicingSubtractionYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
-    val mwys = multiplyingWithYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
+    val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
+    val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
-    val completedYupana by preferences.completedYupanaSections.collectAsState(initial = emptySet())
+    val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "walking_backwards",
+            label = wbs.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_turn_left),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "walking_backwards" in completedReturning },
+            onNavigate = onNavigateToWalkingBackwards
+        ),
+        LatestAdditionEntry(
+            sectionId = "half_piece",
+            label = hps.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val sheet = Modifier
+                        .size(width = 20.dp, height = 26.dp)
+                        .background(Color.White, RoundedCornerShape(2.dp))
+                        .border(1.dp, Color(0xFFBDBDBD), RoundedCornerShape(2.dp))
+                    Box(sheet)
+                    Box(sheet)
+                }
+            },
+            isCompleted = { "half_piece" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToHalfPiece
+        ),
+        LatestAdditionEntry(
+            sectionId = "the_same_result",
+            label = was.theSameResult,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("\u00f7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        "1",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 2.dp)
+                    )
+                    Text("\u00d7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+            },
+            isCompleted = { "the_same_result" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToTheSameResult
+        ),
+        LatestAdditionEntry(
+            sectionId = "around_the_world",
+            label = hts.aroundTheWorld,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_world),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "around_the_world" in completedAroundTheWorld },
+            onNavigate = onNavigateToAroundTheWorld
+        ),
         LatestAdditionEntry(
             sectionId = "calculi",
             label = awcs.calculi,
@@ -119,68 +189,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "calculi" in completedAnotherWayToCount },
             onNavigate = onNavigateToCalculi
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_subtraction_yupana",
-            label = pss.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_knot),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "practicing_subtraction_yupana" in completedYupana },
-            onNavigate = onNavigateToPracticingSubtractionYupana
-        ),
-        LatestAdditionEntry(
-            sectionId = "reverse_movements",
-            label = rms.title,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            },
-            isCompleted = { "reverse_movements" in completedYupana },
-            onNavigate = onNavigateToReverseMovements
-        ),
-        LatestAdditionEntry(
-            sectionId = "multiplying_with_yupana",
-            label = mwys.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_five_circles),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "multiplying_with_yupana" in completedYupana },
-            onNavigate = onNavigateToMultiplyingWithYupana
-        ),
-        LatestAdditionEntry(
-            sectionId = "abacus_history",
-            label = ahs.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_feather),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "abacus_history" in completedAbacus },
-            onNavigate = onNavigateToAbacusHistory
         )
     )
 

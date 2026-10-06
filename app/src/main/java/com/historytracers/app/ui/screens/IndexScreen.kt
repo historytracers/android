@@ -64,7 +64,7 @@ private val roadToSomewhereSectionIds = listOf(
 )
 
 private val whereAreWeFromSectionIds = listOf(
-    "shared_origin", "matter_energy", "everything_together", "sharing_with_whom"
+    "shared_origin", "matter_energy", "everything_together", "sharing_with_whom", "the_same_result", "half_piece"
 )
 
 private val anotherWayToCountSectionIds = listOf(
@@ -76,11 +76,19 @@ private val runningAndGrowingSectionIds = listOf(
     "connecting_the_multiplication", "drawing_multiplication"
 )
 
+private val aroundTheWorldSectionIds = listOf(
+    "around_the_world"
+)
+
+private val returningSectionIds = listOf(
+    "walking_backwards"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
 // UserPreferences.markNewHubSeen).
-private val newHubIds = setOf("another_way_to_count")
+private val newHubIds = setOf("another_way_to_count", "around_the_world")
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
     hubId in newHubIds && hubId !in seenNewHubs
@@ -108,7 +116,9 @@ fun IndexScreen(
     onNavigateToRoadToSomewhere: () -> Unit = {},
     onNavigateToRunningAndGrowing: () -> Unit = {},
     onNavigateToWhereAreWeFrom: () -> Unit = {},
-    onNavigateToAnotherWayToCount: () -> Unit = {}
+    onNavigateToAnotherWayToCount: () -> Unit = {},
+    onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToReturning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -125,6 +135,8 @@ fun IndexScreen(
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedRunningAndGrowing by preferences.completedRunningAndGrowingSections.collectAsState(initial = emptySet())
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
+    val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -137,6 +149,8 @@ fun IndexScreen(
     val whereAreWeFromDone = whereAreWeFromSectionIds.all { it in completedWhereAreWeFrom }
     val runningAndGrowingDone = runningAndGrowingSectionIds.all { it in completedRunningAndGrowing }
     val anotherWayToCountDone = anotherWayToCountSectionIds.all { it in completedAnotherWayToCount }
+    val aroundTheWorldDone = aroundTheWorldSectionIds.all { it in completedAroundTheWorld }
+    val returningDone = returningSectionIds.all { it in completedReturning }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -144,6 +158,7 @@ fun IndexScreen(
     val yupanaNew = isNewHub("yupana", seenNewHubs)
     val abacusNew = isNewHub("abacus", seenNewHubs)
     val anotherWayToCountNew = isNewHub("another_way_to_count", seenNewHubs)
+    val aroundTheWorldNew = isNewHub("around_the_world", seenNewHubs)
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -243,6 +258,35 @@ fun IndexScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            Box(modifier = Modifier.padding(horizontal = 32.dp)) {
+                FilledTonalButton(
+                    onClick = {
+                        if (aroundTheWorldNew) scope.launch { preferences.markNewHubSeen("around_the_world") }
+                        onNavigateToAroundTheWorld()
+                    },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = if (aroundTheWorldNew) ButtonYellow else if (aroundTheWorldDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_world),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = hts.aroundTheWorld,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                if (aroundTheWorldNew) NewHubSunBadge()
+            }
+
+            Spacer(Modifier.height(16.dp))
+
             FilledTonalButton(
                 onClick = { onNavigateToRoadToSomewhere() },
                 modifier = Modifier.padding(horizontal = 32.dp),
@@ -316,10 +360,10 @@ fun IndexScreen(
             Spacer(Modifier.height(16.dp))
 
             FilledTonalButton(
-                onClick = { /* TODO */ },
+                onClick = { onNavigateToReturning() },
                 modifier = Modifier.padding(horizontal = 32.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = ButtonYellow,
+                    containerColor = if (returningDone) ButtonYellowDark else ButtonYellow,
                     contentColor = OnButtonYellow
                 )
             ) {
