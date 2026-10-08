@@ -6,9 +6,12 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -196,8 +199,61 @@ internal fun NumberOneOnStairs(color: Color, label: String, modifier: Modifier =
     }
 }
 
+private val advancingComplementColor = Color(0xFF00B7EB)
+
+/**
+ * Draws ten small squares inside the button: eight in the standard content color
+ * and two in the accent color, representing the complement to ten.
+ */
+@Composable
+private fun AdvancingComplementingIcon(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var index = 0
+        for (count in listOf(4, 4, 2)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                repeat(count) {
+                    val squareColor = if (index < 8) OnButtonYellow else advancingComplementColor
+                    Box(
+                        modifier = Modifier
+                            .size(9.dp)
+                            .background(squareColor, RoundedCornerShape(2.dp))
+                    )
+                    index++
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CarryOrNotCarryIcon(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "1",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = OnButtonYellow
+        )
+        Text(
+            text = "?",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = OnButtonYellow
+        )
+    }
+}
+
 @Composable
 fun RoadToSomewhereScreen(
+    scrollState: ScrollState = rememberScrollState(),
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
@@ -206,6 +262,7 @@ fun RoadToSomewhereScreen(
     onNavigateToOrderOfAddition: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToRunningAmongNumbers: () -> Unit = {},
+    onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -218,7 +275,17 @@ fun RoadToSomewhereScreen(
     val completedSections by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    val roadSectionIds = listOf("walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "running_among_numbers", "practicing_addition")
+    val roadSectionIds = listOf(
+        "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
+        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
+    )
+    // "advancing_and_complementing" is tracked as a real section, but its destination is not
+    // wired yet, so it must not gate the "Next Level" flag. Move it to this list once it can
+    // actually be completed.
+    val nextLevelGatingSectionIds = listOf(
+        "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
+        "running_among_numbers", "carry_or_not_carry", "practicing_addition"
+    )
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
     }
@@ -226,7 +293,7 @@ fun RoadToSomewhereScreen(
         controller.syncFromPersisted(completedSections)
     }
     val controllerCompleted by controller.completed.collectAsState()
-    val allRoadSectionsDone = roadSectionIds.all { it in controllerCompleted }
+    val allRoadSectionsDone = nextLevelGatingSectionIds.all { it in controllerCompleted }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
     var showResetMenu by remember { mutableStateOf(false) }
@@ -288,7 +355,7 @@ fun RoadToSomewhereScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -435,6 +502,54 @@ fun RoadToSomewhereScreen(
 
                 Text(
                     text = xs.runningAmongNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = { },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("advancing_and_complementing")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    AdvancingComplementingIcon(modifier = Modifier.size(60.dp))
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.advancingAndComplementing,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToCarryOrNotCarry,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("carry_or_not_carry")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    CarryOrNotCarryIcon()
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.carryOrNotCarry,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

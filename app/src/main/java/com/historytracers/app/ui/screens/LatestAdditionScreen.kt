@@ -30,8 +30,8 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
@@ -89,7 +89,8 @@ fun LatestAdditionScreen(
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
-    onNavigateToAroundTheWorld: () -> Unit = {}
+    onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToCarryOrNotCarry: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -101,20 +102,34 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
     val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
     val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
+    val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
-    val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "carry_or_not_carry",
+            label = cncs.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("1", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text("?", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+            },
+            isCompleted = { "carry_or_not_carry" in completedRoadToSomewhere },
+            onNavigate = onNavigateToCarryOrNotCarry
+        ),
         LatestAdditionEntry(
             sectionId = "walking_backwards",
             label = wbs.title,
@@ -180,15 +195,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "around_the_world" in completedAroundTheWorld },
             onNavigate = onNavigateToAroundTheWorld
-        ),
-        LatestAdditionEntry(
-            sectionId = "calculi",
-            label = awcs.calculi,
-            icon = {
-                CalculiAbacusIcon(modifier = Modifier.size(48.dp))
-            },
-            isCompleted = { "calculi" in completedAnotherWayToCount },
-            onNavigate = onNavigateToCalculi
         )
     )
 

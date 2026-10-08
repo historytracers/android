@@ -263,6 +263,8 @@ sealed class Screen(val route: String) {
     data object CarryingInAdditionZeroInHands : Screen("carrying_in_addition_zero_in_hands")
     data object CarryingInAdditionConclusion : Screen("carrying_in_addition_conclusion")
     data object PracticingAdditionRoad : Screen("practicing_addition_road")
+    data object CarryOrNotCarryIntro : Screen("carry_or_not_carry_intro")
+    data object CarryOrNotCarryGame : Screen("carry_or_not_carry_game")
     data object OrderOfAdditionIntro : Screen("order_of_addition_intro")
     data object OrderOfAdditionWhere : Screen("order_of_addition_where")
     data object OrderOfAdditionCommutative : Screen("order_of_addition_commutative")
