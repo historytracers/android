@@ -263,6 +263,7 @@ fun RoadToSomewhereScreen(
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToRunningAmongNumbers: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
+    onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -279,12 +280,10 @@ fun RoadToSomewhereScreen(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
         "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
     )
-    // "advancing_and_complementing" is tracked as a real section, but its destination is not
-    // wired yet, so it must not gate the "Next Level" flag. Move it to this list once it can
-    // actually be completed.
+    // All road sections gate the "Next Level" flag, now that every one of them is wired.
     val nextLevelGatingSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
-        "running_among_numbers", "carry_or_not_carry", "practicing_addition"
+        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
     )
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
@@ -512,7 +511,7 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = { },
+                    onClick = onNavigateToAdvancingAndComplementing,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(

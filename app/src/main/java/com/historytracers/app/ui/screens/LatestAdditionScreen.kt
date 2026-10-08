@@ -33,13 +33,13 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
@@ -90,11 +90,11 @@ fun LatestAdditionScreen(
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
-    onNavigateToCarryOrNotCarry: () -> Unit = {}
+    onNavigateToCarryOrNotCarry: () -> Unit = {},
+    onNavigateToAdvancingAndComplementing: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -106,15 +106,40 @@ fun LatestAdditionScreen(
     val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
     val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
     val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
+    val ros = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "advancing_and_complementing",
+            label = ros.advancingAndComplementing,
+            icon = {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    repeat(2) { row ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                            repeat(5) { col ->
+                                val idx = row * 5 + col
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .background(
+                                            if (idx < 8) OnButtonYellow else Color(0xFF00B7EB),
+                                            RoundedCornerShape(1.dp)
+                                        )
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            isCompleted = { "advancing_and_complementing" in completedRoadToSomewhere },
+            onNavigate = onNavigateToAdvancingAndComplementing
+        ),
         LatestAdditionEntry(
             sectionId = "carry_or_not_carry",
             label = cncs.title,
@@ -182,19 +207,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "the_same_result" in completedWhereAreWeFrom },
             onNavigate = onNavigateToTheSameResult
-        ),
-        LatestAdditionEntry(
-            sectionId = "around_the_world",
-            label = hts.aroundTheWorld,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_world),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "around_the_world" in completedAroundTheWorld },
-            onNavigate = onNavigateToAroundTheWorld
         )
     )
 
