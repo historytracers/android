@@ -603,6 +603,7 @@ fun AppNavigation() {
     val savedYupanaScroll by preferences.yupanaScroll.collectAsState(initial = 0)
     val savedAnotherWayToCountScroll by preferences.anotherWayToCountScroll.collectAsState(initial = 0)
     val savedRoadToSomewhereScroll by preferences.roadToSomewhereScroll.collectAsState(initial = 0)
+    val savedWhereAreWeFromScroll by preferences.whereAreWeFromScroll.collectAsState(initial = 0)
 
     val firstStepsScrollState = remember { ScrollState(0) }
     val workoutScrollState = remember { ScrollState(0) }
@@ -610,6 +611,7 @@ fun AppNavigation() {
     val yupanaScrollState = remember { ScrollState(0) }
     val anotherWayToCountScrollState = remember { ScrollState(0) }
     val roadToSomewhereScrollState = remember { ScrollState(0) }
+    val whereAreWeFromScrollState = remember { ScrollState(0) }
 
     LaunchedEffect(savedFirstStepsScroll) {
         if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
@@ -628,6 +630,9 @@ fun AppNavigation() {
     }
     LaunchedEffect(savedRoadToSomewhereScroll) {
         if (savedRoadToSomewhereScroll > 0) roadToSomewhereScrollState.scrollTo(savedRoadToSomewhereScroll)
+    }
+    LaunchedEffect(savedWhereAreWeFromScroll) {
+        if (savedWhereAreWeFromScroll > 0) whereAreWeFromScrollState.scrollTo(savedWhereAreWeFromScroll)
     }
 
     LaunchedEffect(Unit) {
@@ -653,6 +658,10 @@ fun AppNavigation() {
     LaunchedEffect(Unit) {
         snapshotFlow { roadToSomewhereScrollState.value }
             .collect { preferences.setRoadToSomewhereScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { whereAreWeFromScrollState.value }
+            .collect { preferences.setWhereAreWeFromScroll(it) }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -1099,7 +1108,8 @@ fun AppNavigation() {
                             onNavigateToEverythingWasTogether = { navController.navigate(Screen.UniverseExpansion.route) { launchSingleTop = true } },
                             onNavigateToSharingWithWhom = { navController.navigate(Screen.SharingWithWhomIntro.route) { launchSingleTop = true } },
                             onNavigateToTheSameResult = { navController.navigate(Screen.TheSameResultIntro.route) { launchSingleTop = true } },
-                            onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } }
+                            onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } },
+                            scrollState = whereAreWeFromScrollState
                         )
                     }
                     composable(Screen.AnotherWayToCount.route) {

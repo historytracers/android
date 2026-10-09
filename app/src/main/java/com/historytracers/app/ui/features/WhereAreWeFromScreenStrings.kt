@@ -10,6 +10,8 @@ data class WhereAreWeFromScreenStrings(
     val sharedWithWho: String,
     val theSameResult: String,
     val halfPiece: String,
+    val oddOrEven: String,
+    val oddOrEvenGame: String,
 )
 
 val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -19,6 +21,8 @@ val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     sharedWithWho = "Shared with Who?",
     theSameResult = "The Same Result",
     halfPiece = "Half Piece",
+    oddOrEven = "Odd or Even?",
+    oddOrEvenGame = "Odd or Even? (Game)",
 )
 
 val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -28,6 +32,8 @@ val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     sharedWithWho = "Compartilhado com Quem?",
     theSameResult = "O Mesmo Resultado",
     halfPiece = "Meio Peda\u00e7o",
+    oddOrEven = "Par ou \u00cdmpar?",
+    oddOrEvenGame = "Par ou \u00cdmpar? (Jogo)",
 )
 
 val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -37,6 +43,8 @@ val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     sharedWithWho = "\u00bfCompartido con Qui\u00e9n?",
     theSameResult = "El Mismo Resultado",
     halfPiece = "Medio Pedazo",
+    oddOrEven = "\u00bfPar o Impar?",
+    oddOrEvenGame = "\u00bfPar o Impar? (Juego)",
 )
 
 val LocalWhereAreWeFromScreenStrings = staticCompositionLocalOf { EnWhereAreWeFromScreenStrings }
