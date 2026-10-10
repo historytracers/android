@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -30,7 +31,6 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -44,10 +44,11 @@ fun WhereAreWeFromScreen(
     onNavigateToEverythingWasTogether: () -> Unit = {},
     onNavigateToSharingWithWhom: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
-    onNavigateToHalfPiece: () -> Unit = {}
+    onNavigateToHalfPiece: () -> Unit = {},
+    onNavigateToOddOrEvenGame: () -> Unit = {},
+    scrollState: ScrollState = rememberScrollState()
 ) {
     val s = LocalUiStrings.current
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
@@ -74,7 +75,7 @@ fun WhereAreWeFromScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = hts.whereAreWeFrom,
+                    text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -108,7 +109,7 @@ fun WhereAreWeFromScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -303,6 +304,79 @@ fun WhereAreWeFromScreen(
 
                 Text(
                     text = xs.halfPiece,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                Surface(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.oddOrEven },
+                    shape = CircleShape,
+                    color = ButtonYellow
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "20?",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.oddOrEven,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToOddOrEvenGame,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.oddOrEvenGame },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("odd_or_even_game" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "1",
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(Color(0xFF333333), CircleShape)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.oddOrEvenGame,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

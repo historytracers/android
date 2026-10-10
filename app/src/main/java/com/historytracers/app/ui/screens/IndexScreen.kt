@@ -60,11 +60,13 @@ private val yupanaSectionIds = listOf(
 )
 
 private val roadToSomewhereSectionIds = listOf(
-    "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms", "running_among_numbers", "practicing_addition"
+    "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
+    "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
 )
 
 private val whereAreWeFromSectionIds = listOf(
-    "shared_origin", "matter_energy", "everything_together", "sharing_with_whom", "the_same_result", "half_piece"
+    "shared_origin", "matter_energy", "everything_together", "sharing_with_whom", "the_same_result", "half_piece",
+    "odd_or_even_game"
 )
 
 private val anotherWayToCountSectionIds = listOf(

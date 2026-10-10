@@ -30,16 +30,16 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
 import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
-import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
+import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
@@ -89,11 +89,13 @@ fun LatestAdditionScreen(
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
-    onNavigateToAroundTheWorld: () -> Unit = {}
+    onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToCarryOrNotCarry: () -> Unit = {},
+    onNavigateToAdvancingAndComplementing: () -> Unit = {},
+    onNavigateToOddOrEven: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -101,20 +103,78 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val awcs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
-    val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
+    val ooes = oddOrEvenScreenStringsForLanguage(LocalAppLanguage.current)
     val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
     val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
+    val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
+    val ros = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
-    val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "odd_or_even_game",
+            label = ooes.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("1", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .background(OnButtonYellow, CircleShape)
+                    )
+                }
+            },
+            isCompleted = { "odd_or_even_game" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToOddOrEven
+        ),
+        LatestAdditionEntry(
+            sectionId = "advancing_and_complementing",
+            label = ros.advancingAndComplementing,
+            icon = {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    repeat(2) { row ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                            repeat(5) { col ->
+                                val idx = row * 5 + col
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .background(
+                                            if (idx < 8) OnButtonYellow else Color(0xFF00B7EB),
+                                            RoundedCornerShape(1.dp)
+                                        )
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            isCompleted = { "advancing_and_complementing" in completedRoadToSomewhere },
+            onNavigate = onNavigateToAdvancingAndComplementing
+        ),
+        LatestAdditionEntry(
+            sectionId = "carry_or_not_carry",
+            label = cncs.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("1", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text("?", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                }
+            },
+            isCompleted = { "carry_or_not_carry" in completedRoadToSomewhere },
+            onNavigate = onNavigateToCarryOrNotCarry
+        ),
         LatestAdditionEntry(
             sectionId = "walking_backwards",
             label = wbs.title,
@@ -146,49 +206,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "half_piece" in completedWhereAreWeFrom },
             onNavigate = onNavigateToHalfPiece
-        ),
-        LatestAdditionEntry(
-            sectionId = "the_same_result",
-            label = was.theSameResult,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("\u00f7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Text(
-                        "1",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 2.dp)
-                    )
-                    Text("\u00d7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                }
-            },
-            isCompleted = { "the_same_result" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToTheSameResult
-        ),
-        LatestAdditionEntry(
-            sectionId = "around_the_world",
-            label = hts.aroundTheWorld,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_world),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "around_the_world" in completedAroundTheWorld },
-            onNavigate = onNavigateToAroundTheWorld
-        ),
-        LatestAdditionEntry(
-            sectionId = "calculi",
-            label = awcs.calculi,
-            icon = {
-                CalculiAbacusIcon(modifier = Modifier.size(48.dp))
-            },
-            isCompleted = { "calculi" in completedAnotherWayToCount },
-            onNavigate = onNavigateToCalculi
         )
     )
 

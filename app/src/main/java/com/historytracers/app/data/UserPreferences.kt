@@ -62,6 +62,8 @@ class UserPreferences(private val context: Context) {
         private val ABACUS_SCROLL_KEY = intPreferencesKey("abacus_scroll")
         private val YUPANA_SCROLL_KEY = intPreferencesKey("yupana_scroll")
         private val ANOTHER_WAY_TO_COUNT_SCROLL_KEY = intPreferencesKey("another_way_to_count_scroll")
+        private val ROAD_TO_SOMEWHERE_SCROLL_KEY = intPreferencesKey("road_to_somewhere_scroll")
+        private val WHERE_ARE_WE_FROM_SCROLL_KEY = intPreferencesKey("where_are_we_from_scroll")
         private val UNIVERSE_EXPANSION_STEP_KEY = intPreferencesKey("universe_expansion_step")
         private val QUIPU_PRACTICE_STATE_KEY = stringPreferencesKey("quipu_practice_state")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
@@ -286,6 +288,26 @@ class UserPreferences(private val context: Context) {
     suspend fun setAnotherWayToCountScroll(value: Int) {
         context.dataStore.edit { preferences ->
             preferences[ANOTHER_WAY_TO_COUNT_SCROLL_KEY] = value
+        }
+    }
+
+    val roadToSomewhereScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[ROAD_TO_SOMEWHERE_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setRoadToSomewhereScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[ROAD_TO_SOMEWHERE_SCROLL_KEY] = value
+        }
+    }
+
+    val whereAreWeFromScroll: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[WHERE_ARE_WE_FROM_SCROLL_KEY] ?: 0
+    }
+
+    suspend fun setWhereAreWeFromScroll(value: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[WHERE_ARE_WE_FROM_SCROLL_KEY] = value
         }
     }
 
