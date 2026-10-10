@@ -76,7 +76,6 @@ fun OddOrEvenScreen(
     // This is the group's last screen, so it records the day's streak on arrival.
     LaunchedEffect(Unit) {
         preferences.recordLessonCompletion()
-        award(2)
     }
 
     val isOdd = number % 2 == 1

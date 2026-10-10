@@ -4,6 +4,7 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class WhereAreWeFromScreenStrings(
+    val title: String,
     val sharedOrigin: String,
     val matterAndEnergy: String,
     val everythingWasTogether: String,
@@ -15,6 +16,7 @@ data class WhereAreWeFromScreenStrings(
 )
 
 val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
+    title = "Where Are We From?",
     sharedOrigin = "Shared Origin",
     matterAndEnergy = "Matter and Energy",
     everythingWasTogether = "Everything Was Together",
@@ -26,6 +28,7 @@ val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
 )
 
 val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
+    title = "De onde somos?",
     sharedOrigin = "Origem Compartilhada",
     matterAndEnergy = "Mat\u00e9ria e Energia",
     everythingWasTogether = "Tudo Estava Junto",
@@ -37,6 +40,7 @@ val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
 )
 
 val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
+    title = "\u00bfDe d\u00f3nde somos?",
     sharedOrigin = "Origen Compartido",
     matterAndEnergy = "Materia y Energ\u00eda",
     everythingWasTogether = "Todo Estaba Junto",

@@ -34,7 +34,6 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -268,7 +267,6 @@ fun RoadToSomewhereScreen(
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
@@ -320,7 +318,7 @@ fun RoadToSomewhereScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = hts.aRoadToSomewhere,
+                    text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )

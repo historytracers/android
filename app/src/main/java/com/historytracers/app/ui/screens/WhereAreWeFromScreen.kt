@@ -31,7 +31,6 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -50,7 +49,6 @@ fun WhereAreWeFromScreen(
     scrollState: ScrollState = rememberScrollState()
 ) {
     val s = LocalUiStrings.current
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
@@ -77,7 +75,7 @@ fun WhereAreWeFromScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = hts.whereAreWeFrom,
+                    text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -315,21 +313,23 @@ fun WhereAreWeFromScreen(
 
                 Spacer(Modifier.height(32.dp))
 
-                FilledIconButton(
-                    onClick = {},
+                Surface(
                     modifier = Modifier
                         .size(96.dp)
                         .semantics { contentDescription = xs.oddOrEven },
                     shape = CircleShape,
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
-                    )
+                    color = ButtonYellow
                 ) {
-                    Text(
-                        text = "20?",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "20?",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(24.dp))

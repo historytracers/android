@@ -172,7 +172,7 @@ fun CarryOrNotCarryScreen(
 
     val nextLabel = when {
         column < level || (column == level && lastCarry == 1) -> xs.nextColumn
-        level >= CARRY_MAX_LEVEL -> xs.playAgain
+        allLevelsDone -> xs.playAgain
         else -> xs.nextLevel
     }
 

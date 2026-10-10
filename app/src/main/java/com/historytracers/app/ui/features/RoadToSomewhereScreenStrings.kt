@@ -4,6 +4,7 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class RoadToSomewhereScreenStrings(
+    val title: String,
     val walkAmongNumbers: String,
     val carryingInAddition: String,
     val theOrderOfAddition: String,
@@ -19,6 +20,7 @@ data class RoadToSomewhereScreenStrings(
 )
 
 val EnRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
+    title = "A Road to Somewhere",
     walkAmongNumbers = "Walking Among Numbers",
     carryingInAddition = "Carrying in Addition",
     theOrderOfAddition = "The Order of Addition",
@@ -34,6 +36,7 @@ val EnRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
 )
 
 val PtRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
+    title = "Uma estrada para algum lugar",
     walkAmongNumbers = "Andar entre os n\u00fameros",
     carryingInAddition = "Levando 1 na Adi\u00e7\u00e3o",
     theOrderOfAddition = "A Ordem da Adi\u00e7\u00e3o",
@@ -49,6 +52,7 @@ val PtRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
 )
 
 val EsRoadToSomewhereScreenStrings = RoadToSomewhereScreenStrings(
+    title = "Un camino a alg\u00fan lugar",
     walkAmongNumbers = "Caminar entre n\u00fameros",
     carryingInAddition = "Llevando 1 en la Suma",
     theOrderOfAddition = "El Orden de la Suma",

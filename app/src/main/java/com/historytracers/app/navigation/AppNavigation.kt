@@ -598,14 +598,6 @@ fun AppNavigation() {
         navController.navigate(route) { launchSingleTop = true }
     }
 
-    val savedFirstStepsScroll by preferences.firstStepsScroll.collectAsState(initial = 0)
-    val savedWorkoutScroll by preferences.workoutScroll.collectAsState(initial = 0)
-    val savedAbacusScroll by preferences.abacusScroll.collectAsState(initial = 0)
-    val savedYupanaScroll by preferences.yupanaScroll.collectAsState(initial = 0)
-    val savedAnotherWayToCountScroll by preferences.anotherWayToCountScroll.collectAsState(initial = 0)
-    val savedRoadToSomewhereScroll by preferences.roadToSomewhereScroll.collectAsState(initial = 0)
-    val savedWhereAreWeFromScroll by preferences.whereAreWeFromScroll.collectAsState(initial = 0)
-
     val firstStepsScrollState = remember { ScrollState(0) }
     val workoutScrollState = remember { ScrollState(0) }
     val abacusScrollState = remember { ScrollState(0) }
@@ -614,53 +606,48 @@ fun AppNavigation() {
     val roadToSomewhereScrollState = remember { ScrollState(0) }
     val whereAreWeFromScrollState = remember { ScrollState(0) }
 
-    LaunchedEffect(savedFirstStepsScroll) {
-        if (savedFirstStepsScroll > 0) firstStepsScrollState.scrollTo(savedFirstStepsScroll)
-    }
-    LaunchedEffect(savedWorkoutScroll) {
-        if (savedWorkoutScroll > 0) workoutScrollState.scrollTo(savedWorkoutScroll)
-    }
-    LaunchedEffect(savedAbacusScroll) {
-        if (savedAbacusScroll > 0) abacusScrollState.scrollTo(savedAbacusScroll)
-    }
-    LaunchedEffect(savedYupanaScroll) {
-        if (savedYupanaScroll > 0) yupanaScrollState.scrollTo(savedYupanaScroll)
-    }
-    LaunchedEffect(savedAnotherWayToCountScroll) {
-        if (savedAnotherWayToCountScroll > 0) anotherWayToCountScrollState.scrollTo(savedAnotherWayToCountScroll)
-    }
-    LaunchedEffect(savedRoadToSomewhereScroll) {
-        if (savedRoadToSomewhereScroll > 0) roadToSomewhereScrollState.scrollTo(savedRoadToSomewhereScroll)
-    }
-    LaunchedEffect(savedWhereAreWeFromScroll) {
-        if (savedWhereAreWeFromScroll > 0) whereAreWeFromScrollState.scrollTo(savedWhereAreWeFromScroll)
-    }
-
+    // For each hub, read the saved offset and apply it to the ScrollState before
+    // starting the collector that persists later changes. Starting the collector
+    // first would emit the initial 0 and overwrite the stored position.
     LaunchedEffect(Unit) {
+        val saved = preferences.firstStepsScroll.first()
+        if (saved > 0) firstStepsScrollState.scrollTo(saved)
         snapshotFlow { firstStepsScrollState.value }
             .collect { preferences.setFirstStepsScroll(it) }
     }
     LaunchedEffect(Unit) {
+        val saved = preferences.workoutScroll.first()
+        if (saved > 0) workoutScrollState.scrollTo(saved)
         snapshotFlow { workoutScrollState.value }
             .collect { preferences.setWorkoutScroll(it) }
     }
     LaunchedEffect(Unit) {
+        val saved = preferences.abacusScroll.first()
+        if (saved > 0) abacusScrollState.scrollTo(saved)
         snapshotFlow { abacusScrollState.value }
             .collect { preferences.setAbacusScroll(it) }
     }
     LaunchedEffect(Unit) {
+        val saved = preferences.yupanaScroll.first()
+        if (saved > 0) yupanaScrollState.scrollTo(saved)
         snapshotFlow { yupanaScrollState.value }
             .collect { preferences.setYupanaScroll(it) }
     }
     LaunchedEffect(Unit) {
+        val saved = preferences.anotherWayToCountScroll.first()
+        if (saved > 0) anotherWayToCountScrollState.scrollTo(saved)
         snapshotFlow { anotherWayToCountScrollState.value }
             .collect { preferences.setAnotherWayToCountScroll(it) }
     }
     LaunchedEffect(Unit) {
+        val saved = preferences.roadToSomewhereScroll.first()
+        if (saved > 0) roadToSomewhereScrollState.scrollTo(saved)
         snapshotFlow { roadToSomewhereScrollState.value }
             .collect { preferences.setRoadToSomewhereScroll(it) }
     }
     LaunchedEffect(Unit) {
+        val saved = preferences.whereAreWeFromScroll.first()
+        if (saved > 0) whereAreWeFromScrollState.scrollTo(saved)
         snapshotFlow { whereAreWeFromScrollState.value }
             .collect { preferences.setWhereAreWeFromScroll(it) }
     }
@@ -2894,8 +2881,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.CarryOrNotCarryIntro.route, false)) {
-                                    navController.navigate(Screen.CarryOrNotCarryIntro.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
                                 }
                             },
                             onNavigateToRoadToSomewhere = {
