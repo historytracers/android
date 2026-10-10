@@ -35,6 +35,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val MAX_LEVEL = 3
 private const val ROWS = 10
@@ -328,7 +329,7 @@ fun BuildingGameScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=e434ae19-4f25-4880-8227-0970cd27ccb6")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=e434ae19-4f25-4880-8227-0970cd27ccb6")
                     }
                 )
             }

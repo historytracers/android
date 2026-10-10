@@ -41,6 +41,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.flow.first
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val QUIPU_LESSON_UUID = "7aec6487-c20c-490d-a9af-21e0b8bcc7f7"
@@ -677,7 +678,7 @@ private fun PracticingWithQuipusSourcesMenu(modifier: Modifier = Modifier) {
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(source.url)
+                        safeOpenUri(uriHandler, source.url)
                     }
                 )
             }

@@ -55,6 +55,7 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "973b0f27-bd58-443b-a780-bd9e22aed8bd"
 private const val SECTION_ID = "abacus_history"
@@ -1348,7 +1349,7 @@ private fun AbacusHistorySourcesMenu(sources: List<HTSource>, modifier: Modifier
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

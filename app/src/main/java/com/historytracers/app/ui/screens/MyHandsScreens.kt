@@ -45,6 +45,7 @@ import com.historytracers.app.ui.features.myHandsScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "8afa1bd2-2d16-4224-a7c2-d02cb31dc69f"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -605,7 +606,7 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

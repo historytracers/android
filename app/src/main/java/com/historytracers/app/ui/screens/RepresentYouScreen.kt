@@ -37,6 +37,7 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val MAX_LEVEL = 4
 private const val PAIR_COUNT = 5
@@ -733,7 +734,7 @@ fun RepresentYouScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri(ORIGINAL_TEXT_URL)
+                        safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                     }
                 )
             }

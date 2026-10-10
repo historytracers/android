@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private fun buildAndroidPath(): Path {
     return Path().apply {
@@ -403,7 +404,7 @@ fun ClapScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=f6587eb2-c0db-4ce0-bed7-901835116466")
                     }
                 )
             }

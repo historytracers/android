@@ -48,6 +48,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val COLUMNS = 9
 private const val SOROBAN_UPPER = 1
@@ -928,7 +929,7 @@ fun MultiplyingWithoutLimitsScreen(
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
-                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=052bd667-eb38-4e87-8c05-439cfd9c4178")
+                            safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=052bd667-eb38-4e87-8c05-439cfd9c4178")
                         }
                     )
                 }
@@ -952,7 +953,7 @@ fun MultiplyingWithoutLimitsScreen(
                         onClick = {
                             showSourcesMenu = false
                             showJessicaSubmenu = false
-                            uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                            safeOpenUri(uriHandler, "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                         }
                     )
                 }

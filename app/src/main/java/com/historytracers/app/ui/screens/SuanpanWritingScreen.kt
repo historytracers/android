@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val COLUMNS = 9
 private const val UPPER_MAX = 2
@@ -421,7 +422,7 @@ fun SuanpanWritingScreen(
                 onClick = {
                     showSourcesMenu = false
                     showMainTextSubmenu = false
-                    uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=716d6fe5-78cc-4fef-85da-11daff12399d")
+                    safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=716d6fe5-78cc-4fef-85da-11daff12399d")
                 }
             )
         }
@@ -445,7 +446,7 @@ fun SuanpanWritingScreen(
                 onClick = {
                     showSourcesMenu = false
                     showAPalSubmenu = false
-                    uriHandler.openUri("https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf")
+                    safeOpenUri(uriHandler, "https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf")
                 }
             )
         }

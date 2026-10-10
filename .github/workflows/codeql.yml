@@ -14,6 +14,15 @@
 # Default setup must be disabled for it to run:
 #   Settings -> Code security and analysis -> Code scanning -> CodeQL analysis
 #   -> (default setup) Disable, then commit this workflow.
+#
+# If default setup is enabled (including via an organization-level code
+# security configuration), GitHub disables this workflow and instead runs its
+# own generated workflow ("Adjust Configuration" + "Analyze (...)" jobs). That
+# generated workflow uses build-mode: autobuild for java-kotlin, which cannot
+# build this Android project, so the run fails with:
+#   "We were unable to automatically build your code. Please replace the call
+#    to the autobuild action with your custom build steps."
+# Disabling default setup is what makes the manual steps below take effect.
 name: "CodeQL"
 
 on:
@@ -76,6 +85,9 @@ jobs:
           # gradle.properties hardcodes org.gradle.java.home to a Windows-only
           # path. Remove it so Gradle uses the JDK installed above.
           sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
+          # The wrapper is tracked without the executable bit, so a fresh
+          # checkout on Linux cannot run it directly; fix that here.
+          chmod +x ./gradlew
           # No daemon / no configuration cache / in-process Kotlin so CodeQL can
           # observe the Kotlin compiler during the build.
           ./gradlew --no-daemon --no-configuration-cache \

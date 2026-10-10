@@ -44,6 +44,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -381,7 +382,7 @@ fun DrawingToCountScreen(
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
-                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=687ee328-19bb-4a65-ab46-7d707a2e11dc")
+                            safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=687ee328-19bb-4a65-ab46-7d707a2e11dc")
                         }
                     )
                 }
@@ -405,7 +406,7 @@ fun DrawingToCountScreen(
                         onClick = {
                             showSourcesMenu = false
                             showDhavitPremSubmenu = false
-                            uriHandler.openUri("https://www.youtube.com/watch?v=qynAx9YBO1Y")
+                            safeOpenUri(uriHandler, "https://www.youtube.com/watch?v=qynAx9YBO1Y")
                         }
                     )
                 }

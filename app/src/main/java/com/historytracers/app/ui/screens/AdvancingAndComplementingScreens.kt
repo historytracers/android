@@ -33,6 +33,7 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.advancingAndComplementingScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val AC_WEB_CLASS_URL = "https://www.historytracers.org/index.html?page=class_content&arg=cabc9843-35ef-4e4f-92fd-17eda864b55e"
 private const val AC_FIRST_TERM = 6
@@ -489,7 +490,7 @@ private fun AcFrame(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri(AC_WEB_CLASS_URL)
+                        safeOpenUri(uriHandler, AC_WEB_CLASS_URL)
                     }
                 )
             }

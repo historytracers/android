@@ -120,6 +120,7 @@ class UserPreferences(private val context: Context) {
     }
 
     suspend fun setLanguage(language: String) {
+        if (language !in setOf("en-US", "pt-BR", "es-ES")) return
         context.dataStore.edit { preferences ->
             preferences[LANGUAGE_KEY] = language
         }
@@ -480,6 +481,7 @@ class UserPreferences(private val context: Context) {
     }
 
     suspend fun setCalendar(calendar: String) {
+        if (com.historytracers.app.calendar.CalendarType.entries.none { it.id == calendar }) return
         context.dataStore.edit { preferences ->
             preferences[CALENDAR_KEY] = calendar
         }

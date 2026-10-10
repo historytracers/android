@@ -45,6 +45,7 @@ import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private enum class Mode { CLAP, STEPS, JUMPS }
 
@@ -645,7 +646,7 @@ fun FeetAndHandsScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=ef299aac-2abd-4fac-9974-05e697639b20")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=ef299aac-2abd-4fac-9974-05e697639b20")
                     }
                 )
             }

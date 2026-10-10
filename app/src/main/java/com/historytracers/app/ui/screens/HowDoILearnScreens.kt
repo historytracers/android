@@ -45,6 +45,7 @@ import com.historytracers.common.SMGameFile
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "a0690af8-6396-42da-bc03-3f51af78e1e7"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -609,7 +610,7 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

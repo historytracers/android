@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val COLUMNS = 9
 private const val SOROBAN_UPPER = 1
@@ -677,7 +678,7 @@ fun LargeNumbersWritingScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=4dc32200-392c-4d20-ae2d-0089b3c288bb")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=4dc32200-392c-4d20-ae2d-0089b3c288bb")
                     }
                 )
             }
@@ -701,7 +702,7 @@ fun LargeNumbersWritingScreen(
                     onClick = {
                         showSourcesMenu = false
                         showAPalSubmenu = false
-                        uriHandler.openUri("https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf")
+                        safeOpenUri(uriHandler, "https://www.apalconnect.org/wp-content/uploads/2018/12/Chinese-Abacus-Introduction.pdf")
                     }
                 )
             }
@@ -725,7 +726,7 @@ fun LargeNumbersWritingScreen(
                     onClick = {
                         showSourcesMenu = false
                         showTomokoSubmenu = false
-                        uriHandler.openUri("https://www.youtube.com/watch?v=-br2yp3tQ1M")
+                        safeOpenUri(uriHandler, "https://www.youtube.com/watch?v=-br2yp3tQ1M")
                     }
                 )
             }
@@ -749,7 +750,7 @@ fun LargeNumbersWritingScreen(
                     onClick = {
                         showSourcesMenu = false
                         showJessicaSubmenu = false
-                        uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                        safeOpenUri(uriHandler, "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                     }
                 )
             }

@@ -2,9 +2,6 @@
 package com.historytracers.app.ui.screens
 
 import android.content.ActivityNotFoundException
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -32,6 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.safeCopyUrl
+import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.components.upgradeToHttps
 import com.historytracers.app.ui.features.aboutScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.R
@@ -136,16 +136,16 @@ private fun SocialIconButton(link: SocialLink) {
                 text = { Text(s.common.copyUrl) },
                 onClick = {
                     showMenu = false
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("URL", link.url))
-                    Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                    safeCopyUrl(context, link.url, s.common.copyUrl)
                 }
             )
             DropdownMenuItem(
                 text = { Text(s.common.goToUrl) },
                 onClick = {
                     showMenu = false
-                    uriHandler.openUri(link.url)
+                    if (!safeOpenUri(uriHandler, upgradeToHttps(link.url))) {
+                        Toast.makeText(context, xs.appNotInstalled, Toast.LENGTH_SHORT).show()
+                    }
                 }
             )
             DropdownMenuItem(

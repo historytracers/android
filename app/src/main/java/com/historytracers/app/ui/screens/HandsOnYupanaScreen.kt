@@ -34,6 +34,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.resolveImageSource
 import com.historytracers.app.ui.features.handsOnYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=ea01ab6c-26af-4c7a-ba06-5c1731c83d4d"
@@ -215,7 +216,7 @@ fun HandsOnYupanaScreen(
                     DropdownMenuItem(
                         text = { Text(s.common.goToUrl) },
                         onClick = {
-                            uriHandler.openUri(ORIGINAL_TEXT_URL)
+                            safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                             showMainTextSubmenu = false
                         }
                     )
@@ -237,7 +238,7 @@ fun HandsOnYupanaScreen(
                     DropdownMenuItem(
                         text = { Text(s.common.goToUrl) },
                         onClick = {
-                            uriHandler.openUri("https://mapswire.com/")
+                            safeOpenUri(uriHandler, "https://mapswire.com/")
                             showMapswireSubmenu = false
                         }
                     )

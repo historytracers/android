@@ -32,6 +32,7 @@ import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguag
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val CARRY_MAX_LEVEL = 3
 
@@ -406,7 +407,7 @@ fun CarryOrNotCarryScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri(sourceUrl)
+                        safeOpenUri(uriHandler, sourceUrl)
                     }
                 )
             }

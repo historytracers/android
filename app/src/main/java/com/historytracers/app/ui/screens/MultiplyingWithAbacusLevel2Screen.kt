@@ -46,6 +46,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val COLUMNS = 9
 private const val SOROBAN_UPPER = 1
@@ -785,7 +786,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
-                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40")
+                            safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=078f3c4e-08fc-454c-8510-1a98a7e45a40")
                         }
                     )
                 }
@@ -809,7 +810,7 @@ fun MultiplyingWithAbacusLevel2Screen(
                         onClick = {
                             showSourcesMenu = false
                             showJessicaSubmenu = false
-                            uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                            safeOpenUri(uriHandler, "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                         }
                     )
                 }

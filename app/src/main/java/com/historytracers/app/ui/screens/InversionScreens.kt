@@ -40,6 +40,7 @@ import com.historytracers.app.ui.features.inversionScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "ae53cf73-8e7d-4a2c-80a3-1cb79b7c48bc"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -512,7 +513,7 @@ private fun InversionSourcesMenu(sources: List<HTSource>, modifier: Modifier = M
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

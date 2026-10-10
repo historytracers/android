@@ -42,6 +42,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private fun buildHandPath(): Path {
     return Path().apply {
@@ -796,7 +797,7 @@ fun RelationshipScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=59648475-3d23-45fe-8d6e-f3def1a2729b")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=59648475-3d23-45fe-8d6e-f3def1a2729b")
                     }
                 )
             }

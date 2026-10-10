@@ -42,6 +42,7 @@ import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "233fdde2-57df-4a0d-afee-46d23b42eacb"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -595,7 +596,7 @@ private fun MultiplyingWithYupanaSourcesMenu(sources: List<HTSource>, modifier: 
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

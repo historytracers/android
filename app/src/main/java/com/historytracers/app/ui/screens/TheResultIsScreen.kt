@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
 import android.content.ClipData
@@ -39,6 +39,7 @@ import com.historytracers.app.ui.features.theResultIsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=71a07afa-964d-4e43-93c1-b2e0ed330acb"
 private const val SECTION_ID = "the_result_is"
@@ -552,7 +553,7 @@ fun TheResultIsScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri(ORIGINAL_TEXT_URL)
+                        safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                     }
                 )
             }

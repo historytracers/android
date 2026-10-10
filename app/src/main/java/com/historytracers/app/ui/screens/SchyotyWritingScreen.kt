@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ROWS = 9
 private const val BEADS_PER_ROW = 10
@@ -257,7 +258,7 @@ fun SchyotyWritingScreen(
                 onClick = {
                     showSourcesMenu = false
                     showMainTextSubmenu = false
-                    uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=1aad8822-1ace-45fd-954e-833799836d1a")
+                    safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=1aad8822-1ace-45fd-954e-833799836d1a")
                 }
             )
         }
@@ -281,7 +282,7 @@ fun SchyotyWritingScreen(
                 onClick = {
                     showSourcesMenu = false
                     showJessicaSubmenu = false
-                    uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                    safeOpenUri(uriHandler, "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                 }
             )
         }

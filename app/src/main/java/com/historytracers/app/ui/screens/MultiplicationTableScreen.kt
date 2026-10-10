@@ -37,6 +37,7 @@ import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.delay
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val COLUMNS = 9
 private const val SOROBAN_UPPER = 1
@@ -583,7 +584,7 @@ fun MultiplicationTableScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=8bf96824-262d-4a55-bd39-2dbb887c1dc0")
                     }
                 )
             }
@@ -607,7 +608,7 @@ fun MultiplicationTableScreen(
                     onClick = {
                         showSourcesMenu = false
                         showJessicaSubmenu = false
-                        uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                        safeOpenUri(uriHandler, "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                     }
                 )
             }

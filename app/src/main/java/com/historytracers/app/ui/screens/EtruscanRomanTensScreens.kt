@@ -40,6 +40,7 @@ import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "23404456-5202-4933-928e-e07cbeea282b"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -677,7 +678,7 @@ private fun EtruscanRomanTensSourcesMenu(sources: List<HTSource>, modifier: Modi
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

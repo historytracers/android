@@ -58,5 +58,12 @@ private val LOCAL_ASSET_IMAGES = mapOf(
         to "Mapswire/continent_as-where-is-asia.png"
 )
 
-fun resolveImageSource(url: String): Any =
-    LOCAL_ASSET_IMAGES[url]?.let { ANDROID_ASSET_PREFIX + it } ?: url
+fun resolveImageSource(url: String): Any? {
+    val upgraded = upgradeToHttps(url.trim())
+    if (upgraded.isEmpty()) return null
+    LOCAL_ASSET_IMAGES[upgraded]?.let { return ANDROID_ASSET_PREFIX + it }
+    // Block non-https schemes (javascript:, data:, file:, ...) and cleartext
+    // http so Coil never fetches them; callers render the offline placeholder.
+    if (!isSafeExternalUrl(upgraded)) return null
+    return upgraded
+}

@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.components
 
 import android.view.ViewGroup
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Box
@@ -87,6 +88,8 @@ fun HtmlRenderer(html: String, modifier: Modifier = Modifier, scaleSvgText: Bool
                 settings.javaScriptEnabled = false
                 settings.domStorageEnabled = false
                 settings.allowFileAccess = false
+                settings.allowContentAccess = false
+                settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
         },
         update = { webView ->

@@ -43,6 +43,7 @@ import com.historytracers.app.ui.components.getMarkersForDigit
 import com.historytracers.app.ui.features.movingInYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.parseHexColor
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=c742c649-bf12-4d3f-ba8c-52f91455fc95"
 private const val DHAVIT_PREM_URL = "https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES"
@@ -698,7 +699,7 @@ private fun YupanaMovementContent(
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
-                            uriHandler.openUri(ORIGINAL_TEXT_URL)
+                            safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                         }
                     )
                 }
@@ -722,7 +723,7 @@ private fun YupanaMovementContent(
                         onClick = {
                             showSourcesMenu = false
                             showDhavitPremSubmenu = false
-                            uriHandler.openUri(DHAVIT_PREM_URL)
+                            safeOpenUri(uriHandler, DHAVIT_PREM_URL)
                         }
                     )
                 }

@@ -61,6 +61,7 @@ import com.historytracers.common.SMGameFile
 import coil.compose.SubcomposeAsyncImage
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ATW_SMARTPHONE_FILE = "1071ad37-4ee3-477a-85bb-9cd3e40e3139"
 private const val ATW_HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -1081,7 +1082,7 @@ private fun AtwSourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifie
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

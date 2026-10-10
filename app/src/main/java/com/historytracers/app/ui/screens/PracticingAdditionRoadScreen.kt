@@ -36,6 +36,7 @@ import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsFor
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=a4caa9fe-de1e-49c5-92de-50ed9c22a42d"
 
@@ -535,7 +536,7 @@ fun PracticingAdditionRoadScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri(ORIGINAL_TEXT_URL)
+                        safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                     }
                 )
             }
