@@ -46,6 +46,7 @@ fun WhereAreWeFromScreen(
     onNavigateToSharingWithWhom: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
+    onNavigateToOddOrEvenGame: () -> Unit = {},
     scrollState: ScrollState = rememberScrollState()
 ) {
     val s = LocalUiStrings.current
@@ -345,13 +346,13 @@ fun WhereAreWeFromScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = onNavigateToOddOrEvenGame,
                     modifier = Modifier
                         .size(96.dp)
                         .semantics { contentDescription = xs.oddOrEvenGame },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if ("odd_or_even_game" in completedSections) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Row(

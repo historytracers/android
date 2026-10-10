@@ -35,9 +35,9 @@ import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguag
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
 import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
-import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -91,7 +91,8 @@ fun LatestAdditionScreen(
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
-    onNavigateToAdvancingAndComplementing: () -> Unit = {}
+    onNavigateToAdvancingAndComplementing: () -> Unit = {},
+    onNavigateToOddOrEven: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -102,7 +103,7 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val was = whereAreWeFromScreenStringsForLanguage(LocalAppLanguage.current)
+    val ooes = oddOrEvenScreenStringsForLanguage(LocalAppLanguage.current)
     val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
     val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
     val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
@@ -115,6 +116,25 @@ fun LatestAdditionScreen(
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "odd_or_even_game",
+            label = ooes.title,
+            icon = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("1", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .background(OnButtonYellow, CircleShape)
+                    )
+                }
+            },
+            isCompleted = { "odd_or_even_game" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToOddOrEven
+        ),
         LatestAdditionEntry(
             sectionId = "advancing_and_complementing",
             label = ros.advancingAndComplementing,
@@ -186,27 +206,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "half_piece" in completedWhereAreWeFrom },
             onNavigate = onNavigateToHalfPiece
-        ),
-        LatestAdditionEntry(
-            sectionId = "the_same_result",
-            label = was.theSameResult,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("\u00f7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Text(
-                        "1",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 2.dp)
-                    )
-                    Text("\u00d7", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                }
-            },
-            isCompleted = { "the_same_result" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToTheSameResult
         )
     )
 
