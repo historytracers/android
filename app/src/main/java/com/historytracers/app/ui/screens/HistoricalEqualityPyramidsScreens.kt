@@ -190,9 +190,6 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
-private fun httpsImageUrl(url: String): String =
-    if (url.startsWith("http://www.historytracers.org/")) url.replaceFirst("http://", "https://") else url
-
 private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
@@ -217,7 +214,7 @@ private fun PyramidResponsiveImage(url: String, imgDesc: String?, modifier: Modi
     val configuration = LocalConfiguration.current
     val maxHeight = (configuration.screenHeightDp * 0.4f).dp
     SubcomposeAsyncImage(
-        model = resolveImageSource(httpsImageUrl(url)),
+        model = resolveImageSource(url),
         contentDescription = imgDesc,
         modifier = modifier
             .fillMaxWidth()

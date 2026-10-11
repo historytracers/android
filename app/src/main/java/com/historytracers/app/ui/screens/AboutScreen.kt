@@ -31,7 +31,6 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.safeCopyUrl
 import com.historytracers.app.ui.components.safeOpenUri
-import com.historytracers.app.ui.components.upgradeToHttps
 import com.historytracers.app.ui.features.aboutScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.R
@@ -143,7 +142,7 @@ private fun SocialIconButton(link: SocialLink) {
                 text = { Text(s.common.goToUrl) },
                 onClick = {
                     showMenu = false
-                    if (!safeOpenUri(uriHandler, upgradeToHttps(link.url))) {
+                    if (!safeOpenUri(uriHandler, link.url)) {
                         Toast.makeText(context, xs.appNotInstalled, Toast.LENGTH_SHORT).show()
                     }
                 }

@@ -55,15 +55,44 @@ private val LOCAL_ASSET_IMAGES = mapOf(
     "https://www.historytracers.org/images/Mapswire/continent_eu-where-is-europe.png"
         to "Mapswire/continent_eu-where-is-europe.png",
     "https://www.historytracers.org/images/Mapswire/continent_as-where-is-asia.png"
-        to "Mapswire/continent_as-where-is-asia.png"
+        to "Mapswire/continent_as-where-is-asia.png",
+    // Same bone photo referenced from different paths/hosts in the content.
+    "https://www.historytracers.org/images/GonzalesRedondo/Figura-9-Hueso-de-Lebombo.png"
+        to "ResearchGate/Figura-9-Hueso-de-Lebombo.png",
+    "https://historytracers.org/images/GonzalesRedondo/Figura-9-Hueso-de-Lebombo.png"
+        to "ResearchGate/Figura-9-Hueso-de-Lebombo.png",
+    "https://www.historytracers.org/images/ESA/Zoom_into_Gaia_s_star-formation_map_highlighted.jpg"
+        to "ESA/Zoom_into_Gaia_s_star-formation_map_highlighted.jpg",
+    "https://www.historytracers.org/images/CERN/2ALICEimages.jpg"
+        to "CERN/2ALICEimages.jpg",
+    "https://www.historytracers.org/images/HistoryTracers/Maya_0.png"
+        to "HistoryTracers/Maya_0.png"
 )
 
+/** Returns the local asset URI for [url] when it maps to a bundled image, else null. */
+fun localAssetUriFor(url: String): String? {
+    val trimmed = url.trim()
+    if (trimmed.isEmpty()) return null
+    if (trimmed.startsWith(ANDROID_ASSET_PREFIX)) return trimmed
+    return LOCAL_ASSET_IMAGES[trimmed]?.let { ANDROID_ASSET_PREFIX + it }
+}
+
+private val IMG_SRC_REGEX = Regex("""(src\s*=\s*["'])([^"']+)(["'])""")
+
+/** Rewrites every `src="..."` that maps to a bundled image to its local asset URI. */
+fun rewriteImageSourcesToLocal(html: String): String {
+    if (!html.contains("src=")) return html
+    return IMG_SRC_REGEX.replace(html) { match ->
+        val local = localAssetUriFor(match.groupValues[2])
+        if (local != null) match.groupValues[1] + local + match.groupValues[3] else match.value
+    }
+}
+
 fun resolveImageSource(url: String): Any? {
-    val upgraded = upgradeToHttps(url.trim())
-    if (upgraded.isEmpty()) return null
-    LOCAL_ASSET_IMAGES[upgraded]?.let { return ANDROID_ASSET_PREFIX + it }
-    // Block non-https schemes (javascript:, data:, file:, ...) and cleartext
-    // http so Coil never fetches them; callers render the offline placeholder.
-    if (!isSafeExternalUrl(upgraded)) return null
-    return upgraded
+    localAssetUriFor(url)?.let { return it }
+    val trimmed = url.trim()
+    // Strict: only https is ever fetched. Anything else (http, javascript:,
+    // data:, file:, ...) is rejected; callers render the offline placeholder.
+    if (!isSafeExternalUrl(trimmed)) return null
+    return trimmed
 }

@@ -97,7 +97,7 @@ fun HtmlRenderer(html: String, modifier: Modifier = Modifier, scaleSvgText: Bool
                 lastLoadedHtml = html
                 webView.loadDataWithBaseURL(
                     null,
-                    wrapHtml(html, scaleSvgText),
+                    wrapHtml(rewriteImageSourcesToLocal(html), scaleSvgText),
                     "text/html",
                     "UTF-8",
                     null
