@@ -68,6 +68,14 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          # The action's default package list is "tools platform-tools", but the
+          # legacy `tools` package is no longer published by the SDK repository.
+          # sdkmanager exits non-zero when a requested package cannot be found,
+          # which fails this step ("Warning: Failed to find package 'tools'").
+          # Request only platform-tools here; the android-36 platform is
+          # installed explicitly in the next step.
+          packages: 'platform-tools'
 
       - name: Accept Android SDK licenses and install platform
         run: |
