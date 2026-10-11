@@ -137,6 +137,16 @@ fun HandsOnYupanaScreen(
                     )
                 }
 
+                Text(
+                    text = xs.tawantsuyuFigureCaption,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+
                 Spacer(Modifier.height(16.dp))
 
                 FilledTonalButton(

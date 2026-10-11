@@ -33,6 +33,7 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.abacusHistoryScreenStringsForLanguage
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.anotherWayToCountScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -84,6 +85,7 @@ fun AnotherWayToCountScreen(
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = anotherWayToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val ahs = abacusHistoryScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val qs = yupanaScreenStringsForLanguage(LocalAppLanguage.current)
 
@@ -426,7 +428,7 @@ fun AnotherWayToCountScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = hts.history,
+                    text = ahs.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

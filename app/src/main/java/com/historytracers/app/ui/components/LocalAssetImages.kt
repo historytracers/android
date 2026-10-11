@@ -64,9 +64,7 @@ private val LOCAL_ASSET_IMAGES = mapOf(
     "https://www.historytracers.org/images/ESA/Zoom_into_Gaia_s_star-formation_map_highlighted.jpg"
         to "ESA/Zoom_into_Gaia_s_star-formation_map_highlighted.jpg",
     "https://www.historytracers.org/images/CERN/2ALICEimages.jpg"
-        to "CERN/2ALICEimages.jpg",
-    "https://www.historytracers.org/images/HistoryTracers/Maya_0.png"
-        to "HistoryTracers/Maya_0.png"
+        to "CERN/2ALICEimages.jpg"
 )
 
 /** Returns the local asset URI for [url] when it maps to a bundled image, else null. */

@@ -8,6 +8,7 @@ data class HandsOnYupanaScreenStrings(
     val handsOnYupanaOfflineMessage: String,
     val mapswire: String,
     val drawToCount: String,
+    val tawantsuyuFigureCaption: String,
 )
 
 val EnHandsOnYupanaScreenStrings = HandsOnYupanaScreenStrings(
@@ -15,6 +16,7 @@ val EnHandsOnYupanaScreenStrings = HandsOnYupanaScreenStrings(
     handsOnYupanaOfflineMessage = "The Tawantinsuyu map covers the modern-day regions of Ecuador, Peru, Bolivia, Argentina, and Chile.",
     mapswire = "Mapswire",
     drawToCount = "Draw to Count",
+    tawantsuyuFigureCaption = "Figure 1: Tawantsuyu region. \u00A9 Mapswire",
 )
 
 val PtHandsOnYupanaScreenStrings = HandsOnYupanaScreenStrings(
@@ -22,6 +24,7 @@ val PtHandsOnYupanaScreenStrings = HandsOnYupanaScreenStrings(
     handsOnYupanaOfflineMessage = "O mapa de Tawantinsuyu cobre as regi\u00f5es atuais do Equador, Peru, Bol\u00edvia, Argentina e Chile.",
     mapswire = "Mapswire",
     drawToCount = "Desenhar para Contar",
+    tawantsuyuFigureCaption = "Figura 1: Regi\u00e3o de Tawantsuyu. \u00A9 Mapswire",
 )
 
 val EsHandsOnYupanaScreenStrings = HandsOnYupanaScreenStrings(
@@ -29,6 +32,7 @@ val EsHandsOnYupanaScreenStrings = HandsOnYupanaScreenStrings(
     handsOnYupanaOfflineMessage = "El mapa de Tawantinsuyu cubre las regiones actuales de Ecuador, Per\u00fa, Bolivia, Argentina y Chile.",
     mapswire = "Mapswire",
     drawToCount = "Dibujar para Contar",
+    tawantsuyuFigureCaption = "Figura 1: Regi\u00f3n de Tawantsuyu. \u00A9 Mapswire",
 )
 
 val LocalHandsOnYupanaScreenStrings = staticCompositionLocalOf { EnHandsOnYupanaScreenStrings }
