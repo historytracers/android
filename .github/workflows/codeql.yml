@@ -66,15 +66,6 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          # The Gradle wrapper jar is intentionally not committed (it is covered
-          # by `*.jar` in .gitignore), so install a Gradle distribution to
-          # regenerate it during the run (see the step before the build).
-          gradle-version: '9.6.0'
-          cache-provider: 'basic'
-
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
@@ -99,16 +90,25 @@ jobs:
 
       - name: Generate Gradle wrapper jar
         run: |
-          # gradle-wrapper.jar is not committed (it is covered by `*.jar` in
-          # .gitignore), so generate it from the installed Gradle distribution.
-          # An empty build is enough to run the built-in `wrapper` task.
-          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            tmp="$(mktemp -d)"
-            : > "$tmp/settings.gradle"
-            ( cd "$tmp" && gradle wrapper --gradle-version 9.6.0 --no-daemon )
-            mkdir -p gradle/wrapper
-            cp "$tmp/gradle/wrapper/gradle-wrapper.jar" gradle/wrapper/gradle-wrapper.jar
+          # gradle-wrapper.jar is intentionally not committed (it is covered by
+          # `*.jar` in .gitignore), so build it at runtime from the Gradle
+          # distribution referenced by the wrapper properties.
+          if [ -f gradle/wrapper/gradle-wrapper.jar ]; then
+            exit 0
           fi
+          dist_url="$(grep '^distributionUrl=' gradle/wrapper/gradle-wrapper.properties | cut -d= -f2- | sed 's/\\//g')"
+          echo "Gradle distribution: $dist_url"
+          curl -fsSL -o /tmp/gradle-dist.zip "$dist_url"
+          rm -rf /tmp/gradle-dist
+          mkdir -p /tmp/gradle-dist
+          unzip -q /tmp/gradle-dist.zip -d /tmp/gradle-dist
+          gradle_bin="$(find /tmp/gradle-dist -type f -path '*/bin/gradle' -print -quit)"
+          wrapper_tmp="$(mktemp -d)"
+          # An empty build is enough to run the built-in `wrapper` task.
+          : > "$wrapper_tmp/settings.gradle"
+          ( cd "$wrapper_tmp" && "$gradle_bin" wrapper --no-daemon )
+          mkdir -p gradle/wrapper
+          cp "$wrapper_tmp/gradle/wrapper/gradle-wrapper.jar" gradle/wrapper/gradle-wrapper.jar
 
       - name: Build debug APK
         run: |
