@@ -42,6 +42,7 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val UNIVERSE_IMAGE_URL = "https://www.historytracers.org/images/ESA/Planck_history_of_Universe.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=57091b10-84a4-468c-b81a-56bccfa2cd4a"
@@ -476,7 +477,7 @@ private fun UniverseSourcesMenu(sources: List<UniverseSource>, modifier: Modifie
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(source.url)
+                        safeOpenUri(uriHandler, source.url)
                     }
                 )
             }

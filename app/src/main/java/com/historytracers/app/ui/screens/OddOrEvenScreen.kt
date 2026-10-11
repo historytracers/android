@@ -35,6 +35,7 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ODD_OR_EVEN_SECTION_ID = "odd_or_even_game"
 private const val ODD_OR_EVEN_MAX_NUMBER = 20
@@ -299,7 +300,7 @@ fun OddOrEvenScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri(sourceUrl)
+                        safeOpenUri(uriHandler, sourceUrl)
                     }
                 )
             }

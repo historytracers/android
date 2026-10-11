@@ -44,6 +44,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.math.min
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ROWS = 4
 private const val MIN_MULTIPLIER = 1
@@ -413,11 +414,11 @@ fun PracticingMultiplicationYupanaScreen(
                 }
                 DropdownMenu(expanded = showSourcesMenu && showMainTextSubmenu, onDismissRequest = { showMainTextSubmenu = false }) {
                     DropdownMenuItem(text = { Text(s.common.copyUrl) }, onClick = { showSourcesMenu = false; showMainTextSubmenu = false; (ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("URL", "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3")); Toast.makeText(ctx, s.common.copyUrl, Toast.LENGTH_SHORT).show() })
-                    DropdownMenuItem(text = { Text(s.common.goToUrl) }, onClick = { showSourcesMenu = false; showMainTextSubmenu = false; uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3") })
+                    DropdownMenuItem(text = { Text(s.common.goToUrl) }, onClick = { showSourcesMenu = false; showMainTextSubmenu = false; safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=9a7a978b-3fac-422c-8e41-3ef1a24e88f3") })
                 }
                 DropdownMenu(expanded = showSourcesMenu && showDhavitPremSubmenu, onDismissRequest = { showDhavitPremSubmenu = false }) {
                     DropdownMenuItem(text = { Text(s.common.copyUrl) }, onClick = { showSourcesMenu = false; showDhavitPremSubmenu = false; (ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("URL", "https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES")); Toast.makeText(ctx, s.common.copyUrl, Toast.LENGTH_SHORT).show() })
-                    DropdownMenuItem(text = { Text(s.common.goToUrl) }, onClick = { showSourcesMenu = false; showDhavitPremSubmenu = false; uriHandler.openUri("https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES") })
+                    DropdownMenuItem(text = { Text(s.common.goToUrl) }, onClick = { showSourcesMenu = false; showDhavitPremSubmenu = false; safeOpenUri(uriHandler, "https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES") })
                 }
             }
         }

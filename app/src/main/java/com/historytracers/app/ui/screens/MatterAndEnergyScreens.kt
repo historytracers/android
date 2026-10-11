@@ -46,6 +46,7 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "af0fcbef-3b19-4cf0-b100-93fafd9d9039"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -587,7 +588,7 @@ private fun MatterAndEnergySourcesMenu(sources: List<HTSource>, modifier: Modifi
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

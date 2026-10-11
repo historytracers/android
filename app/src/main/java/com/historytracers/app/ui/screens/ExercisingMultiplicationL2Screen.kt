@@ -41,6 +41,7 @@ import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private fun buildHandPath(): Path {
     return Path().apply {
@@ -505,7 +506,7 @@ fun ExercisingMultiplicationL2Screen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=c4b96e7c-627b-46d0-820c-409a1e9f47b8")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=c4b96e7c-627b-46d0-820c-409a1e9f47b8")
                     }
                 )
             }

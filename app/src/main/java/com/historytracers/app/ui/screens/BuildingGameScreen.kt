@@ -32,13 +32,21 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.buildingGameScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
+import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val MAX_LEVEL = 3
 private const val ROWS = 10
 private const val COLUMNS = 10
+
+/** Light-blue background for a normal cell that shows a number. */
+private val NumberCellBlue = Color(0xFFADD8E6)
+
+/** A different blue used to keep a discovered (revealed) number highlighted. */
+private val DiscoveredCellBlue = FlagBlueDark
 
 private fun hiddenPositionsFor(level: Int): Set<Int> {
     val hidden = mutableSetOf<Int>()
@@ -190,11 +198,15 @@ fun BuildingGameScreen(
                                         .padding(2.dp)
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(
-                                            if (showQuestion) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                                            when {
+                                                showQuestion -> ButtonYellow
+                                                isRevealed -> DiscoveredCellBlue
+                                                else -> NumberCellBlue
+                                            }
                                         )
                                         .border(
-                                            width = if (showQuestion) 2.dp else 1.dp,
-                                            color = if (showQuestion) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                                            width = if (isHidden) 2.dp else 1.dp,
+                                            color = if (isHidden) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                                             shape = RoundedCornerShape(8.dp)
                                         )
                                         .clickable(enabled = showQuestion && !completed) { revealCell(position) },
@@ -203,8 +215,8 @@ fun BuildingGameScreen(
                                     Text(
                                         text = if (showQuestion) "?" else position.toString(),
                                         style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = if (showQuestion) FontWeight.Bold else FontWeight.Normal,
-                                        color = if (showQuestion) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                        fontWeight = if (isHidden) FontWeight.Bold else FontWeight.Normal,
+                                        color = if (showQuestion) MaterialTheme.colorScheme.primary else OnButtonYellow
                                     )
                                 }
                             }
@@ -328,7 +340,7 @@ fun BuildingGameScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=e434ae19-4f25-4880-8227-0970cd27ccb6")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=e434ae19-4f25-4880-8227-0970cd27ccb6")
                     }
                 )
             }

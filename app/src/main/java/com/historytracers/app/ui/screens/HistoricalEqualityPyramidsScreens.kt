@@ -45,6 +45,7 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "79fa77f4-0934-4e20-825c-cb7cb1ec5d8d"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -189,9 +190,6 @@ private fun smileEmoji(smile: String): String = when (smile) {
 private fun sourceUrl(page: String): String =
     if (page.startsWith("index.html")) HISTORYTRACERS_ORIGIN + page else page
 
-private fun httpsImageUrl(url: String): String =
-    if (url.startsWith("http://www.historytracers.org/")) url.replaceFirst("http://", "https://") else url
-
 private fun isImgHtml(text: String?): Boolean =
     text?.startsWith("<img") == true
 
@@ -216,7 +214,7 @@ private fun PyramidResponsiveImage(url: String, imgDesc: String?, modifier: Modi
     val configuration = LocalConfiguration.current
     val maxHeight = (configuration.screenHeightDp * 0.4f).dp
     SubcomposeAsyncImage(
-        model = resolveImageSource(httpsImageUrl(url)),
+        model = resolveImageSource(url),
         contentDescription = imgDesc,
         modifier = modifier
             .fillMaxWidth()
@@ -631,7 +629,7 @@ private fun SourcesMenu(sources: List<HTSource>, modifier: Modifier = Modifier) 
                         showSourcesMenu = false
                         activeSource = null
                         if (url.isNotEmpty()) {
-                            uriHandler.openUri(url)
+                            safeOpenUri(uriHandler, url)
                         }
                     }
                 )

@@ -40,6 +40,7 @@ import com.historytracers.app.ui.features.drawingTheTableOfOneScreenStringsForLa
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "cd053368-0499-44ca-8c7c-072c56527f4b"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -530,7 +531,7 @@ private fun DrawingTheTableOfOneSourcesMenu(sources: List<HTSource>, modifier: M
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

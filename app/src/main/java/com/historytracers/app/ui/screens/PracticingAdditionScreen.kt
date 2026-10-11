@@ -46,6 +46,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 
 private const val COLUMNS = 9
@@ -769,7 +770,7 @@ fun PracticingAdditionScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=f91d9720-3085-4e71-ae5d-7e7cf6b7b7b2")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=f91d9720-3085-4e71-ae5d-7e7cf6b7b7b2")
                     }
                 )
             }
@@ -793,7 +794,7 @@ fun PracticingAdditionScreen(
                     onClick = {
                         showSourcesMenu = false
                         showJessicaSubmenu = false
-                        uriHandler.openUri("https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
+                        safeOpenUri(uriHandler, "https://www.researchgate.net/publication/373989506_FACILITATORS'_GUIDE_TO_THE_MS_II_A_MODIFIED_S'CHYOTY_ABACUS")
                     }
                 )
             }

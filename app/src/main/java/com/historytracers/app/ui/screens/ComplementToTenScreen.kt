@@ -36,6 +36,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -332,7 +333,7 @@ fun ComplementToTenScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=6d9857d3-a1af-4411-b358-b97a7ea02515")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=6d9857d3-a1af-4411-b358-b97a7ea02515")
                     }
                 )
             }

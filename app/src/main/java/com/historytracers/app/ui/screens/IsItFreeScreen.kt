@@ -16,6 +16,7 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.isItFreeScreenStringsForLanguage
+import com.historytracers.app.ui.components.safeOpenUri
 
 @Composable
 fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
@@ -52,7 +53,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(16.dp))
 
         Button(onClick = {
-            uriHandler.openUri("https://www.patreon.com/bePatron?u=104667333")
+            safeOpenUri(uriHandler, "https://www.patreon.com/bePatron?u=104667333")
         }) {
             Text(xs.patreon)
         }
@@ -60,7 +61,7 @@ fun IsItFreeScreen(onNavigateToAbout: () -> Unit) {
         Spacer(Modifier.height(8.dp))
 
         Button(onClick = {
-            uriHandler.openUri("https://www.paypal.com/donate/?hosted_button_id=F9SD36K5M3BW6")
+            safeOpenUri(uriHandler, "https://www.paypal.com/donate/?hosted_button_id=F9SD36K5M3BW6")
         }) {
             Text(xs.paypal)
         }

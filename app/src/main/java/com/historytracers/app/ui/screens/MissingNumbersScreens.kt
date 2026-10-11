@@ -46,6 +46,7 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "d603e3a0-cf2a-497d-9fc3-cfed73743515"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -749,7 +750,7 @@ private fun MissingNumbersSourcesMenu(sources: List<HTSource>, modifier: Modifie
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

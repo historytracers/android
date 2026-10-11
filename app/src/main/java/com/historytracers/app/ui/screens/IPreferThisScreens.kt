@@ -46,6 +46,7 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "13923c68-811e-4ad3-93c1-bcb65d611093"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -725,7 +726,7 @@ private fun IPreferThisSourcesMenu(sources: List<HTSource>, modifier: Modifier =
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

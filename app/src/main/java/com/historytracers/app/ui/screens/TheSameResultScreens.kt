@@ -44,6 +44,7 @@ import com.historytracers.common.HTDate
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "5095e85d-1aea-43d9-a0f0-f58313fd4152"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -566,7 +567,7 @@ private fun TheSameResultSourcesMenu(sources: List<HTSource>, modifier: Modifier
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

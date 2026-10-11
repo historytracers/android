@@ -51,6 +51,7 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.Brown40
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val MAX_BONE_MARKS = 20
 private const val MAX_BONE_LEVELS = 4
@@ -672,7 +673,7 @@ private fun BoneSourcesMenu(sources: List<BoneSource>, modifier: Modifier = Modi
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(source.url)
+                        safeOpenUri(uriHandler, source.url)
                     }
                 )
             }

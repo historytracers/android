@@ -45,6 +45,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.math.min
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ROWS = 4
 private const val MAX_DIGIT_LEVEL = 9
@@ -914,7 +915,7 @@ fun PracticingAdditionYupanaScreen(
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
-                            uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2")
+                            safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=b0bb8da3-ca00-453e-9060-9dfa767c80e2")
                         }
                     )
                 }
@@ -938,7 +939,7 @@ fun PracticingAdditionYupanaScreen(
                         onClick = {
                             showSourcesMenu = false
                             showDhavitPremSubmenu = false
-                            uriHandler.openUri("https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES")
+                            safeOpenUri(uriHandler, "https://www.researchgate.net/publication/334520917_TAWA_PUKLLAY_-_LA_ARITMETICA_INCA_DE_RECONOCIMIENTO_DE_FORMAS_Y_MOVIMIENTOS_OPERABLE_EN_PARALELO_Y_QUE_NO_REQUIERE_CALCULOS_NUMERICOS_MENTALES")
                         }
                     )
                 }

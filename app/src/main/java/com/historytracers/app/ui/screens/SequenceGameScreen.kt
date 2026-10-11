@@ -39,6 +39,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private fun generateRound(previousMissingIndex: Int): Pair<List<Int>, Int> {
     val start = Random.nextInt(0, 8)
@@ -318,7 +319,7 @@ fun SequenceGameScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=fb9dca2c-cd76-4951-b7d0-4b2c694e8056")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=fb9dca2c-cd76-4951-b7d0-4b2c694e8056")
                     }
                 )
             }

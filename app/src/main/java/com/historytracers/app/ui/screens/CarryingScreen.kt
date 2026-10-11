@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
 import android.content.ClipData
@@ -37,6 +37,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -363,7 +364,7 @@ fun CarryingScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=2836521c-6ddd-4fb9-a78d-b1b12db94883")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=2836521c-6ddd-4fb9-a78d-b1b12db94883")
                     }
                 )
             }

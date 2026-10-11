@@ -43,6 +43,7 @@ import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "fd5649cc-eab6-438a-b626-65b2f8840f52"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -764,7 +765,7 @@ private fun ReverseMovementSourcesMenu(sources: List<HTSource>, modifier: Modifi
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

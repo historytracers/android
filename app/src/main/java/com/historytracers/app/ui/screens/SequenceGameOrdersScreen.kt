@@ -33,6 +33,7 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private val allOrderNumbers = listOf(
     1L, 10L, 100L, 1000L, 10000L, 100000L,
@@ -395,7 +396,7 @@ fun SequenceGameOrdersScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=5f349c3b-944c-42ae-a7f0-00a4c8d4ba10")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=5f349c3b-944c-42ae-a7f0-00a4c8d4ba10")
                     }
                 )
             }

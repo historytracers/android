@@ -50,6 +50,7 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "65eb6170-1aa4-4d49-91bd-61bc1ec7d580"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -629,7 +630,7 @@ private fun OvercomingLimitsSourcesMenu(sources: List<HTSource>, modifier: Modif
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

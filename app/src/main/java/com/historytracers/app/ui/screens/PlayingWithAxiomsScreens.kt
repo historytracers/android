@@ -43,6 +43,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=462b1750-2d39-454d-a780-f22d4bd154c3"
 
@@ -612,7 +613,7 @@ private fun AxiomSourcesMenu(modifier: Modifier = Modifier) {
                 onClick = {
                     showSourcesMenu = false
                     showMainTextSubmenu = false
-                    uriHandler.openUri(ORIGINAL_TEXT_URL)
+                    safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                 }
             )
         }

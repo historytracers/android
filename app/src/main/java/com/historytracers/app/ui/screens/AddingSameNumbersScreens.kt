@@ -46,6 +46,7 @@ import com.historytracers.app.ui.components.drawOneHand
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val SMARTPHONE_GAME_FILE = "8844ab78-8d9a-48ff-89ce-21696cb88d89"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -667,7 +668,7 @@ private fun AddingSameNumbersSourcesMenu(sources: List<HTSource>, modifier: Modi
                     onClick = {
                         showSourcesMenu = false
                         activeSource = null
-                        uriHandler.openUri(url)
+                        safeOpenUri(uriHandler, url)
                     }
                 )
             }

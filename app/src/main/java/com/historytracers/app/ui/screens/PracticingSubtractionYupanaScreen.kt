@@ -41,6 +41,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ROWS = 4
 private const val MIN_LEVEL = 0
@@ -676,7 +677,7 @@ fun PracticingSubtractionYupanaScreen(
                         onClick = {
                             showSourcesMenu = false
                             showMainTextSubmenu = false
-                            uriHandler.openUri(ORIGINAL_TEXT_URL)
+                            safeOpenUri(uriHandler, ORIGINAL_TEXT_URL)
                         }
                     )
                 }
@@ -699,7 +700,7 @@ fun PracticingSubtractionYupanaScreen(
                         onClick = {
                             showSourcesMenu = false
                             showDhavitPremSubmenu = false
-                            uriHandler.openUri(DHAVIT_PREM_URL)
+                            safeOpenUri(uriHandler, DHAVIT_PREM_URL)
                         }
                     )
                 }

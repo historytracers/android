@@ -38,6 +38,7 @@ import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.safeOpenUri
 
 private const val MAX_LEVEL = 10
 
@@ -383,7 +384,7 @@ fun SequenceGameFamiliesScreen(
                     onClick = {
                         showSourcesMenu = false
                         showMainTextSubmenu = false
-                        uriHandler.openUri("https://www.historytracers.org/index.html?page=class_content&arg=9d4c7f85-0e69-4795-a738-0acb54f2011d")
+                        safeOpenUri(uriHandler, "https://www.historytracers.org/index.html?page=class_content&arg=9d4c7f85-0e69-4795-a738-0acb54f2011d")
                     }
                 )
             }

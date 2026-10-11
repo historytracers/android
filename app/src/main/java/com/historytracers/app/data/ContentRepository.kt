@@ -12,7 +12,30 @@ class ContentRepository(private val context: Context) {
     private val holyRefSourceMap = mutableMapOf<String, HTSourceElement>()
     private val smSourceMap = mutableMapOf<String, HTSourceElement>()
 
+    companion object {
+        private val ASSET_NAME_REGEX = Regex("^[A-Za-z0-9._/-]+$")
+        private val UUID_REGEX = Regex("^[0-9a-fA-F-]+$")
+        private val SUPPORTED_LANGUAGES = setOf("en-US", "pt-BR", "es-ES")
+
+        fun isValidAssetName(name: String): Boolean {
+            if (name.isEmpty() || name.length > 128) return false
+            if (!ASSET_NAME_REGEX.matches(name)) return false
+            if (name.contains("..")) return false
+            if (name.startsWith("/")) return false
+            return true
+        }
+    }
+
     fun loadJson(name: String): String? {
+        if (!isValidAssetName(name)) return null
+        // Language prefix (if present) must be a supported locale so a
+        // tampered preference cannot probe arbitrary asset paths.
+        val languagePrefix = name.substringBefore("/", "")
+        if (name.contains("/") && languagePrefix.length == 5 &&
+            languagePrefix[2] == '-' && languagePrefix !in SUPPORTED_LANGUAGES
+        ) {
+            return null
+        }
         return try {
             context.assets.open("$name.json").bufferedReader().use { it.readText() }
         } catch (e: Exception) {
@@ -21,6 +44,7 @@ class ContentRepository(private val context: Context) {
     }
 
     fun loadSourceFile(uuid: String): HTSourceFile? {
+        if (!UUID_REGEX.matches(uuid) || uuid.length > 64 || uuid.contains("..")) return null
         val json = loadJson("lang/sources/$uuid") ?: return null
         return try {
             gson.fromJson(json, HTSourceFile::class.java)
