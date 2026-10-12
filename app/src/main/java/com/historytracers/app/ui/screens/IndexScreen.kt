@@ -87,7 +87,7 @@ private val returningSectionIds = listOf(
 )
 
 private val measuringSectionIds = listOf(
-    "bigger_or_smaller"
+    "bigger_or_smaller", "greater_or_smaller_game"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).

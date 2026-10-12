@@ -147,6 +147,7 @@ sealed class Screen(val route: String) {
     data object BiggerOrSmallerThinking : Screen("bigger_or_smaller_thinking")
     data object BiggerOrSmallerSameLogic : Screen("bigger_or_smaller_same_logic")
     data object BiggerOrSmallerConclusion : Screen("bigger_or_smaller_conclusion")
+    data object GreaterOrSmallerGame : Screen("greater_or_smaller_game")
     data object WalkingBackwardsIntro : Screen("walking_backwards_intro")
     data object WalkingBackwardsRemembering : Screen("walking_backwards_remembering")
     data object WalkingBackwardsFiveSteps : Screen("walking_backwards_five_steps")

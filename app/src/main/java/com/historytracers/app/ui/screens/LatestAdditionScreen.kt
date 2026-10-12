@@ -30,13 +30,14 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.biggerOrSmallerScreenStringsForLanguage
+import com.historytracers.app.ui.features.greaterOrSmallerGameScreenStringsForLanguage
+import com.historytracers.app.ui.features.measuringScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
-import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -88,6 +89,7 @@ fun LatestAdditionScreen(
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToBiggerOrSmaller: () -> Unit = {},
+    onNavigateToGreaterOrSmallerGame: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
@@ -105,7 +107,8 @@ fun LatestAdditionScreen(
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val ooes = oddOrEvenScreenStringsForLanguage(LocalAppLanguage.current)
     val bos = biggerOrSmallerScreenStringsForLanguage(LocalAppLanguage.current)
-    val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
+    val gos = greaterOrSmallerGameScreenStringsForLanguage(LocalAppLanguage.current)
+    val ms = measuringScreenStringsForLanguage(LocalAppLanguage.current)
     val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
     val ros = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
@@ -113,10 +116,18 @@ fun LatestAdditionScreen(
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "greater_or_smaller_game",
+            label = gos.title,
+            icon = {
+                Text(ms.compareSymbols, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            },
+            isCompleted = { "greater_or_smaller_game" in completedMeasuring },
+            onNavigate = onNavigateToGreaterOrSmallerGame
+        ),
         LatestAdditionEntry(
             sectionId = "bigger_or_smaller",
             label = bos.title,
@@ -189,19 +200,6 @@ fun LatestAdditionScreen(
             isCompleted = { "carry_or_not_carry" in completedRoadToSomewhere },
             onNavigate = onNavigateToCarryOrNotCarry
         ),
-        LatestAdditionEntry(
-            sectionId = "walking_backwards",
-            label = wbs.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_turn_left),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "walking_backwards" in completedReturning },
-            onNavigate = onNavigateToWalkingBackwards
-        )
     )
 
     Column(modifier = Modifier.fillMaxSize()) {

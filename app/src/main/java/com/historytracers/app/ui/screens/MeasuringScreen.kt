@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MeasuringScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToBiggerOrSmaller: () -> Unit = {}
+    onNavigateToBiggerOrSmaller: () -> Unit = {},
+    onNavigateToGreaterOrSmallerGame: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -40,6 +41,7 @@ fun MeasuringScreen(
     val scope = rememberCoroutineScope()
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
     val biggerOrSmallerDone = "bigger_or_smaller" in completedMeasuring
+    val greaterOrSmallerGameDone = "greater_or_smaller_game" in completedMeasuring
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -118,6 +120,35 @@ fun MeasuringScreen(
 
                 Text(
                     text = xs.biggerOrSmaller,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToGreaterOrSmallerGame,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (greaterOrSmallerGameDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.compareSymbols,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.greaterOrSmallerGame,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
