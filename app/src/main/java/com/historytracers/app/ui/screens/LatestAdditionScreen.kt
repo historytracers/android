@@ -3,7 +3,6 @@ package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -30,13 +29,13 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.biggerOrSmallerScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
-import com.historytracers.app.ui.features.halfPieceScreenStringsForLanguage
 import com.historytracers.app.ui.features.walkingBackwardsScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
@@ -88,6 +87,7 @@ fun LatestAdditionScreen(
     onNavigateToAbacusHistory: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
+    onNavigateToBiggerOrSmaller: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
@@ -104,7 +104,7 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val ooes = oddOrEvenScreenStringsForLanguage(LocalAppLanguage.current)
-    val hps = halfPieceScreenStringsForLanguage(LocalAppLanguage.current)
+    val bos = biggerOrSmallerScreenStringsForLanguage(LocalAppLanguage.current)
     val wbs = walkingBackwardsScreenStringsForLanguage(LocalAppLanguage.current)
     val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
     val ros = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
@@ -114,8 +114,22 @@ fun LatestAdditionScreen(
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
+    val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "bigger_or_smaller",
+            label = bos.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_ruler),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "bigger_or_smaller" in completedMeasuring },
+            onNavigate = onNavigateToBiggerOrSmaller
+        ),
         LatestAdditionEntry(
             sectionId = "odd_or_even_game",
             label = ooes.title,
@@ -187,25 +201,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "walking_backwards" in completedReturning },
             onNavigate = onNavigateToWalkingBackwards
-        ),
-        LatestAdditionEntry(
-            sectionId = "half_piece",
-            label = hps.title,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    val sheet = Modifier
-                        .size(width = 20.dp, height = 26.dp)
-                        .background(Color.White, RoundedCornerShape(2.dp))
-                        .border(1.dp, Color(0xFFBDBDBD), RoundedCornerShape(2.dp))
-                    Box(sheet)
-                    Box(sheet)
-                }
-            },
-            isCompleted = { "half_piece" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToHalfPiece
         )
     )
 

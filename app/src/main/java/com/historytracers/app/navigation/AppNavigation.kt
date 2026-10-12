@@ -170,6 +170,14 @@ import com.historytracers.app.ui.screens.WhereAreWeFromScreen
 import com.historytracers.app.ui.screens.OddOrEvenScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.ReturningScreen
+import com.historytracers.app.ui.screens.MeasuringScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerIntroScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerRulerScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerAfterScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerBeforeScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerThinkingScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerSameLogicScreen
+import com.historytracers.app.ui.screens.BiggerOrSmallerConclusionScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsIntroScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsRememberingScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsFiveStepsScreen
@@ -483,7 +491,10 @@ fun AppNavigation() {
            "overcoming_limits_logic", "overcoming_limits_last_foot", "overcoming_limits_conclusion",
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
-           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning",
+           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "measuring",
+           "bigger_or_smaller_intro", "bigger_or_smaller_ruler", "bigger_or_smaller_after",
+           "bigger_or_smaller_before", "bigger_or_smaller_thinking", "bigger_or_smaller_same_logic",
+           "bigger_or_smaller_conclusion",
            "walking_backwards_intro", "walking_backwards_remembering", "walking_backwards_five_steps",
            "walking_backwards_new_operation", "walking_backwards_back_to_origin",
            "walking_backwards_from_another_beginning", "walking_backwards_thinking",
@@ -855,7 +866,83 @@ fun AppNavigation() {
                             onNavigateToWhereAreWeFrom = { navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true } },
                             onNavigateToAnotherWayToCount = { navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
+                            onNavigateToMeasuring = { navController.navigate(Screen.Measuring.route) { launchSingleTop = true } },
                             onNavigateToReturning = { navController.navigate(Screen.Returning.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.Measuring.route) {
+                        MeasuringScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToBiggerOrSmaller = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerIntro.route) {
+                        BiggerOrSmallerIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerRuler.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerRuler.route) {
+                        BiggerOrSmallerRulerScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerAfter.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerAfter.route) {
+                        BiggerOrSmallerAfterScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerRuler.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerBefore.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerBefore.route) {
+                        BiggerOrSmallerBeforeScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerAfter.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerThinking.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerThinking.route) {
+                        BiggerOrSmallerThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerBefore.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerSameLogic.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerSameLogic.route) {
+                        BiggerOrSmallerSameLogicScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerThinking.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.BiggerOrSmallerConclusion.route) {
+                        BiggerOrSmallerConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerSameLogic.route) { launchSingleTop = true } },
+                            onNavigateToMeasuring = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
                         )
                     }
                     composable(Screen.Returning.route) {
@@ -7871,6 +7958,7 @@ fun AppNavigation() {
                             onNavigateToAbacusHistory = { navController.navigate(Screen.AbacusHistoryIntro.route) { launchSingleTop = true } },
                             onNavigateToTheSameResult = { navController.navigate(Screen.TheSameResultIntro.route) { launchSingleTop = true } },
                             onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } },
+                            onNavigateToBiggerOrSmaller = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryOrNotCarry = { navController.navigate(Screen.CarryOrNotCarryIntro.route) { launchSingleTop = true } },
