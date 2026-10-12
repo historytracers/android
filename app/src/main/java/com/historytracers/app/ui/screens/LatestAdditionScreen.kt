@@ -31,9 +31,9 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.biggerOrSmallerScreenStringsForLanguage
 import com.historytracers.app.ui.features.greaterOrSmallerGameScreenStringsForLanguage
+import com.historytracers.app.ui.features.measuringOneDirectionScreenStringsForLanguage
 import com.historytracers.app.ui.features.measuringScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
@@ -90,6 +90,7 @@ fun LatestAdditionScreen(
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToBiggerOrSmaller: () -> Unit = {},
     onNavigateToGreaterOrSmallerGame: () -> Unit = {},
+    onNavigateToMeasuringOneDirection: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
@@ -108,8 +109,8 @@ fun LatestAdditionScreen(
     val ooes = oddOrEvenScreenStringsForLanguage(LocalAppLanguage.current)
     val bos = biggerOrSmallerScreenStringsForLanguage(LocalAppLanguage.current)
     val gos = greaterOrSmallerGameScreenStringsForLanguage(LocalAppLanguage.current)
+    val mods = measuringOneDirectionScreenStringsForLanguage(LocalAppLanguage.current)
     val ms = measuringScreenStringsForLanguage(LocalAppLanguage.current)
-    val cncs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
     val ros = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -119,6 +120,19 @@ fun LatestAdditionScreen(
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "measuring_one_direction",
+            label = mods.title,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_ruler),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            isCompleted = { "measuring_one_direction" in completedMeasuring },
+            onNavigate = onNavigateToMeasuringOneDirection
+        ),
         LatestAdditionEntry(
             sectionId = "greater_or_smaller_game",
             label = gos.title,
@@ -184,22 +198,7 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "advancing_and_complementing" in completedRoadToSomewhere },
             onNavigate = onNavigateToAdvancingAndComplementing
-        ),
-        LatestAdditionEntry(
-            sectionId = "carry_or_not_carry",
-            label = cncs.title,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("1", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Text("?", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                }
-            },
-            isCompleted = { "carry_or_not_carry" in completedRoadToSomewhere },
-            onNavigate = onNavigateToCarryOrNotCarry
-        ),
+        )
     )
 
     Column(modifier = Modifier.fillMaxSize()) {

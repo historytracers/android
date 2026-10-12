@@ -179,6 +179,12 @@ import com.historytracers.app.ui.screens.BiggerOrSmallerThinkingScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerSameLogicScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerConclusionScreen
 import com.historytracers.app.ui.screens.GreaterOrSmallerGameScreen
+import com.historytracers.app.ui.screens.MeasuringOneDirectionIntroScreen
+import com.historytracers.app.ui.screens.MeasuringOneDirectionStepByStepScreen
+import com.historytracers.app.ui.screens.MeasuringOneDirectionExampleScreen
+import com.historytracers.app.ui.screens.MeasuringOneDirectionThinkingScreen
+import com.historytracers.app.ui.screens.MeasuringOneDirectionComparingScreen
+import com.historytracers.app.ui.screens.MeasuringOneDirectionConclusionScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsIntroScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsRememberingScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsFiveStepsScreen
@@ -496,6 +502,9 @@ fun AppNavigation() {
            "bigger_or_smaller_intro", "bigger_or_smaller_ruler", "bigger_or_smaller_after",
            "bigger_or_smaller_before", "bigger_or_smaller_thinking", "bigger_or_smaller_same_logic",
            "bigger_or_smaller_conclusion", "greater_or_smaller_game",
+           "measuring_one_direction_intro", "measuring_one_direction_steps",
+           "measuring_one_direction_example", "measuring_one_direction_thinking",
+           "measuring_one_direction_comparing", "measuring_one_direction_conclusion",
            "walking_backwards_intro", "walking_backwards_remembering", "walking_backwards_five_steps",
            "walking_backwards_new_operation", "walking_backwards_back_to_origin",
            "walking_backwards_from_another_beginning", "walking_backwards_thinking",
@@ -882,7 +891,8 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToBiggerOrSmaller = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } },
-                            onNavigateToGreaterOrSmallerGame = { navController.navigate(Screen.GreaterOrSmallerGame.route) { launchSingleTop = true } }
+                            onNavigateToGreaterOrSmallerGame = { navController.navigate(Screen.GreaterOrSmallerGame.route) { launchSingleTop = true } },
+                            onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.GreaterOrSmallerGame.route) {
@@ -890,6 +900,59 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
+                        )
+                    }
+                    composable(Screen.MeasuringOneDirectionIntro.route) {
+                        MeasuringOneDirectionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionStepByStep.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringOneDirectionStepByStep.route) {
+                        MeasuringOneDirectionStepByStepScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionExample.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringOneDirectionExample.route) {
+                        MeasuringOneDirectionExampleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionStepByStep.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionThinking.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringOneDirectionThinking.route) {
+                        MeasuringOneDirectionThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionExample.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionComparing.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringOneDirectionComparing.route) {
+                        MeasuringOneDirectionComparingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionThinking.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringOneDirectionConclusion.route) {
+                        MeasuringOneDirectionConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionComparing.route) { launchSingleTop = true } },
+                            onNavigateToMeasuring = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
                         )
                     }
                     composable(Screen.BiggerOrSmallerIntro.route) {
@@ -7969,6 +8032,7 @@ fun AppNavigation() {
                             onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } },
                             onNavigateToBiggerOrSmaller = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } },
                             onNavigateToGreaterOrSmallerGame = { navController.navigate(Screen.GreaterOrSmallerGame.route) { launchSingleTop = true } },
+                            onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryOrNotCarry = { navController.navigate(Screen.CarryOrNotCarryIntro.route) { launchSingleTop = true } },
