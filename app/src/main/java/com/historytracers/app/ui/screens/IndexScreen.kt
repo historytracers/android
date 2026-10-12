@@ -120,6 +120,7 @@ fun IndexScreen(
     onNavigateToWhereAreWeFrom: () -> Unit = {},
     onNavigateToAnotherWayToCount: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToMeasuring: () -> Unit = {},
     onNavigateToReturning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -285,6 +286,30 @@ fun IndexScreen(
                     )
                 }
                 if (aroundTheWorldNew) NewHubSunBadge()
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            FilledTonalButton(
+                onClick = { onNavigateToMeasuring() },
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_ruler),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = hts.measuring,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(Modifier.height(16.dp))
