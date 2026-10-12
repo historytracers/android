@@ -1,33 +1,47 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.greaterOrSmallerGameScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+private const val GAME_FILE = "09f835ae-8810-44fc-b50e-e3583f18d967"
 private const val MIN_LEVEL = 1
 private const val MAX_LEVEL = 4
 private const val SECTION_ID = "greater_or_smaller_game"
+private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
 private fun randomPair(level: Int): Pair<Long, Long> = when (level) {
     1 -> {
@@ -64,7 +78,9 @@ fun GreaterOrSmallerGameScreen(
 ) {
     val s = LocalUiStrings.current
     val xs = greaterOrSmallerGameScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
 
@@ -79,6 +95,18 @@ fun GreaterOrSmallerGameScreen(
     var wasCorrect by remember { mutableStateOf(false) }
     var feedback by remember { mutableStateOf("") }
     var finalCongratsShown by remember { mutableStateOf(false) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var showSourcesMenu by remember { mutableStateOf(false) }
+    var showMainTextSubmenu by remember { mutableStateOf(false) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$GAME_FILE")) {
+            is ContentResult.SMGame ->
+                instructionText = result.data?.content?.firstOrNull()?.text?.firstOrNull()?.text
+            else -> instructionText = null
+        }
+    }
 
     fun newPair() {
         val (a, b) = randomPair(level)
@@ -138,187 +166,260 @@ fun GreaterOrSmallerGameScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            tonalElevation = 3.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Surface(
+                tonalElevation = 3.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                    }
+                    Text(
+                        text = xs.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(8.dp))
+
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(text = instruction)
+                } else {
+                    Text(
+                        text = xs.instruction,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
                 Text(
-                    text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    text = "${s.common.levelPrefix}$level/$MAX_LEVEL",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
                 )
+
+                Spacer(Modifier.height(20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    key(exerciseKey) {
+                        NumberCard(label = xs.labelA, value = formatNumber(left))
+                        Text(
+                            text = "<",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        NumberCard(label = xs.labelB, value = formatNumber(right))
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilledTonalButton(
+                        onClick = { submit(true) },
+                        enabled = !answered,
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = xs.inOrder,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                    FilledTonalButton(
+                        onClick = { submit(false) },
+                        enabled = !answered,
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = xs.notInOrder,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                }
+
+                if (feedback.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = feedback,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = if (finalCongratsShown || wasCorrect) Color(0xFF2E7D32)
+                        else MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(20.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilledTonalButton(
+                        onClick = { newExercise() },
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = ButtonYellow,
+                            contentColor = OnButtonYellow
+                        )
+                    ) {
+                        Text(
+                            text = s.common.newExercise,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+
+                    if (answered && wasCorrect && level < MAX_LEVEL) {
+                        FilledTonalButton(
+                            onClick = { startLevel(level + 1) },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                text = s.common.nextLevel,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+
+                    if (finalCongratsShown) {
+                        FilledTonalButton(
+                            onClick = { startLevel(MIN_LEVEL) },
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                text = xs.playAgain,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
             }
         }
 
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp, start = 8.dp)
         ) {
-            Spacer(Modifier.height(8.dp))
+            val uriHandler = LocalUriHandler.current
+            val sourceUrl = HISTORYTRACERS_ORIGIN + "index.html?page=class_content&arg=" + GAME_FILE
 
-            Text(
-                text = xs.instruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            Text(
-                text = "${s.common.levelPrefix}$level/$MAX_LEVEL",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { showSourcesMenu = true }
+                    .padding(8.dp)
             ) {
-                key(exerciseKey) {
-                    NumberCard(label = xs.labelA, value = formatNumber(left))
-                    Text(
-                        text = "<",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                    NumberCard(label = xs.labelB, value = formatNumber(right))
-                }
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                FilledTonalButton(
-                    onClick = { submit(true) },
-                    enabled = !answered,
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color(0xFF4CAF50),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(
-                        text = xs.inOrder,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
-                FilledTonalButton(
-                    onClick = { submit(false) },
-                    enabled = !answered,
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = Color(0xFF4CAF50),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(
-                        text = xs.notInOrder,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
-            }
-
-            if (feedback.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
+                Icon(
+                    Icons.Filled.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
                 Text(
-                    text = feedback,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = if (finalCongratsShown || wasCorrect) Color(0xFF2E7D32)
-                    else MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    text = s.common.sources,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            Spacer(Modifier.height(20.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
+            DropdownMenu(
+                expanded = showSourcesMenu && !showMainTextSubmenu,
+                onDismissRequest = { showSourcesMenu = false }
             ) {
-                FilledTonalButton(
-                    onClick = { newExercise() },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = ButtonYellow,
-                        contentColor = OnButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = s.common.newExercise,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
-
-                if (answered && wasCorrect && level < MAX_LEVEL) {
-                    FilledTonalButton(
-                        onClick = { startLevel(level + 1) },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = Color(0xFF4CAF50),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            text = s.common.nextLevel,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                }
-
-                if (finalCongratsShown) {
-                    FilledTonalButton(
-                        onClick = { startLevel(MIN_LEVEL) },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = Color(0xFF4CAF50),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            text = xs.playAgain,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                }
+                DropdownMenuItem(
+                    text = { Text(s.common.originalText) },
+                    trailingIcon = {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    },
+                    onClick = { showMainTextSubmenu = true }
+                )
             }
 
-            Spacer(Modifier.height(24.dp))
+            DropdownMenu(
+                expanded = showSourcesMenu && showMainTextSubmenu,
+                onDismissRequest = { showMainTextSubmenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(s.common.copyUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("URL", sourceUrl))
+                        Toast.makeText(context, s.common.copyUrl, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(s.common.goToUrl) },
+                    onClick = {
+                        showSourcesMenu = false
+                        showMainTextSubmenu = false
+                        safeOpenUri(uriHandler, sourceUrl)
+                    }
+                )
+            }
         }
     }
 }
