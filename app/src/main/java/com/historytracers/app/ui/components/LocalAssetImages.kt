@@ -32,6 +32,8 @@ private val LOCAL_ASSET_IMAGES = mapOf(
         to "CahalPech/ChocolatPot.jpg",
     "https://www.historytracers.org/images/HistoryTracers/HTHumanBody.jpg"
         to "HistoryTracers/HTHumanBody.jpg",
+    "https://www.historytracers.org/images/HistoryTracers/Meter.jpg"
+        to "HistoryTracers/Meter.jpg",
     "https://www.historytracers.org/images/Ashmolean/KingList.jpg"
         to "Ashmolean/KingList.jpg",
     "https://www.historytracers.org/images/DonsMaps/1594.jpg"

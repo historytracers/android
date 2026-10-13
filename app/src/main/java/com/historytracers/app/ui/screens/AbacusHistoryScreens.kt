@@ -293,6 +293,7 @@ fun CalculiScreen(
 ) {
     val s = LocalUiStrings.current
     val xs = calculiScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -307,6 +308,7 @@ fun CalculiScreen(
     var solved by remember { mutableStateOf(false) }
     var finalCongratsShown by remember { mutableStateOf(false) }
     var feedbackMessage by remember { mutableStateOf("") }
+    var feedbackHint by remember { mutableStateOf("") }
 
     fun startLevel(newLevel: Int) {
         level = newLevel
@@ -316,6 +318,7 @@ fun CalculiScreen(
         solved = false
         finalCongratsShown = false
         feedbackMessage = ""
+        feedbackHint = ""
     }
 
     fun newExercise() {
@@ -325,6 +328,7 @@ fun CalculiScreen(
         solved = false
         finalCongratsShown = false
         feedbackMessage = ""
+        feedbackHint = ""
     }
 
     LaunchedEffect(value, target) {
@@ -335,12 +339,14 @@ fun CalculiScreen(
             if (level == CALCULI_MAX_LEVEL) {
                 finalCongratsShown = true
                 feedbackMessage = xs.finalCongrats
+                feedbackHint = ""
                 scope.launch {
                     preferences.recordLessonCompletion()
                     preferences.markAnotherWayToCountSectionCompleted("calculi")
                 }
             } else {
-                feedbackMessage = xs.correctMessage
+                feedbackMessage = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
+                feedbackHint = s.common.resetHint
             }
         }
     }
@@ -487,12 +493,22 @@ fun CalculiScreen(
                     Spacer(Modifier.height(12.dp))
                     Text(
                         text = feedbackMessage,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2E7D32),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                     )
+                    if (feedbackHint.isNotEmpty()) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = feedbackHint,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF2E7D32),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(24.dp))

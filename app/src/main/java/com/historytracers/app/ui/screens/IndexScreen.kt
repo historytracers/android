@@ -2,6 +2,8 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Calculate
@@ -86,11 +88,15 @@ private val returningSectionIds = listOf(
     "walking_backwards"
 )
 
+private val measuringSectionIds = listOf(
+    "bigger_or_smaller", "greater_or_smaller_game", "measuring_one_direction"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
 // UserPreferences.markNewHubSeen).
-private val newHubIds = setOf("another_way_to_count", "around_the_world")
+private val newHubIds = setOf("another_way_to_count", "around_the_world", "measuring")
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
     hubId in newHubIds && hubId !in seenNewHubs
@@ -120,6 +126,7 @@ fun IndexScreen(
     onNavigateToWhereAreWeFrom: () -> Unit = {},
     onNavigateToAnotherWayToCount: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToMeasuring: () -> Unit = {},
     onNavigateToReturning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -139,6 +146,7 @@ fun IndexScreen(
     val completedAnotherWayToCount by preferences.completedAnotherWayToCountSections.collectAsState(initial = emptySet())
     val completedAroundTheWorld by preferences.completedAroundTheWorldSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
+    val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -153,6 +161,7 @@ fun IndexScreen(
     val anotherWayToCountDone = anotherWayToCountSectionIds.all { it in completedAnotherWayToCount }
     val aroundTheWorldDone = aroundTheWorldSectionIds.all { it in completedAroundTheWorld }
     val returningDone = returningSectionIds.all { it in completedReturning }
+    val measuringDone = measuringSectionIds.all { it in completedMeasuring }
 
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
@@ -161,6 +170,7 @@ fun IndexScreen(
     val abacusNew = isNewHub("abacus", seenNewHubs)
     val anotherWayToCountNew = isNewHub("another_way_to_count", seenNewHubs)
     val aroundTheWorldNew = isNewHub("around_the_world", seenNewHubs)
+    val measuringNew = isNewHub("measuring", seenNewHubs)
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -170,6 +180,9 @@ fun IndexScreen(
         contentAlignment = Alignment.Center
     ) {
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -285,6 +298,35 @@ fun IndexScreen(
                     )
                 }
                 if (aroundTheWorldNew) NewHubSunBadge()
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Box(modifier = Modifier.padding(horizontal = 32.dp)) {
+                FilledTonalButton(
+                    onClick = {
+                        if (measuringNew) scope.launch { preferences.markNewHubSeen("measuring") }
+                        onNavigateToMeasuring()
+                    },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = if (measuringNew) ButtonYellow else if (measuringDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_ruler),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = hts.measuring,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                if (measuringNew) NewHubSunBadge()
             }
 
             Spacer(Modifier.height(16.dp))
