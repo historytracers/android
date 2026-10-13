@@ -899,14 +899,14 @@ fun AppNavigation() {
                         GreaterOrSmallerGameScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) }
                         )
                     }
                     composable(Screen.MeasuringOneDirectionIntro.route) {
                         MeasuringOneDirectionIntroScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionStepByStep.route) { launchSingleTop = true } }
                         )
                     }
@@ -914,7 +914,7 @@ fun AppNavigation() {
                         MeasuringOneDirectionStepByStepScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionExample.route) { launchSingleTop = true } }
                         )
@@ -923,7 +923,7 @@ fun AppNavigation() {
                         MeasuringOneDirectionExampleScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionStepByStep.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionThinking.route) { launchSingleTop = true } }
                         )
@@ -932,7 +932,7 @@ fun AppNavigation() {
                         MeasuringOneDirectionThinkingScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionExample.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionComparing.route) { launchSingleTop = true } }
                         )
@@ -941,7 +941,7 @@ fun AppNavigation() {
                         MeasuringOneDirectionComparingScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionThinking.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.MeasuringOneDirectionConclusion.route) { launchSingleTop = true } }
                         )
@@ -950,7 +950,7 @@ fun AppNavigation() {
                         MeasuringOneDirectionConclusionScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionComparing.route) { launchSingleTop = true } },
                             onNavigateToMeasuring = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
                         )
@@ -959,7 +959,7 @@ fun AppNavigation() {
                         BiggerOrSmallerIntroScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerRuler.route) { launchSingleTop = true } }
                         )
                     }
@@ -967,7 +967,7 @@ fun AppNavigation() {
                         BiggerOrSmallerRulerScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerAfter.route) { launchSingleTop = true } }
                         )
@@ -976,7 +976,7 @@ fun AppNavigation() {
                         BiggerOrSmallerAfterScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerRuler.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerBefore.route) { launchSingleTop = true } }
                         )
@@ -985,7 +985,7 @@ fun AppNavigation() {
                         BiggerOrSmallerBeforeScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerAfter.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerThinking.route) { launchSingleTop = true } }
                         )
@@ -994,7 +994,7 @@ fun AppNavigation() {
                         BiggerOrSmallerThinkingScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerBefore.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerSameLogic.route) { launchSingleTop = true } }
                         )
@@ -1003,7 +1003,7 @@ fun AppNavigation() {
                         BiggerOrSmallerSameLogicScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerThinking.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.BiggerOrSmallerConclusion.route) { launchSingleTop = true } }
                         )
@@ -1012,7 +1012,7 @@ fun AppNavigation() {
                         BiggerOrSmallerConclusionScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
-                            onNavigateBack = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.BiggerOrSmallerSameLogic.route) { launchSingleTop = true } },
                             onNavigateToMeasuring = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
                         )

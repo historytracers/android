@@ -95,6 +95,7 @@ fun GreaterOrSmallerGameScreen(
     var wasCorrect by remember { mutableStateOf(false) }
     var feedback by remember { mutableStateOf("") }
     var finalCongratsShown by remember { mutableStateOf(false) }
+    var levelRewarded by remember { mutableStateOf(false) }
 
     var instructionText by remember { mutableStateOf<String?>(null) }
     var showSourcesMenu by remember { mutableStateOf(false) }
@@ -125,6 +126,7 @@ fun GreaterOrSmallerGameScreen(
 
     fun startLevel(newLevel: Int) {
         level = newLevel
+        levelRewarded = false
         newExercise()
     }
 
@@ -153,15 +155,22 @@ fun GreaterOrSmallerGameScreen(
         }
 
         if (correct) {
-            totalAwarded += 2
-            onScoreChanged(initialScore + totalAwarded)
+            // Award and record the level's completion only once, so repeatedly pressing
+            // "New Exercise" within the same level cannot grant extra points.
+            if (!levelRewarded) {
+                levelRewarded = true
+                totalAwarded += 2
+                onScoreChanged(initialScore + totalAwarded)
+                if (level == MAX_LEVEL) {
+                    scope.launch {
+                        preferences.recordLessonCompletion()
+                        preferences.markMeasuringSectionCompleted(SECTION_ID)
+                    }
+                }
+            }
             if (level == MAX_LEVEL) {
                 finalCongratsShown = true
                 feedback = xs.finalCongratulations
-                scope.launch {
-                    preferences.recordLessonCompletion()
-                    preferences.markMeasuringSectionCompleted(SECTION_ID)
-                }
             }
         }
     }
