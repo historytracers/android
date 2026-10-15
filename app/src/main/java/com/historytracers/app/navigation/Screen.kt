@@ -272,6 +272,7 @@ sealed class Screen(val route: String) {
     data object ExpandingThinking : Screen("expanding_thinking")
     data object ExpandingDimensions : Screen("expanding_dimensions")
     data object ExpandingConclusion : Screen("expanding_conclusion")
+    data object GroupingThrees : Screen("grouping_threes")
     data object UniverseExpansion : Screen("universe_expansion")
     data object CountingWithBonesIntro : Screen("counting_with_bones_intro")
     data object CountingWithBonesGame : Screen("counting_with_bones_game")

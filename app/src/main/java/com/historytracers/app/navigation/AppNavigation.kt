@@ -280,6 +280,7 @@ import com.historytracers.app.ui.screens.ExpandingPlaneScreen
 import com.historytracers.app.ui.screens.ExpandingThinkingScreen
 import com.historytracers.app.ui.screens.ExpandingDimensionsScreen
 import com.historytracers.app.ui.screens.ExpandingConclusionScreen
+import com.historytracers.app.ui.screens.GroupingThreesScreen
 import com.historytracers.app.ui.screens.UniverseExpansionScreen
 import com.historytracers.app.ui.screens.CountingWithBonesIntroScreen
 import com.historytracers.app.ui.screens.CountingWithBonesGameScreen
@@ -504,6 +505,7 @@ fun AppNavigation() {
             "expanding_intro", "expanding_hands", "expanding_something_more",
             "expanding_plane", "expanding_thinking", "expanding_dimensions",
             "expanding_conclusion",
+            "grouping_threes",
            "quipus_intro", "quipus_one_of_the_first", "quipus_how_it_works", "quipus_small_numbers",
            "quipus_large_numbers", "quipus_question", "quipus_conclusion",
            "practicing_with_quipus",
@@ -1342,6 +1344,7 @@ fun AppNavigation() {
                             onNavigateToHalfPiece = { navController.navigate(Screen.HalfPieceIntro.route) { launchSingleTop = true } },
                             onNavigateToOddOrEvenGame = { navController.navigate(Screen.OddOrEvenGame.route) { launchSingleTop = true } },
                             onNavigateToExpanding = { navController.navigate(Screen.ExpandingIntro.route) { launchSingleTop = true } },
+                            onNavigateToGroupingThrees = { navController.navigate(Screen.GroupingThrees.route) { launchSingleTop = true } },
                             scrollState = whereAreWeFromScrollState
                         )
                     }
@@ -3114,6 +3117,22 @@ fun AppNavigation() {
                             onNavigatePrev = {
                                 if (!navController.popBackStack(Screen.ExpandingDimensions.route, false)) {
                                     navController.navigate(Screen.ExpandingDimensions.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToWhereAreWeFrom = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.GroupingThrees.route) {
+                        GroupingThreesScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.WhereAreWeFrom.route, false)) {
+                                    navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true }
                                 }
                             },
                             onNavigateToWhereAreWeFrom = {
@@ -8242,6 +8261,7 @@ fun AppNavigation() {
                             onNavigateToAdvancingAndComplementing = { navController.navigate(Screen.AdvancingAndComplementingIntro.route) { launchSingleTop = true } },
                             onNavigateToOddOrEven = { navController.navigate(Screen.OddOrEvenGame.route) { launchSingleTop = true } },
                             onNavigateToExpanding = { navController.navigate(Screen.ExpandingIntro.route) { launchSingleTop = true } },
+                            onNavigateToGroupingThrees = { navController.navigate(Screen.GroupingThrees.route) { launchSingleTop = true } },
                             onNavigateToRunningAmongNumbersIntro = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToSharedOriginIntro = { navController.navigate(Screen.SharedOriginIntro.route) { launchSingleTop = true } },
                             onNavigateToMatterAndEnergyIntro = { navController.navigate(Screen.MatterAndEnergyIntro.route) { launchSingleTop = true } },

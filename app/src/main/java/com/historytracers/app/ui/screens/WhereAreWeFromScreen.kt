@@ -50,6 +50,7 @@ fun WhereAreWeFromScreen(
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToOddOrEvenGame: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
+    onNavigateToGroupingThrees: () -> Unit = {},
     scrollState: ScrollState = rememberScrollState()
 ) {
     val s = LocalUiStrings.current
@@ -463,6 +464,37 @@ fun WhereAreWeFromScreen(
 
                 Text(
                     text = xs.expanding,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToGroupingThrees,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.groupingThrees },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("grouping_threes" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "3, 6, 9...",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.groupingThrees,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

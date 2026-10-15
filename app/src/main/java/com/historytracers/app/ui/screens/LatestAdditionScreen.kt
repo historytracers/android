@@ -37,9 +37,9 @@ import com.historytracers.app.ui.features.measuringScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
+import com.historytracers.app.ui.features.groupingThreesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -97,7 +97,8 @@ fun LatestAdditionScreen(
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
-    onNavigateToExpanding: () -> Unit = {}
+    onNavigateToExpanding: () -> Unit = {},
+    onNavigateToGroupingThrees: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -108,12 +109,12 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ooes = oddOrEvenScreenStringsForLanguage(LocalAppLanguage.current)
     val bos = biggerOrSmallerScreenStringsForLanguage(LocalAppLanguage.current)
     val gos = greaterOrSmallerGameScreenStringsForLanguage(LocalAppLanguage.current)
     val mods = measuringOneDirectionScreenStringsForLanguage(LocalAppLanguage.current)
     val ms = measuringScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
+    val gts = groupingThreesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
@@ -121,6 +122,20 @@ fun LatestAdditionScreen(
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "grouping_threes",
+            label = gts.title,
+            icon = {
+                Text(
+                    text = "3, 6, 9...",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "grouping_threes" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToGroupingThrees
+        ),
         LatestAdditionEntry(
             sectionId = "expanding",
             label = exs.title,
@@ -215,25 +230,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "bigger_or_smaller" in completedMeasuring },
             onNavigate = onNavigateToBiggerOrSmaller
-        ),
-        LatestAdditionEntry(
-            sectionId = "odd_or_even_game",
-            label = ooes.title,
-            icon = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("1", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Box(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .background(OnButtonYellow, CircleShape)
-                    )
-                }
-            },
-            isCompleted = { "odd_or_even_game" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToOddOrEven
         )
     )
 

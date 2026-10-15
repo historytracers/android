@@ -14,6 +14,7 @@ data class WhereAreWeFromScreenStrings(
     val oddOrEven: String,
     val oddOrEvenGame: String,
     val expanding: String,
+    val groupingThrees: String,
 )
 
 val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -27,6 +28,7 @@ val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     oddOrEven = "Odd or Even?",
     oddOrEvenGame = "Odd or Even? (Game)",
     expanding = "Expanding..",
+    groupingThrees = "Grouping Threes",
 )
 
 val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -40,6 +42,7 @@ val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     oddOrEven = "Par ou \u00cdmpar?",
     oddOrEvenGame = "Par ou \u00cdmpar? (Jogo)",
     expanding = "Expandindo..",
+    groupingThrees = "Agrupando de Tr\u00eas em Tr\u00eas",
 )
 
 val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
@@ -53,6 +56,7 @@ val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     oddOrEven = "\u00bfPar o Impar?",
     oddOrEvenGame = "\u00bfPar o Impar? (Juego)",
     expanding = "Expandiendo..",
+    groupingThrees = "Agrupando de Tres en Tres",
 )
 
 val LocalWhereAreWeFromScreenStrings = staticCompositionLocalOf { EnWhereAreWeFromScreenStrings }
