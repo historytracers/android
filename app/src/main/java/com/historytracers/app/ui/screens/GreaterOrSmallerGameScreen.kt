@@ -240,7 +240,7 @@ fun GreaterOrSmallerGameScreen(
                     key(exerciseKey) {
                         NumberCard(label = xs.labelA, value = formatNumber(left))
                         Text(
-                            text = "<",
+                            text = if (level >= 3) "≪" else "<",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 16.dp)

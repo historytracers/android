@@ -185,6 +185,13 @@ import com.historytracers.app.ui.screens.MeasuringOneDirectionExampleScreen
 import com.historytracers.app.ui.screens.MeasuringOneDirectionThinkingScreen
 import com.historytracers.app.ui.screens.MeasuringOneDirectionComparingScreen
 import com.historytracers.app.ui.screens.MeasuringOneDirectionConclusionScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsIntroScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsStepByStepScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsExampleScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsThinkingScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsComparingScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsPracticeScreen
+import com.historytracers.app.ui.screens.MeasuringTwoDirectionsConclusionScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsIntroScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsRememberingScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsFiveStepsScreen
@@ -505,6 +512,10 @@ fun AppNavigation() {
            "measuring_one_direction_intro", "measuring_one_direction_steps",
            "measuring_one_direction_example", "measuring_one_direction_thinking",
            "measuring_one_direction_comparing", "measuring_one_direction_conclusion",
+            "measuring_two_directions_intro", "measuring_two_directions_steps",
+            "measuring_two_directions_example", "measuring_two_directions_thinking",
+            "measuring_two_directions_comparing", "measuring_two_directions_practice",
+            "measuring_two_directions_conclusion",
            "walking_backwards_intro", "walking_backwards_remembering", "walking_backwards_five_steps",
            "walking_backwards_new_operation", "walking_backwards_back_to_origin",
            "walking_backwards_from_another_beginning", "walking_backwards_thinking",
@@ -892,7 +903,8 @@ fun AppNavigation() {
                             },
                             onNavigateToBiggerOrSmaller = { navController.navigate(Screen.BiggerOrSmallerIntro.route) { launchSingleTop = true } },
                             onNavigateToGreaterOrSmallerGame = { navController.navigate(Screen.GreaterOrSmallerGame.route) { launchSingleTop = true } },
-                            onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } }
+                            onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
+                            onNavigateToMeasuringTwoDirections = { navController.navigate(Screen.MeasuringTwoDirectionsIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.GreaterOrSmallerGame.route) {
@@ -952,6 +964,68 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
                             onNavigatePrev = { navController.navigate(Screen.MeasuringOneDirectionComparing.route) { launchSingleTop = true } },
+                            onNavigateToMeasuring = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsIntro.route) {
+                        MeasuringTwoDirectionsIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringTwoDirectionsStepByStep.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsStepByStep.route) {
+                        MeasuringTwoDirectionsStepByStepScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringTwoDirectionsIntro.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringTwoDirectionsExample.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsExample.route) {
+                        MeasuringTwoDirectionsExampleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringTwoDirectionsStepByStep.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringTwoDirectionsThinking.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsThinking.route) {
+                        MeasuringTwoDirectionsThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringTwoDirectionsExample.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringTwoDirectionsComparing.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsComparing.route) {
+                        MeasuringTwoDirectionsComparingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringTwoDirectionsThinking.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringTwoDirectionsPractice.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsPractice.route) {
+                        MeasuringTwoDirectionsPracticeScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringTwoDirectionsComparing.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.MeasuringTwoDirectionsConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MeasuringTwoDirectionsConclusion.route) {
+                        MeasuringTwoDirectionsConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.Measuring.route, fallback = Screen.Measuring.route) },
+                            onNavigatePrev = { navController.navigate(Screen.MeasuringTwoDirectionsPractice.route) { launchSingleTop = true } },
                             onNavigateToMeasuring = { navController.popBackToOrigin(Screen.Measuring.route, fallback = Screen.Measuring.route) }
                         )
                     }
