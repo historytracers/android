@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -35,11 +36,11 @@ import com.historytracers.app.ui.features.measuringOneDirectionScreenStringsForL
 import com.historytracers.app.ui.features.measuringScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
+import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
-import com.historytracers.app.ui.features.roadToSomewhereScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
@@ -95,7 +96,8 @@ fun LatestAdditionScreen(
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
-    onNavigateToOddOrEven: () -> Unit = {}
+    onNavigateToOddOrEven: () -> Unit = {},
+    onNavigateToExpanding: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -111,15 +113,74 @@ fun LatestAdditionScreen(
     val gos = greaterOrSmallerGameScreenStringsForLanguage(LocalAppLanguage.current)
     val mods = measuringOneDirectionScreenStringsForLanguage(LocalAppLanguage.current)
     val ms = measuringScreenStringsForLanguage(LocalAppLanguage.current)
-    val ros = roadToSomewhereScreenStringsForLanguage(LocalAppLanguage.current)
+    val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
-    val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "expanding",
+            label = exs.title,
+            icon = {
+                Canvas(modifier = Modifier.size(48.dp)) {
+                    val cx = size.width / 2f
+                    val cy = size.height / 2f
+                    val center = Offset(cx, cy)
+                    val s = size.minDimension * 0.22f
+                    val dx = s * 0.7f
+                    val dy = -s * 0.7f
+                    val axisLen = s * 1.8f
+                    val axisStroke = size.minDimension * 0.045f
+                    val cubeStroke = size.minDimension * 0.05f
+                    drawLine(
+                        color = Color(0xFFE53935),
+                        start = Offset(cx - axisLen, cy),
+                        end = Offset(cx + axisLen, cy),
+                        strokeWidth = axisStroke
+                    )
+                    drawLine(
+                        color = Color(0xFF43A047),
+                        start = Offset(cx, cy + axisLen),
+                        end = Offset(cx, cy - axisLen),
+                        strokeWidth = axisStroke
+                    )
+                    val zLen = kotlin.math.sqrt(dx * dx + dy * dy)
+                    val zUnit = if (zLen > 0f) Offset(dx / zLen, dy / zLen) else Offset(1f, -1f)
+                    drawLine(
+                        color = Color(0xFF1E88E5),
+                        start = center - zUnit * axisLen,
+                        end = center + zUnit * axisLen,
+                        strokeWidth = axisStroke
+                    )
+                    val a = Offset(cx - s, cy - s)
+                    val b = Offset(cx + s, cy - s)
+                    val c = Offset(cx + s, cy + s)
+                    val d = Offset(cx - s, cy + s)
+                    val a2 = a + Offset(dx, dy)
+                    val b2 = b + Offset(dx, dy)
+                    val c2 = c + Offset(dx, dy)
+                    val d2 = d + Offset(dx, dy)
+                    val cubeColor = Color(0xFF212121)
+                    drawLine(cubeColor, a, b, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, b, c, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, c, d, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, d, a, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, a2, b2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, b2, c2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, c2, d2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, d2, a2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, a, a2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, b, b2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, c, c2, strokeWidth = cubeStroke)
+                    drawLine(cubeColor, d, d2, strokeWidth = cubeStroke)
+                }
+            },
+            isCompleted = { "expanding" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToExpanding
+        ),
         LatestAdditionEntry(
             sectionId = "measuring_one_direction",
             label = mods.title,
@@ -173,31 +234,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "odd_or_even_game" in completedWhereAreWeFrom },
             onNavigate = onNavigateToOddOrEven
-        ),
-        LatestAdditionEntry(
-            sectionId = "advancing_and_complementing",
-            label = ros.advancingAndComplementing,
-            icon = {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    repeat(2) { row ->
-                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            repeat(5) { col ->
-                                val idx = row * 5 + col
-                                Box(
-                                    modifier = Modifier
-                                        .size(8.dp)
-                                        .background(
-                                            if (idx < 8) OnButtonYellow else Color(0xFF00B7EB),
-                                            RoundedCornerShape(1.dp)
-                                        )
-                                )
-                            }
-                        }
-                    }
-                }
-            },
-            isCompleted = { "advancing_and_complementing" in completedRoadToSomewhere },
-            onNavigate = onNavigateToAdvancingAndComplementing
         )
     )
 

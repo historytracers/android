@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -17,7 +18,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,6 +49,7 @@ fun WhereAreWeFromScreen(
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
     onNavigateToOddOrEvenGame: () -> Unit = {},
+    onNavigateToExpanding: () -> Unit = {},
     scrollState: ScrollState = rememberScrollState()
 ) {
     val s = LocalUiStrings.current
@@ -377,6 +381,88 @@ fun WhereAreWeFromScreen(
 
                 Text(
                     text = xs.oddOrEvenGame,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToExpanding,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.expanding },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("expanding" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Canvas(modifier = Modifier.size(52.dp)) {
+                        val cx = size.width / 2f
+                        val cy = size.height / 2f
+                        val center = Offset(cx, cy)
+                        val s = size.minDimension * 0.22f
+                        val dx = s * 0.7f
+                        val dy = -s * 0.7f
+                        val axisLen = s * 1.8f
+                        val axisStroke = size.minDimension * 0.045f
+                        val cubeStroke = size.minDimension * 0.05f
+
+                        // All three axes visible through the cube.
+                        drawLine(
+                            color = Color(0xFFE53935),
+                            start = Offset(cx - axisLen, cy),
+                            end = Offset(cx + axisLen, cy),
+                            strokeWidth = axisStroke
+                        )
+                        drawLine(
+                            color = Color(0xFF43A047),
+                            start = Offset(cx, cy + axisLen),
+                            end = Offset(cx, cy - axisLen),
+                            strokeWidth = axisStroke
+                        )
+                        val zDir = Offset(dx, dy)
+                        val zLen = kotlin.math.sqrt(zDir.x * zDir.x + zDir.y * zDir.y)
+                        val zUnit = if (zLen > 0f) Offset(zDir.x / zLen, zDir.y / zLen) else Offset(1f, -1f)
+                        drawLine(
+                            color = Color(0xFF1E88E5),
+                            start = center - zUnit * axisLen,
+                            end = center + zUnit * axisLen,
+                            strokeWidth = axisStroke
+                        )
+
+                        // Wireframe cube: front square, back square, connectors.
+                        val a = Offset(cx - s, cy - s)
+                        val b = Offset(cx + s, cy - s)
+                        val c = Offset(cx + s, cy + s)
+                        val d = Offset(cx - s, cy + s)
+                        val a2 = a + Offset(dx, dy)
+                        val b2 = b + Offset(dx, dy)
+                        val c2 = c + Offset(dx, dy)
+                        val d2 = d + Offset(dx, dy)
+                        val cubeColor = Color(0xFF212121)
+                        drawLine(cubeColor, a, b, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, b, c, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, c, d, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, d, a, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, a2, b2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, b2, c2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, c2, d2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, d2, a2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, a, a2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, b, b2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, c, c2, strokeWidth = cubeStroke)
+                        drawLine(cubeColor, d, d2, strokeWidth = cubeStroke)
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.expanding,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

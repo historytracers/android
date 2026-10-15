@@ -68,7 +68,7 @@ private val roadToSomewhereSectionIds = listOf(
 
 private val whereAreWeFromSectionIds = listOf(
     "shared_origin", "matter_energy", "everything_together", "sharing_with_whom", "the_same_result", "half_piece",
-    "odd_or_even_game"
+    "odd_or_even_game", "expanding"
 )
 
 private val anotherWayToCountSectionIds = listOf(
