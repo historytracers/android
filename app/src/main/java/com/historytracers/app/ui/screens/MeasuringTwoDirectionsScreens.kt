@@ -742,7 +742,7 @@ private fun AnswerSectionTwo(
         hasSubmitted = true
         if (!awarded) {
             awarded = true
-            val points = if (answer == correctAnswer) content.score else content.score / 2
+            val points = if (answer == correctAnswer) content.score else 1
             onAnswered(points)
         }
     }

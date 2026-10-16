@@ -27,7 +27,7 @@ val EnWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     halfPiece = "Half Piece",
     oddOrEven = "Odd or Even?",
     oddOrEvenGame = "Odd or Even? (Game)",
-    expanding = "Expanding..",
+    expanding = "Expanding...",
     groupingThrees = "Grouping Threes",
 )
 
@@ -41,7 +41,7 @@ val PtWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     halfPiece = "Meio Peda\u00e7o",
     oddOrEven = "Par ou \u00cdmpar?",
     oddOrEvenGame = "Par ou \u00cdmpar? (Jogo)",
-    expanding = "Expandindo..",
+    expanding = "Ampliando...",
     groupingThrees = "Agrupando de Tr\u00eas em Tr\u00eas",
 )
 
@@ -55,7 +55,7 @@ val EsWhereAreWeFromScreenStrings = WhereAreWeFromScreenStrings(
     halfPiece = "Medio Pedazo",
     oddOrEven = "\u00bfPar o Impar?",
     oddOrEvenGame = "\u00bfPar o Impar? (Juego)",
-    expanding = "Expandiendo..",
+    expanding = "Ampliando...",
     groupingThrees = "Agrupando de Tres en Tres",
 )
 
