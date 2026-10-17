@@ -9,6 +9,7 @@ data class MeasuringScreenStrings(
     val compareSymbols: String,
     val greaterOrSmallerGame: String,
     val measuringOneDirection: String,
+    val measuringTwoDirections: String,
 )
 
 val EnMeasuringScreenStrings = MeasuringScreenStrings(
@@ -17,6 +18,7 @@ val EnMeasuringScreenStrings = MeasuringScreenStrings(
     compareSymbols = "> <",
     greaterOrSmallerGame = "Greater or smaller (The Game)",
     measuringOneDirection = "Measuring in one direction",
+    measuringTwoDirections = "Measuring in two directions",
 )
 
 val PtMeasuringScreenStrings = MeasuringScreenStrings(
@@ -25,6 +27,7 @@ val PtMeasuringScreenStrings = MeasuringScreenStrings(
     compareSymbols = "> <",
     greaterOrSmallerGame = "Maior ou menor (O Jogo)",
     measuringOneDirection = "Medindo em uma dire\u00e7\u00e3o",
+    measuringTwoDirections = "Medindo em duas dire\u00e7\u00f5es",
 )
 
 val EsMeasuringScreenStrings = MeasuringScreenStrings(
@@ -33,6 +36,7 @@ val EsMeasuringScreenStrings = MeasuringScreenStrings(
     compareSymbols = "> <",
     greaterOrSmallerGame = "Mayor o menor (El Juego)",
     measuringOneDirection = "Midiendo en una direcci\u00f3n",
+    measuringTwoDirections = "Midiendo en dos direcciones",
 )
 
 val LocalMeasuringScreenStrings = staticCompositionLocalOf { EnMeasuringScreenStrings }
