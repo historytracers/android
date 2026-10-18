@@ -263,6 +263,7 @@ fun RoadToSomewhereScreen(
     onNavigateToRunningAmongNumbers: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
+    onNavigateToSunTzuAddition: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
@@ -276,12 +277,14 @@ fun RoadToSomewhereScreen(
 
     val roadSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
-        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
+        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
+        "practicing_addition"
     )
     // All road sections gate the "Next Level" flag, now that every one of them is wired.
     val nextLevelGatingSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
-        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
+        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
+        "practicing_addition"
     )
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
@@ -547,6 +550,35 @@ fun RoadToSomewhereScreen(
 
                 Text(
                     text = xs.carryOrNotCarry,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSunTzuAddition,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("sun_tzu_addition")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u5b6b\u5b50",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.sunTzuAddition,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

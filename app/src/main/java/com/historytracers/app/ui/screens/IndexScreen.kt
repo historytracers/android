@@ -63,7 +63,8 @@ private val yupanaSectionIds = listOf(
 
 private val roadToSomewhereSectionIds = listOf(
     "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
-    "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
+    "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
+    "practicing_addition"
 )
 
 private val whereAreWeFromSectionIds = listOf(

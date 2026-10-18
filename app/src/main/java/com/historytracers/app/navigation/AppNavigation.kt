@@ -422,7 +422,15 @@ import com.historytracers.app.ui.screens.OrderOfAdditionConclusionScreen
 import com.historytracers.app.ui.screens.OrderOfAdditionIntroScreen
 import com.historytracers.app.ui.screens.OrderOfAdditionQuestionScreen
 import com.historytracers.app.ui.screens.OrderOfAdditionWhereScreen
+import com.historytracers.app.ui.screens.PracticingAdditionPracticeScreen
 import com.historytracers.app.ui.screens.PracticingAdditionRoadScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionCommanderScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionConclusionScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionHeavenScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionIntroScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionMethodScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionMoraleScreen
+import com.historytracers.app.ui.screens.SunTzuAdditionTerrainScreen
 import com.historytracers.app.ui.screens.PlayingWithAxiomsGameScreen
 import com.historytracers.app.ui.screens.MesoamericanSymbolsConclusionScreen
 import com.historytracers.app.ui.screens.MesoamericanSymbolsIntroScreen
@@ -3226,8 +3234,164 @@ fun AppNavigation() {
                             onNavigateToRunningAmongNumbers = { navController.navigate(Screen.RunningAmongNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryOrNotCarry = { navController.navigate(Screen.CarryOrNotCarryIntro.route) { launchSingleTop = true } },
                             onNavigateToAdvancingAndComplementing = { navController.navigate(Screen.AdvancingAndComplementingIntro.route) { launchSingleTop = true } },
-                            onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAdditionRoad.route) { launchSingleTop = true } },
+                            onNavigateToSunTzuAddition = { navController.navigate(Screen.SunTzuAdditionIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAdditionPractice.route) { launchSingleTop = true } },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionIntro.route) {
+                        SunTzuAdditionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuAdditionMorale.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionMorale.route) {
+                        SunTzuAdditionMoraleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuAdditionIntro.route, false)) {
+                                    navController.navigate(Screen.SunTzuAdditionIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuAdditionHeaven.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionHeaven.route) {
+                        SunTzuAdditionHeavenScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuAdditionMorale.route, false)) {
+                                    navController.navigate(Screen.SunTzuAdditionMorale.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuAdditionTerrain.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionTerrain.route) {
+                        SunTzuAdditionTerrainScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuAdditionHeaven.route, false)) {
+                                    navController.navigate(Screen.SunTzuAdditionHeaven.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuAdditionCommander.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionCommander.route) {
+                        SunTzuAdditionCommanderScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuAdditionTerrain.route, false)) {
+                                    navController.navigate(Screen.SunTzuAdditionTerrain.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuAdditionMethod.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionMethod.route) {
+                        SunTzuAdditionMethodScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuAdditionCommander.route, false)) {
+                                    navController.navigate(Screen.SunTzuAdditionCommander.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuAdditionConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuAdditionConclusion.route) {
+                        SunTzuAdditionConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuAdditionMethod.route, false)) {
+                                    navController.navigate(Screen.SunTzuAdditionMethod.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToRoadToSomewhere = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.PracticingAdditionPractice.route) {
+                        PracticingAdditionPracticeScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.PracticingAdditionRoad.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.PracticingAdditionRoad.route) {
@@ -3235,6 +3399,14 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToRoadToSomewhere = {
                                 if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
                                     navController.navigate(Screen.RoadToSomewhere.route) {
                                         popUpTo(0) { inclusive = true }
@@ -8272,7 +8444,9 @@ fun AppNavigation() {
                             onNavigateToPracticingWithQuipus = { navController.navigate(Screen.PracticingWithQuipus.route) { launchSingleTop = true } },
                             onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
-                            onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } }
+                            onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAdditionPractice.route) { launchSingleTop = true } },
+                            onNavigateToSunTzuAddition = { navController.navigate(Screen.SunTzuAdditionIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.Streak.route) {
