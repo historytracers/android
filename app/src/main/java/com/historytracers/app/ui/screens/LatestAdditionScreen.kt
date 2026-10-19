@@ -19,18 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.measuringOneDirectionScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
@@ -38,6 +35,7 @@ import com.historytracers.app.ui.features.groupingThreesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -99,7 +97,8 @@ fun LatestAdditionScreen(
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
-    onNavigateToSunTzuAddition: () -> Unit = {}
+    onNavigateToSunTzuAddition: () -> Unit = {},
+    onNavigateToPracticingAdditionTyped: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -110,19 +109,31 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val mods = measuringOneDirectionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
     val gts = groupingThreesScreenStringsForLanguage(LocalAppLanguage.current)
     val pas = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
+    val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val sts = sunTzuAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
-    val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_addition_typed",
+            label = pts.title,
+            icon = {
+                Text(
+                    text = "56 + 78",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_addition_typed" in completedRoadToSomewhere },
+            onNavigate = onNavigateToPracticingAdditionTyped
+        ),
         LatestAdditionEntry(
             sectionId = "sun_tzu_addition",
             label = sts.title,
@@ -224,19 +235,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "expanding" in completedWhereAreWeFrom },
             onNavigate = onNavigateToExpanding
-        ),
-        LatestAdditionEntry(
-            sectionId = "measuring_one_direction",
-            label = mods.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_ruler),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "measuring_one_direction" in completedMeasuring },
-            onNavigate = onNavigateToMeasuringOneDirection
         )
     )
 

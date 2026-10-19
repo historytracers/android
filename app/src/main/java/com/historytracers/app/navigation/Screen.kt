@@ -295,6 +295,8 @@ sealed class Screen(val route: String) {
     data object CarryingInAdditionConclusion : Screen("carrying_in_addition_conclusion")
     data object PracticingAdditionPractice : Screen("practicing_addition_practice")
     data object PracticingAdditionRoad : Screen("practicing_addition_road")
+    data object PracticingAdditionTypedIntro : Screen("practicing_addition_typed_intro")
+    data object PracticingAdditionTypedGame : Screen("practicing_addition_typed_game")
     data object SunTzuAdditionIntro : Screen("sun_tzu_addition_intro")
     data object SunTzuAdditionMorale : Screen("sun_tzu_addition_morale")
     data object SunTzuAdditionHeaven : Screen("sun_tzu_addition_heaven")
