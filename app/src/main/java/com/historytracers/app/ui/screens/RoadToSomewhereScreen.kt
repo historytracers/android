@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -562,7 +564,9 @@ fun RoadToSomewhereScreen(
 
                 FilledIconButton(
                     onClick = onNavigateToSunTzuAddition,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.sunTzuAddition },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (completedSections.contains("sun_tzu_addition")) ButtonYellowDark else ButtonYellow
@@ -620,7 +624,9 @@ fun RoadToSomewhereScreen(
 
                 FilledIconButton(
                     onClick = onNavigateToPracticingAdditionTyped,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.practicingAdditionTyped },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (completedSections.contains("practicing_addition_typed")) ButtonYellowDark else ButtonYellow

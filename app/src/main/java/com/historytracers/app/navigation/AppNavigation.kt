@@ -590,7 +590,13 @@ fun AppNavigation() {
                Screen.AroundTheWorldYupana.route, Screen.AroundTheWorldPracticeYupana.route,
                Screen.AroundTheWorldJapan.route, Screen.AroundTheWorldPracticeSoroban.route,
                Screen.AroundTheWorldRussia.route, Screen.AroundTheWorldPracticeSchyoty.route,
-               Screen.AroundTheWorldConclusion.route)
+               Screen.AroundTheWorldConclusion.route,
+               Screen.SunTzuAdditionIntro.route, Screen.SunTzuAdditionMorale.route,
+               Screen.SunTzuAdditionHeaven.route, Screen.SunTzuAdditionTerrain.route,
+               Screen.SunTzuAdditionCommander.route, Screen.SunTzuAdditionMethod.route,
+               Screen.SunTzuAdditionConclusion.route,
+               Screen.PracticingAdditionPractice.route, Screen.PracticingAdditionRoad.route,
+               Screen.PracticingAdditionTypedIntro.route, Screen.PracticingAdditionTypedGame.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
