@@ -31,8 +31,12 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
+private val whoAmISectionIds = listOf(
+    "i_dont_know", "learning_in_shells", "how_do_i_learn"
+)
+
 private val firstStepsSectionIds = listOf(
-    "i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands",
+    "my_hands", "first_hands",
     "counting_with_bones", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game",
     "family_part1", "sequence_game_families", "building", "natural_families_part2",
     "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"
@@ -97,7 +101,7 @@ private val measuringSectionIds = listOf(
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
 // UserPreferences.markNewHubSeen).
-private val newHubIds = setOf("another_way_to_count", "around_the_world", "measuring")
+private val newHubIds = setOf("who_am_i", "another_way_to_count", "around_the_world", "measuring")
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
     hubId in newHubIds && hubId !in seenNewHubs
@@ -117,6 +121,7 @@ private fun BoxScope.NewHubSunBadge() {
 
 @Composable
 fun IndexScreen(
+    onNavigateToWhoAmI: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {},
     onNavigateToIAmNotLikeYou: () -> Unit = {},
     onNavigateToWorkout: () -> Unit = {},
@@ -137,6 +142,7 @@ fun IndexScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
+    val completedWhoAmI by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
     val completedIAmNotLikeYou by preferences.completedIAmNotLikeYouSections.collectAsState(initial = emptySet())
     val completedWorkout by preferences.completedWorkoutSections.collectAsState(initial = emptySet())
     val completedAbacus by preferences.completedAbacusSections.collectAsState(initial = emptySet())
@@ -152,6 +158,7 @@ fun IndexScreen(
     val scope = rememberCoroutineScope()
 
     val firstStepsDone = firstStepsSectionIds.all { it in completedFirstSteps }
+    val whoAmIDone = whoAmISectionIds.all { it in completedWhoAmI }
     val iAmNotLikeYouDone = iAmNotLikeYouSectionIds.all { it in completedIAmNotLikeYou }
     val workoutDone = workoutSectionIds.all { it in completedWorkout }
     val abacusDone = abacusSectionIds.all { it in completedAbacus }
@@ -164,6 +171,7 @@ fun IndexScreen(
     val returningDone = returningSectionIds.all { it in completedReturning }
     val measuringDone = measuringSectionIds.all { it in completedMeasuring }
 
+    val whoAmINew = isNewHub("who_am_i", seenNewHubs)
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
     val iAmNotLikeYouNew = isNewHub("i_am_not_like_you", seenNewHubs)
     val workoutNew = isNewHub("workout", seenNewHubs)
@@ -187,6 +195,35 @@ fun IndexScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Box(modifier = Modifier.padding(horizontal = 32.dp)) {
+                FilledTonalButton(
+                    onClick = {
+                        if (whoAmINew) scope.launch { preferences.markNewHubSeen("who_am_i") }
+                        onNavigateToWhoAmI()
+                    },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = if (whoAmINew) ButtonYellow else if (whoAmIDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_person_thinking),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = hts.whoAmI,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                if (whoAmINew) NewHubSunBadge()
+            }
+
+            Spacer(Modifier.height(16.dp))
+
             Box(modifier = Modifier.padding(horizontal = 32.dp)) {
                 FilledTonalButton(
                     onClick = {

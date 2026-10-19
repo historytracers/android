@@ -162,7 +162,7 @@ fun HowDoILearnDecisionScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToFirstSteps: () -> Unit = {}
+    onNavigateToWhoAmI: () -> Unit = {}
 ) {
     HowDoILearnGameContent(
         contentId = "f2339538-e7fc-4cb0-aa82-4f2eced5bc97",
@@ -170,7 +170,7 @@ fun HowDoILearnDecisionScreen(
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToFirstSteps = onNavigateToFirstSteps
+        onNavigateToWhoAmI = onNavigateToWhoAmI
     )
 }
 
@@ -279,7 +279,7 @@ private fun HowDoILearnGameContent(
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToFirstSteps: (() -> Unit)? = null
+    onNavigateToWhoAmI: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val xs = howDoILearnScreenStringsForLanguage(LocalAppLanguage.current)
@@ -315,9 +315,9 @@ private fun HowDoILearnGameContent(
         val node = content
         if (node != null) {
             award(node.score)
-            if (onNavigateToFirstSteps != null) {
+            if (onNavigateToWhoAmI != null) {
                 preferences.recordLessonCompletion()
-                preferences.markFirstStepsSectionCompleted("how_do_i_learn")
+                preferences.markWhoAmISectionCompleted("how_do_i_learn")
             }
         }
     }
@@ -434,16 +434,16 @@ private fun HowDoILearnGameContent(
                         }
                     }
 
-                    if (onNavigateToFirstSteps != null) {
+                    if (onNavigateToWhoAmI != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToFirstSteps,
+                            onClick = onNavigateToWhoAmI,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.firstSteps, fontWeight = FontWeight.Bold)
+                            Text(hts.whoAmI, fontWeight = FontWeight.Bold)
                         }
                     }
 

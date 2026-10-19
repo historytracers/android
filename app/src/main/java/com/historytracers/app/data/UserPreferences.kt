@@ -68,6 +68,8 @@ class UserPreferences(private val context: Context) {
         private val QUIPU_PRACTICE_STATE_KEY = stringPreferencesKey("quipu_practice_state")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
+        private val WHO_AM_I_SECTIONS_KEY = stringSetPreferencesKey("who_am_i_sections")
+        private val WHO_AM_I_LESSONS_MIGRATED_KEY = booleanPreferencesKey("who_am_i_lessons_migrated")
         private val ABACUS_SECTIONS_KEY = stringSetPreferencesKey("abacus_sections")
         private val YUPANA_SECTIONS_KEY = stringSetPreferencesKey("yupana_sections")
         private val I_AM_NOT_LIKE_YOU_SECTIONS_KEY = stringSetPreferencesKey("i_am_not_like_you_sections")
@@ -353,6 +355,30 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val completedWhoAmISections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[WHO_AM_I_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markWhoAmISectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[WHO_AM_I_SECTIONS_KEY] = (preferences[WHO_AM_I_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    suspend fun migrateMovedSelfAwarenessLessonsToWhoAmI() {
+        val current = context.dataStore.data.first()
+        if (current[WHO_AM_I_LESSONS_MIGRATED_KEY] == true) return
+        val movedSections = setOf("i_dont_know", "learning_in_shells", "how_do_i_learn")
+        val toCopy = movedSections intersect (current[FIRST_STEPS_SECTIONS_KEY] ?: emptySet())
+        context.dataStore.edit { preferences ->
+            if (toCopy.isNotEmpty()) {
+                preferences[WHO_AM_I_SECTIONS_KEY] =
+                    (preferences[WHO_AM_I_SECTIONS_KEY] ?: emptySet()) + toCopy
+            }
+            preferences[WHO_AM_I_LESSONS_MIGRATED_KEY] = true
+        }
+    }
+
     val completedAbacusSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
         preferences[ABACUS_SECTIONS_KEY] ?: emptySet()
     }
@@ -549,6 +575,7 @@ class UserPreferences(private val context: Context) {
     suspend fun resetAllClasses() {
         context.dataStore.edit { preferences ->
             preferences[FIRST_STEPS_SECTIONS_KEY] = emptySet()
+            preferences[WHO_AM_I_SECTIONS_KEY] = emptySet()
             preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] = emptySet()
             preferences[WORKOUT_SECTIONS_KEY] = emptySet()
             preferences[ABACUS_SECTIONS_KEY] = emptySet()

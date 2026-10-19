@@ -100,7 +100,7 @@ fun SocratesConclusionScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToFirstSteps: () -> Unit = {}
+    onNavigateToWhoAmI: () -> Unit = {}
 ) {
     SocratesGameContent(
         contentId = "5153a22b-f6a5-4ba1-a174-2fdad118c60e",
@@ -108,7 +108,7 @@ fun SocratesConclusionScreen(
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToFirstSteps = onNavigateToFirstSteps
+        onNavigateToWhoAmI = onNavigateToWhoAmI
     )
 }
 
@@ -133,7 +133,7 @@ private fun SocratesGameContent(
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToFirstSteps: (() -> Unit)? = null
+    onNavigateToWhoAmI: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val xs = socratesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -169,9 +169,9 @@ private fun SocratesGameContent(
         val node = content
         if (node != null) {
             award(node.score)
-            if (onNavigateToFirstSteps != null) {
+            if (onNavigateToWhoAmI != null) {
                 preferences.recordLessonCompletion()
-                preferences.markFirstStepsSectionCompleted("i_dont_know")
+                preferences.markWhoAmISectionCompleted("i_dont_know")
             }
         }
     }
@@ -280,16 +280,16 @@ private fun SocratesGameContent(
                         }
                     }
 
-                    if (onNavigateToFirstSteps != null) {
+                    if (onNavigateToWhoAmI != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToFirstSteps,
+                            onClick = onNavigateToWhoAmI,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.firstSteps, fontWeight = FontWeight.Bold)
+                            Text(hts.whoAmI, fontWeight = FontWeight.Bold)
                         }
                     }
 
