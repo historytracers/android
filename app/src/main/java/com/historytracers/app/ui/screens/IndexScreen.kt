@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
@@ -206,11 +207,9 @@ fun IndexScreen(
                         contentColor = OnButtonYellow
                     )
                 ) {
-                    Icon(
-                        painterResource(R.drawable.ic_person_thinking),
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    Text(
+                        text = "\uD83E\uDD14",
+                        fontSize = 28.sp
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
