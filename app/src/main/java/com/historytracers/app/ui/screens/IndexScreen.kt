@@ -33,7 +33,7 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
 private val whoAmISectionIds = listOf(
-    "i_dont_know", "learning_in_shells", "how_do_i_learn"
+    "i_dont_know", "learning_in_shells", "how_do_i_learn", "sun_tzu_and_learning"
 )
 
 private val firstStepsSectionIds = listOf(

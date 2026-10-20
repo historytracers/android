@@ -40,6 +40,7 @@ import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLan
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.sunTzuAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.whoAmIScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -98,7 +99,8 @@ fun LatestAdditionScreen(
     onNavigateToGroupingThrees: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToSunTzuAddition: () -> Unit = {},
-    onNavigateToPracticingAdditionTyped: () -> Unit = {}
+    onNavigateToPracticingAdditionTyped: () -> Unit = {},
+    onNavigateToSunTzuLearning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -118,8 +120,24 @@ fun LatestAdditionScreen(
     val preferences = remember { UserPreferences(context) }
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedWhoAmI by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
+    val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "sun_tzu_and_learning",
+            label = wss.sunTzuAndLearning,
+            icon = {
+                Text(
+                    text = "孫子",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "sun_tzu_and_learning" in completedWhoAmI },
+            onNavigate = onNavigateToSunTzuLearning
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_addition_typed",
             label = pts.title,
@@ -175,66 +193,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "grouping_threes" in completedWhereAreWeFrom },
             onNavigate = onNavigateToGroupingThrees
-        ),
-        LatestAdditionEntry(
-            sectionId = "expanding",
-            label = exs.title,
-            icon = {
-                Canvas(modifier = Modifier.size(48.dp)) {
-                    val cx = size.width / 2f
-                    val cy = size.height / 2f
-                    val center = Offset(cx, cy)
-                    val s = size.minDimension * 0.22f
-                    val dx = s * 0.7f
-                    val dy = -s * 0.7f
-                    val axisLen = s * 1.8f
-                    val axisStroke = size.minDimension * 0.045f
-                    val cubeStroke = size.minDimension * 0.05f
-                    drawLine(
-                        color = Color(0xFFE53935),
-                        start = Offset(cx - axisLen, cy),
-                        end = Offset(cx + axisLen, cy),
-                        strokeWidth = axisStroke
-                    )
-                    drawLine(
-                        color = Color(0xFF43A047),
-                        start = Offset(cx, cy + axisLen),
-                        end = Offset(cx, cy - axisLen),
-                        strokeWidth = axisStroke
-                    )
-                    val zLen = kotlin.math.sqrt(dx * dx + dy * dy)
-                    val zUnit = if (zLen > 0f) Offset(dx / zLen, dy / zLen) else Offset(1f, -1f)
-                    drawLine(
-                        color = Color(0xFF1E88E5),
-                        start = center - zUnit * axisLen,
-                        end = center + zUnit * axisLen,
-                        strokeWidth = axisStroke
-                    )
-                    val a = Offset(cx - s, cy - s)
-                    val b = Offset(cx + s, cy - s)
-                    val c = Offset(cx + s, cy + s)
-                    val d = Offset(cx - s, cy + s)
-                    val a2 = a + Offset(dx, dy)
-                    val b2 = b + Offset(dx, dy)
-                    val c2 = c + Offset(dx, dy)
-                    val d2 = d + Offset(dx, dy)
-                    val cubeColor = Color(0xFF212121)
-                    drawLine(cubeColor, a, b, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, b, c, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, c, d, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, d, a, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, a2, b2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, b2, c2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, c2, d2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, d2, a2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, a, a2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, b, b2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, c, c2, strokeWidth = cubeStroke)
-                    drawLine(cubeColor, d, d2, strokeWidth = cubeStroke)
-                }
-            },
-            isCompleted = { "expanding" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToExpanding
         )
     )
 
