@@ -3,6 +3,7 @@ package com.historytracers.app.navigation
 
 sealed class Screen(val route: String) {
     data object Index : Screen("index")
+    data object WhoAmI : Screen("who_am_i")
     data object Welcome : Screen("welcome")
     data object OnboardingConfig : Screen("onboarding_config")
     data object Content : Screen("content/{fileName}") {
@@ -293,7 +294,17 @@ sealed class Screen(val route: String) {
     data object CarryingInAdditionIdentity : Screen("carrying_in_addition_identity")
     data object CarryingInAdditionZeroInHands : Screen("carrying_in_addition_zero_in_hands")
     data object CarryingInAdditionConclusion : Screen("carrying_in_addition_conclusion")
+    data object PracticingAdditionPractice : Screen("practicing_addition_practice")
     data object PracticingAdditionRoad : Screen("practicing_addition_road")
+    data object PracticingAdditionTypedIntro : Screen("practicing_addition_typed_intro")
+    data object PracticingAdditionTypedGame : Screen("practicing_addition_typed_game")
+    data object SunTzuAdditionIntro : Screen("sun_tzu_addition_intro")
+    data object SunTzuAdditionMorale : Screen("sun_tzu_addition_morale")
+    data object SunTzuAdditionHeaven : Screen("sun_tzu_addition_heaven")
+    data object SunTzuAdditionTerrain : Screen("sun_tzu_addition_terrain")
+    data object SunTzuAdditionCommander : Screen("sun_tzu_addition_commander")
+    data object SunTzuAdditionMethod : Screen("sun_tzu_addition_method")
+    data object SunTzuAdditionConclusion : Screen("sun_tzu_addition_conclusion")
     data object CarryOrNotCarryIntro : Screen("carry_or_not_carry_intro")
     data object CarryOrNotCarryGame : Screen("carry_or_not_carry_game")
     data object AdvancingAndComplementingIntro : Screen("advancing_and_complementing_intro")

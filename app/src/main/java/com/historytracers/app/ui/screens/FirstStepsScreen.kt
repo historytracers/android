@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Handshake
 import androidx.compose.material.icons.filled.People
@@ -20,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -28,13 +26,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
@@ -57,9 +51,6 @@ fun FirstStepsScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
-    onNavigateToSocrates: () -> Unit = {},
-    onNavigateToLearningInLayers: () -> Unit = {},
-    onNavigateToHowDoILearn: () -> Unit = {},
     onNavigateToMyHands: () -> Unit = {},
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToFirstHands: () -> Unit = {},
@@ -88,7 +79,7 @@ fun FirstStepsScreen(
 
     val controller = remember {
         LevelGroupController(
-            listOf("i_dont_know", "learning_in_shells", "how_do_i_learn", "my_hands", "first_hands", "counting_with_bones", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game", "sequence_game_families", "family_part1", "building", "natural_families_part2", "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"),
+            listOf("my_hands", "first_hands", "counting_with_bones", "first_voice", "my_body", "drawing", "numbers", "the_zero", "sequence_game", "sequence_game_families", "family_part1", "building", "natural_families_part2", "sequence_game_orders", "going_to_infinity", "limits_min_max", "where_are_they"),
             completedSections
         )
     }
@@ -183,150 +174,6 @@ fun FirstStepsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            FilledIconButton(
-                onClick = { onNavigateToSocrates() },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("i_dont_know")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Icon(
-                    Icons.Default.Psychology,
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = OnButtonYellow
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = hts.iDontKnow,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(48.dp))
-
-            FilledIconButton(
-                onClick = { onNavigateToLearningInLayers() },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("learning_in_shells")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                Canvas(modifier = Modifier.size(52.dp)) {
-                    val strokeWidth = size.width * 0.06f
-                    val center = this.center
-                    val half = size.minDimension / 2f
-                    val spacing = size.width * 0.12f
-                    listOf(0f, spacing, 2 * spacing).forEach { inset ->
-                        val h = half - inset
-                        drawRect(
-                            color = OnButtonYellow,
-                            topLeft = Offset(center.x - h, center.y - h),
-                            size = Size(2 * h, 2 * h),
-                            style = Stroke(width = strokeWidth)
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = xs.learningInLayers,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(48.dp))
-
-            FilledIconButton(
-                onClick = { onNavigateToHowDoILearn() },
-                modifier = Modifier.size(96.dp),
-                shape = CircleShape,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (completedSections.contains("how_do_i_learn")) ButtonYellowDark else ButtonYellow
-                )
-            ) {
-                val textMeasurer = rememberTextMeasurer()
-                Canvas(modifier = Modifier.size(52.dp)) {
-                    val strokeWidth = size.width * 0.06f
-                    val headRadius = size.width * 0.26f
-                    val headCenter = Offset(center.x, center.y + size.height * 0.10f)
-                    drawCircle(
-                        color = OnButtonYellow,
-                        radius = headRadius,
-                        center = headCenter,
-                        style = Stroke(width = strokeWidth)
-                    )
-                    val eyeRadius = size.width * 0.045f
-                    val eyeY = headCenter.y - headRadius * 0.25f
-                    drawCircle(
-                        color = OnButtonYellow,
-                        radius = eyeRadius,
-                        center = Offset(headCenter.x - headRadius * 0.4f, eyeY)
-                    )
-                    drawCircle(
-                        color = OnButtonYellow,
-                        radius = eyeRadius,
-                        center = Offset(headCenter.x + headRadius * 0.4f, eyeY)
-                    )
-                    drawArc(
-                        color = OnButtonYellow,
-                        startAngle = 15f,
-                        sweepAngle = 150f,
-                        useCenter = false,
-                        topLeft = Offset(headCenter.x - headRadius * 0.3f, headCenter.y + headRadius * 0.15f),
-                        size = Size(headRadius * 0.6f, headRadius * 0.45f),
-                        style = Stroke(width = strokeWidth)
-                    )
-                    drawCircle(
-                        color = OnButtonYellow,
-                        radius = size.width * 0.04f,
-                        center = Offset(center.x - size.width * 0.12f, center.y - size.height * 0.18f)
-                    )
-                    drawCircle(
-                        color = OnButtonYellow,
-                        radius = size.width * 0.06f,
-                        center = Offset(center.x - size.width * 0.02f, center.y - size.height * 0.30f)
-                    )
-                    val qm = textMeasurer.measure(
-                        text = "?",
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = OnButtonYellow)
-                    )
-                    drawText(
-                        textLayoutResult = qm,
-                        topLeft = Offset(
-                            center.x + size.width * 0.10f - qm.size.width / 2f,
-                            center.y - size.height * 0.42f - qm.size.height / 2f
-                        )
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                text = xs.howDoILearn,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(Modifier.height(48.dp))
-
             FilledIconButton(
                 onClick = { onNavigateToMyHands() },
                 modifier = Modifier.size(96.dp),

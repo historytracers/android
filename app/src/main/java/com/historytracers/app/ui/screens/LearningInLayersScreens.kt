@@ -147,7 +147,7 @@ fun LearningInLayersConclusionScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToFirstSteps: () -> Unit = {}
+    onNavigateToWhoAmI: () -> Unit = {}
 ) {
     LearningInLayersGameContent(
         contentId = "c33765d4-e5ce-4384-9cbc-86a7768f790f",
@@ -155,7 +155,7 @@ fun LearningInLayersConclusionScreen(
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToFirstSteps = onNavigateToFirstSteps
+        onNavigateToWhoAmI = onNavigateToWhoAmI
     )
 }
 
@@ -288,7 +288,7 @@ private fun LearningInLayersGameContent(
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
-    onNavigateToFirstSteps: (() -> Unit)? = null
+    onNavigateToWhoAmI: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val xs = learningInLayersScreenStringsForLanguage(LocalAppLanguage.current)
@@ -324,9 +324,9 @@ private fun LearningInLayersGameContent(
         val node = content
         if (node != null) {
             award(node.score)
-            if (onNavigateToFirstSteps != null) {
+            if (onNavigateToWhoAmI != null) {
                 preferences.recordLessonCompletion()
-                preferences.markFirstStepsSectionCompleted("learning_in_shells")
+                preferences.markWhoAmISectionCompleted("learning_in_shells")
             }
         }
     }
@@ -438,16 +438,16 @@ private fun LearningInLayersGameContent(
                         }
                     }
 
-                    if (onNavigateToFirstSteps != null) {
+                    if (onNavigateToWhoAmI != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToFirstSteps,
+                            onClick = onNavigateToWhoAmI,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(hts.firstSteps, fontWeight = FontWeight.Bold)
+                            Text(hts.whoAmI, fontWeight = FontWeight.Bold)
                         }
                     }
 

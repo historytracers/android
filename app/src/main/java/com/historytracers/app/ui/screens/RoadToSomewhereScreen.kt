@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -263,7 +265,9 @@ fun RoadToSomewhereScreen(
     onNavigateToRunningAmongNumbers: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
+    onNavigateToSunTzuAddition: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
+    onNavigateToPracticingAdditionTyped: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -276,12 +280,14 @@ fun RoadToSomewhereScreen(
 
     val roadSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
-        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
+        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
+        "practicing_addition", "practicing_addition_typed"
     )
     // All road sections gate the "Next Level" flag, now that every one of them is wired.
     val nextLevelGatingSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
-        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "practicing_addition"
+        "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
+        "practicing_addition", "practicing_addition_typed"
     )
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
@@ -557,6 +563,37 @@ fun RoadToSomewhereScreen(
                 Spacer(Modifier.height(32.dp))
 
                 FilledIconButton(
+                    onClick = onNavigateToSunTzuAddition,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.sunTzuAddition },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("sun_tzu_addition")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u5b6b\u5b50",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.sunTzuAddition,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
                     onClick = onNavigateToPracticingAddition,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
@@ -576,6 +613,38 @@ fun RoadToSomewhereScreen(
 
                 Text(
                     text = xs.practicingAddition,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToPracticingAdditionTyped,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.practicingAdditionTyped },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("practicing_addition_typed")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "56 + 78",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.practicingAdditionTyped,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

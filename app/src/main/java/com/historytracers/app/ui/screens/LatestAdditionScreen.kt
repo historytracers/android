@@ -19,30 +19,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
-import com.historytracers.app.ui.features.biggerOrSmallerScreenStringsForLanguage
-import com.historytracers.app.ui.features.greaterOrSmallerGameScreenStringsForLanguage
-import com.historytracers.app.ui.features.measuringOneDirectionScreenStringsForLanguage
-import com.historytracers.app.ui.features.measuringScreenStringsForLanguage
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.groupingThreesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
+import com.historytracers.app.ui.features.sunTzuAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -98,7 +95,10 @@ fun LatestAdditionScreen(
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
-    onNavigateToGroupingThrees: () -> Unit = {}
+    onNavigateToGroupingThrees: () -> Unit = {},
+    onNavigateToPracticingAddition: () -> Unit = {},
+    onNavigateToSunTzuAddition: () -> Unit = {},
+    onNavigateToPracticingAdditionTyped: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -109,19 +109,59 @@ fun LatestAdditionScreen(
     val sos = sharedOriginScreenStringsForLanguage(LocalAppLanguage.current)
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
-    val bos = biggerOrSmallerScreenStringsForLanguage(LocalAppLanguage.current)
-    val gos = greaterOrSmallerGameScreenStringsForLanguage(LocalAppLanguage.current)
-    val mods = measuringOneDirectionScreenStringsForLanguage(LocalAppLanguage.current)
-    val ms = measuringScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
     val gts = groupingThreesScreenStringsForLanguage(LocalAppLanguage.current)
+    val pas = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
+    val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
+    val sts = sunTzuAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
-    val completedFirstSteps by preferences.completedFirstStepsSections.collectAsState(initial = emptySet())
-    val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
+    val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_addition_typed",
+            label = pts.title,
+            icon = {
+                Text(
+                    text = "56 + 78",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_addition_typed" in completedRoadToSomewhere },
+            onNavigate = onNavigateToPracticingAdditionTyped
+        ),
+        LatestAdditionEntry(
+            sectionId = "sun_tzu_addition",
+            label = sts.title,
+            icon = {
+                Text(
+                    text = "\u5b6b\u5b50",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "sun_tzu_addition" in completedRoadToSomewhere },
+            onNavigate = onNavigateToSunTzuAddition
+        ),
+        LatestAdditionEntry(
+            sectionId = "practicing_addition",
+            label = pas.title,
+            icon = {
+                Text(
+                    text = "+",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_addition" in completedRoadToSomewhere },
+            onNavigate = onNavigateToPracticingAddition
+        ),
         LatestAdditionEntry(
             sectionId = "grouping_threes",
             label = gts.title,
@@ -195,41 +235,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "expanding" in completedWhereAreWeFrom },
             onNavigate = onNavigateToExpanding
-        ),
-        LatestAdditionEntry(
-            sectionId = "measuring_one_direction",
-            label = mods.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_ruler),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "measuring_one_direction" in completedMeasuring },
-            onNavigate = onNavigateToMeasuringOneDirection
-        ),
-        LatestAdditionEntry(
-            sectionId = "greater_or_smaller_game",
-            label = gos.title,
-            icon = {
-                Text(ms.compareSymbols, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            },
-            isCompleted = { "greater_or_smaller_game" in completedMeasuring },
-            onNavigate = onNavigateToGreaterOrSmallerGame
-        ),
-        LatestAdditionEntry(
-            sectionId = "bigger_or_smaller",
-            label = bos.title,
-            icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_ruler),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            },
-            isCompleted = { "bigger_or_smaller" in completedMeasuring },
-            onNavigate = onNavigateToBiggerOrSmaller
         )
     )
 
