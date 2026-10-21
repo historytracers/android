@@ -6467,7 +6467,7 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigatePrev = { navController.navigate(Screen.NumbersIntro.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.NumbersQuestion.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.NumbersEqual.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -6482,8 +6482,8 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.NumbersOrigin.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.NumbersEqual.route) { launchSingleTop = true } },
+                            onNavigatePrev = { navController.navigate(Screen.NumbersEqual.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.NumbersVisualizing.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -6498,8 +6498,8 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.NumbersQuestion.route) { launchSingleTop = true } },
-                            onNavigateNext = { navController.navigate(Screen.NumbersVisualizing.route) { launchSingleTop = true } },
+                            onNavigatePrev = { navController.navigate(Screen.NumbersOrigin.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.NumbersQuestion.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
                         )
@@ -6514,7 +6514,7 @@ fun AppNavigation() {
                                     }
                                 }
                             },
-                            onNavigatePrev = { navController.navigate(Screen.NumbersEqual.route) { launchSingleTop = true } },
+                            onNavigatePrev = { navController.navigate(Screen.NumbersQuestion.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.NumbersConclusion.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
