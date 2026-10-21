@@ -5580,14 +5580,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningIntro.route) {
                         SunTzuLearningIntroScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningWhoWas.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -5595,14 +5588,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningWhoWas.route) {
                         SunTzuLearningWhoWasScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningIntro.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningMorale.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5611,14 +5597,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningMorale.route) {
                         SunTzuLearningMoraleScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningWhoWas.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningHeaven.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5627,14 +5606,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningHeaven.route) {
                         SunTzuLearningHeavenScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningMorale.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningTerrain.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5643,14 +5615,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningTerrain.route) {
                         SunTzuLearningTerrainScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningHeaven.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningCommander.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5659,14 +5624,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningCommander.route) {
                         SunTzuLearningCommanderScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningTerrain.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningMethod.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5675,14 +5633,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningMethod.route) {
                         SunTzuLearningMethodScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningCommander.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningThinking.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5691,14 +5642,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningThinking.route) {
                         SunTzuLearningThinkingScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningMethod.route) { launchSingleTop = true } },
                             onNavigateNext = { navController.navigate(Screen.SunTzuLearningConclusion.route) { launchSingleTop = true } },
                             currentScore = counter,
@@ -5707,14 +5651,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.SunTzuLearningConclusion.route) {
                         SunTzuLearningConclusionScreen(
-                            onNavigateBack = {
-                                if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
-                                    navController.navigate(Screen.WhoAmI.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.LatestAddition.route, Screen.WhoAmI.route, fallback = Screen.WhoAmI.route) },
                             onNavigatePrev = { navController.navigate(Screen.SunTzuLearningThinking.route) { launchSingleTop = true } },
                             onNavigateToWhoAmI = {
                                 if (!navController.popBackStack(Screen.WhoAmI.route, false)) {
