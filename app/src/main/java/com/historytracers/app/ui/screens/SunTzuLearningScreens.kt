@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
@@ -157,6 +158,24 @@ fun SunTzuLearningMethodScreen(
 ) {
     SunTzuLearningGameContent(
         contentId = "44656291-a67e-4b04-bb12-6521e05e9bc4",
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun SunTzuLearningThinkingScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    SunTzuLearningGameContent(
+        contentId = "1872c719-b64f-4799-83b0-db01dd655c2d",
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -302,6 +321,13 @@ private fun SunTzuLearningGameContent(
                         Spacer(Modifier.height(8.dp))
                     }
 
+                    if (content.answer != null) {
+                        AnswerSection(
+                            content = content,
+                            onAnswered = { points -> award(points) }
+                        )
+                    }
+
                     Spacer(Modifier.height(24.dp))
 
                     Row(
@@ -375,6 +401,78 @@ private fun SunTzuLearningGameContent(
                 SourcesMenu(
                     sources = sources,
                     modifier = Modifier.align(Alignment.BottomStart)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnswerSection(
+    content: SMGameContent,
+    onAnswered: (Int) -> Unit
+) {
+    val s = LocalUiStrings.current
+    val xs = sunTzuLearningScreenStringsForLanguage(LocalAppLanguage.current)
+    var selected by remember { mutableStateOf<String?>(null) }
+    var hasSubmitted by remember { mutableStateOf(false) }
+    var awarded by remember { mutableStateOf(false) }
+
+    val correctAnswer = content.answer?.toString()?.lowercase()
+
+    fun submit(answer: String) {
+        selected = answer
+        hasSubmitted = true
+        if (!awarded) {
+            awarded = true
+            val points = if (answer == correctAnswer) content.score else content.score / 2
+            onAnswered(points)
+        }
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    if (!hasSubmitted) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(
+                onClick = { submit("yes") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(s.common.yes)
+            }
+            Button(
+                onClick = { submit("no") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(s.common.no)
+            }
+        }
+    } else {
+        val isCorrect = selected == correctAnswer
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text(
+                text = if (isCorrect) "\uD83C\uDF89 ${s.common.correct} \uD83C\uDF89" else xs.wrongAnswerMessage,
+                color = if (isCorrect) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            if (isCorrect) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = xs.scoreDoubledMessage,
+                    color = Color(0xFF2E7D32),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
                 )
             }
         }

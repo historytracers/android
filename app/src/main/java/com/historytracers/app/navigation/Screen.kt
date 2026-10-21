@@ -52,6 +52,7 @@ sealed class Screen(val route: String) {
     data object SunTzuLearningTerrain : Screen("sun_tzu_learning_terrain")
     data object SunTzuLearningCommander : Screen("sun_tzu_learning_commander")
     data object SunTzuLearningMethod : Screen("sun_tzu_learning_method")
+    data object SunTzuLearningThinking : Screen("sun_tzu_learning_thinking")
     data object SunTzuLearningConclusion : Screen("sun_tzu_learning_conclusion")
     data object LearningInLayersIntro : Screen("learning_in_layers_intro")
     data object LearningInLayersToy : Screen("learning_in_layers_toy")
