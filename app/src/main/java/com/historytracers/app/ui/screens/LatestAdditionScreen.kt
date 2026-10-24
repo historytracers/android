@@ -31,10 +31,10 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
-import com.historytracers.app.ui.features.groupingThreesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -100,6 +100,7 @@ fun LatestAdditionScreen(
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToSunTzuAddition: () -> Unit = {},
     onNavigateToPracticingAdditionTyped: () -> Unit = {},
+    onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToSunTzuLearning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -112,18 +113,31 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val gts = groupingThreesScreenStringsForLanguage(LocalAppLanguage.current)
     val pas = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
     val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
+    val pcs = practicingAdditionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val sts = sunTzuAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
-    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedWhoAmI by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
     val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_addition_chosen",
+            label = pcs.title,
+            icon = {
+                Text(
+                    text = "?? + ??",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_addition_chosen" in completedRoadToSomewhere },
+            onNavigate = onNavigateToPracticingAdditionChosen
+        ),
         LatestAdditionEntry(
             sectionId = "sun_tzu_and_learning",
             label = wss.sunTzuAndLearning,
@@ -179,20 +193,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "practicing_addition" in completedRoadToSomewhere },
             onNavigate = onNavigateToPracticingAddition
-        ),
-        LatestAdditionEntry(
-            sectionId = "grouping_threes",
-            label = gts.title,
-            icon = {
-                Text(
-                    text = "3, 6, 9...",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "grouping_threes" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToGroupingThrees
         )
     )
 

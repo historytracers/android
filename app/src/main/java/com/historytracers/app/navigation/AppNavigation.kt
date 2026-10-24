@@ -436,6 +436,8 @@ import com.historytracers.app.ui.screens.PracticingAdditionPracticeScreen
 import com.historytracers.app.ui.screens.PracticingAdditionRoadScreen
 import com.historytracers.app.ui.screens.PracticingAdditionTypedGameScreen
 import com.historytracers.app.ui.screens.PracticingAdditionTypedIntroScreen
+import com.historytracers.app.ui.screens.PracticingAdditionChosenGameScreen
+import com.historytracers.app.ui.screens.PracticingAdditionChosenIntroScreen
 import com.historytracers.app.ui.screens.SunTzuAdditionCommanderScreen
 import com.historytracers.app.ui.screens.SunTzuAdditionConclusionScreen
 import com.historytracers.app.ui.screens.SunTzuAdditionHeavenScreen
@@ -605,7 +607,8 @@ fun AppNavigation() {
                Screen.SunTzuAdditionCommander.route, Screen.SunTzuAdditionMethod.route,
                Screen.SunTzuAdditionConclusion.route,
                Screen.PracticingAdditionPractice.route, Screen.PracticingAdditionRoad.route,
-               Screen.PracticingAdditionTypedIntro.route, Screen.PracticingAdditionTypedGame.route)
+               Screen.PracticingAdditionTypedIntro.route, Screen.PracticingAdditionTypedGame.route,
+                Screen.PracticingAdditionChosenIntro.route, Screen.PracticingAdditionChosenGame.route)
     val onboardingRoutes = setOf(Screen.Welcome.route, Screen.OnboardingConfig.route)
     var startDest by remember { mutableStateOf<String?>(null) }
     var savedScore by remember { mutableStateOf<Int?>(null) }
@@ -3273,6 +3276,7 @@ fun AppNavigation() {
                             onNavigateToSunTzuAddition = { navController.navigate(Screen.SunTzuAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAdditionPractice.route) { launchSingleTop = true } },
                             onNavigateToPracticingAdditionTyped = { navController.navigate(Screen.PracticingAdditionTypedIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingAdditionChosen = { navController.navigate(Screen.PracticingAdditionChosenIntro.route) { launchSingleTop = true } },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
                         )
                     }
@@ -3468,6 +3472,41 @@ fun AppNavigation() {
                     }
                     composable(Screen.PracticingAdditionTypedGame.route) {
                         PracticingAdditionTypedGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateToRoadToSomewhere = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.PracticingAdditionChosenIntro.route) {
+                        PracticingAdditionChosenIntroScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
+                                    navController.navigate(Screen.RoadToSomewhere.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.PracticingAdditionChosenGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.PracticingAdditionChosenGame.route) {
+                        PracticingAdditionChosenGameScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
@@ -8604,6 +8643,7 @@ fun AppNavigation() {
                             onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAdditionPractice.route) { launchSingleTop = true } },
                             onNavigateToSunTzuAddition = { navController.navigate(Screen.SunTzuAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingAdditionTyped = { navController.navigate(Screen.PracticingAdditionTypedIntro.route) { launchSingleTop = true } },
+                            onNavigateToPracticingAdditionChosen = { navController.navigate(Screen.PracticingAdditionChosenIntro.route) { launchSingleTop = true } },
                             onNavigateToSunTzuLearning = { navController.navigate(Screen.SunTzuLearningIntro.route) { launchSingleTop = true } }
                         )
                     }
