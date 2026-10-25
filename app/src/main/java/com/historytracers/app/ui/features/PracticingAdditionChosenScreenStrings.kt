@@ -4,16 +4,11 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class PracticingAdditionChosenScreenStrings(
-    // Intro screen
-    val introTitle: String,
-    val introBody: String,
-    val choosingBody: String,
-    val checkingBody: String,
-    val complementBody: String,
-    val finishBody: String,
-    val start: String,
+    // Description shown at the top of the game
+    val description: String,
     // Game screen
     val title: String,
+    val start: String,
     val setupTitle: String,
     val firstNumber: String,
     val secondNumber: String,
@@ -44,14 +39,9 @@ data class PracticingAdditionChosenScreenStrings(
 )
 
 val EnPracticingAdditionChosenScreenStrings = PracticingAdditionChosenScreenStrings(
-    introTitle = "Practice Exercise",
-    introBody = "Reading about addition helps, but practice is essential for real understanding. In this exercise, you choose the numbers: type two numbers between 0 and 99999 in the two fields and click Start. You may begin with smaller numbers \u2014 for example, 25 + 13 \u2014 and work your way up to larger ones.",
-    choosingBody = "The addition is then written vertically, column by column, from the units upwards, with as many columns as the numbers need.",
-    checkingBody = "The values are checked as you type. If a digit is wrong, the squares are colored to match the number you wrote, and a tip reminds you of the complement. If the sum carries, the squares beyond the group of ten are colored, showing the digit that stays in the column. When both values are right, the squares fill in, a congratulation appears, and the button that moves to the next column is shown.",
-    complementBody = "Before typing, look at the complement of the value already in the column: the complement tells you how many squares are still missing to reach ten. If the bottom digit is at least the complement, the sum reaches ten and 1 is carried to the next order; the squares left outside the group of ten are the digit that stays in the column.",
-    finishBody = "When you finish a calculation, the button below returns to the fields, so you can choose other numbers and practice again.",
-    start = "Start",
+    description = "Choose the numbers and click Start. Then, in each column, type the digit that stays in the result row and, when the sum reaches ten, type 1 in the carry box above the next order.",
     title = "Practicing Addition with Chosen Numbers",
+    start = "Start",
     setupTitle = "Type two numbers between 0 and 99999",
     firstNumber = "First number",
     secondNumber = "Second number",
@@ -82,12 +72,7 @@ val EnPracticingAdditionChosenScreenStrings = PracticingAdditionChosenScreenStri
 )
 
 val PtPracticingAdditionChosenScreenStrings = PracticingAdditionChosenScreenStrings(
-    introTitle = "Exerc\u00edcio de pr\u00e1tica",
-    introBody = "Ler sobre a soma ajuda, mas praticar \u00e9 essencial para compreend\u00ea-la de verdade. Neste exerc\u00edcio, voc\u00ea escolhe os n\u00fameros: digite dois n\u00fameros entre 0 e 99999 nos dois campos e clique em Come\u00e7ar. Voc\u00ea pode come\u00e7ar com n\u00fameros menores \u2014 por exemplo, 25 + 13 \u2014 e ir subindo at\u00e9 os maiores.",
-    choosingBody = "Depois, a soma \u00e9 escrita na vertical, coluna por coluna, das unidades para cima, com tantas colunas quantas os n\u00fameros precisarem.",
-    checkingBody = "Os valores s\u00e3o verificados \u00e0 medida que voc\u00ea digita. Se um d\u00edgito estiver incorreto, os quadrados s\u00e3o coloridos de acordo com o n\u00famero digitado, e uma dica lembra o complemento. Quando a soma transporta, os quadrados al\u00e9m do grupo de dez s\u00e3o coloridos, mostrando o d\u00edgito que fica na coluna. Quando os dois valores est\u00e3o corretos, os quadrados s\u00e3o preenchidos, aparece um parab\u00e9ns e \u00e9 mostrado o bot\u00e3o que passa para a pr\u00f3xima coluna.",
-    complementBody = "Antes de digitar, observe o complemento do valor que j\u00e1 est\u00e1 na coluna: o complemento diz quantos quadrados ainda faltam para chegar a dez. Se o d\u00edgito de baixo for pelo menos o complemento, a soma chega a dez e o 1 \u00e9 transportado para a pr\u00f3xima ordem; os quadrados que ficam fora do grupo de dez s\u00e3o o d\u00edgito que fica na coluna.",
-    finishBody = "Ao terminar um c\u00e1lculo, o bot\u00e3o abaixo volta aos campos, para que voc\u00ea escolha outros n\u00fameros e pratique de novo.",
+    description = "Escolha os n\u00fameros e clique em Come\u00e7ar. Depois, em cada coluna, digite na linha do resultado o d\u00edgito que fica e, quando a soma chegar a dez, digite 1 na caixa de transporte acima da pr\u00f3xima ordem.",
     start = "Come\u00e7ar",
     title = "Praticando Adi\u00e7\u00e3o com N\u00fameros Escolhidos",
     setupTitle = "Digite dois n\u00fameros entre 0 e 99999",
@@ -120,12 +105,7 @@ val PtPracticingAdditionChosenScreenStrings = PracticingAdditionChosenScreenStri
 )
 
 val EsPracticingAdditionChosenScreenStrings = PracticingAdditionChosenScreenStrings(
-    introTitle = "Ejercicio de pr\u00e1ctica",
-    introBody = "Leer sobre la suma ayuda, pero practicar es esencial para comprenderla de verdad. En este ejercicio, t\u00fa eliges los n\u00fameros: escribe dos n\u00fameros entre 0 y 99999 en los dos campos y haz clic en Comenzar. Puedes empezar con n\u00fameros m\u00e1s peque\u00f1os \u2014 por ejemplo, 25 + 13 \u2014 e ir subiendo hasta los m\u00e1s grandes.",
-    choosingBody = "Despu\u00e9s, la suma se escribe en vertical, columna por columna, desde las unidades hacia arriba, con tantas columnas como necesiten los n\u00fameros.",
-    checkingBody = "Los valores se comprueban a medida que escribes. Si un d\u00edgito es incorrecto, los cuadrados se colorean seg\u00fan el n\u00famero escrito, y una pista te recuerda el complemento. Si la suma acarrea, se colorean los cuadrados m\u00e1s all\u00e1 del grupo de diez, mostrando el d\u00edgito que queda en la columna. Cuando los dos valores son correctos, los cuadrados se llenan, aparece una felicitaci\u00f3n y se muestra el bot\u00f3n que pasa a la siguiente columna.",
-    complementBody = "Antes de escribir, observa el complemento del valor que ya est\u00e1 en la columna: el complemento indica cu\u00e1ntos cuadrados faltan para llegar a diez. Si el d\u00edgito inferior es al menos el complemento, la suma llega a diez y se acarrea 1 al siguiente orden; los cuadrados que quedan fuera del grupo de diez son el d\u00edgito que queda en la columna.",
-    finishBody = "Al terminar un c\u00e1lculo, el bot\u00f3n de abajo vuelve a los campos, para que elijas otros n\u00fameros y practiques de nuevo.",
+    description = "Elige los n\u00fameros y haz clic en Comenzar. Despu\u00e9s, en cada columna, escribe en la fila del resultado el d\u00edgito que queda y, cuando la suma llegue a diez, escribe 1 en la casilla del acarreo sobre el siguiente orden.",
     start = "Comenzar",
     title = "Practicando Suma con N\u00fameros Elegidos",
     setupTitle = "Escribe dos n\u00fameros entre 0 y 99999",
