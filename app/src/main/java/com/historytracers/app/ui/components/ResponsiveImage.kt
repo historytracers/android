@@ -22,11 +22,16 @@ import com.historytracers.app.ui.LocalUiStrings
 private val IMG_TAG_REGEX = Regex("""<img[^>]*src\s*=\s*"([^"]*)"[^>]*/?>""")
 
 @Composable
-fun ResponsiveImage(html: String, imgDesc: String?, modifier: Modifier = Modifier) {
+fun ResponsiveImage(
+    html: String,
+    imgDesc: String?,
+    modifier: Modifier = Modifier,
+    maxHeightFraction: Float = 0.4f
+) {
     val s = LocalUiStrings.current
     val url = IMG_TAG_REGEX.find(html)?.groupValues?.get(1) ?: return
     val configuration = LocalConfiguration.current
-    val maxHeight = with(LocalDensity.current) { (configuration.screenHeightDp * 0.4f).dp }
+    val maxHeight = with(LocalDensity.current) { (configuration.screenHeightDp * maxHeightFraction).dp }
     SubcomposeAsyncImage(
         model = resolveImageSource(url),
         contentDescription = imgDesc,
