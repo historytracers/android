@@ -935,6 +935,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.WhoAmI.route) {
                         WhoAmIScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -946,7 +948,8 @@ fun AppNavigation() {
                             onNavigateToSocrates = { navController.navigate(Screen.Socrates.route) { launchSingleTop = true } },
                             onNavigateToLearningInLayers = { navController.navigate(Screen.LearningInLayersIntro.route) { launchSingleTop = true } },
                             onNavigateToHowDoILearn = { navController.navigate(Screen.HowDoILearnIntro.route) { launchSingleTop = true } },
-                            onNavigateToSunTzuLearning = { navController.navigate(Screen.SunTzuLearningIntro.route) { launchSingleTop = true } }
+                            onNavigateToSunTzuLearning = { navController.navigate(Screen.SunTzuLearningIntro.route) { launchSingleTop = true } },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.Measuring.route) {
