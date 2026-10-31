@@ -32,7 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ReturningScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToWalkingBackwards: () -> Unit = {}
+    onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToPracticingSubtraction: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -43,6 +44,7 @@ fun ReturningScreen(
     val scope = rememberCoroutineScope()
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val walkingBackwardsDone = "walking_backwards" in completedReturning
+    val practicingSubtractionDone = "practicing_subtraction" in completedReturning
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -121,6 +123,35 @@ fun ReturningScreen(
 
                 Text(
                     text = xs.walkingBackwards,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToPracticingSubtraction,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (practicingSubtractionDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.subtractionExample,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.practicingSubtraction,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

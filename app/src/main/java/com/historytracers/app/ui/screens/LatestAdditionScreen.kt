@@ -33,9 +33,9 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -91,13 +91,13 @@ fun LatestAdditionScreen(
     onNavigateToGreaterOrSmallerGame: () -> Unit = {},
     onNavigateToMeasuringOneDirection: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
-    onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToSunTzuAddition: () -> Unit = {},
     onNavigateToPracticingAdditionTyped: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
@@ -113,17 +113,32 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val pas = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
     val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pcs = practicingAdditionChosenScreenStringsForLanguage(LocalAppLanguage.current)
+    val pss = practicingSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val sts = sunTzuAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedWhoAmI by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
     val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction",
+            label = pss.title,
+            icon = {
+                Text(
+                    text = "9 - 5",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_subtraction" in completedReturning },
+            onNavigate = onNavigateToPracticingSubtraction
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_addition_chosen",
             label = pcs.title,
@@ -179,20 +194,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "sun_tzu_addition" in completedRoadToSomewhere },
             onNavigate = onNavigateToSunTzuAddition
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_addition",
-            label = pas.title,
-            icon = {
-                Text(
-                    text = "+",
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_addition" in completedRoadToSomewhere },
-            onNavigate = onNavigateToPracticingAddition
         )
     )
 
