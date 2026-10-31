@@ -34,7 +34,8 @@ fun ReturningScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
-    onNavigateToPracticingSubtractionTyped: () -> Unit = {}
+    onNavigateToPracticingSubtractionTyped: () -> Unit = {},
+    onNavigateToPracticingSubtractionChosen: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -183,6 +184,35 @@ fun ReturningScreen(
 
                 Text(
                     text = xs.practicingSubtractionTyped,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToPracticingSubtractionChosen,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.subtractionChosenExample,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.practicingSubtractionChosen,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

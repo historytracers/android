@@ -9,6 +9,8 @@ data class ReturningScreenStrings(
     val subtractionExample: String,
     val practicingSubtractionTyped: String,
     val subtractionTypedExample: String,
+    val practicingSubtractionChosen: String,
+    val subtractionChosenExample: String,
 )
 
 val EnReturningScreenStrings = ReturningScreenStrings(
@@ -17,6 +19,8 @@ val EnReturningScreenStrings = ReturningScreenStrings(
     subtractionExample = "9 - 5",
     practicingSubtractionTyped = "Practicing Subtraction with Typed Values",
     subtractionTypedExample = "8 - 1 = ?",
+    practicingSubtractionChosen = "Practicing Subtraction with Chosen Numbers",
+    subtractionChosenExample = "? - ? = ?",
 )
 
 val PtReturningScreenStrings = ReturningScreenStrings(
@@ -25,6 +29,8 @@ val PtReturningScreenStrings = ReturningScreenStrings(
     subtractionExample = "9 - 5",
     practicingSubtractionTyped = "Praticando Subtra\u00e7\u00e3o com Valores Digitados",
     subtractionTypedExample = "8 - 1 = ?",
+    practicingSubtractionChosen = "Praticando Subtra\u00e7\u00e3o com N\u00fameros Escolhidos",
+    subtractionChosenExample = "? - ? = ?",
 )
 
 val EsReturningScreenStrings = ReturningScreenStrings(
@@ -33,6 +39,8 @@ val EsReturningScreenStrings = ReturningScreenStrings(
     subtractionExample = "9 - 5",
     practicingSubtractionTyped = "Practicando Resta con Valores Escritos",
     subtractionTypedExample = "8 - 1 = ?",
+    practicingSubtractionChosen = "Practicando Resta con N\u00fameros Elegidos",
+    subtractionChosenExample = "? - ? = ?",
 )
 
 val LocalReturningScreenStrings = staticCompositionLocalOf { EnReturningScreenStrings }
