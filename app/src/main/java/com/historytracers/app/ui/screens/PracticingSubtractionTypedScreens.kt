@@ -327,15 +327,16 @@ private fun RowScope.TypedSubTopCell(
                 horizontalArrangement = Arrangement.Center
             ) {
                 if (state.topSlot == "final") {
-                    val reduced = state.reduceValues[order]
+                    val reduced = state.reduceValues[order] ?: state.regroup[order]
                     if (reduced != null) {
                         Text(
                             text = reduced.toString(),
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             textDecoration = TextDecoration.LineThrough,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurface
                         )
+                        Spacer(Modifier.width(4.dp))
                     }
                 }
                 TypedSubInput(
@@ -343,7 +344,7 @@ private fun RowScope.TypedSubTopCell(
                     onValueChange = onTopChange,
                     label = xs.topValueLabel,
                     maxLength = 2,
-                    width = 40.dp
+                    width = 36.dp
                 )
             }
             else -> {
