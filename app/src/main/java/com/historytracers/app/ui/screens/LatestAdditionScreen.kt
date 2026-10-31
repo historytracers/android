@@ -34,9 +34,9 @@ import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionChosenScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionTypedScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -93,13 +93,13 @@ fun LatestAdditionScreen(
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtractionTyped: () -> Unit = {},
+    onNavigateToPracticingSubtractionChosen: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
-    onNavigateToPracticingAdditionTyped: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToSunTzuLearning: () -> Unit = {}
 ) {
@@ -113,10 +113,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pcs = practicingAdditionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val pss = practicingSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
+    val pscs = practicingSubtractionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -125,6 +125,20 @@ fun LatestAdditionScreen(
     val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction_chosen",
+            label = pscs.title,
+            icon = {
+                Text(
+                    text = "? - ? = ?",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_subtraction_chosen" in completedReturning },
+            onNavigate = onNavigateToPracticingSubtractionChosen
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_subtraction_typed",
             label = psts.title,
@@ -180,20 +194,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "sun_tzu_and_learning" in completedWhoAmI },
             onNavigate = onNavigateToSunTzuLearning
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_addition_typed",
-            label = pts.title,
-            icon = {
-                Text(
-                    text = "56 + 78",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_addition_typed" in completedRoadToSomewhere },
-            onNavigate = onNavigateToPracticingAdditionTyped
         )
     )
 

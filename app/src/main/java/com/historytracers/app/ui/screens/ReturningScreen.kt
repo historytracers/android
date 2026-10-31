@@ -48,6 +48,7 @@ fun ReturningScreen(
     val walkingBackwardsDone = "walking_backwards" in completedReturning
     val practicingSubtractionDone = "practicing_subtraction" in completedReturning
     val practicingSubtractionTypedDone = "practicing_subtraction_typed" in completedReturning
+    val practicingSubtractionChosenDone = "practicing_subtraction_chosen" in completedReturning
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -198,7 +199,7 @@ fun ReturningScreen(
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (practicingSubtractionChosenDone) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(

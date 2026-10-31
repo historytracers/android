@@ -77,6 +77,8 @@ private data class TypedSubState(
     val results: Map<Int, Int> = emptyMap(),
     val regroup: Map<Int, Int> = emptyMap(),
     val reduceValues: Map<Int, Int> = emptyMap(),
+    val settled: Set<Int> = emptySet(),
+    val pendingRewrites: Map<Int, Int> = emptyMap(),
     val base: Int = 0,
     val bottomDigit: Int = 0,
     val afterIncoming: Int = 0,
@@ -107,6 +109,39 @@ private fun typedSubDigits(value: Int): List<Int> {
 private fun TypedSubState.setupColumn(): TypedSubState {
     val topDigit = topDigits[column]
     val bottom = bottomDigits[column]
+
+    // A settled column already has its rewritten value on top: the borrow that
+    // produced it has been applied, including the whole chain of zeros. Only a
+    // new borrow from the next order (when the rewritten value is still smaller
+    // than the bottom digit) has to be handled.
+    if (column in settled) {
+        val finalTop = regroup[column] ?: topDigit
+        var available = finalTop
+        var borrowOutValue = 0
+        var borrowedValue = false
+        if (available < bottom) {
+            available += 10
+            borrowOutValue = 1
+            borrowedValue = true
+        }
+        val needTop = borrowOutValue == 1
+        return copy(
+            afterIncoming = finalTop,
+            base = available,
+            borrowOut = borrowOutValue,
+            borrowed = borrowedValue,
+            chained = false,
+            bottomDigit = bottom,
+            borrowNeeded = needTop,
+            borrowTyped = false,
+            answered = false,
+            reduceValues = reduceValues + (column to finalTop),
+            stage = "solve",
+            topSlot = if (needTop) "final" else "none",
+            topExpected = if (needTop) available else null,
+        )
+    }
+
     val afterIncomingValue = topDigit - incoming
     var available = afterIncomingValue
     var borrowOutValue = 0
@@ -165,6 +200,26 @@ private fun newTypedSubState(): TypedSubState {
         topDigits = typedSubDigits(top),
         bottomDigits = typedSubDigits(bottom),
     ).setupColumn()
+}
+
+// Starts rewriting the whole chain that follows a zero column: every following
+// zero must be written as 9, and the first nonzero digit loses 1. The values are
+// not filled in automatically: empty fields are shown on the top row for the
+// player to complete before the subtraction continues.
+private fun TypedSubState.startChainRewrite(startColumn: Int): TypedSubState {
+    if (startColumn in settled) return this
+    var result = copy(settled = settled + startColumn)
+    var next = startColumn + 1
+    while (next < SUB_TYPED_DIGITS) {
+        if (next in result.settled) break
+        val original = result.topDigits[next]
+        if (result.pendingRewrites.containsKey(next)) break
+        val expected = if (original == 0) 9 else original - 1
+        result = result.copy(pendingRewrites = result.pendingRewrites + (next to expected))
+        if (original != 0) break
+        next++
+    }
+    return result
 }
 
 // The player accepted the adjusted digit written on top. When the column also
@@ -294,8 +349,10 @@ private fun RowScope.TypedSubTopCell(
     order: Int,
     topText: String,
     borrowText: String,
+    rewriteText: String,
     onTopChange: (String) -> Unit,
     onBorrowChange: (String) -> Unit,
+    onRewriteChange: (String) -> Unit,
 ) {
     val xs = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pending = !state.answered
@@ -303,14 +360,18 @@ private fun RowScope.TypedSubTopCell(
     val showBorrow = pending && order == state.column + 1 && state.borrowNeeded && !state.borrowTyped
     val showTop = pending && order == state.column &&
         (state.topSlot == "reduce" || state.topSlot == "final")
+    val showRewrite = pending && order in state.pendingRewrites && !showTop && !showBorrow
 
     Box(
         modifier = Modifier
             .weight(1f)
             .height(42.dp)
             .then(
-                if (active) Modifier.background(TypedSubActiveCell, RoundedCornerShape(4.dp))
-                else Modifier
+                when {
+                    active -> Modifier.background(TypedSubActiveCell, RoundedCornerShape(4.dp))
+                    showRewrite -> Modifier.background(Color(0xFFFFF8E1), RoundedCornerShape(4.dp))
+                    else -> Modifier
+                }
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -347,6 +408,13 @@ private fun RowScope.TypedSubTopCell(
                     width = 36.dp
                 )
             }
+            showRewrite -> TypedSubInput(
+                value = rewriteText,
+                onValueChange = onRewriteChange,
+                label = xs.topValueLabel,
+                maxLength = 1,
+                width = 30.dp
+            )
             else -> {
                 val regroup = state.regroup[order]
                 val reduced = state.reduceValues[order]
@@ -390,9 +458,11 @@ private fun TypedSubBoard(
     topText: String,
     borrowText: String,
     digitText: String,
+    rewriteTexts: Map<Int, String>,
     onTopChange: (String) -> Unit,
     onBorrowChange: (String) -> Unit,
     onDigitChange: (String) -> Unit,
+    onRewriteChange: (Int, String) -> Unit,
 ) {
     val xs = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pending = !state.answered
@@ -406,8 +476,10 @@ private fun TypedSubBoard(
                     order = order,
                     topText = topText,
                     borrowText = borrowText,
+                    rewriteText = rewriteTexts[order] ?: "",
                     onTopChange = onTopChange,
-                    onBorrowChange = onBorrowChange
+                    onBorrowChange = onBorrowChange,
+                    onRewriteChange = { raw -> onRewriteChange(order, raw) }
                 )
             }
         }
@@ -457,7 +529,7 @@ private fun TypedSubBoard(
                             onValueChange = onDigitChange,
                             label = xs.digitLabel,
                             maxLength = 1,
-                            enabled = state.stage == "solve"
+                            enabled = state.stage == "solve" && state.pendingRewrites.isEmpty()
                         )
                     }
                 } else {
@@ -614,6 +686,7 @@ fun PracticingSubtractionTypedScreen(
     var topText by remember { mutableStateOf("") }
     var borrowText by remember { mutableStateOf("") }
     var digitText by remember { mutableStateOf("") }
+    var rewriteTexts by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     var errorFeedback by remember { mutableStateOf("") }
     var instructionText by remember { mutableStateOf<String?>(null) }
     var arrivalAwarded by remember { mutableStateOf(false) }
@@ -681,6 +754,15 @@ fun PracticingSubtractionTypedScreen(
                 topText = ""
                 errorFeedback = ""
                 topWritten = true
+                if (next.chained && next.topDigits[next.column] == 0) {
+                    // The zero column borrowed from the next order to become 9.
+                    // Rewrite the whole chain above before the column subtraction.
+                    next = next.copy(
+                        borrows = next.borrows + (next.column to 1),
+                        borrowTyped = true,
+                    )
+                    next = next.startChainRewrite(next.column)
+                }
             } else if (newTop.isNotEmpty() && !isTypedSubTopPartial(expected, newTop)) {
                 errorFeedback = if (next.chained) {
                     xs.wrongTopChained
@@ -701,12 +783,15 @@ fun PracticingSubtractionTypedScreen(
         val nextTop = if (nextReduced < 0) 9 else nextReduced
         val borrowIsNextTop = next.borrowNeeded && nextColumn < SUB_TYPED_DIGITS &&
             newBorrow.isNotEmpty() && nextTop != 1 && newBorrow.toIntOrNull() == nextTop
-        val borrowOk = !next.borrowNeeded ||
+        val borrowOk = !next.borrowNeeded || next.borrowTyped ||
             (newBorrow.isNotEmpty() && (newBorrow.toIntOrNull() == 1 || borrowIsNextTop))
         if (borrowOk && next.borrowNeeded) {
             next = next.copy(borrows = next.borrows + (next.column to 1), borrowTyped = true)
             if (borrowIsNextTop) {
                 next = next.copy(regroup = next.regroup + (nextColumn to nextTop))
+                if (next.topDigits[nextColumn] == 0) {
+                    next = next.startChainRewrite(nextColumn)
+                }
             }
         }
         if (next.borrowNeeded && newBorrow.isNotEmpty() && !borrowOk) {
@@ -723,7 +808,11 @@ fun PracticingSubtractionTypedScreen(
             return
         }
 
-        state = if (topWritten && borrowOk && digitOk) next.resolve() else next
+        state = if (topWritten && borrowOk && digitOk && next.pendingRewrites.isEmpty()) {
+            next.resolve()
+        } else {
+            next
+        }
         errorFeedback = ""
     }
 
@@ -732,12 +821,47 @@ fun PracticingSubtractionTypedScreen(
         topText = ""
         borrowText = ""
         digitText = ""
+        rewriteTexts = emptyMap()
         errorFeedback = ""
     }
 
+    fun onRewriteChange(order: Int, raw: String) {
+        val expected = state.pendingRewrites[order] ?: return
+        val text = raw.filter { it.isDigit() }.take(1)
+        rewriteTexts = rewriteTexts + (order to text)
+        if (text.toIntOrNull() == expected) {
+            val filled = state.copy(
+                regroup = state.regroup + (order to expected),
+                settled = state.settled + order,
+                pendingRewrites = state.pendingRewrites - order,
+            )
+            state = filled
+            rewriteTexts = rewriteTexts - order
+            errorFeedback = ""
+            if (filled.pendingRewrites.isEmpty()) {
+                evaluate(topText, borrowText, digitText)
+            }
+        } else if (text.isNotEmpty()) {
+            errorFeedback = xs.wrongRewrite
+        } else {
+            errorFeedback = ""
+        }
+    }
+
     val columnName = orderNames[state.column]
-    val question = xs.questionTemplate.format(columnName, state.base, state.bottomDigit)
+    val question = if (state.column in state.settled && (state.borrowTyped || !state.borrowNeeded)) {
+        xs.settledQuestionTemplate.format(columnName, state.base, state.bottomDigit)
+    } else {
+        xs.questionTemplate.format(columnName, state.base, state.bottomDigit)
+    }
     val note = when {
+        state.pendingRewrites.isNotEmpty() -> xs.rewriteNote
+        state.column in state.settled ->
+            if (state.borrowed) {
+                xs.borrowNote.format(state.afterIncoming, state.bottomDigit, state.base)
+            } else {
+                ""
+            }
         state.stage == "reduce" ->
             xs.incomingNote.format(state.topDigits[state.column], state.afterIncoming)
         state.chained -> xs.chainedNote
@@ -866,6 +990,7 @@ fun PracticingSubtractionTypedScreen(
                         topText = topText,
                         borrowText = borrowText,
                         digitText = digitText,
+                        rewriteTexts = rewriteTexts,
                         onTopChange = {
                             topText = it
                             evaluate(it, borrowText, digitText)
@@ -877,7 +1002,8 @@ fun PracticingSubtractionTypedScreen(
                         onDigitChange = {
                             digitText = it
                             evaluate(topText, borrowText, it)
-                        }
+                        },
+                        onRewriteChange = { order, raw -> onRewriteChange(order, raw) }
                     )
                 }
 
