@@ -172,6 +172,7 @@ import com.historytracers.app.ui.screens.OddOrEvenScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.ReturningScreen
 import com.historytracers.app.ui.screens.PracticingSubtractionScreen
+import com.historytracers.app.ui.screens.PracticingSubtractionTypedScreen
 import com.historytracers.app.ui.screens.MeasuringScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerIntroScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerRulerScreen
@@ -555,6 +556,7 @@ fun AppNavigation() {
            "walking_backwards_from_another_beginning", "walking_backwards_thinking",
            "walking_backwards_signal", "walking_backwards_conclusion",
            Screen.PracticingSubtraction.route,
+           Screen.PracticingSubtractionTyped.route,
            Screen.BuildingLikeAMesoamerican.route, Screen.BuildingLikeEtruscanRomans.route,
            Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
@@ -1165,11 +1167,26 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
-                            onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } }
+                            onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
+                            onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.PracticingSubtraction.route) {
                         PracticingSubtractionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.PracticingSubtractionTyped.route) {
+                        PracticingSubtractionTypedScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
@@ -8630,6 +8647,7 @@ fun AppNavigation() {
                             onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
+                            onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryOrNotCarry = { navController.navigate(Screen.CarryOrNotCarryIntro.route) { launchSingleTop = true } },
                             onNavigateToAdvancingAndComplementing = { navController.navigate(Screen.AdvancingAndComplementingIntro.route) { launchSingleTop = true } },
@@ -8647,7 +8665,6 @@ fun AppNavigation() {
                             onNavigateToEqualityIntro = { navController.navigate(Screen.EqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityIntro = { navController.navigate(Screen.HistoricalEqualityIntro.route) { launchSingleTop = true } },
                             onNavigateToHistoricalEqualityPyramidsIntro = { navController.navigate(Screen.HistoricalEqualityPyramidsIntro.route) { launchSingleTop = true } },
-                            onNavigateToSunTzuAddition = { navController.navigate(Screen.SunTzuAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingAdditionTyped = { navController.navigate(Screen.PracticingAdditionTypedIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingAdditionChosen = { navController.navigate(Screen.PracticingAdditionChosenGame.route) { launchSingleTop = true } },
                             onNavigateToSunTzuLearning = { navController.navigate(Screen.SunTzuLearningIntro.route) { launchSingleTop = true } }

@@ -150,6 +150,7 @@ sealed class Screen(val route: String) {
     data object AnotherWayToCount : Screen("another_way_to_count")
     data object Returning : Screen("returning")
     data object PracticingSubtraction : Screen("practicing_subtraction")
+    data object PracticingSubtractionTyped : Screen("practicing_subtraction_typed")
     data object Measuring : Screen("measuring")
     data object BiggerOrSmallerIntro : Screen("bigger_or_smaller_intro")
     data object BiggerOrSmallerRuler : Screen("bigger_or_smaller_ruler")

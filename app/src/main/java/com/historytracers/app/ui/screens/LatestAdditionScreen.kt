@@ -36,10 +36,10 @@ import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguag
 import com.historytracers.app.ui.features.practicingAdditionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.app.ui.features.sunTzuAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.whoAmIScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -92,13 +92,13 @@ fun LatestAdditionScreen(
     onNavigateToMeasuringOneDirection: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
+    onNavigateToPracticingSubtractionTyped: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
-    onNavigateToSunTzuAddition: () -> Unit = {},
     onNavigateToPracticingAdditionTyped: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToSunTzuLearning: () -> Unit = {}
@@ -116,7 +116,7 @@ fun LatestAdditionScreen(
     val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pcs = practicingAdditionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val pss = practicingSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
-    val sts = sunTzuAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
@@ -125,6 +125,20 @@ fun LatestAdditionScreen(
     val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction_typed",
+            label = psts.title,
+            icon = {
+                Text(
+                    text = "8 - 1 = ?",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_subtraction_typed" in completedReturning },
+            onNavigate = onNavigateToPracticingSubtractionTyped
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_subtraction",
             label = pss.title,
@@ -180,20 +194,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "practicing_addition_typed" in completedRoadToSomewhere },
             onNavigate = onNavigateToPracticingAdditionTyped
-        ),
-        LatestAdditionEntry(
-            sectionId = "sun_tzu_addition",
-            label = sts.title,
-            icon = {
-                Text(
-                    text = "\u5b6b\u5b50",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "sun_tzu_addition" in completedRoadToSomewhere },
-            onNavigate = onNavigateToSunTzuAddition
         )
     )
 
