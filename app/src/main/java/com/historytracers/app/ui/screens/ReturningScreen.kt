@@ -34,18 +34,30 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.returningScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private val RETURNING_SECTION_IDS = listOf(
+    "walking_backwards", "complement_and_subtraction", "sun_tzu_subtraction",
+    "practicing_subtraction", "practicing_subtraction_typed", "practicing_subtraction_chosen"
+)
 
 @Composable
 fun ReturningScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToComplementAndSubtraction: () -> Unit = {},
     onNavigateToSunTzuSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtractionTyped: () -> Unit = {},
-    onNavigateToPracticingSubtractionChosen: () -> Unit = {}
+    onNavigateToPracticingSubtractionChosen: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -55,15 +67,34 @@ fun ReturningScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
     val walkingBackwardsDone = "walking_backwards" in completedReturning
     val complementAndSubtractionDone = "complement_and_subtraction" in completedReturning
     val sunTzuSubtractionDone = "sun_tzu_subtraction" in completedReturning
     val practicingSubtractionDone = "practicing_subtraction" in completedReturning
     val practicingSubtractionTypedDone = "practicing_subtraction_typed" in completedReturning
     val practicingSubtractionChosenDone = "practicing_subtraction_chosen" in completedReturning
+    val returningAllDone = RETURNING_SECTION_IDS.all { it in completedReturning }
 
+    var claiming by remember { mutableStateOf(false) }
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
+
+    fun claimReturningLevel() {
+        if (claiming) return
+        if (!returningAllDone) return
+        if ("returning" in claimedLevels) return
+        claiming = true
+        onScoreChanged(currentScore + 10)
+        scope.launch {
+            withContext(NonCancellable) {
+                preferences.recordLessonCompletion()
+                preferences.markLevelClaimed("returning")
+            }
+            claiming = false
+            onNavigateToCongratulation()
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -288,6 +319,39 @@ fun ReturningScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = { claimReturningLevel() },
+                    enabled = returningAllDone,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("returning" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
             }
         }
     }

@@ -1192,6 +1192,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.Returning.route) {
                         ReturningScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -1205,7 +1207,8 @@ fun AppNavigation() {
                             onNavigateToSunTzuSubtraction = { navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } },
-                            onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } }
+                            onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.SunTzuSubtractionIntro.route) {
