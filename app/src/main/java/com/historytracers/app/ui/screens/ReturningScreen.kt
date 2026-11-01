@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -13,9 +14,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,6 +40,7 @@ import kotlinx.coroutines.launch
 fun ReturningScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToComplementAndSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtractionTyped: () -> Unit = {},
     onNavigateToPracticingSubtractionChosen: () -> Unit = {}
@@ -46,6 +54,7 @@ fun ReturningScreen(
     val scope = rememberCoroutineScope()
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val walkingBackwardsDone = "walking_backwards" in completedReturning
+    val complementAndSubtractionDone = "complement_and_subtraction" in completedReturning
     val practicingSubtractionDone = "practicing_subtraction" in completedReturning
     val practicingSubtractionTypedDone = "practicing_subtraction_typed" in completedReturning
     val practicingSubtractionChosenDone = "practicing_subtraction_chosen" in completedReturning
@@ -127,6 +136,33 @@ fun ReturningScreen(
 
                 Text(
                     text = xs.walkingBackwards,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToComplementAndSubtraction,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (complementAndSubtractionDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    ComplementAndSubtractionIcon(
+                        contentDescription = xs.complementAndSubtraction,
+                        modifier = Modifier.size(52.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.complementAndSubtraction,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -245,5 +281,41 @@ fun ReturningScreen(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun ComplementAndSubtractionIcon(
+    contentDescription: String,
+    modifier: Modifier = Modifier
+) {
+    val outline = Color(0xFF37474F)
+
+    Canvas(
+        modifier = modifier.semantics { this.contentDescription = contentDescription }
+    ) {
+        val width = size.width
+        val height = size.height
+        val side = minOf(width * 0.28f, height * 0.56f)
+        val gap = width * 0.06f
+        val totalWidth = side * 3 + gap * 2
+        val startX = (width - totalWidth) / 2f
+        val topY = (height - side) / 2f
+        val fills = listOf(Color.White, Color(0xFFADD8E6), Color(0xFFADD8E6))
+
+        fills.forEachIndexed { index, fill ->
+            val left = startX + index * (side + gap)
+            drawRect(
+                color = fill,
+                topLeft = Offset(left, topY),
+                size = Size(side, side)
+            )
+            drawRect(
+                color = outline,
+                topLeft = Offset(left, topY),
+                size = Size(side, side),
+                style = Stroke(width = width * 0.03f)
+            )
+        }
     }
 }

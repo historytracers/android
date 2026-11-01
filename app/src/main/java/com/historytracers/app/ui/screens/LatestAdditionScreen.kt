@@ -17,7 +17,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -29,6 +31,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.complementAndSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
@@ -40,7 +43,6 @@ import com.historytracers.app.ui.features.practicingSubtractionChosenScreenStrin
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.app.ui.features.whoAmIScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -91,6 +93,7 @@ fun LatestAdditionScreen(
     onNavigateToGreaterOrSmallerGame: () -> Unit = {},
     onNavigateToMeasuringOneDirection: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToComplementAndSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtractionTyped: () -> Unit = {},
     onNavigateToPracticingSubtractionChosen: () -> Unit = {},
@@ -117,14 +120,43 @@ fun LatestAdditionScreen(
     val pss = practicingSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pscs = practicingSubtractionChosenScreenStringsForLanguage(LocalAppLanguage.current)
+    val css = complementAndSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
-    val completedWhoAmI by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
-    val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "complement_and_subtraction",
+            label = css.title,
+            icon = {
+                Canvas(modifier = Modifier.size(40.dp)) {
+                    val side = size.width * 0.26f
+                    val gap = size.width * 0.08f
+                    val total = side * 3 + gap * 2
+                    val startX = (size.width - total) / 2f
+                    val top = (size.height - side) / 2f
+                    val fills = listOf(Color.White, Color(0xFFADD8E6), Color(0xFFADD8E6))
+                    fills.forEachIndexed { index, fill ->
+                        val left = startX + index * (side + gap)
+                        drawRect(
+                            color = fill,
+                            topLeft = Offset(left, top),
+                            size = Size(side, side)
+                        )
+                        drawRect(
+                            color = Color(0xFF37474F),
+                            topLeft = Offset(left, top),
+                            size = Size(side, side),
+                            style = Stroke(width = 2f)
+                        )
+                    }
+                }
+            },
+            isCompleted = { "complement_and_subtraction" in completedReturning },
+            onNavigate = onNavigateToComplementAndSubtraction
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_subtraction_chosen",
             label = pscs.title,
@@ -180,20 +212,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "practicing_addition_chosen" in completedRoadToSomewhere },
             onNavigate = onNavigateToPracticingAdditionChosen
-        ),
-        LatestAdditionEntry(
-            sectionId = "sun_tzu_and_learning",
-            label = wss.sunTzuAndLearning,
-            icon = {
-                Text(
-                    text = "孫子",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "sun_tzu_and_learning" in completedWhoAmI },
-            onNavigate = onNavigateToSunTzuLearning
         )
     )
 

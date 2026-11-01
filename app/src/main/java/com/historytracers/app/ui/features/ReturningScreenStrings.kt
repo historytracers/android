@@ -5,6 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 data class ReturningScreenStrings(
     val walkingBackwards: String,
+    val complementAndSubtraction: String,
     val practicingSubtraction: String,
     val subtractionExample: String,
     val practicingSubtractionTyped: String,
@@ -15,6 +16,7 @@ data class ReturningScreenStrings(
 
 val EnReturningScreenStrings = ReturningScreenStrings(
     walkingBackwards = "Walking Backwards",
+    complementAndSubtraction = "Complement and Subtraction",
     practicingSubtraction = "Practicing Subtraction",
     subtractionExample = "9 - 5",
     practicingSubtractionTyped = "Practicing Subtraction with Typed Values",
@@ -25,6 +27,7 @@ val EnReturningScreenStrings = ReturningScreenStrings(
 
 val PtReturningScreenStrings = ReturningScreenStrings(
     walkingBackwards = "Andando para Tr\u00e1s",
+    complementAndSubtraction = "Complemento e Subtra\u00e7\u00e3o",
     practicingSubtraction = "Praticando Subtra\u00e7\u00e3o",
     subtractionExample = "9 - 5",
     practicingSubtractionTyped = "Praticando Subtra\u00e7\u00e3o com Valores Digitados",
@@ -35,6 +38,7 @@ val PtReturningScreenStrings = ReturningScreenStrings(
 
 val EsReturningScreenStrings = ReturningScreenStrings(
     walkingBackwards = "Caminando Hacia Atr\u00e1s",
+    complementAndSubtraction = "Complemento y Resta",
     practicingSubtraction = "Practicando Resta",
     subtractionExample = "9 - 5",
     practicingSubtractionTyped = "Practicando Resta con Valores Escritos",
