@@ -1179,12 +1179,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Returning.route, false)) {
-                                    navController.navigate(Screen.Returning.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
                             }
                         )
                     }
@@ -1193,12 +1192,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Returning.route, false)) {
-                                    navController.navigate(Screen.Returning.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
                             }
                         )
                     }
@@ -1207,12 +1205,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Returning.route, false)) {
-                                    navController.navigate(Screen.Returning.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
                             }
                         )
                     }
@@ -3550,12 +3547,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {
-                                    navController.navigate(Screen.RoadToSomewhere.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.RoadToSomewhere.route,
+                                    fallback = Screen.RoadToSomewhere.route
+                                )
                             },
                             onNavigateToRoadToSomewhere = {
                                 if (!navController.popBackStack(Screen.RoadToSomewhere.route, false)) {

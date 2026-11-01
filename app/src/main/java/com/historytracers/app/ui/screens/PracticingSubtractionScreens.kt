@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -339,9 +340,9 @@ private fun SubColumnSquares(state: SubState) {
     val note = if (state.borrowed) {
         xs.borrowSquaresNote.format(
             state.removed,
+            10 - state.removed,
             state.bottomDigit,
             10 - state.bottomDigit,
-            10 - state.removed,
             state.base - 10
         )
     } else {
@@ -451,17 +452,19 @@ fun PracticingSubtractionScreen(
 
     var state by remember { mutableStateOf(newSubState()) }
     var instructionText by remember { mutableStateOf<String?>(null) }
-    var arrivalAwarded by remember { mutableStateOf(false) }
+    var arrivalAwarded by rememberSaveable { mutableStateOf(false) }
     var completionHandled by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
 
     val initialScore = remember { currentScore }
+    var totalAwarded by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         if (!arrivalAwarded) {
             arrivalAwarded = true
-            onScoreChanged(initialScore + 2)
+            totalAwarded += 2
+            onScoreChanged(initialScore + totalAwarded)
         }
     }
 
@@ -474,10 +477,14 @@ fun PracticingSubtractionScreen(
     }
 
     LaunchedEffect(state.answered, state.column) {
-        if (state.answered && state.column >= SUB_DIGITS - 1 && !completionHandled) {
-            completionHandled = true
-            preferences.recordLessonCompletion()
-            preferences.markReturningSectionCompleted(SUB_SECTION_ID)
+        if (state.answered && state.column >= SUB_DIGITS - 1) {
+            totalAwarded += 2
+            onScoreChanged(initialScore + totalAwarded)
+            if (!completionHandled) {
+                completionHandled = true
+                preferences.recordLessonCompletion()
+                preferences.markReturningSectionCompleted(SUB_SECTION_ID)
+            }
         }
     }
 

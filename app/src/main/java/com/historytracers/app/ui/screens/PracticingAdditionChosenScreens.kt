@@ -20,6 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -484,7 +485,7 @@ fun PracticingAdditionChosenGameScreen(
     var feedback by remember { mutableStateOf("") }
     var feedbackIsError by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf("") }
-    var arrivalAwarded by remember { mutableStateOf(false) }
+    var arrivalAwarded by rememberSaveable { mutableStateOf(false) }
     var completionHandled by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
@@ -492,7 +493,6 @@ fun PracticingAdditionChosenGameScreen(
     val initialScore = remember { currentScore }
 
     LaunchedEffect(Unit) {
-        preferences.recordLessonCompletion()
         if (!arrivalAwarded) {
             arrivalAwarded = true
             onScoreChanged(initialScore + 2)
@@ -503,6 +503,7 @@ fun PracticingAdditionChosenGameScreen(
         val current = state ?: return@LaunchedEffect
         if (current.answered && current.column >= current.columns - 1 && !completionHandled) {
             completionHandled = true
+            preferences.recordLessonCompletion()
             preferences.markRoadToSomewhereSectionCompleted("practicing_addition_chosen")
         }
     }

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -689,17 +690,19 @@ fun PracticingSubtractionChosenScreen(
     var rewriteTexts by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
     var errorFeedback by remember { mutableStateOf("") }
     var instructionText by remember { mutableStateOf<String?>(null) }
-    var arrivalAwarded by remember { mutableStateOf(false) }
+    var arrivalAwarded by rememberSaveable { mutableStateOf(false) }
     var completionHandled by remember { mutableStateOf(false) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
 
     val initialScore = remember { currentScore }
+    var totalAwarded by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         if (!arrivalAwarded) {
             arrivalAwarded = true
-            onScoreChanged(initialScore + 2)
+            totalAwarded += 2
+            onScoreChanged(initialScore + totalAwarded)
         }
     }
 
@@ -713,10 +716,14 @@ fun PracticingSubtractionChosenScreen(
 
     LaunchedEffect(state?.answered, state?.column, state?.columns) {
         val current = state ?: return@LaunchedEffect
-        if (current.answered && current.column >= current.columns - 1 && !completionHandled) {
-            completionHandled = true
-            preferences.recordLessonCompletion()
-            preferences.markReturningSectionCompleted(CHOSEN_SUB_SECTION_ID)
+        if (current.answered && current.column >= current.columns - 1) {
+            totalAwarded += 2
+            onScoreChanged(initialScore + totalAwarded)
+            if (!completionHandled) {
+                completionHandled = true
+                preferences.recordLessonCompletion()
+                preferences.markReturningSectionCompleted(CHOSEN_SUB_SECTION_ID)
+            }
         }
     }
 
@@ -914,7 +921,9 @@ fun PracticingSubtractionChosenScreen(
     }
     val shownFeedback = when {
         errorFeedback.isNotEmpty() -> errorFeedback
-        game != null && game.answered && !lastColumnDone -> xs.congrats + "\n" + explanation
+        game != null && game.answered && lastColumnDone ->
+            xs.perfect.format(game.top, game.bottom, game.top - game.bottom) + "\n" + explanation
+        game != null && game.answered -> xs.congrats + "\n" + explanation
         else -> ""
     }
 
