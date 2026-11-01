@@ -91,8 +91,8 @@ private val aroundTheWorldSectionIds = listOf(
 )
 
 private val returningSectionIds = listOf(
-    "walking_backwards", "practicing_subtraction", "practicing_subtraction_typed",
-    "practicing_subtraction_chosen"
+    "walking_backwards", "complement_and_subtraction", "sun_tzu_subtraction", "practicing_subtraction",
+    "practicing_subtraction_typed", "practicing_subtraction_chosen"
 )
 
 private val measuringSectionIds = listOf(

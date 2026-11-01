@@ -34,6 +34,7 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.returningScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,6 +42,7 @@ fun ReturningScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
     onNavigateToComplementAndSubtraction: () -> Unit = {},
+    onNavigateToSunTzuSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtractionTyped: () -> Unit = {},
     onNavigateToPracticingSubtractionChosen: () -> Unit = {}
@@ -55,6 +57,7 @@ fun ReturningScreen(
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val walkingBackwardsDone = "walking_backwards" in completedReturning
     val complementAndSubtractionDone = "complement_and_subtraction" in completedReturning
+    val sunTzuSubtractionDone = "sun_tzu_subtraction" in completedReturning
     val practicingSubtractionDone = "practicing_subtraction" in completedReturning
     val practicingSubtractionTypedDone = "practicing_subtraction_typed" in completedReturning
     val practicingSubtractionChosenDone = "practicing_subtraction_chosen" in completedReturning
@@ -163,6 +166,35 @@ fun ReturningScreen(
 
                 Text(
                     text = xs.complementAndSubtraction,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSunTzuSubtraction,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (sunTzuSubtractionDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u5b6b\u5b50",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.sunTzuSubtraction,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

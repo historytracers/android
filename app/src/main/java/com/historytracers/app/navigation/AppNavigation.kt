@@ -183,6 +183,13 @@ import com.historytracers.app.ui.screens.ComplementAndSubtractionConclusionScree
 import com.historytracers.app.ui.screens.PracticingSubtractionScreen
 import com.historytracers.app.ui.screens.PracticingSubtractionTypedScreen
 import com.historytracers.app.ui.screens.PracticingSubtractionChosenScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionIntroScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionMoraleScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionHeavenScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionTerrainScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionCommanderScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionMethodScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionPracticeScreen
 import com.historytracers.app.ui.screens.MeasuringScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerIntroScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerRulerScreen
@@ -577,6 +584,13 @@ fun AppNavigation() {
            Screen.PracticingSubtraction.route,
            Screen.PracticingSubtractionTyped.route,
            Screen.PracticingSubtractionChosen.route,
+           Screen.SunTzuSubtractionIntro.route,
+           Screen.SunTzuSubtractionMorale.route,
+           Screen.SunTzuSubtractionHeaven.route,
+           Screen.SunTzuSubtractionTerrain.route,
+           Screen.SunTzuSubtractionCommander.route,
+           Screen.SunTzuSubtractionMethod.route,
+           Screen.SunTzuSubtractionPractice.route,
            Screen.BuildingLikeAMesoamerican.route, Screen.BuildingLikeEtruscanRomans.route,
            Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
@@ -1188,9 +1202,144 @@ fun AppNavigation() {
                             },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
                             onNavigateToComplementAndSubtraction = { navController.navigate(Screen.ComplementAndSubtractionIntro.route) { launchSingleTop = true } },
+                            onNavigateToSunTzuSubtraction = { navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionIntro.route) {
+                        SunTzuSubtractionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionMorale.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionMorale.route) {
+                        SunTzuSubtractionMoraleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionIntro.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionHeaven.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionHeaven.route) {
+                        SunTzuSubtractionHeavenScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionMorale.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionMorale.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionTerrain.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionTerrain.route) {
+                        SunTzuSubtractionTerrainScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionHeaven.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionHeaven.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionCommander.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionCommander.route) {
+                        SunTzuSubtractionCommanderScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionTerrain.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionTerrain.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionMethod.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionMethod.route) {
+                        SunTzuSubtractionMethodScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionCommander.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionCommander.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionPractice.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionPractice.route) {
+                        SunTzuSubtractionPracticeScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionMethod.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionMethod.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToReturning = {
+                                navController.popBackToOrigin(
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.ComplementAndSubtractionIntro.route) {
@@ -8820,6 +8969,7 @@ fun AppNavigation() {
                             onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
                             onNavigateToComplementAndSubtraction = { navController.navigate(Screen.ComplementAndSubtractionIntro.route) { launchSingleTop = true } },
+                            onNavigateToSunTzuSubtraction = { navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } },
