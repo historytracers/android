@@ -376,6 +376,7 @@ import com.historytracers.app.ui.screens.AroundTheWorldAdditionJapanScreen
 import com.historytracers.app.ui.screens.AroundTheWorldAdditionJapanGameScreen
 import com.historytracers.app.ui.screens.AroundTheWorldAdditionRussiaScreen
 import com.historytracers.app.ui.screens.AroundTheWorldAdditionRussiaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionConclusionScreen
 import com.historytracers.app.ui.screens.AbacusHistoryThinkingScreen
 import com.historytracers.app.ui.screens.PracticingAdditionScreen
 import com.historytracers.app.ui.screens.MultiplicationTableScreen
@@ -669,6 +670,7 @@ fun AppNavigation() {
                Screen.AroundTheWorldAdditionYupana.route, Screen.AroundTheWorldAdditionYupanaGame.route,
                Screen.AroundTheWorldAdditionJapan.route, Screen.AroundTheWorldAdditionJapanGame.route,
                Screen.AroundTheWorldAdditionRussia.route, Screen.AroundTheWorldAdditionRussiaGame.route,
+               Screen.AroundTheWorldAdditionConclusion.route,
                Screen.SunTzuAdditionIntro.route, Screen.SunTzuAdditionMorale.route,
                Screen.SunTzuAdditionHeaven.route, Screen.SunTzuAdditionTerrain.route,
                Screen.SunTzuAdditionCommander.route, Screen.SunTzuAdditionMethod.route,
@@ -9094,6 +9096,15 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
                             onNavigatePrev = { navController.navigate(Screen.AroundTheWorldAdditionRussia.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionConclusion.route) {
+                        AroundTheWorldAdditionConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navController.navigate(Screen.AroundTheWorldAdditionRussiaGame.route) { launchSingleTop = true } },
                             onNavigateToHome = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) }
                         )
                     }

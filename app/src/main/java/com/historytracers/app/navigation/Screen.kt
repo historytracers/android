@@ -508,4 +508,5 @@ sealed class Screen(val route: String) {
     data object AroundTheWorldAdditionJapanGame : Screen("around_the_world_addition_japan_game")
     data object AroundTheWorldAdditionRussia : Screen("around_the_world_addition_russia")
     data object AroundTheWorldAdditionRussiaGame : Screen("around_the_world_addition_russia_game")
+    data object AroundTheWorldAdditionConclusion : Screen("around_the_world_addition_conclusion")
 }

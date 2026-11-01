@@ -9,6 +9,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.contentDescription
@@ -85,6 +87,7 @@ private const val ATW_ADD_JAPAN = "a8f3c1d2-5b64-4e17-9c2a-1d0f3b6e8a11"
 private const val ATW_ADD_JAPAN_GAME = "a8f3c1d2-5b64-4e17-9c2a-1d0f3b6e8a12"
 private const val ATW_ADD_RUSSIA = "a8f3c1d2-5b64-4e17-9c2a-1d0f3b6e8a13"
 private const val ATW_ADD_RUSSIA_GAME = "a8f3c1d2-5b64-4e17-9c2a-1d0f3b6e8a14"
+private const val ATW_ADD_CONCLUSION = "a8f3c1d2-5b64-4e17-9c2a-1d0f3b6e8a15"
 
 private enum class AtwAddTool { BONES, QUIPU, MESO, CALCULI, TYPED, SUANPAN, YUPANA, SOROBAN, SCHYOTY }
 
@@ -453,11 +456,30 @@ fun AroundTheWorldAdditionRussiaGameScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
-    onNavigateToHome: () -> Unit = {}
+    onNavigateNext: () -> Unit = {}
 ) {
     AtwAdditionContent(
         contentId = ATW_ADD_RUSSIA_GAME,
         tool = AtwAddTool.SCHYOTY,
+        currentScore = currentScore,
+        onScoreChanged = onScoreChanged,
+        onNavigateBack = onNavigateBack,
+        onNavigatePrev = onNavigatePrev,
+        onNavigateNext = onNavigateNext
+    )
+}
+
+@Composable
+fun AroundTheWorldAdditionConclusionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigatePrev: () -> Unit = {},
+    onNavigateToHome: () -> Unit = {}
+) {
+    AtwAdditionContent(
+        contentId = ATW_ADD_CONCLUSION,
+        tool = null,
         currentScore = currentScore,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
@@ -736,7 +758,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
     LaunchedEffect(value, sum, solved, step, stepCompleted, tool) {
         when {
             solved -> Unit
-            tool == AtwAddTool.TYPED -> Unit
+            tool == AtwAddTool.TYPED || tool == AtwAddTool.YUPANA -> Unit
             isStepTool -> {
                 val target = if (step == 1) a else sum
                 if (!stepCompleted && value == target) {
@@ -877,25 +899,17 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
             }
 
             AtwAddTool.YUPANA -> {
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    drawAtwAddYupana(value)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("${xs.tens}: ${value / 10}", fontWeight = FontWeight.Bold)
-                    Text("${xs.units}: ${value % 10}", fontWeight = FontWeight.Bold)
-                }
-                AtwAdditionValueStepper(
-                    value = value,
-                    enabled = !solved,
-                    onChange = { value = it }
+                AtwYupanaExercise(
+                    a = a,
+                    b = b,
+                    solved = solved,
+                    exerciseKey = exerciseKey,
+                    onCorrect = {
+                        if (!solved) {
+                            solved = true
+                            onSolved()
+                        }
+                    }
                 )
             }
 
@@ -1016,6 +1030,204 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
             ) {
                 Text(
                     text = s.common.newExercise,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+private fun toggleAtwMarker(markers: Set<Int>, column: Int): Set<Int> =
+    if (column in markers) markers - column else markers + column
+
+@Composable
+private fun AtwYupanaExercise(
+    a: Int,
+    b: Int,
+    solved: Boolean,
+    exerciseKey: Int,
+    onCorrect: () -> Unit
+) {
+    val s = LocalUiStrings.current
+    val xs = aroundTheWorldAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val sum = a + b
+    var phase by remember(exerciseKey) { mutableIntStateOf(0) }
+    var redMarkers by remember(exerciseKey) { mutableStateOf(emptySet<Int>()) }
+    var blueMarkers by remember(exerciseKey) { mutableStateOf(emptySet<Int>()) }
+    var greenMarkers by remember(exerciseKey) { mutableStateOf(emptySet<Int>()) }
+    var carryPlaced by remember(exerciseKey) { mutableStateOf(false) }
+    var phaseCompleted by remember(exerciseKey) { mutableStateOf(false) }
+    var feedback by remember(exerciseKey) { mutableStateOf("") }
+
+    val redExpected = getMarkersForDigit(a)
+    val blueExpected = getMarkersForDigit(b)
+    val greenExpected = getMarkersForDigit(sum % 10)
+
+    fun complete() {
+        feedback = xs.yupanaPerfect.format(a, b, sum)
+        onCorrect()
+    }
+
+    fun toggleColumn(column: Int) {
+        if (phaseCompleted || solved) return
+        when (phase) {
+            0 -> {
+                val next = toggleAtwMarker(redMarkers, column)
+                redMarkers = next
+                if (next == redExpected) {
+                    phaseCompleted = true
+                    feedback = xs.stepCorrect
+                }
+            }
+
+            1 -> {
+                val next = toggleAtwMarker(blueMarkers, column)
+                blueMarkers = next
+                if (next == blueExpected) {
+                    phaseCompleted = true
+                    feedback = xs.stepCorrect
+                }
+            }
+
+            else -> {
+                val next = toggleAtwMarker(greenMarkers, column)
+                greenMarkers = next
+                if (next == greenExpected) {
+                    if (carryPlaced) {
+                        complete()
+                    } else {
+                        feedback = xs.yupanaCarryPrompt
+                    }
+                } else {
+                    feedback = ""
+                }
+            }
+        }
+    }
+
+    fun toggleCarry() {
+        if (phase != 2 || solved) return
+        val next = !carryPlaced
+        carryPlaced = next
+        if (next && greenMarkers == greenExpected) {
+            complete()
+        } else if (!next && greenMarkers == greenExpected) {
+            feedback = xs.yupanaCarryPrompt
+        } else {
+            feedback = ""
+        }
+    }
+
+    val stepText = when (phase) {
+        0 -> xs.yupanaStep1.format(a)
+        1 -> xs.yupanaStep2.format(b)
+        else -> if (greenExpected.isEmpty()) {
+            xs.yupanaStep3Zero
+        } else {
+            xs.yupanaStep3.format(sum % 10)
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "${s.common.stepPrefix}${phase + 1}/3",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = stepText,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp)
+                .padding(horizontal = 8.dp)
+                .pointerInput(
+                    phase,
+                    phaseCompleted,
+                    solved,
+                    exerciseKey,
+                    redMarkers,
+                    blueMarkers,
+                    greenMarkers,
+                    carryPlaced
+                ) {
+                    detectTapGestures { offset ->
+                        if (phaseCompleted || solved) return@detectTapGestures
+                        val w = size.width.toFloat()
+                        val h = size.height.toFloat()
+                        val margin = 3f / 860f * w
+                        val usable = w - 2f * margin
+                        val colW = usable / 4f
+                        val top = h * 0.05f
+                        val totalH = h * 0.9f
+                        val gap = h * 0.04f
+                        val rowH = (totalH - gap) / 2f
+                        val unitsTop = top + rowH + gap
+                        when {
+                            offset.y in top..(top + rowH) -> {
+                                if (phase == 2) toggleCarry()
+                            }
+
+                            offset.y in unitsTop..(unitsTop + rowH) -> {
+                                val col = (((offset.x - margin) / colW).toInt().coerceIn(0, 3)) + 1
+                                toggleColumn(col)
+                            }
+                        }
+                    }
+                }
+        ) {
+            drawAtwAddYupana(
+                phase = phase,
+                redMarkers = redMarkers,
+                blueMarkers = blueMarkers,
+                greenMarkers = greenMarkers,
+                carryPlaced = carryPlaced
+            )
+        }
+
+        if (feedback.isNotEmpty()) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = feedback,
+                color = Color(0xFF2E7D32),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
+        if (phaseCompleted && phase < 2 && !solved) {
+            Spacer(Modifier.height(10.dp))
+            FilledTonalButton(
+                onClick = {
+                    phase += 1
+                    phaseCompleted = false
+                    feedback = if (phase == 2 && greenExpected.isEmpty()) {
+                        xs.yupanaCarryPrompt
+                    } else {
+                        ""
+                    }
+                },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = s.common.nextStep,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -1601,7 +1813,13 @@ private fun DrawScope.drawAtwAddMeso(value: Int) {
     }
 }
 
-private fun DrawScope.drawAtwAddYupana(value: Int) {
+private fun DrawScope.drawAtwAddYupana(
+    phase: Int,
+    redMarkers: Set<Int>,
+    blueMarkers: Set<Int>,
+    greenMarkers: Set<Int>,
+    carryPlaced: Boolean
+) {
     val margin = 3f / 860f * size.width
     val usableWidth = size.width - 2f * margin
     val colWidth = usableWidth / 4f
@@ -1609,8 +1827,6 @@ private fun DrawScope.drawAtwAddYupana(value: Int) {
     val totalHeight = size.height * 0.9f
     val rowGap = size.height * 0.04f
     val rowHeight = (totalHeight - rowGap) / 2f
-    val tens = (value / 10).coerceIn(0, 1)
-    val units = (value % 10).coerceIn(0, 9)
 
     drawYupanaRow(
         cellOriginX = margin,
@@ -1618,15 +1834,21 @@ private fun DrawScope.drawAtwAddYupana(value: Int) {
         cellWidth = colWidth,
         cellHeight = rowHeight,
         canvasSize = size,
-        leftMarkers = getMarkersForDigit(tens)
+        leftMarkers = emptySet(),
+        rightMarkers = emptySet(),
+        resultMarkers = if (carryPlaced) getMarkersForDigit(1) else emptySet(),
+        carryMarker = phase == 2 && !carryPlaced
     )
+
     drawYupanaRow(
         cellOriginX = margin,
         cellOriginY = top + rowHeight + rowGap,
         cellWidth = colWidth,
         cellHeight = rowHeight,
         canvasSize = size,
-        leftMarkers = getMarkersForDigit(units)
+        leftMarkers = if (phase == 0 || phase == 1) redMarkers else emptySet(),
+        rightMarkers = if (phase == 1) blueMarkers else emptySet(),
+        resultMarkers = if (phase == 2) greenMarkers else emptySet()
     )
 }
 
