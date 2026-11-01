@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +37,6 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.sunTzuSubtractionScreenStringsForLanguage
@@ -44,6 +44,8 @@ import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLan
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.R
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -99,6 +101,7 @@ fun LatestAdditionScreen(
     onNavigateToPracticingSubtractionChosen: () -> Unit = {},
     onNavigateToSunTzuSubtraction: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
+    onNavigateToAroundTheWorldAddition: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
@@ -109,6 +112,7 @@ fun LatestAdditionScreen(
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -117,7 +121,6 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val pss = practicingSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pscs = practicingSubtractionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val stss = sunTzuSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -125,8 +128,23 @@ fun LatestAdditionScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
+    val completedAroundTheWorldAddition by preferences.completedAroundTheWorldAdditionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "around_the_world_addition",
+            label = hts.aroundTheWorldAddition,
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_world),
+                    contentDescription = null,
+                    modifier = Modifier.size(52.dp),
+                    tint = Color.Unspecified
+                )
+            },
+            isCompleted = { "around_the_world_addition" in completedAroundTheWorldAddition },
+            onNavigate = onNavigateToAroundTheWorldAddition
+        ),
         LatestAdditionEntry(
             sectionId = "sun_tzu_subtraction",
             label = stss.title,
@@ -198,20 +216,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "practicing_subtraction_typed" in completedReturning },
             onNavigate = onNavigateToPracticingSubtractionTyped
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_subtraction",
-            label = pss.title,
-            icon = {
-                Text(
-                    text = "9 - 5",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_subtraction" in completedReturning },
-            onNavigate = onNavigateToPracticingSubtraction
         )
     )
 

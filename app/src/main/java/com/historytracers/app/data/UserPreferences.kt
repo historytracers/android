@@ -80,6 +80,7 @@ class UserPreferences(private val context: Context) {
         private val WHERE_ARE_WE_FROM_SECTIONS_KEY = stringSetPreferencesKey("where_are_we_from_sections")
         private val ANOTHER_WAY_TO_COUNT_SECTIONS_KEY = stringSetPreferencesKey("another_way_to_count_sections")
         private val AROUND_THE_WORLD_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_sections")
+        private val AROUND_THE_WORLD_ADDITION_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_addition_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
@@ -479,6 +480,17 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val completedAroundTheWorldAdditionSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markAroundTheWorldAdditionSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] =
+                (preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
     suspend fun migrateMovedYupanaLessonsToAnotherWayToCount() {
         val current = context.dataStore.data.first()
         if (current[YUPANA_LESSONS_MIGRATED_KEY] == true) return
@@ -587,6 +599,7 @@ class UserPreferences(private val context: Context) {
             preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = emptySet()
             preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()
             preferences[AROUND_THE_WORLD_SECTIONS_KEY] = emptySet()
+            preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] = emptySet()
             preferences[CLAIMED_LEVELS_KEY] = emptySet()
             preferences[AWARDED_SCREENS_KEY] = emptySet()
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
