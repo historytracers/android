@@ -130,6 +130,7 @@ fun IndexScreen(
     onNavigateToAbacus: () -> Unit = {},
     onNavigateToYupana: () -> Unit = {},
     onNavigateToRoadToSomewhere: () -> Unit = {},
+    onNavigateToAroundTheWorldAddition: () -> Unit = {},
     onNavigateToRunningAndGrowing: () -> Unit = {},
     onNavigateToWhereAreWeFrom: () -> Unit = {},
     onNavigateToAnotherWayToCount: () -> Unit = {},
@@ -386,6 +387,30 @@ fun IndexScreen(
                 Spacer(Modifier.width(12.dp))
                 Text(
                     text = hts.aRoadToSomewhere,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            FilledTonalButton(
+                onClick = { onNavigateToAroundTheWorldAddition() },
+                modifier = Modifier.padding(horizontal = 32.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_world),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = hts.aroundTheWorldAddition,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
