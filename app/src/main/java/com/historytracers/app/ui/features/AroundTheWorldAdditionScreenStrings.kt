@@ -11,6 +11,7 @@ data class AroundTheWorldAdditionScreenStrings(
     val tens: String,
     val units: String,
     val typedResult: String,
+    val typedTens: String,
     val typedCarry: String,
     val typedSquaresLabel: String,
     val typedSquaresNote: String,
@@ -33,6 +34,7 @@ data class AroundTheWorldAdditionScreenStrings(
     val yupanaStep3Zero: String,
     val yupanaCarryPrompt: String,
     val yupanaPerfect: String,
+    val yupanaColumn: String,
     val stepCorrect: String,
     val home: String,
 )
@@ -45,6 +47,7 @@ val EnAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     tens = "Tens",
     units = "Units",
     typedResult = "Digit in the units place",
+    typedTens = "Digit in the tens place",
     typedCarry = "Carry",
     typedSquaresLabel = "Addition in this column",
     typedSquaresNote = "Complement of %d to ten: %d. Squares that completed the ten: %d; squares outside the ten: %d.",
@@ -67,6 +70,7 @@ val EnAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     yupanaStep3Zero = "Step 3: The units row keeps 0, so click the gray cell in the tens row to carry 1.",
     yupanaCarryPrompt = "Correct! Now click the gray cell in the tens row to place the carried 1.",
     yupanaPerfect = "\uD83C\uDF89 Perfect! %d + %d = %d. \uD83C\uDF89",
+    yupanaColumn = "Column %d",
     stepCorrect = "Correct! Click 'Next step' to continue.",
     home = "Main Menu",
 )
@@ -79,6 +83,7 @@ val PtAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     tens = "Dezenas",
     units = "Unidades",
     typedResult = "D\u00edgito na casa das unidades",
+    typedTens = "D\u00edgito na casa das dezenas",
     typedCarry = "Transporte",
     typedSquaresLabel = "Adi\u00e7\u00e3o nesta coluna",
     typedSquaresNote = "Complemento de %d para dez: %d. Quadrados que completaram a dezena: %d; quadrados fora da dezena: %d.",
@@ -101,6 +106,7 @@ val PtAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     yupanaStep3Zero = "Passo 3: A linha das unidades mant\u00e9m 0, ent\u00e3o clique na c\u00e9lula cinza da linha das dezenas para transportar 1.",
     yupanaCarryPrompt = "Correto! Agora clique na c\u00e9lula cinza da linha das dezenas para colocar o 1 transportado.",
     yupanaPerfect = "\uD83C\uDF89 Perfeito! %d + %d = %d. \uD83C\uDF89",
+    yupanaColumn = "Coluna %d",
     stepCorrect = "Correto! Clique em 'Pr\u00f3ximo passo' para continuar.",
     home = "Menu Principal",
 )
@@ -113,6 +119,7 @@ val EsAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     tens = "Decenas",
     units = "Unidades",
     typedResult = "D\u00edgito en la casa de las unidades",
+    typedTens = "D\u00edgito en la casa de las decenas",
     typedCarry = "Acarreo",
     typedSquaresLabel = "Adici\u00f3n en esta columna",
     typedSquaresNote = "Complemento de %d a diez: %d. Cuadrados que completaron la decena: %d; cuadrados fuera de la decena: %d.",
@@ -135,6 +142,7 @@ val EsAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     yupanaStep3Zero = "Paso 3: La fila de las unidades mantiene 0, as\u00ed que haz clic en la celda gris de la fila de las decenas para llevar 1.",
     yupanaCarryPrompt = "\u00a1Correcto! Ahora haz clic en la celda gris de la fila de las decenas para colocar el 1 que se lleva.",
     yupanaPerfect = "\uD83C\uDF89 \u00a1Perfecto! %d + %d = %d. \uD83C\uDF89",
+    yupanaColumn = "Columna %d",
     stepCorrect = "Correcto. Haz clic en 'Siguiente paso' para continuar.",
     home = "Men\u00fa Principal",
 )

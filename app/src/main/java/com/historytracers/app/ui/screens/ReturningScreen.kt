@@ -67,7 +67,7 @@ fun ReturningScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
-    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = null)
     val walkingBackwardsDone = "walking_backwards" in completedReturning
     val complementAndSubtractionDone = "complement_and_subtraction" in completedReturning
     val sunTzuSubtractionDone = "sun_tzu_subtraction" in completedReturning
@@ -82,17 +82,19 @@ fun ReturningScreen(
 
     fun claimReturningLevel() {
         if (claiming) return
+        val loadedLevels = claimedLevels ?: return
         if (!returningAllDone) return
-        if ("returning" in claimedLevels) return
+        if ("returning" in loadedLevels) return
         claiming = true
-        onScoreChanged(currentScore + 10)
         scope.launch {
-            withContext(NonCancellable) {
-                preferences.recordLessonCompletion()
-                preferences.markLevelClaimed("returning")
+            val claimed = withContext(NonCancellable) {
+                preferences.claimReturningLevel(currentScore + 10, RETURNING_SECTION_IDS)
             }
             claiming = false
-            onNavigateToCongratulation()
+            if (claimed) {
+                onScoreChanged(currentScore + 10)
+                onNavigateToCongratulation()
+            }
         }
     }
 
@@ -134,7 +136,8 @@ fun ReturningScreen(
                             onClick = {
                                 showResetMenu = false
                                 showResetDialog = true
-                            }
+                            },
+                            enabled = !claiming
                         )
                     }
                 }
@@ -324,17 +327,18 @@ fun ReturningScreen(
 
                 FilledIconButton(
                     onClick = { claimReturningLevel() },
-                    enabled = returningAllDone,
+                    enabled = returningAllDone && claimedLevels != null &&
+                        claimedLevels?.contains("returning") != true,
                     modifier = Modifier.size(96.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if ("returning" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        containerColor = if (claimedLevels?.contains("returning") == true) FlagBlueDark else FlagBlueLight,
                         disabledContainerColor = FlagBlueLight
                     )
                 ) {
                     Icon(
                         painterResource(R.drawable.ic_flag),
-                        contentDescription = null,
+                        contentDescription = s.common.nextLevel,
                         modifier = Modifier.size(52.dp),
                         tint = Color.Unspecified
                     )

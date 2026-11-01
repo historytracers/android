@@ -542,7 +542,10 @@ private fun ComplementAndSubtractionAnswerSection(
     var hasSubmitted by remember { mutableStateOf(false) }
     var awarded by remember { mutableStateOf(false) }
 
-    val correctAnswer = content.answer?.toString()?.lowercase()
+    val correctAnswer = when (val rawAnswer = content.answer) {
+        is Boolean -> if (rawAnswer) "yes" else "no"
+        else -> rawAnswer?.toString()?.lowercase()
+    }
 
     fun submit(answer: String) {
         selected = answer

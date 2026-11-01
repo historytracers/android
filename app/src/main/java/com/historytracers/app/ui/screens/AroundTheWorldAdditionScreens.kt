@@ -39,6 +39,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -1187,6 +1189,26 @@ private fun AtwYupanaExercise(
                         }
                     }
                 }
+                .semantics {
+                    customActions = buildList {
+                        for (column in 1..4) {
+                            add(
+                                CustomAccessibilityAction(xs.yupanaColumn.format(column)) {
+                                    toggleColumn(column)
+                                    true
+                                }
+                            )
+                        }
+                        if (phase == 2) {
+                            add(
+                                CustomAccessibilityAction(xs.typedCarry) {
+                                    toggleCarry()
+                                    true
+                                }
+                            )
+                        }
+                    }
+                }
         ) {
             drawAtwAddYupana(
                 phase = phase,
@@ -1466,7 +1488,7 @@ private fun AtwAdditionTypedExercise(
                                     tensDigit = it
                                     evaluateTens(it)
                                 },
-                                label = xs.typedResult,
+                                label = xs.typedTens,
                                 active = true,
                                 modifier = Modifier.weight(1f)
                             )

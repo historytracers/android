@@ -4,6 +4,7 @@ package com.historytracers.app.data
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -537,31 +538,35 @@ class UserPreferences(private val context: Context) {
     }
 
     suspend fun recordLessonCompletion() {
+        context.dataStore.edit { prefs ->
+            applyLessonCompletionStreak(prefs)
+        }
+    }
+
+    private fun applyLessonCompletionStreak(prefs: MutablePreferences) {
         val today = java.time.LocalDate.now()
         val todayStr = today.toString()
-        context.dataStore.edit { prefs ->
-            val currentDates = prefs[COMPLETED_DATES_KEY] ?: emptySet()
-            if (todayStr in currentDates) return@edit
-            val selectedDays = prefs[STREAK_DAYS_KEY] ?: setOf("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY")
-            val lastDateStr = prefs[LAST_COMPLETED_DATE_KEY]
-            val currentStreak = prefs[STREAK_COUNT_KEY] ?: 0
-            var missedSelectedDay = false
-            if (lastDateStr != null) {
-                val lastDate = java.time.LocalDate.parse(lastDateStr)
-                var checkDate = lastDate.plusDays(1)
-                while (checkDate.isBefore(today)) {
-                    val dayName = checkDate.dayOfWeek.name
-                    if (dayName in selectedDays && checkDate.toString() !in currentDates) {
-                        missedSelectedDay = true
-                        break
-                    }
-                    checkDate = checkDate.plusDays(1)
+        val currentDates = prefs[COMPLETED_DATES_KEY] ?: emptySet()
+        if (todayStr in currentDates) return
+        val selectedDays = prefs[STREAK_DAYS_KEY] ?: setOf("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY")
+        val lastDateStr = prefs[LAST_COMPLETED_DATE_KEY]
+        val currentStreak = prefs[STREAK_COUNT_KEY] ?: 0
+        var missedSelectedDay = false
+        if (lastDateStr != null) {
+            val lastDate = java.time.LocalDate.parse(lastDateStr)
+            var checkDate = lastDate.plusDays(1)
+            while (checkDate.isBefore(today)) {
+                val dayName = checkDate.dayOfWeek.name
+                if (dayName in selectedDays && checkDate.toString() !in currentDates) {
+                    missedSelectedDay = true
+                    break
                 }
+                checkDate = checkDate.plusDays(1)
             }
-            prefs[STREAK_COUNT_KEY] = if (missedSelectedDay) 1 else currentStreak + 1
-            prefs[LAST_COMPLETED_DATE_KEY] = todayStr
-            prefs[COMPLETED_DATES_KEY] = currentDates + todayStr
         }
+        prefs[STREAK_COUNT_KEY] = if (missedSelectedDay) 1 else currentStreak + 1
+        prefs[LAST_COMPLETED_DATE_KEY] = todayStr
+        prefs[COMPLETED_DATES_KEY] = currentDates + todayStr
     }
 
     val claimedLevels: Flow<Set<String>> = context.dataStore.data.map { preferences ->
@@ -572,6 +577,21 @@ class UserPreferences(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[CLAIMED_LEVELS_KEY] = (preferences[CLAIMED_LEVELS_KEY] ?: emptySet()) + levelId
         }
+    }
+
+    suspend fun claimReturningLevel(newScore: Int, requiredSections: List<String>): Boolean {
+        var claimed = false
+        context.dataStore.edit { preferences ->
+            val completed = preferences[RETURNING_SECTIONS_KEY] ?: emptySet()
+            if (!requiredSections.all { it in completed }) return@edit
+            val levelClaims = preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
+            if ("returning" in levelClaims) return@edit
+            preferences[CLAIMED_LEVELS_KEY] = levelClaims + "returning"
+            preferences[SCORE_KEY] = newScore
+            applyLessonCompletionStreak(preferences)
+            claimed = true
+        }
+        return claimed
     }
 
     val seenNewHubs: Flow<Set<String>> = context.dataStore.data.map { preferences ->
