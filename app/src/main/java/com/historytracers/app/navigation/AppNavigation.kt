@@ -171,9 +171,25 @@ import com.historytracers.app.ui.screens.WhereAreWeFromScreen
 import com.historytracers.app.ui.screens.OddOrEvenScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.ReturningScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionIntroScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionComplementScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionOrdersScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionTogetherScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionUnitsScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionResultScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionQuestionScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionBorrowScreen
+import com.historytracers.app.ui.screens.ComplementAndSubtractionConclusionScreen
 import com.historytracers.app.ui.screens.PracticingSubtractionScreen
 import com.historytracers.app.ui.screens.PracticingSubtractionTypedScreen
 import com.historytracers.app.ui.screens.PracticingSubtractionChosenScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionIntroScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionMoraleScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionHeavenScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionTerrainScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionCommanderScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionMethodScreen
+import com.historytracers.app.ui.screens.SunTzuSubtractionPracticeScreen
 import com.historytracers.app.ui.screens.MeasuringScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerIntroScreen
 import com.historytracers.app.ui.screens.BiggerOrSmallerRulerScreen
@@ -340,6 +356,27 @@ import com.historytracers.app.ui.screens.AroundTheWorldPracticeSorobanScreen
 import com.historytracers.app.ui.screens.AroundTheWorldRussiaScreen
 import com.historytracers.app.ui.screens.AroundTheWorldPracticeSchyotyScreen
 import com.historytracers.app.ui.screens.AroundTheWorldConclusionScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionIntroScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionComplementScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionAfricaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionAfricaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionQuipuScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionQuipuGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionMesoamericaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionMesoamericaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionEuropeScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionEuropeGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionIndiaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionIndiaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionChinaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionChinaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionYupanaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionYupanaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionJapanScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionJapanGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionRussiaScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionRussiaGameScreen
+import com.historytracers.app.ui.screens.AroundTheWorldAdditionConclusionScreen
 import com.historytracers.app.ui.screens.AbacusHistoryThinkingScreen
 import com.historytracers.app.ui.screens.PracticingAdditionScreen
 import com.historytracers.app.ui.screens.MultiplicationTableScreen
@@ -556,9 +593,25 @@ fun AppNavigation() {
            "walking_backwards_new_operation", "walking_backwards_back_to_origin",
            "walking_backwards_from_another_beginning", "walking_backwards_thinking",
            "walking_backwards_signal", "walking_backwards_conclusion",
+           Screen.ComplementAndSubtractionIntro.route,
+           Screen.ComplementAndSubtractionComplement.route,
+           Screen.ComplementAndSubtractionOrders.route,
+           Screen.ComplementAndSubtractionTogether.route,
+           Screen.ComplementAndSubtractionUnits.route,
+           Screen.ComplementAndSubtractionResult.route,
+           Screen.ComplementAndSubtractionQuestion.route,
+           Screen.ComplementAndSubtractionBorrow.route,
+           Screen.ComplementAndSubtractionConclusion.route,
            Screen.PracticingSubtraction.route,
            Screen.PracticingSubtractionTyped.route,
            Screen.PracticingSubtractionChosen.route,
+           Screen.SunTzuSubtractionIntro.route,
+           Screen.SunTzuSubtractionMorale.route,
+           Screen.SunTzuSubtractionHeaven.route,
+           Screen.SunTzuSubtractionTerrain.route,
+           Screen.SunTzuSubtractionCommander.route,
+           Screen.SunTzuSubtractionMethod.route,
+           Screen.SunTzuSubtractionPractice.route,
            Screen.BuildingLikeAMesoamerican.route, Screen.BuildingLikeEtruscanRomans.route,
            Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
@@ -607,6 +660,17 @@ fun AppNavigation() {
                Screen.AroundTheWorldJapan.route, Screen.AroundTheWorldPracticeSoroban.route,
                Screen.AroundTheWorldRussia.route, Screen.AroundTheWorldPracticeSchyoty.route,
                Screen.AroundTheWorldConclusion.route,
+               Screen.AroundTheWorldAdditionIntro.route, Screen.AroundTheWorldAdditionComplement.route,
+               Screen.AroundTheWorldAdditionAfrica.route, Screen.AroundTheWorldAdditionAfricaGame.route,
+               Screen.AroundTheWorldAdditionQuipu.route, Screen.AroundTheWorldAdditionQuipuGame.route,
+               Screen.AroundTheWorldAdditionMesoamerica.route, Screen.AroundTheWorldAdditionMesoamericaGame.route,
+               Screen.AroundTheWorldAdditionEurope.route, Screen.AroundTheWorldAdditionEuropeGame.route,
+               Screen.AroundTheWorldAdditionIndia.route, Screen.AroundTheWorldAdditionIndiaGame.route,
+               Screen.AroundTheWorldAdditionChina.route, Screen.AroundTheWorldAdditionChinaGame.route,
+               Screen.AroundTheWorldAdditionYupana.route, Screen.AroundTheWorldAdditionYupanaGame.route,
+               Screen.AroundTheWorldAdditionJapan.route, Screen.AroundTheWorldAdditionJapanGame.route,
+               Screen.AroundTheWorldAdditionRussia.route, Screen.AroundTheWorldAdditionRussiaGame.route,
+               Screen.AroundTheWorldAdditionConclusion.route,
                Screen.SunTzuAdditionIntro.route, Screen.SunTzuAdditionMorale.route,
                Screen.SunTzuAdditionHeaven.route, Screen.SunTzuAdditionTerrain.route,
                Screen.SunTzuAdditionCommander.route, Screen.SunTzuAdditionMethod.route,
@@ -675,6 +739,12 @@ fun AppNavigation() {
 
     val navigateFromDrawer: (String) -> Unit = { route ->
         navController.navigate(route) { launchSingleTop = true }
+    }
+
+    val navigateBackToExisting: (String) -> Unit = { route ->
+        if (!navController.popBackStack(route, false)) {
+            navController.navigate(route) { launchSingleTop = true }
+        }
     }
 
     val firstStepsScrollState = remember { ScrollState(0) }
@@ -935,6 +1005,7 @@ fun AppNavigation() {
                             onNavigateToWhereAreWeFrom = { navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true } },
                             onNavigateToAnotherWayToCount = { navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
+                            onNavigateToAroundTheWorldAddition = { navController.navigate(Screen.AroundTheWorldAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToMeasuring = { navController.navigate(Screen.Measuring.route) { launchSingleTop = true } },
                             onNavigateToReturning = { navController.navigate(Screen.Returning.route) { launchSingleTop = true } }
                         )
@@ -1160,6 +1231,8 @@ fun AppNavigation() {
                     }
                     composable(Screen.Returning.route) {
                         ReturningScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.Index.route, false)) {
                                     navController.navigate(Screen.Index.route) {
@@ -1169,9 +1242,291 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
+                            onNavigateToComplementAndSubtraction = { navController.navigate(Screen.ComplementAndSubtractionIntro.route) { launchSingleTop = true } },
+                            onNavigateToSunTzuSubtraction = { navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } },
-                            onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } }
+                            onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionIntro.route) {
+                        SunTzuSubtractionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionMorale.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionMorale.route) {
+                        SunTzuSubtractionMoraleScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionIntro.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionHeaven.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionHeaven.route) {
+                        SunTzuSubtractionHeavenScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionMorale.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionMorale.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionTerrain.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionTerrain.route) {
+                        SunTzuSubtractionTerrainScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionHeaven.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionHeaven.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionCommander.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionCommander.route) {
+                        SunTzuSubtractionCommanderScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionTerrain.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionTerrain.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionMethod.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionMethod.route) {
+                        SunTzuSubtractionMethodScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionCommander.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionCommander.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.SunTzuSubtractionPractice.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.SunTzuSubtractionPractice.route) {
+                        SunTzuSubtractionPracticeScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.SunTzuSubtractionMethod.route, false)) {
+                                    navController.navigate(Screen.SunTzuSubtractionMethod.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToReturning = {
+                                navController.popBackToOrigin(
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionIntro.route) {
+                        ComplementAndSubtractionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionComplement.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionComplement.route) {
+                        ComplementAndSubtractionComplementScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                if (!navController.popBackStack(Screen.ComplementAndSubtractionIntro.route, false)) {
+                                    navController.navigate(Screen.ComplementAndSubtractionIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionOrders.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionOrders.route) {
+                        ComplementAndSubtractionOrdersScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionComplement.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionTogether.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionTogether.route) {
+                        ComplementAndSubtractionTogetherScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionOrders.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionUnits.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionUnits.route) {
+                        ComplementAndSubtractionUnitsScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionTogether.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionResult.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionResult.route) {
+                        ComplementAndSubtractionResultScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionUnits.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionQuestion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionQuestion.route) {
+                        ComplementAndSubtractionQuestionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionResult.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionBorrow.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionBorrow.route) {
+                        ComplementAndSubtractionBorrowScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionQuestion.route) { launchSingleTop = true } },
+                            onNavigateNext = { navController.navigate(Screen.ComplementAndSubtractionConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.ComplementAndSubtractionConclusion.route) {
+                        ComplementAndSubtractionConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.Returning.route,
+                                    fallback = Screen.Returning.route
+                                )
+                            },
+                            onNavigatePrev = { navController.navigate(Screen.ComplementAndSubtractionBorrow.route) { launchSingleTop = true } },
+                            onNavigateToReturning = {
+                                if (!navController.popBackStack(Screen.Returning.route, false)) {
+                                    navController.navigate(Screen.Returning.route) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
                         )
                     }
                     composable(Screen.PracticingSubtraction.route) {
@@ -8575,6 +8930,194 @@ fun AppNavigation() {
                             onNavigateToHome = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) }
                         )
                     }
+                    composable(Screen.AroundTheWorldAdditionIntro.route) {
+                        AroundTheWorldAdditionIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionComplement.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionComplement.route) {
+                        AroundTheWorldAdditionComplementScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionIntro.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionAfrica.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionAfrica.route) {
+                        AroundTheWorldAdditionAfricaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionComplement.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionAfricaGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionAfricaGame.route) {
+                        AroundTheWorldAdditionAfricaGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionAfrica.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionQuipu.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionQuipu.route) {
+                        AroundTheWorldAdditionQuipuScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionAfricaGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionQuipuGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionQuipuGame.route) {
+                        AroundTheWorldAdditionQuipuGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionQuipu.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionMesoamerica.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionMesoamerica.route) {
+                        AroundTheWorldAdditionMesoamericaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionQuipuGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionMesoamericaGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionMesoamericaGame.route) {
+                        AroundTheWorldAdditionMesoamericaGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionMesoamerica.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionEurope.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionEurope.route) {
+                        AroundTheWorldAdditionEuropeScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionMesoamericaGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionEuropeGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionEuropeGame.route) {
+                        AroundTheWorldAdditionEuropeGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionEurope.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionIndia.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionIndia.route) {
+                        AroundTheWorldAdditionIndiaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionEuropeGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionIndiaGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionIndiaGame.route) {
+                        AroundTheWorldAdditionIndiaGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionIndia.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionChina.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionChina.route) {
+                        AroundTheWorldAdditionChinaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionIndiaGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionChinaGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionChinaGame.route) {
+                        AroundTheWorldAdditionChinaGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionChina.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionYupana.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionYupana.route) {
+                        AroundTheWorldAdditionYupanaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionChinaGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionYupanaGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionYupanaGame.route) {
+                        AroundTheWorldAdditionYupanaGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionYupana.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionJapan.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionJapan.route) {
+                        AroundTheWorldAdditionJapanScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionYupanaGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionJapanGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionJapanGame.route) {
+                        AroundTheWorldAdditionJapanGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionJapan.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionRussia.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionRussia.route) {
+                        AroundTheWorldAdditionRussiaScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionJapanGame.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionRussiaGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionRussiaGame.route) {
+                        AroundTheWorldAdditionRussiaGameScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionRussia.route) },
+                            onNavigateNext = { navController.navigate(Screen.AroundTheWorldAdditionConclusion.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.AroundTheWorldAdditionConclusion.route) {
+                        AroundTheWorldAdditionConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) },
+                            onNavigatePrev = { navigateBackToExisting(Screen.AroundTheWorldAdditionRussiaGame.route) },
+                            onNavigateToHome = { navController.popBackToOrigin(Screen.Index.route, fallback = Screen.Index.route) }
+                        )
+                    }
                     composable(
                         route = Screen.Content.route,
                         arguments = listOf(navArgument("fileName") { type = NavType.StringType })
@@ -8659,10 +9202,13 @@ fun AppNavigation() {
                             onNavigateToGreaterOrSmallerGame = { navController.navigate(Screen.GreaterOrSmallerGame.route) { launchSingleTop = true } },
                             onNavigateToMeasuringOneDirection = { navController.navigate(Screen.MeasuringOneDirectionIntro.route) { launchSingleTop = true } },
                             onNavigateToWalkingBackwards = { navController.navigate(Screen.WalkingBackwardsIntro.route) { launchSingleTop = true } },
+                            onNavigateToComplementAndSubtraction = { navController.navigate(Screen.ComplementAndSubtractionIntro.route) { launchSingleTop = true } },
+                            onNavigateToSunTzuSubtraction = { navController.navigate(Screen.SunTzuSubtractionIntro.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtraction = { navController.navigate(Screen.PracticingSubtraction.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionTyped = { navController.navigate(Screen.PracticingSubtractionTyped.route) { launchSingleTop = true } },
                             onNavigateToPracticingSubtractionChosen = { navController.navigate(Screen.PracticingSubtractionChosen.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
+                            onNavigateToAroundTheWorldAddition = { navController.navigate(Screen.AroundTheWorldAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToCarryOrNotCarry = { navController.navigate(Screen.CarryOrNotCarryIntro.route) { launchSingleTop = true } },
                             onNavigateToAdvancingAndComplementing = { navController.navigate(Screen.AdvancingAndComplementingIntro.route) { launchSingleTop = true } },
                             onNavigateToOddOrEven = { navController.navigate(Screen.OddOrEvenGame.route) { launchSingleTop = true } },

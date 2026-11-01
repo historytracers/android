@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -13,9 +14,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,15 +34,30 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.returningScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
+import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private val RETURNING_SECTION_IDS = listOf(
+    "walking_backwards", "complement_and_subtraction", "sun_tzu_subtraction",
+    "practicing_subtraction", "practicing_subtraction_typed", "practicing_subtraction_chosen"
+)
 
 @Composable
 fun ReturningScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToComplementAndSubtraction: () -> Unit = {},
+    onNavigateToSunTzuSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtraction: () -> Unit = {},
     onNavigateToPracticingSubtractionTyped: () -> Unit = {},
-    onNavigateToPracticingSubtractionChosen: () -> Unit = {}
+    onNavigateToPracticingSubtractionChosen: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -45,13 +67,36 @@ fun ReturningScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = null)
     val walkingBackwardsDone = "walking_backwards" in completedReturning
+    val complementAndSubtractionDone = "complement_and_subtraction" in completedReturning
+    val sunTzuSubtractionDone = "sun_tzu_subtraction" in completedReturning
     val practicingSubtractionDone = "practicing_subtraction" in completedReturning
     val practicingSubtractionTypedDone = "practicing_subtraction_typed" in completedReturning
     val practicingSubtractionChosenDone = "practicing_subtraction_chosen" in completedReturning
+    val returningAllDone = RETURNING_SECTION_IDS.all { it in completedReturning }
 
+    var claiming by remember { mutableStateOf(false) }
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
+
+    fun claimReturningLevel() {
+        if (claiming) return
+        val loadedLevels = claimedLevels ?: return
+        if (!returningAllDone) return
+        if ("returning" in loadedLevels) return
+        claiming = true
+        scope.launch {
+            val claimed = withContext(NonCancellable) {
+                preferences.claimReturningLevel(currentScore + 10, RETURNING_SECTION_IDS)
+            }
+            claiming = false
+            if (claimed) {
+                onScoreChanged(currentScore + 10)
+                onNavigateToCongratulation()
+            }
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -91,7 +136,8 @@ fun ReturningScreen(
                             onClick = {
                                 showResetMenu = false
                                 showResetDialog = true
-                            }
+                            },
+                            enabled = !claiming
                         )
                     }
                 }
@@ -127,6 +173,62 @@ fun ReturningScreen(
 
                 Text(
                     text = xs.walkingBackwards,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToComplementAndSubtraction,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (complementAndSubtractionDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    ComplementAndSubtractionIcon(
+                        contentDescription = xs.complementAndSubtraction,
+                        modifier = Modifier.size(52.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.complementAndSubtraction,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToSunTzuSubtraction,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (sunTzuSubtractionDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u5b6b\u5b50",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.sunTzuSubtraction,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -220,6 +322,40 @@ fun ReturningScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = { claimReturningLevel() },
+                    enabled = returningAllDone && claimedLevels != null &&
+                        claimedLevels?.contains("returning") != true,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (claimedLevels?.contains("returning") == true) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = s.common.nextLevel,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
             }
         }
     }
@@ -245,5 +381,41 @@ fun ReturningScreen(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun ComplementAndSubtractionIcon(
+    contentDescription: String,
+    modifier: Modifier = Modifier
+) {
+    val outline = Color(0xFF37474F)
+
+    Canvas(
+        modifier = modifier.semantics { this.contentDescription = contentDescription }
+    ) {
+        val width = size.width
+        val height = size.height
+        val side = minOf(width * 0.28f, height * 0.56f)
+        val gap = width * 0.06f
+        val totalWidth = side * 3 + gap * 2
+        val startX = (width - totalWidth) / 2f
+        val topY = (height - side) / 2f
+        val fills = listOf(Color.White, Color(0xFFADD8E6), Color(0xFFADD8E6))
+
+        fills.forEachIndexed { index, fill ->
+            val left = startX + index * (side + gap)
+            drawRect(
+                color = fill,
+                topLeft = Offset(left, topY),
+                size = Size(side, side)
+            )
+            drawRect(
+                color = outline,
+                topLeft = Offset(left, topY),
+                size = Size(side, side),
+                style = Stroke(width = width * 0.03f)
+            )
+        }
     }
 }
