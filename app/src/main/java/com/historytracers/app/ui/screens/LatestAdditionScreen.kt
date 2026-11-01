@@ -31,15 +31,15 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
-import com.historytracers.app.ui.features.groupingThreesScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingAdditionChosenScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionTypedScreenStringsForLanguage
+import com.historytracers.app.ui.features.practicingSubtractionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.app.ui.features.sunTzuAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.whoAmIScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -91,15 +91,16 @@ fun LatestAdditionScreen(
     onNavigateToGreaterOrSmallerGame: () -> Unit = {},
     onNavigateToMeasuringOneDirection: () -> Unit = {},
     onNavigateToWalkingBackwards: () -> Unit = {},
+    onNavigateToPracticingSubtraction: () -> Unit = {},
+    onNavigateToPracticingSubtractionTyped: () -> Unit = {},
+    onNavigateToPracticingSubtractionChosen: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
-    onNavigateToPracticingAddition: () -> Unit = {},
-    onNavigateToSunTzuAddition: () -> Unit = {},
-    onNavigateToPracticingAdditionTyped: () -> Unit = {},
+    onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToSunTzuLearning: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -112,18 +113,74 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val gts = groupingThreesScreenStringsForLanguage(LocalAppLanguage.current)
-    val pas = practicingAdditionRoadScreenStringsForLanguage(LocalAppLanguage.current)
-    val pts = practicingAdditionTypedScreenStringsForLanguage(LocalAppLanguage.current)
-    val sts = sunTzuAdditionScreenStringsForLanguage(LocalAppLanguage.current)
+    val pcs = practicingAdditionChosenScreenStringsForLanguage(LocalAppLanguage.current)
+    val pss = practicingSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
+    val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
+    val pscs = practicingSubtractionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
-    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
     val completedRoadToSomewhere by preferences.completedRoadToSomewhereSections.collectAsState(initial = emptySet())
+    val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedWhoAmI by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
     val wss = whoAmIScreenStringsForLanguage(LocalAppLanguage.current)
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction_chosen",
+            label = pscs.title,
+            icon = {
+                Text(
+                    text = "? - ? = ?",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_subtraction_chosen" in completedReturning },
+            onNavigate = onNavigateToPracticingSubtractionChosen
+        ),
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction_typed",
+            label = psts.title,
+            icon = {
+                Text(
+                    text = "8 - 1 = ?",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_subtraction_typed" in completedReturning },
+            onNavigate = onNavigateToPracticingSubtractionTyped
+        ),
+        LatestAdditionEntry(
+            sectionId = "practicing_subtraction",
+            label = pss.title,
+            icon = {
+                Text(
+                    text = "9 - 5",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_subtraction" in completedReturning },
+            onNavigate = onNavigateToPracticingSubtraction
+        ),
+        LatestAdditionEntry(
+            sectionId = "practicing_addition_chosen",
+            label = pcs.title,
+            icon = {
+                Text(
+                    text = "?? + ??",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "practicing_addition_chosen" in completedRoadToSomewhere },
+            onNavigate = onNavigateToPracticingAdditionChosen
+        ),
         LatestAdditionEntry(
             sectionId = "sun_tzu_and_learning",
             label = wss.sunTzuAndLearning,
@@ -137,62 +194,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "sun_tzu_and_learning" in completedWhoAmI },
             onNavigate = onNavigateToSunTzuLearning
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_addition_typed",
-            label = pts.title,
-            icon = {
-                Text(
-                    text = "56 + 78",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_addition_typed" in completedRoadToSomewhere },
-            onNavigate = onNavigateToPracticingAdditionTyped
-        ),
-        LatestAdditionEntry(
-            sectionId = "sun_tzu_addition",
-            label = sts.title,
-            icon = {
-                Text(
-                    text = "\u5b6b\u5b50",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "sun_tzu_addition" in completedRoadToSomewhere },
-            onNavigate = onNavigateToSunTzuAddition
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_addition",
-            label = pas.title,
-            icon = {
-                Text(
-                    text = "+",
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_addition" in completedRoadToSomewhere },
-            onNavigate = onNavigateToPracticingAddition
-        ),
-        LatestAdditionEntry(
-            sectionId = "grouping_threes",
-            label = gts.title,
-            icon = {
-                Text(
-                    text = "3, 6, 9...",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "grouping_threes" in completedWhereAreWeFrom },
-            onNavigate = onNavigateToGroupingThrees
         )
     )
 

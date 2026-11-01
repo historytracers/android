@@ -46,6 +46,12 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val SMARTPHONE_GAME_FILE = "93b8800e-6f1d-4a79-b53f-7607a59f96b2"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 
+// The Sumerian King List image is very tall, so it is rendered 10% shorter
+// than the default to keep the navigation buttons visible on the Ages screen.
+private const val AGES_CONTENT_ID = "8d37d550-e695-4270-9174-96a18bd89f5c"
+private const val DEFAULT_IMAGE_HEIGHT_FRACTION = 0.4f
+private const val AGES_IMAGE_HEIGHT_FRACTION = 0.36f
+
 @Composable
 fun WhereAreTheyIntroScreen(
     currentScore: Int = 0,
@@ -407,7 +413,12 @@ private fun WhereAreTheyGameContent(
                             )
                             isImgHtml(text.text) -> ResponsiveImage(
                                 html = text.text ?: "",
-                                imgDesc = text.imgdesc
+                                imgDesc = text.imgdesc,
+                                maxHeightFraction = if (contentId == AGES_CONTENT_ID) {
+                                    AGES_IMAGE_HEIGHT_FRACTION
+                                } else {
+                                    DEFAULT_IMAGE_HEIGHT_FRACTION
+                                }
                             )
                             else -> TextRenderer(text = text, repo = repo)
                         }

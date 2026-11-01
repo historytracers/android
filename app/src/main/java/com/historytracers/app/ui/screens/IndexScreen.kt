@@ -69,7 +69,7 @@ private val yupanaSectionIds = listOf(
 private val roadToSomewhereSectionIds = listOf(
     "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
     "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
-    "practicing_addition", "practicing_addition_typed"
+    "practicing_addition", "practicing_addition_typed", "practicing_addition_chosen"
 )
 
 private val whereAreWeFromSectionIds = listOf(
@@ -91,7 +91,8 @@ private val aroundTheWorldSectionIds = listOf(
 )
 
 private val returningSectionIds = listOf(
-    "walking_backwards"
+    "walking_backwards", "practicing_subtraction", "practicing_subtraction_typed",
+    "practicing_subtraction_chosen"
 )
 
 private val measuringSectionIds = listOf(

@@ -268,6 +268,7 @@ fun RoadToSomewhereScreen(
     onNavigateToSunTzuAddition: () -> Unit = {},
     onNavigateToPracticingAddition: () -> Unit = {},
     onNavigateToPracticingAdditionTyped: () -> Unit = {},
+    onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -281,13 +282,13 @@ fun RoadToSomewhereScreen(
     val roadSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
         "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
-        "practicing_addition", "practicing_addition_typed"
+        "practicing_addition", "practicing_addition_typed", "practicing_addition_chosen"
     )
     // All road sections gate the "Next Level" flag, now that every one of them is wired.
     val nextLevelGatingSectionIds = listOf(
         "walk_among_numbers", "carrying_in_addition", "order_of_addition", "playing_with_axioms",
         "running_among_numbers", "advancing_and_complementing", "carry_or_not_carry", "sun_tzu_addition",
-        "practicing_addition", "practicing_addition_typed"
+        "practicing_addition", "practicing_addition_typed", "practicing_addition_chosen"
     )
     val controller = remember {
         LevelGroupController(roadSectionIds, completedSections)
@@ -645,6 +646,38 @@ fun RoadToSomewhereScreen(
 
                 Text(
                     text = xs.practicingAdditionTyped,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToPracticingAdditionChosen,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = xs.practicingAdditionChosen },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completedSections.contains("practicing_addition_chosen")) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "?? + ??",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.practicingAdditionChosen,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,

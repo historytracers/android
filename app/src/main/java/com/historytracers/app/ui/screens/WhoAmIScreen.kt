@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -36,16 +38,23 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.whoAmIScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun WhoAmIScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToSocrates: () -> Unit = {},
     onNavigateToLearningInLayers: () -> Unit = {},
     onNavigateToHowDoILearn: () -> Unit = {},
-    onNavigateToSunTzuLearning: () -> Unit = {}
+    onNavigateToSunTzuLearning: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -54,6 +63,35 @@ fun WhoAmIScreen(
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedWhoAmISections.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
+
+    val whoAmISectionIds = listOf(
+        "i_dont_know", "learning_in_shells", "how_do_i_learn", "sun_tzu_and_learning"
+    )
+    val controller = remember {
+        LevelGroupController(whoAmISectionIds, completedSections)
+    }
+    LaunchedEffect(completedSections) {
+        controller.syncFromPersisted(completedSections)
+    }
+    val controllerCompleted by controller.completed.collectAsState()
+    val allWhoAmISectionsDone = whoAmISectionIds.all { it in controllerCompleted }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    var claiming by remember { mutableStateOf(false) }
+
+    fun claimWhoAmILevel() {
+        if (claiming) return
+        if ("who_am_i" in claimedLevels) return
+        claiming = true
+        onScoreChanged(currentScore + 10)
+        scope.launch {
+            withContext(NonCancellable) {
+                preferences.recordLessonCompletion()
+                preferences.markLevelClaimed("who_am_i")
+            }
+            claiming = false
+        }
+    }
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -266,7 +304,41 @@ fun WhoAmIScreen(
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimWhoAmILevel()
+                        onNavigateToCongratulation()
+                    },
+                    enabled = allWhoAmISectionsDone,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("who_am_i" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
             }
         }
     }
