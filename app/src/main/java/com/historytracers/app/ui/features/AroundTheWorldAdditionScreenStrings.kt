@@ -23,6 +23,10 @@ data class AroundTheWorldAdditionScreenStrings(
     val nextColumn: String,
     val calculiStep1: String,
     val calculiStep2: String,
+    val abacusStep1: String,
+    val abacusStep2: String,
+    val schyotyStep1: String,
+    val schyotyStep2: String,
     val stepCorrect: String,
     val home: String,
 )
@@ -47,6 +51,10 @@ val EnAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     nextColumn = "Next column",
     calculiStep1 = "Step 1: Write the first number %d in the units place.",
     calculiStep2 = "Step 2: Add %d in the units place. Since %d + %d = %d reaches ten, remove the complement %d from the units place and add 1 to the tens place. The calculi should show %d.",
+    abacusStep1 = "Step 1: Write the first number %d in the units column.",
+    abacusStep2 = "Step 2: Add %d in the units column. Since %d + %d = %d reaches ten, remove the complement %d from the units column and add 1 to the tens column. The abacus should show %d.",
+    schyotyStep1 = "Step 1: Move %d beads to the left on the units wire.",
+    schyotyStep2 = "Step 2: Add %d on the units wire. Since %d + %d = %d reaches ten, remove the complement %d from the units wire and add 1 to the tens wire. The schyoty should show %d.",
     stepCorrect = "Correct! Click 'Next step' to continue.",
     home = "Main Menu",
 )
@@ -71,6 +79,10 @@ val PtAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     nextColumn = "Pr\u00f3xima coluna",
     calculiStep1 = "Passo 1: Escreva o primeiro n\u00famero %d na casa das unidades.",
     calculiStep2 = "Passo 2: Adicione %d na casa das unidades. Como %d + %d = %d chega a dez, remova o complemento %d da casa das unidades e adicione 1 \u00e0 casa das dezenas. Os calculi devem mostrar %d.",
+    abacusStep1 = "Passo 1: Escreva o primeiro n\u00famero %d na coluna das unidades.",
+    abacusStep2 = "Passo 2: Adicione %d na coluna das unidades. Como %d + %d = %d chega a dez, remova o complemento %d da coluna das unidades e adicione 1 \u00e0 coluna das dezenas. O \u00e1baco deve mostrar %d.",
+    schyotyStep1 = "Passo 1: Mova %d contas para a esquerda no fio das unidades.",
+    schyotyStep2 = "Passo 2: Adicione %d no fio das unidades. Como %d + %d = %d chega a dez, remova o complemento %d do fio das unidades e adicione 1 ao fio das dezenas. O schyoty deve mostrar %d.",
     stepCorrect = "Correto! Clique em 'Pr\u00f3ximo passo' para continuar.",
     home = "Menu Principal",
 )
@@ -95,6 +107,10 @@ val EsAroundTheWorldAdditionScreenStrings = AroundTheWorldAdditionScreenStrings(
     nextColumn = "Siguiente columna",
     calculiStep1 = "Paso 1: Escribe el primer n\u00famero %d en la casa de las unidades.",
     calculiStep2 = "Paso 2: Suma %d en la casa de las unidades. Como %d + %d = %d llega a diez, quita el complemento %d de la casa de las unidades y agrega 1 a la casa de las decenas. Los calculi deben mostrar %d.",
+    abacusStep1 = "Paso 1: Escribe el primer n\u00famero %d en la columna de las unidades.",
+    abacusStep2 = "Paso 2: Suma %d en la columna de las unidades. Como %d + %d = %d llega a diez, quita el complemento %d de la columna de las unidades y agrega 1 a la columna de las decenas. El \u00e1baco debe mostrar %d.",
+    schyotyStep1 = "Paso 1: Mueve %d cuentas a la izquierda en el alambre de las unidades.",
+    schyotyStep2 = "Paso 2: Suma %d en el alambre de las unidades. Como %d + %d = %d llega a diez, quita el complemento %d del alambre de las unidades y agrega 1 al alambre de las decenas. El schyoty debe mostrar %d.",
     stepCorrect = "Correcto. Haz clic en 'Siguiente paso' para continuar.",
     home = "Men\u00fa Principal",
 )

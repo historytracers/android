@@ -728,24 +728,31 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
     var value by remember { mutableIntStateOf(0) }
     var solved by remember { mutableStateOf(false) }
     var exerciseKey by remember { mutableIntStateOf(0) }
-    var calculiStep by remember { mutableIntStateOf(1) }
-    var calculiStepCompleted by remember { mutableStateOf(false) }
+    var step by remember { mutableIntStateOf(1) }
+    var stepCompleted by remember { mutableStateOf(false) }
+    val isStepTool = tool == AtwAddTool.CALCULI || tool == AtwAddTool.SUANPAN ||
+        tool == AtwAddTool.SOROBAN || tool == AtwAddTool.SCHYOTY
 
-    LaunchedEffect(value, sum, solved, calculiStep, calculiStepCompleted, tool) {
+    LaunchedEffect(value, sum, solved, step, stepCompleted, tool) {
         when {
             solved -> Unit
-            tool != AtwAddTool.CALCULI -> {
+            tool == AtwAddTool.TYPED -> Unit
+            isStepTool -> {
+                val target = if (step == 1) a else sum
+                if (!stepCompleted && value == target) {
+                    if (step == 1) {
+                        stepCompleted = true
+                    } else {
+                        solved = true
+                        onSolved()
+                    }
+                }
+            }
+            else -> {
                 if (value == sum) {
                     solved = true
                     onSolved()
                 }
-            }
-            calculiStep == 1 && !calculiStepCompleted && value == a -> {
-                calculiStepCompleted = true
-            }
-            calculiStep == 2 && !calculiStepCompleted && value == sum -> {
-                solved = true
-                onSolved()
             }
         }
     }
@@ -754,8 +761,8 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
         addends = newAtwAddends()
         value = 0
         solved = false
-        calculiStep = 1
-        calculiStepCompleted = false
+        step = 1
+        stepCompleted = false
         exerciseKey++
     }
 
@@ -763,7 +770,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (tool != AtwAddTool.CALCULI) {
+        if (!isStepTool) {
             Text(
                 text = xs.represent.format(a, b),
                 style = MaterialTheme.typography.titleMedium,
@@ -780,18 +787,30 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
             modifier = Modifier.padding(vertical = 4.dp)
         )
 
-        if (tool == AtwAddTool.CALCULI) {
+        if (isStepTool) {
             Text(
-                text = "${s.common.stepPrefix}$calculiStep/2",
+                text = "${s.common.stepPrefix}$step/2",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = if (calculiStep == 1) {
-                    xs.calculiStep1.format(a)
-                } else {
-                    xs.calculiStep2.format(b, a, b, sum, 10 - b, sum)
+                text = when (tool) {
+                    AtwAddTool.CALCULI -> if (step == 1) {
+                        xs.calculiStep1.format(a)
+                    } else {
+                        xs.calculiStep2.format(b, a, b, sum, 10 - b, sum)
+                    }
+                    AtwAddTool.SCHYOTY -> if (step == 1) {
+                        xs.schyotyStep1.format(a)
+                    } else {
+                        xs.schyotyStep2.format(b, a, b, sum, 10 - b, sum)
+                    }
+                    else -> if (step == 1) {
+                        xs.abacusStep1.format(a)
+                    } else {
+                        xs.abacusStep2.format(b, a, b, sum, 10 - b, sum)
+                    }
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
@@ -887,7 +906,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
                     lowerMax = 4,
                     columnHeadings = calculiHeadings,
                     columnPlaces = calculiPlaces,
-                    frozen = solved || calculiStepCompleted,
+                    frozen = solved || stepCompleted,
                     resetKey = exerciseKey,
                     showReset = false,
                     onValueChange = { value = it.toInt() }
@@ -900,7 +919,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
                     upperMax = 2,
                     lowerMax = 5,
                     columnHeadings = listOf(xs.tens, xs.units),
-                    frozen = solved,
+                    frozen = solved || stepCompleted,
                     resetKey = exerciseKey,
                     showReset = false,
                     onValueChange = { value = it.toInt() }
@@ -913,7 +932,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
                     upperMax = 1,
                     lowerMax = 4,
                     columnHeadings = listOf(xs.tens, xs.units),
-                    frozen = solved,
+                    frozen = solved || stepCompleted,
                     resetKey = exerciseKey,
                     showReset = false,
                     onValueChange = { value = it.toInt() }
@@ -922,7 +941,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
 
             AtwAddTool.SCHYOTY -> {
                 SchyotyAbacus(
-                    frozen = solved,
+                    frozen = solved || stepCompleted,
                     resetKey = exerciseKey,
                     onValueChange = { value = it.toInt() }
                 )
@@ -944,7 +963,7 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
             }
         }
 
-        if (tool == AtwAddTool.CALCULI && calculiStepCompleted && !solved) {
+        if (isStepTool && stepCompleted && !solved) {
             Spacer(Modifier.height(10.dp))
             Text(
                 text = xs.stepCorrect,
@@ -957,8 +976,8 @@ private fun AtwAdditionExercise(tool: AtwAddTool, onSolved: () -> Unit) {
             Spacer(Modifier.height(8.dp))
             FilledTonalButton(
                 onClick = {
-                    calculiStep = 2
-                    calculiStepCompleted = false
+                    step = 2
+                    stepCompleted = false
                 },
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color(0xFF4CAF50),
