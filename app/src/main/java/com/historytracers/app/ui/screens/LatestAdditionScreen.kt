@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,10 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -32,10 +29,10 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.complementAndSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.divisionAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLanguage
+import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
@@ -110,7 +107,8 @@ fun LatestAdditionScreen(
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
-    onNavigateToSunTzuLearning: () -> Unit = {}
+    onNavigateToSunTzuLearning: () -> Unit = {},
+    onNavigateToWritingQuotientAndRemainder: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -124,9 +122,9 @@ fun LatestAdditionScreen(
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
     val stss = sunTzuSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
-    val css = complementAndSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val ldrs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val wtqs = writingTheQuotientScreenStringsForLanguage(LocalAppLanguage.current)
+    val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -134,6 +132,20 @@ fun LatestAdditionScreen(
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "writing_quotient_and_remainder",
+            label = wqars.title,
+            icon = {
+                Text(
+                    text = "987 \u00F7 1",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "writing_quotient_and_remainder" in completedLongDivision },
+            onNavigate = onNavigateToWritingQuotientAndRemainder
+        ),
         LatestAdditionEntry(
             sectionId = "writing_the_quotient",
             label = wtqs.title,
@@ -189,36 +201,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "sun_tzu_subtraction" in completedReturning },
             onNavigate = onNavigateToSunTzuSubtraction
-        ),
-        LatestAdditionEntry(
-            sectionId = "complement_and_subtraction",
-            label = css.title,
-            icon = {
-                Canvas(modifier = Modifier.size(40.dp)) {
-                    val side = size.width * 0.26f
-                    val gap = size.width * 0.08f
-                    val total = side * 3 + gap * 2
-                    val startX = (size.width - total) / 2f
-                    val top = (size.height - side) / 2f
-                    val fills = listOf(Color.White, Color(0xFFADD8E6), Color(0xFFADD8E6))
-                    fills.forEachIndexed { index, fill ->
-                        val left = startX + index * (side + gap)
-                        drawRect(
-                            color = fill,
-                            topLeft = Offset(left, top),
-                            size = Size(side, side)
-                        )
-                        drawRect(
-                            color = Color(0xFF37474F),
-                            topLeft = Offset(left, top),
-                            size = Size(side, side),
-                            style = Stroke(width = 2f)
-                        )
-                    }
-                }
-            },
-            isCompleted = { "complement_and_subtraction" in completedReturning },
-            onNavigate = onNavigateToComplementAndSubtraction
         )
     )
 

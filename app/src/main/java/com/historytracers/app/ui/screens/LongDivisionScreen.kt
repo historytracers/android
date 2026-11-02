@@ -28,12 +28,15 @@ import kotlinx.coroutines.launch
 
 private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
+private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_and_remainder"
 
 @Composable
 fun LongDivisionScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
-    onNavigateToWritingTheQuotient: () -> Unit = {}
+    onNavigateToWritingTheQuotient: () -> Unit = {},
+    onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
+    onNavigateToChoosingDividendAndDivisor: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -45,6 +48,7 @@ fun LongDivisionScreen(
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
     val divisionAndRemainderDone = DIVISION_AND_REMAINDER_SECTION_ID in completedLongDivision
     val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
+    val writingQuotientAndRemainderDone = WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID in completedLongDivision
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -154,6 +158,66 @@ fun LongDivisionScreen(
 
                 Text(
                     text = xs.writingTheQuotient,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToWritingQuotientAndRemainder,
+                    modifier = Modifier.size(112.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (writingQuotientAndRemainderDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.writingQuotientAndRemainderExample,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.writingQuotientAndRemainder,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToChoosingDividendAndDivisor,
+                    modifier = Modifier.size(112.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.choosingDividendAndDivisorExample,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.choosingDividendAndDivisor,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

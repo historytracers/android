@@ -20,6 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.random.Random
@@ -125,11 +126,16 @@ internal val TIMES_TABLE_TEXT_STYLE = TextStyle(
     fontWeight = FontWeight.Medium
 )
 
-internal data class BoardLine(
-    val text: String,
-    val underline: Boolean = false,
-    val bar: IntRange? = null
-)
+/** One row of the division board: a monospace line or custom content (typed boxes). */
+internal sealed interface BoardEntry {
+    data class TextLine(
+        val text: String,
+        val underline: Boolean = false,
+        val bar: IntRange? = null
+    ) : BoardEntry
+
+    class Content(val content: @Composable () -> Unit) : BoardEntry
+}
 
 /** Width in pixels of one character of the division board. */
 @Composable
@@ -139,10 +145,14 @@ internal fun rememberBoardCharWidth(): Float {
         .size.width / 10f
 }
 
+@Composable
+internal fun rememberBoardRowHeight(): Dp =
+    with(LocalDensity.current) { BOARD_TEXT_STYLE.lineHeight.toDp() }
+
 /**
  * Draws the long division. [quotientContent] replaces the written quotient by custom content (the
- * typed boxes of the "writing the quotient" exercise); when it is null the quotient is written as
- * text.
+ * typed boxes of the "writing the quotient" exercises) and [remainderContent] replaces the
+ * remainder of [pendingStep] by a custom content (the typed subtraction result).
  */
 @Composable
 internal fun DivisionBoard(
@@ -153,7 +163,9 @@ internal fun DivisionBoard(
     quotientText: String,
     totalSteps: Int,
     format: DivisionFormat,
-    quotientContent: (@Composable () -> Unit)? = null
+    quotientContent: (@Composable () -> Unit)? = null,
+    pendingStep: DivisionStep? = null,
+    remainderContent: (@Composable () -> Unit)? = null
 ) {
     val dividendDigits = dividend.toString().length
     // The quotient is padded to its final width so each digit already appears above the place
@@ -164,62 +176,96 @@ internal fun DivisionBoard(
         if (quotientContent != null) totalSteps else displayedQuotient.length
     )
     val lineColor = Color(0xFF1A1A1A)
+    val charWidth = rememberBoardCharWidth()
+    val rowHeight = rememberBoardRowHeight()
+    val strokeWidth = with(LocalDensity.current) { 1.5.dp.toPx() }
+    val strokeOffset = with(LocalDensity.current) { 3.5.dp.toPx() }
 
     if (format == DivisionFormat.Top) {
         // The whole division area is reserved from the start, so the reader can see where every
         // product and every remainder will appear instead of watching the table grow.
         val width = 2 + dividendDigits
         val rightEdge = width - 1
-        val lines = mutableListOf<BoardLine>()
+        val rowWidth = with(LocalDensity.current) { (charWidth * width).toDp() }
+        val entries = mutableListOf<BoardEntry>()
         if (quotientContent == null) {
             // The quotient sits above a bar that separates the result from the values below it.
-            lines += BoardLine(
+            entries += BoardEntry.TextLine(
                 text = placeRight(displayedQuotient, rightEdge).padEnd(width),
                 bar = 1..rightEdge
             )
-        }
-        lines += BoardLine(("$divisor|$dividend").padEnd(width))
-        committed.forEach { step ->
-            lines += BoardLine(placeRight("-" + step.product, rightEdge).padEnd(width), underline = true)
-            lines += BoardLine(placeRight(step.remainder.toString(), rightEdge).padEnd(width))
-        }
-        if (previewProduct != null) {
-            lines += BoardLine(placeRight("-$previewProduct", rightEdge).padEnd(width), underline = true)
-        }
-        val drawnStepLines = committed.size * 2 + if (previewProduct != null) 1 else 0
-        repeat((2 * totalSteps - drawnStepLines).coerceAtLeast(0)) {
-            lines += BoardLine("\u00A0".repeat(width))
-        }
-        if (quotientContent != null) {
-            Column {
-                QuotientRow(widthChars = width, content = quotientContent)
-                MonospaceBoard(lines = lines)
-            }
         } else {
-            MonospaceBoard(lines = lines)
+            entries += BoardEntry.Content {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .drawBehind {
+                            drawLine(
+                                color = lineColor,
+                                start = Offset(charWidth, size.height - strokeOffset),
+                                end = Offset(size.width, size.height - strokeOffset),
+                                strokeWidth = strokeWidth
+                            )
+                        },
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    quotientContent()
+                }
+            }
         }
+        entries += BoardEntry.TextLine(("$divisor|$dividend").padEnd(width))
+        committed.forEach { step ->
+            entries += BoardEntry.TextLine(placeRight("-" + step.product, rightEdge).padEnd(width), underline = true)
+            entries += BoardEntry.TextLine(placeRight(step.remainder.toString(), rightEdge).padEnd(width))
+        }
+        if (pendingStep != null) {
+            entries += BoardEntry.TextLine(placeRight("-" + pendingStep.product, rightEdge).padEnd(width), underline = true)
+            entries += if (remainderContent != null) {
+                BoardEntry.Content(remainderContent)
+            } else {
+                BoardEntry.TextLine(placeRight(pendingStep.remainder.toString(), rightEdge).padEnd(width))
+            }
+        } else if (previewProduct != null) {
+            entries += BoardEntry.TextLine(placeRight("-$previewProduct", rightEdge).padEnd(width), underline = true)
+        }
+        val drawnRows = 2 + committed.size * 2 +
+            if (pendingStep != null) 2 else if (previewProduct != null) 1 else 0
+        repeat((2 + totalSteps * 2 - drawnRows).coerceAtLeast(0)) {
+            entries += BoardEntry.TextLine("\u00A0".repeat(width))
+        }
+        BoardRows(entries = entries, rowWidth = rowWidth, charWidth = charWidth)
         return
     }
 
     // "Result below" writes the quotient under the divisor, next to the subtraction steps.
     val leftWidth = dividendDigits + 1
     val rightEdge = dividendDigits
-    val lines = mutableListOf<BoardLine>()
-    lines += BoardLine(placeRight(dividend.toString(), rightEdge).padEnd(leftWidth))
+    val rowWidth = with(LocalDensity.current) { (charWidth * leftWidth).toDp() }
+    val rows = 1 + totalSteps * 2
+    val entries = mutableListOf<BoardEntry>()
+    entries += BoardEntry.TextLine(placeRight(dividend.toString(), rightEdge).padEnd(leftWidth))
     committed.forEach { step ->
-        lines += BoardLine(placeRight("-" + step.product, rightEdge).padEnd(leftWidth), underline = true)
-        lines += BoardLine(placeRight(step.remainder.toString(), rightEdge).padEnd(leftWidth))
+        entries += BoardEntry.TextLine(placeRight("-" + step.product, rightEdge).padEnd(leftWidth), underline = true)
+        entries += BoardEntry.TextLine(placeRight(step.remainder.toString(), rightEdge).padEnd(leftWidth))
     }
-    if (previewProduct != null) {
-        lines += BoardLine(placeRight("-$previewProduct", rightEdge).padEnd(leftWidth), underline = true)
+    if (pendingStep != null) {
+        entries += BoardEntry.TextLine(placeRight("-" + pendingStep.product, rightEdge).padEnd(leftWidth), underline = true)
+        entries += if (remainderContent != null) {
+            BoardEntry.Content(remainderContent)
+        } else {
+            BoardEntry.TextLine(placeRight(pendingStep.remainder.toString(), rightEdge).padEnd(leftWidth))
+        }
+    } else if (previewProduct != null) {
+        entries += BoardEntry.TextLine(placeRight("-$previewProduct", rightEdge).padEnd(leftWidth), underline = true)
     }
-    val drawnLines = 1 + committed.size * 2 + if (previewProduct != null) 1 else 0
-    repeat((1 + totalSteps * 2 - drawnLines).coerceAtLeast(0)) {
-        lines += BoardLine("\u00A0".repeat(leftWidth))
+    val drawnRows = 1 + committed.size * 2 +
+        if (pendingStep != null) 2 else if (previewProduct != null) 1 else 0
+    repeat((rows - drawnRows).coerceAtLeast(0)) {
+        entries += BoardEntry.TextLine("\u00A0".repeat(leftWidth))
     }
 
-    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-        MonospaceBoard(lines = lines)
+    Row(modifier = Modifier.height(rowHeight * rows)) {
+        BoardRows(entries = entries, rowWidth = rowWidth, charWidth = charWidth)
 
         Box(
             modifier = Modifier
@@ -242,11 +288,7 @@ internal fun DivisionBoard(
                     .background(lineColor)
             )
             if (quotientContent != null) {
-                Box(
-                    modifier = Modifier.height(
-                        with(LocalDensity.current) { BOARD_TEXT_STYLE.lineHeight.toDp() }
-                    )
-                ) {
+                Box(modifier = Modifier.height(rowHeight)) {
                     quotientContent()
                 }
             } else {
@@ -259,72 +301,46 @@ internal fun DivisionBoard(
     }
 }
 
-/** Row that holds the typed quotient boxes, with the bar that separates it from the division. */
 @Composable
-private fun QuotientRow(
-    widthChars: Int,
-    content: @Composable () -> Unit
+private fun BoardRows(
+    entries: List<BoardEntry>,
+    rowWidth: Dp,
+    charWidth: Float
 ) {
-    val charWidth = rememberBoardCharWidth()
-    val density = LocalDensity.current
-    val rowHeight = with(density) { BOARD_TEXT_STYLE.lineHeight.toDp() }
-    val boardWidth = with(density) { (charWidth * widthChars).toDp() }
-    val strokeWidth = with(density) { 1.5.dp.toPx() }
-    val strokeOffset = with(density) { 3.5.dp.toPx() }
-
-    Box(
-        modifier = Modifier
-            .width(boardWidth)
-            .height(rowHeight)
-            .drawBehind {
-                drawLine(
-                    color = Color(0xFF1A1A1A),
-                    start = Offset(charWidth, size.height - strokeOffset),
-                    end = Offset(size.width, size.height - strokeOffset),
-                    strokeWidth = strokeWidth
-                )
-            },
-        contentAlignment = Alignment.CenterEnd
-    ) {
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        ) {
-            content()
+    Column {
+        entries.forEach { entry ->
+            BoardRow(entry = entry, rowWidth = rowWidth, charWidth = charWidth)
         }
     }
 }
 
-/**
- * Draws the monospace division lines and underlines the rows that represent a subtraction, the way
- * the web version does with a bottom border under each product. Every line is its own row with a
- * fixed height, so the reserved area always matches the number of rows of the division.
- */
 @Composable
-internal fun MonospaceBoard(lines: List<BoardLine>) {
-    val charWidth = rememberBoardCharWidth()
+private fun BoardRow(
+    entry: BoardEntry,
+    rowWidth: Dp,
+    charWidth: Float
+) {
     val strokeWidth = with(LocalDensity.current) { 1.5.dp.toPx() }
     val strokeOffset = with(LocalDensity.current) { 3.5.dp.toPx() }
-    val underlineColor = Color(0xFF1A1A1A)
+    val rowHeight = rememberBoardRowHeight()
 
-    Column {
-        lines.forEach { line ->
-            val columns = line.bar ?: if (line.underline) {
-                val first = line.text.indexOfFirst { it != ' ' && it != '\u00A0' }
-                val last = line.text.indexOfLast { it != ' ' && it != '\u00A0' }
+    when (entry) {
+        is BoardEntry.TextLine -> {
+            val columns = entry.bar ?: if (entry.underline) {
+                val first = entry.text.indexOfFirst { it != ' ' && it != '\u00A0' }
+                val last = entry.text.indexOfLast { it != ' ' && it != '\u00A0' }
                 if (first < 0 || last < 0) null else first..last
             } else {
                 null
             }
             Text(
-                text = line.text,
+                text = entry.text,
                 style = BOARD_TEXT_STYLE,
                 modifier = Modifier.drawBehind {
                     if (columns != null) {
                         val y = size.height - strokeOffset
                         drawLine(
-                            color = underlineColor,
+                            color = Color(0xFF1A1A1A),
                             start = Offset(columns.first * charWidth, y),
                             end = Offset((columns.last + 1) * charWidth, y),
                             strokeWidth = strokeWidth
@@ -332,6 +348,17 @@ internal fun MonospaceBoard(lines: List<BoardLine>) {
                     }
                 }
             )
+        }
+
+        is BoardEntry.Content -> {
+            Box(
+                modifier = Modifier
+                    .width(rowWidth)
+                    .height(rowHeight),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                entry.content()
+            }
         }
     }
 }
