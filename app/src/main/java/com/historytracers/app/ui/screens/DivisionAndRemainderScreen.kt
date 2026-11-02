@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -127,6 +128,7 @@ fun DivisionAndRemainderScreen(
     var dividend by remember { mutableIntStateOf(firstExercise.dividend) }
     var divisor by remember { mutableIntStateOf(firstExercise.divisor) }
     var steps by remember { mutableStateOf(firstExercise.steps) }
+    var firstPlayedStep by remember { mutableIntStateOf(firstExercise.firstPlayedStep) }
     var stepIndex by remember { mutableIntStateOf(firstExercise.firstPlayedStep) }
     var committed by remember { mutableStateOf(listOf<DivisionStep>()) }
     var workingValue by remember { mutableIntStateOf(0) }
@@ -139,6 +141,7 @@ fun DivisionAndRemainderScreen(
         dividend = exercise.dividend
         divisor = exercise.divisor
         steps = exercise.steps
+        firstPlayedStep = exercise.firstPlayedStep
         stepIndex = exercise.firstPlayedStep
         committed = emptyList()
         workingValue = 0
@@ -251,8 +254,10 @@ fun DivisionAndRemainderScreen(
 
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                tonalElevation = 2.dp,
-                color = MaterialTheme.colorScheme.surfaceVariant
+                tonalElevation = 0.dp,
+                color = Color.White,
+                contentColor = Color(0xFF1A1A1A),
+                border = BorderStroke(1.dp, Color(0xFFD6D6D6))
             ) {
                 Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
                     DivisionBoard(
@@ -262,6 +267,7 @@ fun DivisionAndRemainderScreen(
                         previewProduct = previewProduct,
                         previewDigitIndex = currentStep?.digitIndex ?: 0,
                         quotientText = quotientText,
+                        totalSteps = steps.size - firstPlayedStep,
                         format = format
                     )
                 }
@@ -388,23 +394,31 @@ private fun DivisionBoard(
     previewProduct: Int?,
     previewDigitIndex: Int,
     quotientText: String,
+    totalSteps: Int,
     format: DivisionFormat
 ) {
     val dividendDigits = dividend.toString().length
     val displayedQuotient = quotientText.ifEmpty { " " }
     val rightColumnWidth = maxOf(divisor.toString().length, displayedQuotient.length)
+    val lineColor = Color(0xFF1A1A1A)
 
     if (format == DivisionFormat.Top) {
-        val lastColumn = 2 + dividendDigits - 1
+        // The whole division area is reserved from the start, so the reader can see where every
+        // product and every remainder will appear instead of watching the table grow.
+        val width = 2 + dividendDigits
         val lines = mutableListOf<String>()
-        lines += placeRight(displayedQuotient, lastColumn)
-        lines += "  " + dividend.toString()
+        lines += placeRight(displayedQuotient, width - 1).padEnd(width)
+        lines += ("  " + dividend.toString()).padEnd(width)
         committed.forEach { step ->
-            lines += placeRight("-" + step.product, 2 + step.digitIndex)
-            lines += placeRight(step.remainder.toString(), 2 + step.digitIndex)
+            lines += placeRight("-" + step.product, 2 + step.digitIndex).padEnd(width)
+            lines += placeRight(step.remainder.toString(), 2 + step.digitIndex).padEnd(width)
         }
         if (previewProduct != null) {
-            lines += placeRight("-$previewProduct", 2 + previewDigitIndex)
+            lines += placeRight("-$previewProduct", 2 + previewDigitIndex).padEnd(width)
+        }
+        val drawnLines = 2 + committed.size * 2 + if (previewProduct != null) 1 else 0
+        repeat((2 + totalSteps * 2 - drawnLines).coerceAtLeast(0)) {
+            lines += "\u00A0".repeat(width)
         }
         Text(
             text = lines.joinToString("\n"),
@@ -424,6 +438,10 @@ private fun DivisionBoard(
     if (previewProduct != null) {
         lines += placeRight("-$previewProduct", 1 + previewDigitIndex).padEnd(leftWidth)
     }
+    val drawnLines = 1 + committed.size * 2 + if (previewProduct != null) 1 else 0
+    repeat((1 + totalSteps * 2 - drawnLines).coerceAtLeast(0)) {
+        lines += "\u00A0".repeat(leftWidth)
+    }
 
     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
         Text(
@@ -436,7 +454,7 @@ private fun DivisionBoard(
                 .fillMaxHeight()
                 .padding(horizontal = 10.dp)
                 .width(2.dp)
-                .background(MaterialTheme.colorScheme.onSurfaceVariant)
+                .background(lineColor)
         )
 
         Column(horizontalAlignment = Alignment.Start) {
@@ -449,7 +467,7 @@ private fun DivisionBoard(
                     .width((rightColumnWidth * 13).dp)
                     .padding(vertical = 2.dp)
                     .height(2.dp)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant)
+                    .background(lineColor)
             )
             Text(
                 text = displayedQuotient,
