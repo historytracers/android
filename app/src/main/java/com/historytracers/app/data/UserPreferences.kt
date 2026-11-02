@@ -82,6 +82,7 @@ class UserPreferences(private val context: Context) {
         private val ANOTHER_WAY_TO_COUNT_SECTIONS_KEY = stringSetPreferencesKey("another_way_to_count_sections")
         private val AROUND_THE_WORLD_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_sections")
         private val AROUND_THE_WORLD_ADDITION_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_addition_sections")
+        private val LONG_DIVISION_SECTIONS_KEY = stringSetPreferencesKey("long_division_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
@@ -492,6 +493,17 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val completedLongDivisionSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[LONG_DIVISION_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markLongDivisionSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[LONG_DIVISION_SECTIONS_KEY] =
+                (preferences[LONG_DIVISION_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
     suspend fun migrateMovedYupanaLessonsToAnotherWayToCount() {
         val current = context.dataStore.data.first()
         if (current[YUPANA_LESSONS_MIGRATED_KEY] == true) return
@@ -620,6 +632,7 @@ class UserPreferences(private val context: Context) {
             preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()
             preferences[AROUND_THE_WORLD_SECTIONS_KEY] = emptySet()
             preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] = emptySet()
+            preferences[LONG_DIVISION_SECTIONS_KEY] = emptySet()
             preferences[CLAIMED_LEVELS_KEY] = emptySet()
             preferences[AWARDED_SCREENS_KEY] = emptySet()
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()

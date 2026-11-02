@@ -34,10 +34,10 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.complementAndSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
+import com.historytracers.app.ui.features.divisionAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingSubtractionTypedScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingSubtractionChosenScreenStringsForLanguage
 import com.historytracers.app.ui.features.sunTzuSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
@@ -62,6 +62,7 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToLargeNumbersIntro: () -> Unit = {},
@@ -121,16 +122,31 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
     val pscs = practicingSubtractionChosenScreenStringsForLanguage(LocalAppLanguage.current)
     val stss = sunTzuSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val css = complementAndSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
+    val ldrs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedAroundTheWorldAddition by preferences.completedAroundTheWorldAdditionSections.collectAsState(initial = emptySet())
+    val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "division_and_remainder",
+            label = ldrs.title,
+            icon = {
+                Text(
+                    text = "257 \u00F7 4",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "division_and_remainder" in completedLongDivision },
+            onNavigate = onNavigateToDivisionAndRemainder
+        ),
         LatestAdditionEntry(
             sectionId = "around_the_world_addition",
             label = hts.aroundTheWorldAddition,
@@ -202,20 +218,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "practicing_subtraction_chosen" in completedReturning },
             onNavigate = onNavigateToPracticingSubtractionChosen
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_subtraction_typed",
-            label = psts.title,
-            icon = {
-                Text(
-                    text = "8 - 1 = ?",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_subtraction_typed" in completedReturning },
-            onNavigate = onNavigateToPracticingSubtractionTyped
         )
     )
 
