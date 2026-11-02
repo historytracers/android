@@ -26,12 +26,14 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
-private val LONG_DIVISION_SECTION_IDS = listOf("division_and_remainder")
+private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
+private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
 
 @Composable
 fun LongDivisionScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToDivisionAndRemainder: () -> Unit = {}
+    onNavigateToDivisionAndRemainder: () -> Unit = {},
+    onNavigateToWritingTheQuotient: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -41,7 +43,8 @@ fun LongDivisionScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
-    val divisionAndRemainderDone = LONG_DIVISION_SECTION_IDS.all { it in completedLongDivision }
+    val divisionAndRemainderDone = DIVISION_AND_REMAINDER_SECTION_ID in completedLongDivision
+    val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -121,6 +124,36 @@ fun LongDivisionScreen(
 
                 Text(
                     text = xs.divisionAndRemainder,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToWritingTheQuotient,
+                    modifier = Modifier.size(112.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (writingTheQuotientDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.writingTheQuotientExample,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.writingTheQuotient,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
