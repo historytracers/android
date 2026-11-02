@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,11 +16,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,34 +53,55 @@ private enum class DivisionFormat { Below, Top }
  * One digit of the classic long division algorithm.
  *
  * [partialValue] is the number being divided at this digit, [quotientDigit] is the digit of the
- * quotient that belongs to it, [product] is [quotientDigit] times the divisor and [remainder] is
- * what is left after the subtraction. [digitIndex] is the position of the last digit of
- * [partialValue] inside the dividend (0 is the leftmost digit).
+ * quotient that belongs to it, [product] is the value actually subtracted (already placed at its
+ * place value, e.g. 800 instead of 8 when dividing the hundreds) and [remainder] is what is left
+ * after the subtraction.
  */
 private data class DivisionStep(
-    val digitIndex: Int,
-    val partialValue: Int,
     val quotientDigit: Int,
+    val partialValue: Int,
     val product: Int,
     val remainder: Int
 )
 
+/**
+ * Places [rawProduct] at the place value of the subtraction, as the web version does: while the
+ * product is much smaller than the value being divided, it is multiplied by ten, and it is divided
+ * by ten when it would not fit. This is what makes the app subtract 800 from 869 instead of 8.
+ */
+private fun scaledProduct(rawProduct: Int, working: Int, divisor: Int): Int {
+    var product = rawProduct
+    if (working - product > divisor) {
+        val targetLength = working.toString().length
+        var length = product.toString().length
+        while (length < targetLength) {
+            product *= 10
+            length += 1
+        }
+    }
+    if (working - product < 0) {
+        product /= 10
+    }
+    return product
+}
+
 private fun computeDivisionSteps(dividend: Int, divisor: Int): List<DivisionStep> {
     if (divisor <= 0) return emptyList()
     val steps = mutableListOf<DivisionStep>()
-    var current = 0
-    dividend.toString().forEachIndexed { index, character ->
-        current = current * 10 + (character - '0')
-        val quotientDigit = current / divisor
-        val product = quotientDigit * divisor
+    var prefix = 0
+    var working = dividend
+    dividend.toString().forEach { character ->
+        prefix = prefix * 10 + (character - '0')
+        val quotientDigit = prefix / divisor
+        val product = scaledProduct(quotientDigit * divisor, working, divisor)
+        working -= product
         steps += DivisionStep(
-            digitIndex = index,
-            partialValue = current,
             quotientDigit = quotientDigit,
+            partialValue = prefix,
             product = product,
-            remainder = current - product
+            remainder = working
         )
-        current -= product
+        prefix -= quotientDigit * divisor
     }
     return steps
 }
@@ -158,8 +184,9 @@ fun DivisionAndRemainderScreen(
         committed.joinToString("") { it.quotientDigit.toString() } +
             if (guessTouched) workingValue.toString() else ""
     }
+    val currentWorking = committed.lastOrNull()?.remainder ?: dividend
     val previewProduct = if (!finished && guessTouched && workingValue > 0) {
-        divisor * workingValue
+        scaledProduct(divisor * workingValue, currentWorking, divisor)
     } else {
         null
     }
@@ -265,7 +292,6 @@ fun DivisionAndRemainderScreen(
                         divisor = divisor,
                         committed = committed,
                         previewProduct = previewProduct,
-                        previewDigitIndex = currentStep?.digitIndex ?: 0,
                         quotientText = quotientText,
                         totalSteps = steps.size - firstPlayedStep,
                         format = format
@@ -386,19 +412,22 @@ fun DivisionAndRemainderScreen(
     }
 }
 
+private data class BoardLine(val text: String, val underline: Boolean = false)
+
 @Composable
 private fun DivisionBoard(
     dividend: Int,
     divisor: Int,
     committed: List<DivisionStep>,
     previewProduct: Int?,
-    previewDigitIndex: Int,
     quotientText: String,
     totalSteps: Int,
     format: DivisionFormat
 ) {
     val dividendDigits = dividend.toString().length
-    val displayedQuotient = quotientText.ifEmpty { " " }
+    // The quotient is padded to its final width so each digit already appears above the place
+    // value it belongs to while the division is still being played.
+    val displayedQuotient = quotientText.padEnd(totalSteps).ifEmpty { " " }
     val rightColumnWidth = maxOf(divisor.toString().length, displayedQuotient.length)
     val lineColor = Color(0xFF1A1A1A)
 
@@ -406,48 +435,44 @@ private fun DivisionBoard(
         // The whole division area is reserved from the start, so the reader can see where every
         // product and every remainder will appear instead of watching the table grow.
         val width = 2 + dividendDigits
-        val lines = mutableListOf<String>()
-        lines += placeRight(displayedQuotient, width - 1).padEnd(width)
-        lines += ("  " + dividend.toString()).padEnd(width)
+        val rightEdge = width - 1
+        val lines = mutableListOf<BoardLine>()
+        lines += BoardLine(placeRight(displayedQuotient, rightEdge).padEnd(width))
+        lines += BoardLine(("$divisor)${dividend}").padEnd(width))
         committed.forEach { step ->
-            lines += placeRight("-" + step.product, 2 + step.digitIndex).padEnd(width)
-            lines += placeRight(step.remainder.toString(), 2 + step.digitIndex).padEnd(width)
+            lines += BoardLine(placeRight("-" + step.product, rightEdge).padEnd(width), underline = true)
+            lines += BoardLine(placeRight(step.remainder.toString(), rightEdge).padEnd(width))
         }
         if (previewProduct != null) {
-            lines += placeRight("-$previewProduct", 2 + previewDigitIndex).padEnd(width)
+            lines += BoardLine(placeRight("-$previewProduct", rightEdge).padEnd(width), underline = true)
         }
         val drawnLines = 2 + committed.size * 2 + if (previewProduct != null) 1 else 0
         repeat((2 + totalSteps * 2 - drawnLines).coerceAtLeast(0)) {
-            lines += "\u00A0".repeat(width)
+            lines += BoardLine("\u00A0".repeat(width))
         }
-        Text(
-            text = lines.joinToString("\n"),
-            style = BOARD_TEXT_STYLE
-        )
+        MonospaceBoard(lines = lines)
         return
     }
 
     // "Result below" writes the quotient under the divisor, next to the subtraction steps.
     val leftWidth = dividendDigits + 1
-    val lines = mutableListOf<String>()
-    lines += placeRight(dividend.toString(), dividendDigits).padEnd(leftWidth)
+    val rightEdge = dividendDigits
+    val lines = mutableListOf<BoardLine>()
+    lines += BoardLine(placeRight(dividend.toString(), rightEdge).padEnd(leftWidth))
     committed.forEach { step ->
-        lines += placeRight("-" + step.product, 1 + step.digitIndex).padEnd(leftWidth)
-        lines += placeRight(step.remainder.toString(), 1 + step.digitIndex).padEnd(leftWidth)
+        lines += BoardLine(placeRight("-" + step.product, rightEdge).padEnd(leftWidth), underline = true)
+        lines += BoardLine(placeRight(step.remainder.toString(), rightEdge).padEnd(leftWidth))
     }
     if (previewProduct != null) {
-        lines += placeRight("-$previewProduct", 1 + previewDigitIndex).padEnd(leftWidth)
+        lines += BoardLine(placeRight("-$previewProduct", rightEdge).padEnd(leftWidth), underline = true)
     }
     val drawnLines = 1 + committed.size * 2 + if (previewProduct != null) 1 else 0
     repeat((1 + totalSteps * 2 - drawnLines).coerceAtLeast(0)) {
-        lines += "\u00A0".repeat(leftWidth)
+        lines += BoardLine("\u00A0".repeat(leftWidth))
     }
 
     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-        Text(
-            text = lines.joinToString("\n"),
-            style = BOARD_TEXT_STYLE
-        )
+        MonospaceBoard(lines = lines)
 
         Box(
             modifier = Modifier
@@ -473,6 +498,41 @@ private fun DivisionBoard(
                 text = displayedQuotient,
                 style = BOARD_TEXT_STYLE
             )
+        }
+    }
+}
+
+/**
+ * Draws the monospace division lines and underlines the rows that represent a subtraction, the way
+ * the web version does with a bottom border under each product.
+ */
+@Composable
+private fun MonospaceBoard(lines: List<BoardLine>) {
+    val text = lines.joinToString("\n") { it.text }
+    val measurer = rememberTextMeasurer()
+    val layout = measurer.measure(text = AnnotatedString(text), style = BOARD_TEXT_STYLE)
+    val charWidth = measurer.measure(text = AnnotatedString("0000000000"), style = BOARD_TEXT_STYLE)
+        .size.width / 10f
+    val strokeWidth = with(LocalDensity.current) { 1.5.dp.toPx() }
+    val strokeOffset = with(LocalDensity.current) { 3.5.dp.toPx() }
+    val underlineColor = Color(0xFF1A1A1A)
+
+    Box {
+        Text(text = text, style = BOARD_TEXT_STYLE)
+        Canvas(modifier = Modifier.matchParentSize()) {
+            lines.forEachIndexed { index, line ->
+                if (!line.underline) return@forEachIndexed
+                val first = line.text.indexOfFirst { it != ' ' && it != '\u00A0' }
+                val last = line.text.indexOfLast { it != ' ' && it != '\u00A0' }
+                if (first < 0 || last < 0) return@forEachIndexed
+                val y = layout.getLineBottom(index) - strokeOffset
+                drawLine(
+                    color = underlineColor,
+                    start = Offset(first * charWidth, y),
+                    end = Offset((last + 1) * charWidth, y),
+                    strokeWidth = strokeWidth
+                )
+            }
         }
     }
 }
