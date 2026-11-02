@@ -1052,6 +1052,12 @@ fun AppNavigation() {
                                     Screen.DivisionAndRemainderIntro.route,
                                     fallback = Screen.DivisionAndRemainderIntro.route
                                 )
+                            },
+                            onNavigateToLongDivision = {
+                                navController.popBackToOrigin(
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
                             }
                         )
                     }

@@ -17,6 +17,8 @@ data class DivisionAndRemainderScreenStrings(
     val newDivision: String,
     val increase: String,
     val decrease: String,
+    val timesTableTitle: String,
+    val timesTableEntry: String,
 )
 
 val EnDivisionAndRemainderScreenStrings = DivisionAndRemainderScreenStrings(
@@ -33,6 +35,8 @@ val EnDivisionAndRemainderScreenStrings = DivisionAndRemainderScreenStrings(
     newDivision = "New division",
     increase = "Increase the digit of the quotient",
     decrease = "Decrease the digit of the quotient",
+    timesTableTitle = "Table of %1\$d",
+    timesTableEntry = "%1\$d \u00D7 %2\$2d = %3\$2d",
 )
 
 val PtDivisionAndRemainderScreenStrings = DivisionAndRemainderScreenStrings(
@@ -49,6 +53,8 @@ val PtDivisionAndRemainderScreenStrings = DivisionAndRemainderScreenStrings(
     newDivision = "Nova divis\u00e3o",
     increase = "Aumentar o algarismo do quociente",
     decrease = "Diminuir o algarismo do quociente",
+    timesTableTitle = "Tabuada de %1\$d",
+    timesTableEntry = "%1\$d \u00D7 %2\$2d = %3\$2d",
 )
 
 val EsDivisionAndRemainderScreenStrings = DivisionAndRemainderScreenStrings(
@@ -65,6 +71,8 @@ val EsDivisionAndRemainderScreenStrings = DivisionAndRemainderScreenStrings(
     newDivision = "Nueva divisi\u00f3n",
     increase = "Aumentar la cifra del cociente",
     decrease = "Disminuir la cifra del cociente",
+    timesTableTitle = "Tabla de %1\$d",
+    timesTableEntry = "%1\$d \u00D7 %2\$2d = %3\$2d",
 )
 
 val LocalDivisionAndRemainderScreenStrings = staticCompositionLocalOf { EnDivisionAndRemainderScreenStrings }

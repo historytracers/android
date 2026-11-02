@@ -2,7 +2,6 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.features.DivisionAndRemainderScreenStrings
 import com.historytracers.app.ui.features.divisionAndRemainderScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -42,8 +44,15 @@ private const val POINTS_PER_DIVISION = 2
 
 private val BOARD_TEXT_STYLE = TextStyle(
     fontFamily = FontFamily.Monospace,
-    fontSize = 20.sp,
-    lineHeight = 30.sp,
+    fontSize = 17.sp,
+    lineHeight = 23.sp,
+    fontWeight = FontWeight.Medium
+)
+
+private val TIMES_TABLE_TEXT_STYLE = TextStyle(
+    fontFamily = FontFamily.Monospace,
+    fontSize = 13.sp,
+    lineHeight = 16.sp,
     fontWeight = FontWeight.Medium
 )
 
@@ -139,10 +148,12 @@ private fun placeRight(text: String, endColumn: Int): String {
 fun DivisionAndRemainderScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToLongDivision: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -244,17 +255,17 @@ fun DivisionAndRemainderScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = xs.formatLabel,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(2.dp))
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(
@@ -277,7 +288,7 @@ fun DivisionAndRemainderScreen(
                 )
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
 
             Surface(
                 shape = RoundedCornerShape(12.dp),
@@ -286,7 +297,7 @@ fun DivisionAndRemainderScreen(
                 contentColor = Color(0xFF1A1A1A),
                 border = BorderStroke(1.dp, Color(0xFFD6D6D6))
             ) {
-                Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+                Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                     DivisionBoard(
                         dividend = dividend,
                         divisor = divisor,
@@ -299,23 +310,17 @@ fun DivisionAndRemainderScreen(
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
             if (currentStep != null && !finished) {
                 Text(
-                    text = xs.promptPrefix,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = xs.promptDivision.format(currentStep.partialValue, divisor),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    text = "${xs.promptPrefix} ${xs.promptDivision.format(currentStep.partialValue, divisor)}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(6.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -323,7 +328,7 @@ fun DivisionAndRemainderScreen(
                 ) {
                     FilledIconButton(
                         onClick = { changeGuess(1) },
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.size(56.dp),
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = ButtonYellow,
                             contentColor = OnButtonYellow
@@ -332,7 +337,7 @@ fun DivisionAndRemainderScreen(
                         Icon(
                             Icons.Default.KeyboardArrowUp,
                             contentDescription = xs.increase,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(36.dp)
                         )
                     }
 
@@ -346,13 +351,13 @@ fun DivisionAndRemainderScreen(
                             style = MaterialTheme.typography.displaySmall,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
                         )
                     }
 
                     FilledIconButton(
                         onClick = { changeGuess(-1) },
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.size(56.dp),
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = ButtonYellow,
                             contentColor = OnButtonYellow
@@ -361,10 +366,14 @@ fun DivisionAndRemainderScreen(
                         Icon(
                             Icons.Default.KeyboardArrowDown,
                             contentDescription = xs.decrease,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(36.dp)
                         )
                     }
                 }
+
+                Spacer(Modifier.height(6.dp))
+
+                TimesTable(divisor = divisor)
             }
 
             if (finished) {
@@ -407,7 +416,22 @@ fun DivisionAndRemainderScreen(
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(10.dp))
+
+            FilledTonalButton(
+                onClick = onNavigateToLongDivision,
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = hts.longDivision,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
         }
     }
 }
@@ -417,6 +441,53 @@ private data class BoardLine(
     val underline: Boolean = false,
     val bar: IntRange? = null
 )
+
+/**
+ * Times table of the divisor, shown in two columns so the reader can check the products without
+ * scrolling. It is the mobile counterpart of the multiplication table that the web version writes
+ * above the division.
+ */
+@Composable
+private fun TimesTable(divisor: Int) {
+    val xs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 0.dp,
+        color = Color.White,
+        contentColor = Color(0xFF1A1A1A),
+        border = BorderStroke(1.dp, Color(0xFFD6D6D6))
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)) {
+            Text(
+                text = xs.timesTableTitle.format(divisor),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF37474F)
+            )
+            Spacer(Modifier.height(2.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                TimesTableColumn(xs = xs, divisor = divisor, values = (1..5).toList())
+                TimesTableColumn(xs = xs, divisor = divisor, values = (6..10).toList())
+            }
+        }
+    }
+}
+
+@Composable
+private fun TimesTableColumn(
+    xs: DivisionAndRemainderScreenStrings,
+    divisor: Int,
+    values: List<Int>
+) {
+    Column {
+        values.forEach { multiplier ->
+            Text(
+                text = xs.timesTableEntry.format(divisor, multiplier, divisor * multiplier),
+                style = TIMES_TABLE_TEXT_STYLE
+            )
+        }
+    }
+}
 
 @Composable
 private fun DivisionBoard(
@@ -512,39 +583,42 @@ private fun DivisionBoard(
 
 /**
  * Draws the monospace division lines and underlines the rows that represent a subtraction, the way
- * the web version does with a bottom border under each product.
+ * the web version does with a bottom border under each product. Every line is its own row with a
+ * fixed height, so the reserved area always matches the number of rows of the division.
  */
 @Composable
 private fun MonospaceBoard(lines: List<BoardLine>) {
-    val text = lines.joinToString("\n") { it.text }
     val measurer = rememberTextMeasurer()
-    val layout = measurer.measure(text = AnnotatedString(text), style = BOARD_TEXT_STYLE)
     val charWidth = measurer.measure(text = AnnotatedString("0000000000"), style = BOARD_TEXT_STYLE)
         .size.width / 10f
     val strokeWidth = with(LocalDensity.current) { 1.5.dp.toPx() }
     val strokeOffset = with(LocalDensity.current) { 3.5.dp.toPx() }
     val underlineColor = Color(0xFF1A1A1A)
 
-    Box {
-        Text(text = text, style = BOARD_TEXT_STYLE)
-        Canvas(modifier = Modifier.matchParentSize()) {
-            lines.forEachIndexed { index, line ->
-                val columns = line.bar ?: if (line.underline) {
-                    val first = line.text.indexOfFirst { it != ' ' && it != '\u00A0' }
-                    val last = line.text.indexOfLast { it != ' ' && it != '\u00A0' }
-                    if (first < 0 || last < 0) null else first..last
-                } else {
-                    null
-                }
-                if (columns == null) return@forEachIndexed
-                val y = layout.getLineBottom(index) - strokeOffset
-                drawLine(
-                    color = underlineColor,
-                    start = Offset(columns.first * charWidth, y),
-                    end = Offset((columns.last + 1) * charWidth, y),
-                    strokeWidth = strokeWidth
-                )
+    Column {
+        lines.forEach { line ->
+            val columns = line.bar ?: if (line.underline) {
+                val first = line.text.indexOfFirst { it != ' ' && it != '\u00A0' }
+                val last = line.text.indexOfLast { it != ' ' && it != '\u00A0' }
+                if (first < 0 || last < 0) null else first..last
+            } else {
+                null
             }
+            Text(
+                text = line.text,
+                style = BOARD_TEXT_STYLE,
+                modifier = Modifier.drawBehind {
+                    if (columns != null) {
+                        val y = size.height - strokeOffset
+                        drawLine(
+                            color = underlineColor,
+                            start = Offset(columns.first * charWidth, y),
+                            end = Offset((columns.last + 1) * charWidth, y),
+                            strokeWidth = strokeWidth
+                        )
+                    }
+                }
+            )
         }
     }
 }
