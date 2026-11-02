@@ -412,7 +412,11 @@ fun DivisionAndRemainderScreen(
     }
 }
 
-private data class BoardLine(val text: String, val underline: Boolean = false)
+private data class BoardLine(
+    val text: String,
+    val underline: Boolean = false,
+    val bar: IntRange? = null
+)
 
 @Composable
 private fun DivisionBoard(
@@ -437,8 +441,12 @@ private fun DivisionBoard(
         val width = 2 + dividendDigits
         val rightEdge = width - 1
         val lines = mutableListOf<BoardLine>()
-        lines += BoardLine(placeRight(displayedQuotient, rightEdge).padEnd(width))
-        lines += BoardLine(("$divisor)${dividend}").padEnd(width))
+        // The quotient sits above a bar that separates the result from the values below it.
+        lines += BoardLine(
+            text = placeRight(displayedQuotient, rightEdge).padEnd(width),
+            bar = 1..rightEdge
+        )
+        lines += BoardLine(("$divisor|${dividend}").padEnd(width))
         committed.forEach { step ->
             lines += BoardLine(placeRight("-" + step.product, rightEdge).padEnd(width), underline = true)
             lines += BoardLine(placeRight(step.remainder.toString(), rightEdge).padEnd(width))
@@ -521,15 +529,19 @@ private fun MonospaceBoard(lines: List<BoardLine>) {
         Text(text = text, style = BOARD_TEXT_STYLE)
         Canvas(modifier = Modifier.matchParentSize()) {
             lines.forEachIndexed { index, line ->
-                if (!line.underline) return@forEachIndexed
-                val first = line.text.indexOfFirst { it != ' ' && it != '\u00A0' }
-                val last = line.text.indexOfLast { it != ' ' && it != '\u00A0' }
-                if (first < 0 || last < 0) return@forEachIndexed
+                val columns = line.bar ?: if (line.underline) {
+                    val first = line.text.indexOfFirst { it != ' ' && it != '\u00A0' }
+                    val last = line.text.indexOfLast { it != ' ' && it != '\u00A0' }
+                    if (first < 0 || last < 0) null else first..last
+                } else {
+                    null
+                }
+                if (columns == null) return@forEachIndexed
                 val y = layout.getLineBottom(index) - strokeOffset
                 drawLine(
                     color = underlineColor,
-                    start = Offset(first * charWidth, y),
-                    end = Offset((last + 1) * charWidth, y),
+                    start = Offset(columns.first * charWidth, y),
+                    end = Offset((columns.last + 1) * charWidth, y),
                     strokeWidth = strokeWidth
                 )
             }
