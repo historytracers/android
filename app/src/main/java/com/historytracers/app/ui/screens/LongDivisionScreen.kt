@@ -12,10 +12,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -23,6 +27,8 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
@@ -30,10 +36,14 @@ private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
 private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_and_remainder"
 private const val CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID = "choosing_dividend_and_divisor"
+private const val LONG_DIVISION_LEVEL_ID = "long_division"
 
 @Composable
 fun LongDivisionScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
@@ -51,6 +61,29 @@ fun LongDivisionScreen(
     val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
     val writingQuotientAndRemainderDone = WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID in completedLongDivision
     val choosingDividendAndDivisorDone = CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID in completedLongDivision
+
+    val levelGroupController = remember {
+        LevelGroupController(
+            listOf(
+                DIVISION_AND_REMAINDER_SECTION_ID,
+                WRITING_THE_QUOTIENT_SECTION_ID,
+                WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
+                CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID
+            ),
+            completedLongDivision
+        )
+    }
+    LaunchedEffect(completedLongDivision) {
+        levelGroupController.syncFromPersisted(completedLongDivision)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed(levelId) }
+    }
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -228,6 +261,38 @@ fun LongDivisionScreen(
                 )
 
                 Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel(LONG_DIVISION_LEVEL_ID)
+                        onNavigateToCongratulation()
+                    },
+                    enabled = levelGroupController.allCompleted,
+                    modifier = Modifier.size(112.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (LONG_DIVISION_LEVEL_ID in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
             }
         }
     }

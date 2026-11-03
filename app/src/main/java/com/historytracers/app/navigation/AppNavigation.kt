@@ -1041,7 +1041,10 @@ fun AppNavigation() {
                             },
                             onNavigateToChoosingDividendAndDivisor = {
                                 navController.navigate(Screen.ChoosingDividendAndDivisorIntro.route) { launchSingleTop = true }
-                            }
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.DivisionAndRemainderIntro.route) {
