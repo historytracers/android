@@ -16,9 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -36,13 +34,12 @@ import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLang
 import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
-import com.historytracers.app.ui.features.hubTitleStringsForLanguage
-import com.historytracers.app.R
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -109,11 +106,11 @@ fun LatestAdditionScreen(
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToSunTzuLearning: () -> Unit = {},
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
-    onNavigateToChoosingDividendAndDivisor: () -> Unit = {}
+    onNavigateToChoosingDividendAndDivisor: () -> Unit = {},
+    onNavigateToMultiplicationDivisionRelationship: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
-    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val cas = carryingInAdditionScreenStringsForLanguage(LocalAppLanguage.current)
     val maes = matterAndEnergyScreenStringsForLanguage(LocalAppLanguage.current)
     val cwbs = countingWithBonesScreenStringsForLanguage(LocalAppLanguage.current)
@@ -126,13 +123,27 @@ fun LatestAdditionScreen(
     val wtqs = writingTheQuotientScreenStringsForLanguage(LocalAppLanguage.current)
     val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
+    val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
-    val completedAroundTheWorldAddition by preferences.completedAroundTheWorldAdditionSections.collectAsState(initial = emptySet())
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "multiplication_and_division_relationship",
+            label = lds.multiplicationAndDivisionRelationship,
+            icon = {
+                Text(
+                    text = "\u00D7 \u00F7",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "multiplication_and_division_relationship" in completedLongDivision },
+            onNavigate = onNavigateToMultiplicationDivisionRelationship
+        ),
         LatestAdditionEntry(
             sectionId = "choosing_dividend_and_divisor",
             label = cdds.title,
@@ -188,20 +199,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "division_and_remainder" in completedLongDivision },
             onNavigate = onNavigateToDivisionAndRemainder
-        ),
-        LatestAdditionEntry(
-            sectionId = "around_the_world_addition",
-            label = hts.aroundTheWorldAddition,
-            icon = {
-                Icon(
-                    painterResource(R.drawable.ic_world),
-                    contentDescription = null,
-                    modifier = Modifier.size(52.dp),
-                    tint = Color.Unspecified
-                )
-            },
-            isCompleted = { "around_the_world_addition" in completedAroundTheWorldAddition },
-            onNavigate = onNavigateToAroundTheWorldAddition
         )
     )
 

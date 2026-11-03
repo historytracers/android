@@ -172,6 +172,14 @@ import com.historytracers.app.ui.screens.OddOrEvenScreen
 import com.historytracers.app.ui.screens.AnotherWayToCountScreen
 import com.historytracers.app.ui.screens.ReturningScreen
 import com.historytracers.app.ui.screens.LongDivisionScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipConclusionScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipGroupingScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipIntroScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipSharingScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipSixChildrenScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipThinkingScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipTwoChildrenScreen
+import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipVisualizingScreen
 import com.historytracers.app.ui.screens.DivisionAndRemainderScreen
 import com.historytracers.app.ui.screens.DivisionAndRemainderIntroScreen
 import com.historytracers.app.ui.screens.WritingTheQuotientScreen
@@ -588,6 +596,14 @@ fun AppNavigation() {
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
            "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "choosing_dividend_and_divisor_intro", "choosing_dividend_and_divisor", "measuring",
+           "multiplication_and_division_relationship_intro",
+           "multiplication_and_division_relationship_grouping",
+           "multiplication_and_division_relationship_visualizing",
+           "multiplication_and_division_relationship_thinking",
+           "multiplication_and_division_relationship_two_children",
+           "multiplication_and_division_relationship_six_children",
+           "multiplication_and_division_relationship_sharing",
+           "multiplication_and_division_relationship_conclusion",
            "bigger_or_smaller_intro", "bigger_or_smaller_ruler", "bigger_or_smaller_after",
            "bigger_or_smaller_before", "bigger_or_smaller_thinking", "bigger_or_smaller_same_logic",
            "bigger_or_smaller_conclusion", "greater_or_smaller_game",
@@ -1042,6 +1058,9 @@ fun AppNavigation() {
                             onNavigateToChoosingDividendAndDivisor = {
                                 navController.navigate(Screen.ChoosingDividendAndDivisorIntro.route) { launchSingleTop = true }
                             },
+                            onNavigateToMultiplicationAndDivisionRelationship = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipIntro.route) { launchSingleTop = true }
+                            },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } }
@@ -1147,6 +1166,172 @@ fun AppNavigation() {
                                 navController.popBackToOrigin(
                                     Screen.ChoosingDividendAndDivisorIntro.route,
                                     fallback = Screen.ChoosingDividendAndDivisorIntro.route
+                                )
+                            },
+                            onNavigateToLongDivision = {
+                                navController.popBackToOrigin(
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipIntro.route) {
+                        MultiplicationDivisionRelationshipIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipGrouping.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipGrouping.route) {
+                        MultiplicationDivisionRelationshipGroupingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipVisualizing.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipVisualizing.route) {
+                        MultiplicationDivisionRelationshipVisualizingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipGrouping.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipGrouping.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipThinking.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipThinking.route) {
+                        MultiplicationDivisionRelationshipThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipVisualizing.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipVisualizing.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipTwoChildren.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipTwoChildren.route) {
+                        MultiplicationDivisionRelationshipTwoChildrenScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipThinking.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipThinking.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipSixChildren.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipSixChildren.route) {
+                        MultiplicationDivisionRelationshipSixChildrenScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipTwoChildren.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipTwoChildren.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipSharing.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipSharing.route) {
+                        MultiplicationDivisionRelationshipSharingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipSixChildren.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipSixChildren.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.MultiplicationDivisionRelationshipConclusion.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.MultiplicationDivisionRelationshipConclusion.route) {
+                        MultiplicationDivisionRelationshipConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipIntro.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.MultiplicationDivisionRelationshipSharing.route,
+                                    fallback = Screen.MultiplicationDivisionRelationshipSharing.route
                                 )
                             },
                             onNavigateToLongDivision = {
@@ -9345,6 +9530,7 @@ fun AppNavigation() {
                                     }
                                 }
                             },
+                            onNavigateToMultiplicationDivisionRelationship = { navController.navigate(Screen.MultiplicationDivisionRelationshipIntro.route) { launchSingleTop = true } },
                             onNavigateToPlayingWithAxioms = { navController.navigate(Screen.PlayingWithAxiomsGame.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAdditionIntro = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToLargeNumbersIntro = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },

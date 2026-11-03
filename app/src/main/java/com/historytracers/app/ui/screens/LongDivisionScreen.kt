@@ -36,6 +36,7 @@ private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
 private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_and_remainder"
 private const val CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID = "choosing_dividend_and_divisor"
+private const val MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID = "multiplication_and_division_relationship"
 private const val LONG_DIVISION_LEVEL_ID = "long_division"
 
 @Composable
@@ -47,7 +48,8 @@ fun LongDivisionScreen(
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
-    onNavigateToChoosingDividendAndDivisor: () -> Unit = {}
+    onNavigateToChoosingDividendAndDivisor: () -> Unit = {},
+    onNavigateToMultiplicationAndDivisionRelationship: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -61,10 +63,13 @@ fun LongDivisionScreen(
     val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
     val writingQuotientAndRemainderDone = WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID in completedLongDivision
     val choosingDividendAndDivisorDone = CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID in completedLongDivision
+    val multiplicationAndDivisionRelationshipDone =
+        MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID in completedLongDivision
 
     val levelGroupController = remember {
         LevelGroupController(
             listOf(
+                MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID,
                 DIVISION_AND_REMAINDER_SECTION_ID,
                 WRITING_THE_QUOTIENT_SECTION_ID,
                 WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
@@ -142,6 +147,36 @@ fun LongDivisionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                FilledIconButton(
+                    onClick = onNavigateToMultiplicationAndDivisionRelationship,
+                    modifier = Modifier.size(112.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (multiplicationAndDivisionRelationshipDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = xs.multiplicationAndDivisionExample,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.multiplicationAndDivisionRelationship,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
                 FilledIconButton(
                     onClick = onNavigateToDivisionAndRemainder,
                     modifier = Modifier.size(112.dp),
