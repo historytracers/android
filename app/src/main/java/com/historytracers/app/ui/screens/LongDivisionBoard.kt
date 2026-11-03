@@ -92,8 +92,11 @@ internal data class DivisionExercise(
 )
 
 internal fun randomDivisionExercise(): DivisionExercise {
-    val dividend = Random.nextInt(10, 1000)
-    val divisor = Random.nextInt(1, 10)
+    return divisionExercise(Random.nextInt(10, 1000), Random.nextInt(1, 10))
+}
+
+/** Builds the exercise for the given numbers, skipping leading quotient digits that are zero. */
+internal fun divisionExercise(dividend: Int, divisor: Int): DivisionExercise {
     val steps = computeDivisionSteps(dividend, divisor)
     // Leading steps whose quotient digit is zero are not played: they would only add zeros in
     // front of the quotient, so the exercise starts at the first meaningful digit.

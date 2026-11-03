@@ -178,6 +178,8 @@ import com.historytracers.app.ui.screens.WritingTheQuotientScreen
 import com.historytracers.app.ui.screens.WritingTheQuotientIntroScreen
 import com.historytracers.app.ui.screens.WritingQuotientAndRemainderScreen
 import com.historytracers.app.ui.screens.WritingQuotientAndRemainderIntroScreen
+import com.historytracers.app.ui.screens.ChoosingDividendAndDivisorScreen
+import com.historytracers.app.ui.screens.ChoosingDividendAndDivisorIntroScreen
 import com.historytracers.app.ui.screens.ComplementAndSubtractionIntroScreen
 import com.historytracers.app.ui.screens.ComplementAndSubtractionComplementScreen
 import com.historytracers.app.ui.screens.ComplementAndSubtractionOrdersScreen
@@ -585,7 +587,7 @@ fun AppNavigation() {
            "overcoming_limits_logic", "overcoming_limits_last_foot", "overcoming_limits_conclusion",
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
-           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "measuring",
+           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "choosing_dividend_and_divisor_intro", "choosing_dividend_and_divisor", "measuring",
            "bigger_or_smaller_intro", "bigger_or_smaller_ruler", "bigger_or_smaller_after",
            "bigger_or_smaller_before", "bigger_or_smaller_thinking", "bigger_or_smaller_same_logic",
            "bigger_or_smaller_conclusion", "greater_or_smaller_game",
@@ -1036,6 +1038,9 @@ fun AppNavigation() {
                             },
                             onNavigateToWritingQuotientAndRemainder = {
                                 navController.navigate(Screen.WritingQuotientAndRemainderIntro.route) { launchSingleTop = true }
+                            },
+                            onNavigateToChoosingDividendAndDivisor = {
+                                navController.navigate(Screen.ChoosingDividendAndDivisorIntro.route) { launchSingleTop = true }
                             }
                         )
                     }
@@ -1107,6 +1112,38 @@ fun AppNavigation() {
                                 navController.popBackToOrigin(
                                     Screen.WritingQuotientAndRemainderIntro.route,
                                     fallback = Screen.WritingQuotientAndRemainderIntro.route
+                                )
+                            },
+                            onNavigateToLongDivision = {
+                                navController.popBackToOrigin(
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            }
+                        )
+                    }
+                    composable(Screen.ChoosingDividendAndDivisorIntro.route) {
+                        ChoosingDividendAndDivisorIntroScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ChoosingDividendAndDivisor.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ChoosingDividendAndDivisor.route) {
+                        ChoosingDividendAndDivisorScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ChoosingDividendAndDivisorIntro.route,
+                                    fallback = Screen.ChoosingDividendAndDivisorIntro.route
                                 )
                             },
                             onNavigateToLongDivision = {
@@ -9354,7 +9391,8 @@ fun AppNavigation() {
                             onNavigateToSunTzuLearning = { navController.navigate(Screen.SunTzuLearningIntro.route) { launchSingleTop = true } },
                             onNavigateToDivisionAndRemainder = { navController.navigate(Screen.DivisionAndRemainderIntro.route) { launchSingleTop = true } },
                             onNavigateToWritingTheQuotient = { navController.navigate(Screen.WritingTheQuotientIntro.route) { launchSingleTop = true } },
-                            onNavigateToWritingQuotientAndRemainder = { navController.navigate(Screen.WritingQuotientAndRemainderIntro.route) { launchSingleTop = true } }
+                            onNavigateToWritingQuotientAndRemainder = { navController.navigate(Screen.WritingQuotientAndRemainderIntro.route) { launchSingleTop = true } },
+                            onNavigateToChoosingDividendAndDivisor = { navController.navigate(Screen.ChoosingDividendAndDivisorIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.Streak.route) {

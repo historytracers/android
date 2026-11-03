@@ -31,12 +31,12 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.divisionAndRemainderScreenStringsForLanguage
+import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
 import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLanguage
 import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.sunTzuSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -108,7 +108,8 @@ fun LatestAdditionScreen(
     onNavigateToGroupingThrees: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
     onNavigateToSunTzuLearning: () -> Unit = {},
-    onNavigateToWritingQuotientAndRemainder: () -> Unit = {}
+    onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
+    onNavigateToChoosingDividendAndDivisor: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -121,10 +122,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val stss = sunTzuSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
     val ldrs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val wtqs = writingTheQuotientScreenStringsForLanguage(LocalAppLanguage.current)
     val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
+    val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -132,6 +133,20 @@ fun LatestAdditionScreen(
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "choosing_dividend_and_divisor",
+            label = cdds.title,
+            icon = {
+                Text(
+                    text = "??? \u00F7 ?",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "choosing_dividend_and_divisor" in completedLongDivision },
+            onNavigate = onNavigateToChoosingDividendAndDivisor
+        ),
         LatestAdditionEntry(
             sectionId = "writing_quotient_and_remainder",
             label = wqars.title,
@@ -187,20 +202,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "around_the_world_addition" in completedAroundTheWorldAddition },
             onNavigate = onNavigateToAroundTheWorldAddition
-        ),
-        LatestAdditionEntry(
-            sectionId = "sun_tzu_subtraction",
-            label = stss.title,
-            icon = {
-                Text(
-                    text = "\u5b6b\u5b50",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "sun_tzu_subtraction" in completedReturning },
-            onNavigate = onNavigateToSunTzuSubtraction
         )
     )
 

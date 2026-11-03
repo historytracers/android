@@ -156,6 +156,8 @@ sealed class Screen(val route: String) {
     data object WritingTheQuotient : Screen("writing_the_quotient")
     data object WritingQuotientAndRemainderIntro : Screen("writing_quotient_and_remainder_intro")
     data object WritingQuotientAndRemainder : Screen("writing_quotient_and_remainder")
+    data object ChoosingDividendAndDivisorIntro : Screen("choosing_dividend_and_divisor_intro")
+    data object ChoosingDividendAndDivisor : Screen("choosing_dividend_and_divisor")
     data object ComplementAndSubtractionIntro : Screen("complement_and_subtraction_intro")
     data object ComplementAndSubtractionComplement : Screen("complement_and_subtraction_complement")
     data object ComplementAndSubtractionOrders : Screen("complement_and_subtraction_orders")

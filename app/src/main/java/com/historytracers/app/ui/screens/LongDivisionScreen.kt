@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
 private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_and_remainder"
+private const val CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID = "choosing_dividend_and_divisor"
 
 @Composable
 fun LongDivisionScreen(
@@ -49,6 +50,7 @@ fun LongDivisionScreen(
     val divisionAndRemainderDone = DIVISION_AND_REMAINDER_SECTION_ID in completedLongDivision
     val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
     val writingQuotientAndRemainderDone = WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID in completedLongDivision
+    val choosingDividendAndDivisorDone = CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID in completedLongDivision
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -202,7 +204,7 @@ fun LongDivisionScreen(
                     modifier = Modifier.size(112.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (choosingDividendAndDivisorDone) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     Text(

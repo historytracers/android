@@ -104,7 +104,8 @@ private val measuringSectionIds = listOf(
 )
 
 private val longDivisionSectionIds = listOf(
-    "division_and_remainder", "writing_the_quotient", "writing_quotient_and_remainder"
+    "division_and_remainder", "writing_the_quotient", "writing_quotient_and_remainder",
+    "choosing_dividend_and_divisor"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
