@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,10 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -32,14 +29,14 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.complementAndSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
+import com.historytracers.app.ui.features.divisionAndRemainderScreenStringsForLanguage
+import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
+import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLanguage
+import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingSubtractionTypedScreenStringsForLanguage
-import com.historytracers.app.ui.features.practicingSubtractionChosenScreenStringsForLanguage
-import com.historytracers.app.ui.features.sunTzuSubtractionScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -62,6 +59,8 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToDivisionAndRemainder: () -> Unit = {},
+    onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
     onNavigateToCarryingInAdditionIntro: () -> Unit = {},
     onNavigateToLargeNumbersIntro: () -> Unit = {},
@@ -108,7 +107,9 @@ fun LatestAdditionScreen(
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
-    onNavigateToSunTzuLearning: () -> Unit = {}
+    onNavigateToSunTzuLearning: () -> Unit = {},
+    onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
+    onNavigateToChoosingDividendAndDivisor: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -121,16 +122,73 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val psts = practicingSubtractionTypedScreenStringsForLanguage(LocalAppLanguage.current)
-    val pscs = practicingSubtractionChosenScreenStringsForLanguage(LocalAppLanguage.current)
-    val stss = sunTzuSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
-    val css = complementAndSubtractionScreenStringsForLanguage(LocalAppLanguage.current)
+    val ldrs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
+    val wtqs = writingTheQuotientScreenStringsForLanguage(LocalAppLanguage.current)
+    val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
+    val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedAroundTheWorldAddition by preferences.completedAroundTheWorldAdditionSections.collectAsState(initial = emptySet())
+    val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "choosing_dividend_and_divisor",
+            label = cdds.title,
+            icon = {
+                Text(
+                    text = "??? \u00F7 ?",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "choosing_dividend_and_divisor" in completedLongDivision },
+            onNavigate = onNavigateToChoosingDividendAndDivisor
+        ),
+        LatestAdditionEntry(
+            sectionId = "writing_quotient_and_remainder",
+            label = wqars.title,
+            icon = {
+                Text(
+                    text = "987 \u00F7 1",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "writing_quotient_and_remainder" in completedLongDivision },
+            onNavigate = onNavigateToWritingQuotientAndRemainder
+        ),
+        LatestAdditionEntry(
+            sectionId = "writing_the_quotient",
+            label = wtqs.title,
+            icon = {
+                Text(
+                    text = "125 \u00F7 5",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "writing_the_quotient" in completedLongDivision },
+            onNavigate = onNavigateToWritingTheQuotient
+        ),
+        LatestAdditionEntry(
+            sectionId = "division_and_remainder",
+            label = ldrs.title,
+            icon = {
+                Text(
+                    text = "257 \u00F7 4",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "division_and_remainder" in completedLongDivision },
+            onNavigate = onNavigateToDivisionAndRemainder
+        ),
         LatestAdditionEntry(
             sectionId = "around_the_world_addition",
             label = hts.aroundTheWorldAddition,
@@ -144,78 +202,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "around_the_world_addition" in completedAroundTheWorldAddition },
             onNavigate = onNavigateToAroundTheWorldAddition
-        ),
-        LatestAdditionEntry(
-            sectionId = "sun_tzu_subtraction",
-            label = stss.title,
-            icon = {
-                Text(
-                    text = "\u5b6b\u5b50",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "sun_tzu_subtraction" in completedReturning },
-            onNavigate = onNavigateToSunTzuSubtraction
-        ),
-        LatestAdditionEntry(
-            sectionId = "complement_and_subtraction",
-            label = css.title,
-            icon = {
-                Canvas(modifier = Modifier.size(40.dp)) {
-                    val side = size.width * 0.26f
-                    val gap = size.width * 0.08f
-                    val total = side * 3 + gap * 2
-                    val startX = (size.width - total) / 2f
-                    val top = (size.height - side) / 2f
-                    val fills = listOf(Color.White, Color(0xFFADD8E6), Color(0xFFADD8E6))
-                    fills.forEachIndexed { index, fill ->
-                        val left = startX + index * (side + gap)
-                        drawRect(
-                            color = fill,
-                            topLeft = Offset(left, top),
-                            size = Size(side, side)
-                        )
-                        drawRect(
-                            color = Color(0xFF37474F),
-                            topLeft = Offset(left, top),
-                            size = Size(side, side),
-                            style = Stroke(width = 2f)
-                        )
-                    }
-                }
-            },
-            isCompleted = { "complement_and_subtraction" in completedReturning },
-            onNavigate = onNavigateToComplementAndSubtraction
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_subtraction_chosen",
-            label = pscs.title,
-            icon = {
-                Text(
-                    text = "? - ? = ?",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_subtraction_chosen" in completedReturning },
-            onNavigate = onNavigateToPracticingSubtractionChosen
-        ),
-        LatestAdditionEntry(
-            sectionId = "practicing_subtraction_typed",
-            label = psts.title,
-            icon = {
-                Text(
-                    text = "8 - 1 = ?",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "practicing_subtraction_typed" in completedReturning },
-            onNavigate = onNavigateToPracticingSubtractionTyped
         )
     )
 

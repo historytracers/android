@@ -103,11 +103,16 @@ private val measuringSectionIds = listOf(
     "bigger_or_smaller", "greater_or_smaller_game", "measuring_one_direction"
 )
 
+private val longDivisionSectionIds = listOf(
+    "division_and_remainder", "writing_the_quotient", "writing_quotient_and_remainder",
+    "choosing_dividend_and_divisor"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
 // UserPreferences.markNewHubSeen).
-private val newHubIds = setOf("who_am_i", "another_way_to_count", "around_the_world", "measuring", "around_the_world_addition")
+private val newHubIds = setOf("who_am_i", "another_way_to_count", "around_the_world", "measuring", "around_the_world_addition", "long_division")
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
     hubId in newHubIds && hubId !in seenNewHubs
@@ -140,7 +145,8 @@ fun IndexScreen(
     onNavigateToAnotherWayToCount: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
     onNavigateToMeasuring: () -> Unit = {},
-    onNavigateToReturning: () -> Unit = {}
+    onNavigateToReturning: () -> Unit = {},
+    onNavigateToLongDivision: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
@@ -162,6 +168,7 @@ fun IndexScreen(
     val completedAroundTheWorldAddition by preferences.completedAroundTheWorldAdditionSections.collectAsState(initial = emptySet())
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
+    val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -179,6 +186,7 @@ fun IndexScreen(
     val aroundTheWorldAdditionDone = aroundTheWorldAdditionSectionIds.all { it in completedAroundTheWorldAddition }
     val returningDone = returningSectionIds.all { it in completedReturning }
     val measuringDone = measuringSectionIds.all { it in completedMeasuring }
+    val longDivisionDone = longDivisionSectionIds.all { it in completedLongDivision }
 
     val whoAmINew = isNewHub("who_am_i", seenNewHubs)
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
@@ -190,6 +198,7 @@ fun IndexScreen(
     val aroundTheWorldNew = isNewHub("around_the_world", seenNewHubs)
     val aroundTheWorldAdditionNew = isNewHub("around_the_world_addition", seenNewHubs)
     val measuringNew = isNewHub("measuring", seenNewHubs)
+    val longDivisionNew = isNewHub("long_division", seenNewHubs)
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -498,6 +507,46 @@ fun IndexScreen(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Box(modifier = Modifier.padding(horizontal = 32.dp)) {
+                FilledTonalButton(
+                    onClick = {
+                        if (longDivisionNew) scope.launch { preferences.markNewHubSeen("long_division") }
+                        onNavigateToLongDivision()
+                    },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = if (longDivisionNew) ButtonYellow else if (longDivisionDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u00F7",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "\u2212",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = "+",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = hts.longDivision,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                if (longDivisionNew) NewHubSunBadge()
             }
 
             Spacer(Modifier.height(16.dp))
