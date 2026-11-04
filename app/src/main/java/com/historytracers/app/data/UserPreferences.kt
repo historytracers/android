@@ -591,6 +591,18 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    suspend fun claimLevel(levelId: String, newScore: Int): Boolean {
+        var claimed = false
+        context.dataStore.edit { preferences ->
+            val levelClaims = preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
+            if (levelId in levelClaims) return@edit
+            preferences[CLAIMED_LEVELS_KEY] = levelClaims + levelId
+            preferences[SCORE_KEY] = newScore
+            claimed = true
+        }
+        return claimed
+    }
+
     suspend fun claimReturningLevel(newScore: Int, requiredSections: List<String>): Boolean {
         var claimed = false
         context.dataStore.edit { preferences ->

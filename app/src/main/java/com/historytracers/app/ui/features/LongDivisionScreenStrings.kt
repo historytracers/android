@@ -4,6 +4,8 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class LongDivisionScreenStrings(
+    val multiplicationAndDivisionRelationship: String,
+    val multiplicationAndDivisionExample: String,
     val divisionAndRemainder: String,
     val divisionExample: String,
     val writingTheQuotient: String,
@@ -15,6 +17,8 @@ data class LongDivisionScreenStrings(
 )
 
 val EnLongDivisionScreenStrings = LongDivisionScreenStrings(
+    multiplicationAndDivisionRelationship = "The Relationship Between Multiplication and Division",
+    multiplicationAndDivisionExample = "\u00D7 \u00F7",
     divisionAndRemainder = "Division and Remainder",
     divisionExample = "257 \u00F7 4",
     writingTheQuotient = "Divisions: Writing the Quotient",
@@ -26,6 +30,8 @@ val EnLongDivisionScreenStrings = LongDivisionScreenStrings(
 )
 
 val PtLongDivisionScreenStrings = LongDivisionScreenStrings(
+    multiplicationAndDivisionRelationship = "A Rela\u00E7\u00E3o Entre Multiplica\u00E7\u00E3o e Divis\u00E3o",
+    multiplicationAndDivisionExample = "\u00D7 \u00F7",
     divisionAndRemainder = "Divis\u00e3o e Resto",
     divisionExample = "257 \u00F7 4",
     writingTheQuotient = "Divis\u00f5es: escrevendo o quociente",
@@ -37,6 +43,8 @@ val PtLongDivisionScreenStrings = LongDivisionScreenStrings(
 )
 
 val EsLongDivisionScreenStrings = LongDivisionScreenStrings(
+    multiplicationAndDivisionRelationship = "La Relaci\u00F3n Entre Multiplicaci\u00F3n y Divisi\u00F3n",
+    multiplicationAndDivisionExample = "\u00D7 \u00F7",
     divisionAndRemainder = "Divisi\u00F3n y Resto",
     divisionExample = "257 \u00F7 4",
     writingTheQuotient = "Divisiones: escribiendo el cociente",
