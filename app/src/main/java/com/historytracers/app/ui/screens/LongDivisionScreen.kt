@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,7 +32,9 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
@@ -38,6 +42,14 @@ private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_
 private const val CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID = "choosing_dividend_and_divisor"
 private const val MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID = "multiplication_and_division_relationship"
 private const val LONG_DIVISION_LEVEL_ID = "long_division"
+
+private val LONG_DIVISION_SECTION_IDS = listOf(
+    MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID,
+    DIVISION_AND_REMAINDER_SECTION_ID,
+    WRITING_THE_QUOTIENT_SECTION_ID,
+    WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
+    CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID
+)
 
 @Composable
 fun LongDivisionScreen(
@@ -68,26 +80,31 @@ fun LongDivisionScreen(
 
     val levelGroupController = remember {
         LevelGroupController(
-            listOf(
-                MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID,
-                DIVISION_AND_REMAINDER_SECTION_ID,
-                WRITING_THE_QUOTIENT_SECTION_ID,
-                WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
-                CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID
-            ),
+            LONG_DIVISION_SECTION_IDS,
             completedLongDivision
         )
     }
     LaunchedEffect(completedLongDivision) {
         levelGroupController.syncFromPersisted(completedLongDivision)
     }
+    val levelGroupCompleted by levelGroupController.completed.collectAsState()
+    val allLevelGroupSectionsCompleted = LONG_DIVISION_SECTION_IDS.all { it in levelGroupCompleted }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+    var claimingLevel by remember { mutableStateOf(false) }
 
     fun claimLevel(levelId: String) {
-        if (levelId in claimedLevels) return
-        onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed(levelId) }
+        if (claimingLevel || levelId in claimedLevels) return
+        claimingLevel = true
+        scope.launch {
+            val claimed = withContext(NonCancellable) {
+                preferences.claimLevel(levelId, currentScore + 10)
+            }
+            claimingLevel = false
+            if (claimed) {
+                onScoreChanged(currentScore + 10)
+            }
+        }
     }
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -149,7 +166,9 @@ fun LongDivisionScreen(
             ) {
                 FilledIconButton(
                     onClick = onNavigateToMultiplicationAndDivisionRelationship,
-                    modifier = Modifier.size(112.dp),
+                    modifier = Modifier
+                        .size(112.dp)
+                        .semantics { contentDescription = xs.multiplicationAndDivisionRelationship },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (multiplicationAndDivisionRelationshipDone) ButtonYellowDark else ButtonYellow
@@ -302,7 +321,7 @@ fun LongDivisionScreen(
                         claimLevel(LONG_DIVISION_LEVEL_ID)
                         onNavigateToCongratulation()
                     },
-                    enabled = levelGroupController.allCompleted,
+                    enabled = allLevelGroupSectionsCompleted,
                     modifier = Modifier.size(112.dp),
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(

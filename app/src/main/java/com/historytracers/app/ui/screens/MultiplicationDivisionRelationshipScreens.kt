@@ -421,10 +421,14 @@ private fun RelationshipCenteredLines(text: String) {
                 if (match == null) {
                     line
                 } else {
-                    val left = match.groupValues[1].toInt()
-                    val right = match.groupValues[2].toInt()
-                    val result = match.groupValues[3].toInt()
-                    "%2d \u00D7 %2d = %2d".format(left, right, result)
+                    val left = match.groupValues[1].toIntOrNull()
+                    val right = match.groupValues[2].toIntOrNull()
+                    val result = match.groupValues[3].toIntOrNull()
+                    if (left == null || right == null || result == null) {
+                        line
+                    } else {
+                        "%2d \u00D7 %2d = %2d".format(left, right, result)
+                    }
                 }
             }
     }
