@@ -166,6 +166,34 @@
      - Precede it with `Spacer(Modifier.height(16.dp))`.
   3. In `AppNavigation.kt`, wire the callback to pop back to the hub route: `if (!navController.popBackStack(Screen.<Hub>.route, false)) { navController.navigate(Screen.<Hub>.route) { popUpTo(0) { inclusive = true }; launchSingleTop = true } }`.
 
+## Audio Buttons
+
+- **Every screen in a newly added group of screens must have an audio button**, except the main screen (`IndexScreen.kt`), which has no title bar. This applies to all `sm_game` content screens and to single-screen JSON intros.
+- Audio files are hosted online and follow the pattern `https://www.historytracers.org/audios/{lessonUuid}_{contentUuid}_{language}.ogg`:
+  - `lessonUuid` = the smartphone lesson JSON UUID (the `SMARTPHONE_GAME_FILE` / `GAME_FILE` / `<FEATURE>_SMARTPHONE_FILE` constant).
+  - `contentUuid` = the `SMGameContent.id` of the screen (the `contentId` parameter).
+  - `language` = the active `LocalAppLanguage.current` (`en-US`, `pt-BR`, or `es-ES`).
+  - Example: `https://www.historytracers.org/audios/fe5132a9-fd92-4978-977d-198a9eb12bd5_f756d757-e974-4dee-a922-536bfabec380_pt-BR.ogg`.
+- Never build the URL or create a `MediaPlayer` inside a screen. Always reuse the shared `ScreenAudioButton` composable in `app/src/main/java/com/historytracers/app/ui/components/ScreenAudioButton.kt`:
+  ```kotlin
+  ScreenAudioButton(
+      lessonId = SMARTPHONE_GAME_FILE,
+      contentId = contentId
+  )
+  ```
+- Placement pattern in the screen's top bar:
+  - Constrain the title so the button never overflows: add `maxLines = 1`, `overflow = TextOverflow.Ellipsis`, and `modifier = Modifier.padding(start = 8.dp).weight(1f)` to the title `Text`.
+  - Place `ScreenAudioButton` immediately after the title `Text`, at the right side of the top bar.
+  - Add the imports `com.historytracers.app.ui.components.ScreenAudioButton` and `androidx.compose.ui.text.style.TextOverflow` when missing.
+- For single-screen JSON intros that load the first content directly (not through a `contentId` parameter), capture the id from the JSON (`firstContentId = content?.id`) and render the button only when it is non-null.
+- `ScreenAudioButton` already handles the behavior:
+  - builds the URL with the active language;
+  - checks connectivity and shows `s.common.audioOfflineMessage` when offline;
+  - streams the audio with `MediaPlayer`, toggles play/stop, shows `s.common.audioErrorMessage` on failure, and releases the player when the screen is disposed.
+- The strings `audio`, `audioOfflineMessage`, and `audioErrorMessage` live in `AppCommonStrings` with translations in `UiStrings.kt`. Reuse them; do not add per-screen audio strings.
+- Kotlin-only screens that have no lesson/content UUID pair cannot have an associated `UUID_UUID_LANG.ogg` file and are out of scope.
+- **Whenever a new lesson group is created, verify the audio button on every screen in all three languages** — switch the app language and confirm the URL uses `en-US`, `pt-BR`, and `es-ES` respectively.
+
 ## Porting a JS Abacus App to Android
 
 When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `historytracers/lang/*/` repos to an Android Compose screen, follow this checklist:
@@ -276,6 +304,7 @@ When building screens from `historytracers/lang/{lang}/smartphone/<uuid>.json` f
 - Create one file with a public composable per `SMGameContent` delegating to a shared private loader composable keyed by `contentId`.
 - Each screen must include:
   - Top bar (back arrow + title) using `s.common.*`.
+  - **Audio button: every screen must render `ScreenAudioButton(lessonId = <lessonId constant>, contentId = contentId)` in the top bar, to the right of the title.** Constrain the title with `maxLines = 1`, `overflow = TextOverflow.Ellipsis`, and `weight(1f)`. See **Audio Buttons**.
   - **A content title: the first markdown `text` entry must start with a `#### <Title>` heading followed by a blank line** (question screens included). See **Screen Title Rules**. Add it in all three locales (`en-US`, `pt-BR`, `es-ES`).
   - Text rendered via `MarkdownText` when `format == "markdown"`, else `TextRenderer` (this renders any `<img>` tags as images). Markdown lines starting with a single `*` are image captions and are automatically styled centered/italic/smaller by `MarkdownText`.
   - Green buttons (`#4CAF50` container, `Color.White` content) everywhere buttons act on the game flow:

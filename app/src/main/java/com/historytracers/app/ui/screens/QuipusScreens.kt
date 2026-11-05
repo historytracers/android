@@ -47,6 +47,8 @@ import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "cdb2dfef-a78a-4746-8d80-67a7087e02dc"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -315,7 +317,13 @@ private fun QuipusGameContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }

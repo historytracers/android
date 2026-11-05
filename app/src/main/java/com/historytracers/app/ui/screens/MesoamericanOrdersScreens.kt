@@ -51,6 +51,8 @@ import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "1a5c6dc9-a609-4fce-b360-54738e823cfc"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -467,7 +469,13 @@ private fun MesoamericanOrdersGameContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }

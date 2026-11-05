@@ -38,6 +38,8 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "0fe4b20d-1bd5-4f36-9d0b-87c10881ff8d"
 private const val SECTION_ID = "bigger_or_smaller"
@@ -257,7 +259,13 @@ private fun BiggerOrSmallerGameContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }

@@ -40,6 +40,8 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.sunTzuSubtractionScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "b22c6a8a-171b-471d-a99d-abfc80474ddc"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -266,7 +268,13 @@ private fun SunTzuSubtractionContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }
