@@ -23,12 +23,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.ContentRepository
 import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLanguage
 
@@ -51,6 +53,7 @@ fun WritingTheQuotientIntroScreen(
     val repo = remember { ContentRepository(context) }
 
     var instructionText by remember { mutableStateOf<String?>(null) }
+    var firstContentId by remember { mutableStateOf<String?>(null) }
     var sources by remember { mutableStateOf(listOf<Pair<String, String>>()) }
 
     LaunchedEffect(language) {
@@ -58,11 +61,15 @@ fun WritingTheQuotientIntroScreen(
             is ContentResult.SMGame -> {
                 val content = result.data?.content?.firstOrNull()
                 instructionText = content?.text?.firstOrNull()?.text
+                firstContentId = content?.id
                 sources = content?.sourceMenu?.map { source ->
                     (source.text ?: "") to writingQuotientSourceUrl(source.page ?: "")
                 }.orEmpty()
             }
-            else -> instructionText = null
+            else -> {
+                instructionText = null
+                firstContentId = null
+            }
         }
     }
 
@@ -89,8 +96,16 @@ fun WritingTheQuotientIntroScreen(
                     Text(
                         text = xs.title,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(start = 8.dp)
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    firstContentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = SMARTPHONE_GAME_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 

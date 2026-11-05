@@ -43,6 +43,8 @@ import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "233fdde2-57df-4a0d-afee-46d23b42eacb"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -321,7 +323,13 @@ private fun MultiplyingWithYupanaGameContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }

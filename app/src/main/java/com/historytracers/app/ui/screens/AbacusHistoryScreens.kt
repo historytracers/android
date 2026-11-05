@@ -56,6 +56,8 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlinx.coroutines.launch
 import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "973b0f27-bd58-443b-a780-bd9e22aed8bd"
 private const val SECTION_ID = "abacus_history"
@@ -370,7 +372,13 @@ fun CalculiScreen(
                     Text(
                         text = xs.title,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(start = 8.dp)
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = SMARTPHONE_GAME_FILE,
+                        contentId = CALCULI_ID
                     )
                 }
             }
@@ -1081,7 +1089,13 @@ private fun AbacusHistoryGameContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }

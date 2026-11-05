@@ -30,6 +30,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 
@@ -52,6 +53,7 @@ fun WritingQuotientAndRemainderIntroScreen(
     val repo = remember { ContentRepository(context) }
 
     var instructionText by remember { mutableStateOf<String?>(null) }
+    var firstContentId by remember { mutableStateOf<String?>(null) }
     var sources by remember { mutableStateOf(listOf<Pair<String, String>>()) }
 
     LaunchedEffect(language) {
@@ -59,11 +61,15 @@ fun WritingQuotientAndRemainderIntroScreen(
             is ContentResult.SMGame -> {
                 val content = result.data?.content?.firstOrNull()
                 instructionText = content?.text?.firstOrNull()?.text
+                firstContentId = content?.id
                 sources = content?.sourceMenu?.map { source ->
                     (source.text ?: "") to quotientRemainderSourceUrl(source.page ?: "")
                 }.orEmpty()
             }
-            else -> instructionText = null
+            else -> {
+                instructionText = null
+                firstContentId = null
+            }
         }
     }
 
@@ -92,8 +98,14 @@ fun WritingQuotientAndRemainderIntroScreen(
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    firstContentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = SMARTPHONE_GAME_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 

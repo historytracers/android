@@ -62,6 +62,8 @@ import coil.compose.SubcomposeAsyncImage
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val ATW_SMARTPHONE_FILE = "1071ad37-4ee3-477a-85bb-9cd3e40e3139"
 private const val ATW_HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -629,7 +631,13 @@ private fun AtwContent(
                 Text(
                     text = hts.aroundTheWorld,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = ATW_SMARTPHONE_FILE,
+                    contentId = contentId
                 )
             }
         }

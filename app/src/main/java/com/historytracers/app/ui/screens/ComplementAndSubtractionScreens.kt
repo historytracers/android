@@ -45,6 +45,8 @@ import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val CS_SMARTPHONE_GAME_FILE = "2515313a-be59-4320-8c4b-493fbc49f1fc"
 private const val CS_HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -400,7 +402,13 @@ private fun ComplementAndSubtractionGameContent(
                 Text(
                     text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = CS_SMARTPHONE_GAME_FILE,
+                    contentId = contentId
                 )
             }
         }

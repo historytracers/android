@@ -65,6 +65,8 @@ import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import com.historytracers.app.ui.components.ScreenAudioButton
+import androidx.compose.ui.text.style.TextOverflow
 
 private const val ATW_ADD_SMARTPHONE_FILE = "49bf2fba-e9f4-4650-ab96-4d4901795477"
 private const val ATW_ADD_SECTION_ID = "around_the_world_addition"
@@ -553,7 +555,13 @@ private fun AtwAdditionContent(
                 Text(
                     text = hts.aroundTheWorldAddition,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = ATW_ADD_SMARTPHONE_FILE,
+                    contentId = contentId
                 )
             }
         }
