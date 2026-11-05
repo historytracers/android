@@ -27,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.historytracers.app.data.DriveSyncManager
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.data.detectDefaultLanguage
 import com.historytracers.app.ui.LocalAppLanguage
@@ -557,6 +558,7 @@ import com.historytracers.app.ui.screens.IPreferThisOrientationScreen
 import com.historytracers.app.ui.screens.IPreferThisThinkingScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -730,6 +732,29 @@ fun AppNavigation() {
 
     LaunchedEffect(counter) {
         preferences.setScore(counter)
+    }
+
+    // When Google Drive sync is enabled, merge the remote backup into the local
+    // preferences on launch and upload the merged result again.
+    LaunchedEffect(Unit) {
+        if (preferences.driveSyncEnabled.first() && preferences.driveSyncAccount.first().isNotBlank()) {
+            val result = DriveSyncManager(context).syncNow(preferences)
+            if (result.success) {
+                val syncedScore = preferences.score.first()
+                if (syncedScore > counter) counter = syncedScore
+            }
+        }
+    }
+
+    // Debounced background upload so progress made during a session is backed up.
+    LaunchedEffect(Unit) {
+        if (!preferences.driveSyncEnabled.first()) return@LaunchedEffect
+        snapshotFlow { counter }.collectLatest {
+            delay(5_000)
+            if (preferences.driveSyncEnabled.first() && preferences.driveSyncAccount.first().isNotBlank()) {
+                DriveSyncManager(context).uploadNow(preferences)
+            }
+        }
     }
 
     var breakStartTime by remember { mutableStateOf(System.currentTimeMillis() / 1000L) }

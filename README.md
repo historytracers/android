@@ -92,6 +92,23 @@ ht.key.password=<key-password>
 
 Alternatively, set the `HT_STORE_FILE`, `HT_STORE_PASSWORD`, `HT_KEY_ALIAS` and `HT_KEY_PASSWORD` environment variables with the same values.
 
+## Google Drive sync setup
+
+The optional **Google Drive Sync** setting (off by default) saves a JSON backup of the user's score, streak and preferences as `History Tracers Backup.json` in their own Google Drive. No History Tracers server is involved: the app calls the Google Drive REST API directly with an OAuth token obtained from Google Sign-In, using the `drive.file` scope (the app can only access the backup file it created).
+
+The publisher configures this once in the Google Cloud Console:
+
+1. Create (or reuse) a Google Cloud project.
+2. Enable the **Google Drive API** for that project.
+3. Configure the **OAuth consent screen** and add the scope `https://www.googleapis.com/auth/drive.file`.
+4. Create an **OAuth 2.0 Client ID** of type **Android** for the application id `com.historytracers.app` and register the SHA-1 fingerprint of every signing certificate (debug and release). The debug fingerprint can be printed with:
+
+    ```sh
+    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+    ```
+
+No `google-services.json` is needed: Google Play services resolves the Android OAuth client by package name and signing certificate. Until the client is registered, the setting stays visible but signing in fails with the generic sync error.
+
 ## Project structure
 
 | Path | Description |

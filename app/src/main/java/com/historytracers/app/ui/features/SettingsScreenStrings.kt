@@ -22,6 +22,20 @@ data class SettingsScreenStrings(
     val calInca: String,
     val calJavanese: String,
     val calJapanese: String,
+    val driveSyncTitle: String,
+    val driveSyncDescription: String,
+    val driveSyncSignIn: String,
+    val driveSyncNow: String,
+    val driveSyncSyncing: String,
+    val driveSyncAccount: String,
+    val driveSyncLastSynced: String,
+    val driveSyncNever: String,
+    val driveSyncDisconnect: String,
+    val driveSyncSuccess: String,
+    val driveSyncError: String,
+    val driveSyncUnavailable: String,
+    val driveSyncNotSignedIn: String,
+    val driveSyncPermissionRequired: String,
 )
 
 val EnSettingsScreenStrings = SettingsScreenStrings(
@@ -43,6 +57,20 @@ val EnSettingsScreenStrings = SettingsScreenStrings(
     calInca = "Inca",
     calJavanese = "Javanese",
     calJapanese = "Japanese",
+    driveSyncTitle = "Google Drive Sync",
+    driveSyncDescription = "Save a backup file with your score, streak and preferences in your own Google Drive, so you do not lose them. The app can only access this backup file. Disabled by default.",
+    driveSyncSignIn = "Sign in with Google",
+    driveSyncNow = "Sync Now",
+    driveSyncSyncing = "Syncing\u2026",
+    driveSyncAccount = "Google account: %s",
+    driveSyncLastSynced = "Last sync: %s",
+    driveSyncNever = "Never",
+    driveSyncDisconnect = "Disconnect",
+    driveSyncSuccess = "Your progress has been backed up to Google Drive.",
+    driveSyncError = "Could not reach Google Drive. Please try again.",
+    driveSyncUnavailable = "Google Drive sync requires Google Play services.",
+    driveSyncNotSignedIn = "Sign in with Google to sync your progress.",
+    driveSyncPermissionRequired = "Google Drive access was not granted.",
 )
 
 val PtSettingsScreenStrings = SettingsScreenStrings(
@@ -64,6 +92,20 @@ val PtSettingsScreenStrings = SettingsScreenStrings(
     calInca = "Inca",
     calJavanese = "Javan\u00eas",
     calJapanese = "Japon\u00eas",
+    driveSyncTitle = "Sincroniza\u00e7\u00e3o com o Google Drive",
+    driveSyncDescription = "Salve um arquivo de backup com sua pontua\u00e7\u00e3o, sequ\u00eancia e prefer\u00eancias no seu pr\u00f3prio Google Drive, para n\u00e3o perd\u00ea-las. O aplicativo s\u00f3 pode acessar este arquivo de backup. Desativado por padr\u00e3o.",
+    driveSyncSignIn = "Entrar com o Google",
+    driveSyncNow = "Sincronizar Agora",
+    driveSyncSyncing = "Sincronizando\u2026",
+    driveSyncAccount = "Conta do Google: %s",
+    driveSyncLastSynced = "\u00daltima sincroniza\u00e7\u00e3o: %s",
+    driveSyncNever = "Nunca",
+    driveSyncDisconnect = "Desconectar",
+    driveSyncSuccess = "Seu progresso foi salvo no Google Drive.",
+    driveSyncError = "N\u00e3o foi poss\u00edvel acessar o Google Drive. Tente novamente.",
+    driveSyncUnavailable = "A sincroniza\u00e7\u00e3o com o Google Drive requer os servi\u00e7os do Google Play.",
+    driveSyncNotSignedIn = "Entre com o Google para sincronizar seu progresso.",
+    driveSyncPermissionRequired = "O acesso ao Google Drive n\u00e3o foi concedido.",
 )
 
 val EsSettingsScreenStrings = SettingsScreenStrings(
@@ -85,6 +127,20 @@ val EsSettingsScreenStrings = SettingsScreenStrings(
     calInca = "Inca",
     calJavanese = "Javan\u00e9s",
     calJapanese = "Japon\u00e9s",
+    driveSyncTitle = "Sincronizaci\u00f3n con Google Drive",
+    driveSyncDescription = "Guarda un archivo de copia de seguridad con tu puntuaci\u00f3n, racha y preferencias en tu propio Google Drive, para no perderlos. La aplicaci\u00f3n solo puede acceder a este archivo de copia de seguridad. Desactivado por defecto.",
+    driveSyncSignIn = "Iniciar sesi\u00f3n con Google",
+    driveSyncNow = "Sincronizar Ahora",
+    driveSyncSyncing = "Sincronizando\u2026",
+    driveSyncAccount = "Cuenta de Google: %s",
+    driveSyncLastSynced = "\u00daltima sincronizaci\u00f3n: %s",
+    driveSyncNever = "Nunca",
+    driveSyncDisconnect = "Desconectar",
+    driveSyncSuccess = "Tu progreso se ha guardado en Google Drive.",
+    driveSyncError = "No se pudo acceder a Google Drive. Int\u00e9ntalo de nuevo.",
+    driveSyncUnavailable = "La sincronizaci\u00f3n con Google Drive requiere los servicios de Google Play.",
+    driveSyncNotSignedIn = "Inicia sesi\u00f3n con Google para sincronizar tu progreso.",
+    driveSyncPermissionRequired = "No se concedi\u00f3 acceso a Google Drive.",
 )
 
 val LocalSettingsScreenStrings = staticCompositionLocalOf { EnSettingsScreenStrings }

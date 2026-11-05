@@ -6,12 +6,18 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import java.util.Locale
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -90,6 +96,31 @@ class UserPreferences(private val context: Context) {
         private val ARRIVAL_AWARDED_SCREENS_KEY = stringSetPreferencesKey("arrival_awarded_screens")
         private val CALENDAR_KEY = stringPreferencesKey("calendar")
         private val YUPANA_LESSONS_MIGRATED_KEY = booleanPreferencesKey("yupana_lessons_migrated_to_another_way_to_count")
+
+        private val DRIVE_SYNC_ENABLED_KEY = booleanPreferencesKey("drive_sync_enabled")
+        private val DRIVE_SYNC_ACCOUNT_KEY = stringPreferencesKey("drive_sync_account")
+        private val DRIVE_SYNC_LAST_SYNC_KEY = longPreferencesKey("drive_sync_last_sync")
+        private val DRIVE_SYNC_RESET_PENDING_KEY = booleanPreferencesKey("drive_sync_reset_pending")
+
+        private const val BACKUP_SCHEMA_VERSION = 1
+        private val BACKUP_GSON = Gson()
+
+        // Device-local settings: never uploaded to Drive and never restored.
+        private val DRIVE_SYNC_LOCAL_ONLY_KEYS = setOf(
+            DRIVE_SYNC_ENABLED_KEY.name,
+            DRIVE_SYNC_ACCOUNT_KEY.name,
+            DRIVE_SYNC_LAST_SYNC_KEY.name,
+            DRIVE_SYNC_RESET_PENDING_KEY.name,
+            LAST_ROUTE_KEY.name,
+            BREAK_START_TIME_KEY.name,
+            FIRST_STEPS_SCROLL_KEY.name,
+            WORKOUT_SCROLL_KEY.name,
+            ABACUS_SCROLL_KEY.name,
+            YUPANA_SCROLL_KEY.name,
+            ANOTHER_WAY_TO_COUNT_SCROLL_KEY.name,
+            ROAD_TO_SOMEWHERE_SCROLL_KEY.name,
+            WHERE_ARE_WE_FROM_SCROLL_KEY.name
+        )
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -628,6 +659,180 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    val driveSyncEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[DRIVE_SYNC_ENABLED_KEY] ?: false
+    }
+
+    suspend fun setDriveSyncEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[DRIVE_SYNC_ENABLED_KEY] = enabled
+        }
+    }
+
+    val driveSyncAccount: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[DRIVE_SYNC_ACCOUNT_KEY] ?: ""
+    }
+
+    suspend fun setDriveSyncAccount(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[DRIVE_SYNC_ACCOUNT_KEY] = email
+        }
+    }
+
+    val driveSyncLastSync: Flow<Long> = context.dataStore.data.map { preferences ->
+        preferences[DRIVE_SYNC_LAST_SYNC_KEY] ?: 0L
+    }
+
+    suspend fun setDriveSyncLastSync(timestamp: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[DRIVE_SYNC_LAST_SYNC_KEY] = timestamp
+        }
+    }
+
+    /**
+     * True after "Reset Classes" until the cleared state has been uploaded, so the next
+     * sync overwrites the remote backup instead of merging old progress back in.
+     */
+    val driveSyncResetPending: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[DRIVE_SYNC_RESET_PENDING_KEY] ?: false
+    }
+
+    suspend fun setDriveSyncResetPending(pending: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[DRIVE_SYNC_RESET_PENDING_KEY] = pending
+        }
+    }
+
+    /**
+     * Serializes every synced preference (score, streak, completed sections, settings, ...)
+     * into a JSON document suitable for storing in the user's own Google Drive.
+     */
+    suspend fun exportBackupJson(): String {
+        val snapshot = context.dataStore.data.first()
+        val values = JsonObject()
+        snapshot.asMap().forEach { (key, value) ->
+            if (key.name in DRIVE_SYNC_LOCAL_ONLY_KEYS) return@forEach
+            values.add(key.name, encodePreferenceValue(value))
+        }
+        val backup = JsonObject().apply {
+            addProperty("schema", BACKUP_SCHEMA_VERSION)
+            addProperty("exportedAt", System.currentTimeMillis())
+            add("values", values)
+        }
+        return BACKUP_GSON.toJson(backup)
+    }
+
+    /**
+     * Merges a backup produced by [exportBackupJson] into the local preferences.
+     * Progress is only ever increased: sets are unioned, score/streak keep the larger
+     * value and the completion date keeps the most recent one.
+     *
+     * @return true when the document was a valid backup and was applied.
+     */
+    suspend fun mergeBackupJson(json: String): Boolean {
+        val root = runCatching { JsonParser.parseString(json).asJsonObject }.getOrNull()
+            ?: return false
+        val schema = root.get("schema")?.takeIf { it.isJsonPrimitive }?.asInt ?: return false
+        if (schema > BACKUP_SCHEMA_VERSION) return false
+        val values = root.getAsJsonObject("values") ?: return false
+        context.dataStore.edit { preferences ->
+            values.entrySet().forEach { (name, element) ->
+                if (name in DRIVE_SYNC_LOCAL_ONLY_KEYS) return@forEach
+                if (!element.isJsonObject) return@forEach
+                // Ignore a single malformed entry instead of discarding the whole backup.
+                runCatching { applyBackupValue(preferences, name, element.asJsonObject) }
+            }
+        }
+        return true
+    }
+
+    private fun encodePreferenceValue(value: Any): JsonObject = JsonObject().apply {
+        when (value) {
+            is Int -> {
+                addProperty("type", "int")
+                addProperty("value", value)
+            }
+            is Long -> {
+                addProperty("type", "long")
+                addProperty("value", value)
+            }
+            is Float -> {
+                addProperty("type", "float")
+                addProperty("value", value)
+            }
+            is Double -> {
+                addProperty("type", "double")
+                addProperty("value", value)
+            }
+            is Boolean -> {
+                addProperty("type", "boolean")
+                addProperty("value", value)
+            }
+            is String -> {
+                addProperty("type", "string")
+                addProperty("value", value)
+            }
+            is Set<*> -> {
+                addProperty("type", "stringSet")
+                add("value", JsonArray().apply { value.forEach { add(it?.toString() ?: "") } })
+            }
+            else -> {
+                addProperty("type", "string")
+                addProperty("value", value.toString())
+            }
+        }
+    }
+
+    private fun applyBackupValue(
+        preferences: MutablePreferences,
+        name: String,
+        element: JsonObject
+    ) {
+        val rawValue = element.get("value") ?: return
+        when (element.get("type")?.asString) {
+            "int" -> {
+                val key = intPreferencesKey(name)
+                val imported = rawValue.asInt
+                val current = preferences[key] ?: 0
+                preferences[key] = when (name) {
+                    SCORE_KEY.name, STREAK_COUNT_KEY.name -> maxOf(current, imported)
+                    else -> imported
+                }
+            }
+            "long" -> {
+                val key = longPreferencesKey(name)
+                preferences[key] = rawValue.asLong
+            }
+            "float" -> {
+                val key = floatPreferencesKey(name)
+                preferences[key] = rawValue.asFloat
+            }
+            "double" -> {
+                val key = doublePreferencesKey(name)
+                preferences[key] = rawValue.asDouble
+            }
+            "boolean" -> {
+                val key = booleanPreferencesKey(name)
+                preferences[key] = rawValue.asBoolean
+            }
+            "string" -> {
+                val key = stringPreferencesKey(name)
+                val imported = rawValue.asString
+                val current = preferences[key]
+                preferences[key] = if (name == LAST_COMPLETED_DATE_KEY.name) {
+                    maxOf(current ?: "", imported)
+                } else {
+                    imported
+                }
+            }
+            "stringSet" -> {
+                val key = stringSetPreferencesKey(name)
+                val imported = rawValue.asJsonArray.map { it.asString }.toSet()
+                preferences[key] = (preferences[key] ?: emptySet()) + imported
+            }
+        }
+    }
+
     suspend fun resetAllClasses() {
         context.dataStore.edit { preferences ->
             preferences[FIRST_STEPS_SECTIONS_KEY] = emptySet()
@@ -650,6 +855,9 @@ class UserPreferences(private val context: Context) {
             preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
             preferences[UNIVERSE_EXPANSION_STEP_KEY] = 0
             preferences[QUIPU_PRACTICE_STATE_KEY] = ""
+            // The next sync must overwrite the Drive backup instead of merging the
+            // progress that was just cleared back into the local preferences.
+            preferences[DRIVE_SYNC_RESET_PENDING_KEY] = true
         }
     }
 }

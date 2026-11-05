@@ -86,6 +86,23 @@ ht.key.password=<contraseña-de-la-clave>
 
 Como alternativa, defina las variables de entorno `HT_STORE_FILE`, `HT_STORE_PASSWORD`, `HT_KEY_ALIAS` y `HT_KEY_PASSWORD` con los mismos valores.
 
+## Sincronización con Google Drive
+
+La opción **Sincronización con Google Drive** (desactivada por defecto) guarda una copia de seguridad JSON de la puntuación, la racha y las preferencias del usuario como `History Tracers Backup.json` en su propio Google Drive. No interviene ningún servidor de History Tracers: la aplicación llama directamente a la API REST de Google Drive con un token OAuth obtenido mediante el inicio de sesión de Google, usando el alcance `drive.file` (la aplicación solo puede acceder al archivo de copia de seguridad que ella misma creó).
+
+El publicador configura esto una sola vez en Google Cloud Console:
+
+1. Cree (o reutilice) un proyecto de Google Cloud.
+2. Habilite la **Google Drive API** para ese proyecto.
+3. Configure la **pantalla de consentimiento de OAuth** y añada el alcance `https://www.googleapis.com/auth/drive.file`.
+4. Cree un **ID de cliente OAuth 2.0** de tipo **Android** para el id de aplicación `com.historytracers.app` y registre la huella SHA-1 de cada certificado de firma (debug y release). La huella de debug se puede obtener con:
+
+    ```sh
+    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+    ```
+
+No se necesita `google-services.json`: los servicios de Google Play resuelven el cliente OAuth de Android por el nombre del paquete y el certificado de firma. Hasta que se registre el cliente, la opción sigue visible, pero el inicio de sesión falla con el error genérico de sincronización.
+
 ## Estructura del proyecto
 
 | Ruta | Descripción |
