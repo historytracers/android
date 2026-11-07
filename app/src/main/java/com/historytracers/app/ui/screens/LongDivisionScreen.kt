@@ -43,6 +43,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val DIVISION_RECIPE_SECTION_ID = "division_recipe"
 private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
 private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_and_remainder"
@@ -52,6 +53,7 @@ private const val LONG_DIVISION_LEVEL_ID = "long_division"
 
 private val LONG_DIVISION_SECTION_IDS = listOf(
     MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID,
+    DIVISION_RECIPE_SECTION_ID,
     DIVISION_AND_REMAINDER_SECTION_ID,
     WRITING_THE_QUOTIENT_SECTION_ID,
     WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
@@ -119,6 +121,7 @@ fun LongDivisionScreen(
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
+    onNavigateToDivisionRecipe: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
@@ -133,6 +136,7 @@ fun LongDivisionScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
+    val divisionRecipeDone = DIVISION_RECIPE_SECTION_ID in completedLongDivision
     val divisionAndRemainderDone = DIVISION_AND_REMAINDER_SECTION_ID in completedLongDivision
     val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
     val writingQuotientAndRemainderDone = WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID in completedLongDivision
@@ -259,13 +263,13 @@ fun LongDivisionScreen(
                 Spacer(Modifier.height(48.dp))
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = onNavigateToDivisionRecipe,
                     modifier = Modifier
                         .size(112.dp)
                         .semantics { contentDescription = xs.divisionRecipe },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow
+                        containerColor = if (divisionRecipeDone) ButtonYellowDark else ButtonYellow
                     )
                 ) {
                     DivisionRecipeBadge(

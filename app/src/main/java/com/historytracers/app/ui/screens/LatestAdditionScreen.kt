@@ -28,7 +28,7 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.divisionAndRemainderScreenStringsForLanguage
+import com.historytracers.app.ui.features.divisionRecipeScreenStringsForLanguage
 import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
 import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLanguage
 import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
@@ -107,7 +107,8 @@ fun LatestAdditionScreen(
     onNavigateToSunTzuLearning: () -> Unit = {},
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
     onNavigateToChoosingDividendAndDivisor: () -> Unit = {},
-    onNavigateToMultiplicationDivisionRelationship: () -> Unit = {}
+    onNavigateToMultiplicationDivisionRelationship: () -> Unit = {},
+    onNavigateToDivisionRecipe: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -119,10 +120,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val ldrs = divisionAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val wtqs = writingTheQuotientScreenStringsForLanguage(LocalAppLanguage.current)
     val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
+    val drs = divisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -130,6 +131,20 @@ fun LatestAdditionScreen(
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "division_recipe",
+            label = drs.title,
+            icon = {
+                Text(
+                    text = "12 \u00F7 4",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "division_recipe" in completedLongDivision },
+            onNavigate = onNavigateToDivisionRecipe
+        ),
         LatestAdditionEntry(
             sectionId = "multiplication_and_division_relationship",
             label = lds.multiplicationAndDivisionRelationship,
@@ -185,20 +200,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "writing_the_quotient" in completedLongDivision },
             onNavigate = onNavigateToWritingTheQuotient
-        ),
-        LatestAdditionEntry(
-            sectionId = "division_and_remainder",
-            label = ldrs.title,
-            icon = {
-                Text(
-                    text = "257 \u00F7 4",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "division_and_remainder" in completedLongDivision },
-            onNavigate = onNavigateToDivisionAndRemainder
         )
     )
 
