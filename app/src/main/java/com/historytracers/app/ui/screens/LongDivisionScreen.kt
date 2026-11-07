@@ -17,9 +17,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
@@ -50,6 +57,61 @@ private val LONG_DIVISION_SECTION_IDS = listOf(
     WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
     CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID
 )
+
+/**
+ * Small diagram shown inside the "Division Recipe" hub button.
+ *
+ * Romance-language notation puts the dividend (D) and the divisor (d) on the first
+ * line, the divisor underlined, with the remainder (R) and the quotient (Q) below.
+ * English notation moves the quotient to the top of the division.
+ */
+@Composable
+private fun DivisionRecipeBadge(
+    format: DivisionFormat,
+    color: Color
+) {
+    val style = TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontSize = 16.sp,
+        lineHeight = 18.sp,
+        fontWeight = FontWeight.Bold,
+        color = color,
+        textAlign = TextAlign.Center
+    )
+    val underlined = { text: String ->
+        buildAnnotatedString {
+            withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                append(text)
+            }
+        }
+    }
+
+    Column(
+        horizontalAlignment = when (format) {
+            DivisionFormat.Below -> Alignment.CenterHorizontally
+            // In the English notation the quotient and remainder sit in the same
+            // column as the divisor (d), not over the vertical bar.
+            DivisionFormat.Top -> Alignment.End
+        },
+        verticalArrangement = Arrangement.Center
+    ) {
+        when (format) {
+            DivisionFormat.Below -> {
+                Row {
+                    Text(text = "D | ", style = style)
+                    Text(text = underlined("d"), style = style)
+                }
+                Text(text = "R | Q", style = style)
+            }
+
+            DivisionFormat.Top -> {
+                Text(text = underlined("Q"), style = style)
+                Text(text = "D | d", style = style)
+                Text(text = "R", style = style)
+            }
+        }
+    }
+}
 
 @Composable
 fun LongDivisionScreen(
@@ -187,6 +249,39 @@ fun LongDivisionScreen(
 
                 Text(
                     text = xs.multiplicationAndDivisionRelationship,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .size(112.dp)
+                        .semantics { contentDescription = xs.divisionRecipe },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    DivisionRecipeBadge(
+                        format = if (LocalAppLanguage.current == "en-US") {
+                            DivisionFormat.Top
+                        } else {
+                            DivisionFormat.Below
+                        },
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.divisionRecipe,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

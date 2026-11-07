@@ -14,6 +14,7 @@ data class LongDivisionScreenStrings(
     val writingQuotientAndRemainderExample: String,
     val choosingDividendAndDivisor: String,
     val choosingDividendAndDivisorExample: String,
+    val divisionRecipe: String,
 )
 
 val EnLongDivisionScreenStrings = LongDivisionScreenStrings(
@@ -27,6 +28,7 @@ val EnLongDivisionScreenStrings = LongDivisionScreenStrings(
     writingQuotientAndRemainderExample = "987 \u00F7 1",
     choosingDividendAndDivisor = "Divisions: Choosing the Dividend and the Divisor",
     choosingDividendAndDivisorExample = "??? \u00F7 ?",
+    divisionRecipe = "Division Recipe",
 )
 
 val PtLongDivisionScreenStrings = LongDivisionScreenStrings(
@@ -40,6 +42,7 @@ val PtLongDivisionScreenStrings = LongDivisionScreenStrings(
     writingQuotientAndRemainderExample = "987 \u00F7 1",
     choosingDividendAndDivisor = "Divis\u00f5es: escolhendo o dividendo e o divisor",
     choosingDividendAndDivisorExample = "??? \u00F7 ?",
+    divisionRecipe = "Receita da Divis\u00E3o",
 )
 
 val EsLongDivisionScreenStrings = LongDivisionScreenStrings(
@@ -53,6 +56,7 @@ val EsLongDivisionScreenStrings = LongDivisionScreenStrings(
     writingQuotientAndRemainderExample = "987 \u00F7 1",
     choosingDividendAndDivisor = "Divisiones: eligiendo el dividendo y el divisor",
     choosingDividendAndDivisorExample = "??? \u00F7 ?",
+    divisionRecipe = "Receta de la Divisi\u00F3n",
 )
 
 val LocalLongDivisionScreenStrings = staticCompositionLocalOf { EnLongDivisionScreenStrings }
