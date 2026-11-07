@@ -29,8 +29,8 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.divisionRecipeScreenStringsForLanguage
+import com.historytracers.app.ui.features.extendedDivisionRecipeScreenStringsForLanguage
 import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
-import com.historytracers.app.ui.features.writingTheQuotientScreenStringsForLanguage
 import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
@@ -108,7 +108,8 @@ fun LatestAdditionScreen(
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
     onNavigateToChoosingDividendAndDivisor: () -> Unit = {},
     onNavigateToMultiplicationDivisionRelationship: () -> Unit = {},
-    onNavigateToDivisionRecipe: () -> Unit = {}
+    onNavigateToDivisionRecipe: () -> Unit = {},
+    onNavigateToExtendedDivisionRecipe: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -120,10 +121,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val wtqs = writingTheQuotientScreenStringsForLanguage(LocalAppLanguage.current)
     val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
     val drs = divisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
+    val edrs = extendedDivisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -131,6 +132,20 @@ fun LatestAdditionScreen(
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "extended_division_recipe",
+            label = edrs.title,
+            icon = {
+                Text(
+                    text = "320 \u00F7 5",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "extended_division_recipe" in completedLongDivision },
+            onNavigate = onNavigateToExtendedDivisionRecipe
+        ),
         LatestAdditionEntry(
             sectionId = "division_recipe",
             label = drs.title,
@@ -186,20 +201,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "writing_quotient_and_remainder" in completedLongDivision },
             onNavigate = onNavigateToWritingQuotientAndRemainder
-        ),
-        LatestAdditionEntry(
-            sectionId = "writing_the_quotient",
-            label = wtqs.title,
-            icon = {
-                Text(
-                    text = "125 \u00F7 5",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "writing_the_quotient" in completedLongDivision },
-            onNavigate = onNavigateToWritingTheQuotient
         )
     )
 

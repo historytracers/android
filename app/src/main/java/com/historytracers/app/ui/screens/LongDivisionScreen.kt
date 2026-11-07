@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val DIVISION_RECIPE_SECTION_ID = "division_recipe"
+private const val EXTENDED_DIVISION_RECIPE_SECTION_ID = "extended_division_recipe"
 private const val DIVISION_AND_REMAINDER_SECTION_ID = "division_and_remainder"
 private const val WRITING_THE_QUOTIENT_SECTION_ID = "writing_the_quotient"
 private const val WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID = "writing_quotient_and_remainder"
@@ -54,11 +56,19 @@ private const val LONG_DIVISION_LEVEL_ID = "long_division"
 private val LONG_DIVISION_SECTION_IDS = listOf(
     MULTIPLICATION_AND_DIVISION_RELATIONSHIP_SECTION_ID,
     DIVISION_RECIPE_SECTION_ID,
+    EXTENDED_DIVISION_RECIPE_SECTION_ID,
     DIVISION_AND_REMAINDER_SECTION_ID,
     WRITING_THE_QUOTIENT_SECTION_ID,
     WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID,
     CHOOSING_DIVIDEND_AND_DIVISOR_SECTION_ID
 )
+
+private fun underlinedDivisionText(text: String): AnnotatedString =
+    buildAnnotatedString {
+        withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+            append(text)
+        }
+    }
 
 /**
  * Small diagram shown inside the "Division Recipe" hub button.
@@ -80,13 +90,6 @@ private fun DivisionRecipeBadge(
         color = color,
         textAlign = TextAlign.Center
     )
-    val underlined = { text: String ->
-        buildAnnotatedString {
-            withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                append(text)
-            }
-        }
-    }
 
     Column(
         horizontalAlignment = when (format) {
@@ -101,15 +104,64 @@ private fun DivisionRecipeBadge(
             DivisionFormat.Below -> {
                 Row {
                     Text(text = "D | ", style = style)
-                    Text(text = underlined("d"), style = style)
+                    Text(text = underlinedDivisionText("d"), style = style)
                 }
                 Text(text = "R | Q", style = style)
             }
 
             DivisionFormat.Top -> {
-                Text(text = underlined("Q"), style = style)
+                Text(text = underlinedDivisionText("Q"), style = style)
                 Text(text = "D | d", style = style)
                 Text(text = "R", style = style)
+            }
+        }
+    }
+}
+
+/**
+ * Variant of [DivisionRecipeBadge] for the "Extended Division Recipe" button.
+ *
+ * The remainder now carries a minus sign and a horizontal bar, showing the
+ * subtraction step: D - R = Q x d.
+ */
+@Composable
+private fun ExtendedDivisionRecipeBadge(
+    format: DivisionFormat,
+    color: Color
+) {
+    val style = TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontSize = 15.sp,
+        lineHeight = 17.sp,
+        fontWeight = FontWeight.Bold,
+        color = color,
+        textAlign = TextAlign.Center
+    )
+
+    Column(
+        horizontalAlignment = when (format) {
+            DivisionFormat.Below -> Alignment.CenterHorizontally
+            DivisionFormat.Top -> Alignment.End
+        },
+        verticalArrangement = Arrangement.Center
+    ) {
+        when (format) {
+            DivisionFormat.Below -> {
+                Row {
+                    // Leading space keeps the vertical bar aligned with "-R | Q".
+                    Text(text = " D | ", style = style)
+                    Text(text = underlinedDivisionText("d"), style = style)
+                }
+                Row {
+                    Text(text = underlinedDivisionText("-R"), style = style)
+                    Text(text = " | Q", style = style)
+                }
+            }
+
+            DivisionFormat.Top -> {
+                Text(text = underlinedDivisionText("Q"), style = style)
+                Text(text = "D | d", style = style)
+                Text(text = underlinedDivisionText("-R"), style = style)
             }
         }
     }
@@ -122,6 +174,7 @@ fun LongDivisionScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     onNavigateToDivisionRecipe: () -> Unit = {},
+    onNavigateToExtendedDivisionRecipe: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToWritingQuotientAndRemainder: () -> Unit = {},
@@ -137,6 +190,7 @@ fun LongDivisionScreen(
     val scope = rememberCoroutineScope()
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
     val divisionRecipeDone = DIVISION_RECIPE_SECTION_ID in completedLongDivision
+    val extendedDivisionRecipeDone = EXTENDED_DIVISION_RECIPE_SECTION_ID in completedLongDivision
     val divisionAndRemainderDone = DIVISION_AND_REMAINDER_SECTION_ID in completedLongDivision
     val writingTheQuotientDone = WRITING_THE_QUOTIENT_SECTION_ID in completedLongDivision
     val writingQuotientAndRemainderDone = WRITING_QUOTIENT_AND_REMAINDER_SECTION_ID in completedLongDivision
@@ -286,6 +340,39 @@ fun LongDivisionScreen(
 
                 Text(
                     text = xs.divisionRecipe,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                FilledIconButton(
+                    onClick = onNavigateToExtendedDivisionRecipe,
+                    modifier = Modifier
+                        .size(112.dp)
+                        .semantics { contentDescription = xs.extendedDivisionRecipe },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (extendedDivisionRecipeDone) ButtonYellowDark else ButtonYellow
+                    )
+                ) {
+                    ExtendedDivisionRecipeBadge(
+                        format = if (LocalAppLanguage.current == "en-US") {
+                            DivisionFormat.Top
+                        } else {
+                            DivisionFormat.Below
+                        },
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.extendedDivisionRecipe,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

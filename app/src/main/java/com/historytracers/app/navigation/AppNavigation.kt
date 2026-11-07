@@ -189,6 +189,12 @@ import com.historytracers.app.ui.screens.DivisionRecipeProductScreen
 import com.historytracers.app.ui.screens.DivisionRecipeRepresentationsScreen
 import com.historytracers.app.ui.screens.DivisionRecipeSlightDifferenceScreen
 import com.historytracers.app.ui.screens.DivisionRecipeThinkingScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeConclusionScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeExplanationScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeIntroScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeStepByStepScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeTableScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeThinkingScreen
 import com.historytracers.app.ui.screens.DivisionAndRemainderScreen
 import com.historytracers.app.ui.screens.DivisionAndRemainderIntroScreen
 import com.historytracers.app.ui.screens.WritingTheQuotientScreen
@@ -605,7 +611,7 @@ fun AppNavigation() {
            "overcoming_limits_logic", "overcoming_limits_last_foot", "overcoming_limits_conclusion",
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
-           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "choosing_dividend_and_divisor_intro", "choosing_dividend_and_divisor", "division_recipe_intro", "division_recipe_product", "division_recipe_representations", "division_recipe_thinking", "division_recipe_connection", "division_recipe_hidden_element", "division_recipe_slight_difference", "division_recipe_conclusion", "measuring",
+           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "choosing_dividend_and_divisor_intro", "choosing_dividend_and_divisor", "division_recipe_intro", "division_recipe_product", "division_recipe_representations", "division_recipe_thinking", "division_recipe_connection", "division_recipe_hidden_element", "division_recipe_slight_difference", "division_recipe_conclusion", "extended_division_recipe_intro", "extended_division_recipe_table", "extended_division_recipe_thinking", "extended_division_recipe_step_by_step", "extended_division_recipe_explanation", "extended_division_recipe_conclusion", "measuring",
            "multiplication_and_division_relationship_intro",
            "multiplication_and_division_relationship_grouping",
            "multiplication_and_division_relationship_visualizing",
@@ -1082,6 +1088,9 @@ fun AppNavigation() {
                             onNavigateToDivisionRecipe = {
                                 navController.navigate(Screen.DivisionRecipeIntro.route) { launchSingleTop = true }
                             },
+                            onNavigateToExtendedDivisionRecipe = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeIntro.route) { launchSingleTop = true }
+                            },
                             onNavigateToDivisionAndRemainder = {
                                 navController.navigate(Screen.DivisionAndRemainderIntro.route) { launchSingleTop = true }
                             },
@@ -1534,6 +1543,130 @@ fun AppNavigation() {
                                 navController.popBackToOrigin(
                                     Screen.DivisionRecipeSlightDifference.route,
                                     fallback = Screen.DivisionRecipeSlightDifference.route
+                                )
+                            },
+                            onNavigateToLongDivision = {
+                                navController.popBackToOrigin(
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeIntro.route) {
+                        ExtendedDivisionRecipeIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeTable.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeTable.route) {
+                        ExtendedDivisionRecipeTableScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeThinking.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeThinking.route) {
+                        ExtendedDivisionRecipeThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeTable.route,
+                                    fallback = Screen.ExtendedDivisionRecipeTable.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeStepByStep.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeStepByStep.route) {
+                        ExtendedDivisionRecipeStepByStepScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeThinking.route,
+                                    fallback = Screen.ExtendedDivisionRecipeThinking.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeExplanation.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeExplanation.route) {
+                        ExtendedDivisionRecipeExplanationScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeStepByStep.route,
+                                    fallback = Screen.ExtendedDivisionRecipeStepByStep.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeConclusion.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeConclusion.route) {
+                        ExtendedDivisionRecipeConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeExplanation.route,
+                                    fallback = Screen.ExtendedDivisionRecipeExplanation.route
                                 )
                             },
                             onNavigateToLongDivision = {
@@ -9734,6 +9867,7 @@ fun AppNavigation() {
                             },
                             onNavigateToMultiplicationDivisionRelationship = { navController.navigate(Screen.MultiplicationDivisionRelationshipIntro.route) { launchSingleTop = true } },
                             onNavigateToDivisionRecipe = { navController.navigate(Screen.DivisionRecipeIntro.route) { launchSingleTop = true } },
+                            onNavigateToExtendedDivisionRecipe = { navController.navigate(Screen.ExtendedDivisionRecipeIntro.route) { launchSingleTop = true } },
                             onNavigateToPlayingWithAxioms = { navController.navigate(Screen.PlayingWithAxiomsGame.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAdditionIntro = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToLargeNumbersIntro = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },
