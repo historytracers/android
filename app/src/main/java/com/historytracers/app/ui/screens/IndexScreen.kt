@@ -82,8 +82,7 @@ private val anotherWayToCountSectionIds = listOf(
 )
 
 private val runningAndGrowingSectionIds = listOf(
-    "adding_the_same_number", "the_result_is", "inversion",
-    "connecting_the_multiplication", "drawing_multiplication"
+    "adding_the_same_number", "the_result_is", "inversion"
 )
 
 private val aroundTheWorldSectionIds = listOf(

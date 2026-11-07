@@ -4338,9 +4338,7 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
                             onNavigateToAddingTheSameNumber = { navController.navigate(Screen.AddingSameNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToTheResultIs = { navController.navigate(Screen.TheResultIs.route) { launchSingleTop = true } },
-                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } },
-                            onNavigateToConnectingTheMultiplication = { navController.navigate(Screen.DrawingTheTableOfZeroIntro.route) { launchSingleTop = true } },
-                            onNavigateToDrawingMultiplication = { navController.navigate(Screen.DrawingTheTableOfOneIntro.route) { launchSingleTop = true } }
+                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.RoadToSomewhere.route) {
