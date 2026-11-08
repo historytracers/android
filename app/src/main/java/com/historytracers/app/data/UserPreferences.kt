@@ -101,6 +101,8 @@ class UserPreferences(private val context: Context) {
         private val DRIVE_SYNC_ACCOUNT_KEY = stringPreferencesKey("drive_sync_account")
         private val DRIVE_SYNC_LAST_SYNC_KEY = longPreferencesKey("drive_sync_last_sync")
         private val DRIVE_SYNC_RESET_PENDING_KEY = booleanPreferencesKey("drive_sync_reset_pending")
+        private val DRIVE_SYNC_RESET_ACCOUNT_KEY = stringPreferencesKey("drive_sync_reset_account")
+        private val DRIVE_SYNC_RESET_VERSION_KEY = intPreferencesKey("drive_sync_reset_version")
 
         private const val BACKUP_SCHEMA_VERSION = 1
         private val BACKUP_GSON = Gson()
@@ -111,6 +113,7 @@ class UserPreferences(private val context: Context) {
             DRIVE_SYNC_ACCOUNT_KEY.name,
             DRIVE_SYNC_LAST_SYNC_KEY.name,
             DRIVE_SYNC_RESET_PENDING_KEY.name,
+            DRIVE_SYNC_RESET_ACCOUNT_KEY.name,
             LAST_ROUTE_KEY.name,
             BREAK_START_TIME_KEY.name,
             FIRST_STEPS_SCROLL_KEY.name,
@@ -121,6 +124,65 @@ class UserPreferences(private val context: Context) {
             ROAD_TO_SOMEWHERE_SCROLL_KEY.name,
             WHERE_ARE_WE_FROM_SCROLL_KEY.name
         )
+
+        // Known preference names and their declared types. Used to reject imports that
+        // try to store a value under a known name with the wrong type.
+        private val INT_PREFERENCE_NAMES = setOf(
+            BREAK_TIME_KEY.name, SCORE_KEY.name, STREAK_COUNT_KEY.name,
+            REMINDER_HOUR_KEY.name, REMINDER_MINUTE_KEY.name,
+            FIRST_STEPS_SCROLL_KEY.name, WORKOUT_SCROLL_KEY.name, ABACUS_SCROLL_KEY.name,
+            YUPANA_SCROLL_KEY.name, ANOTHER_WAY_TO_COUNT_SCROLL_KEY.name,
+            ROAD_TO_SOMEWHERE_SCROLL_KEY.name, WHERE_ARE_WE_FROM_SCROLL_KEY.name,
+            UNIVERSE_EXPANSION_STEP_KEY.name, DRIVE_SYNC_RESET_VERSION_KEY.name
+        )
+        private val LONG_PREFERENCE_NAMES = setOf(
+            BREAK_START_TIME_KEY.name, DRIVE_SYNC_LAST_SYNC_KEY.name
+        )
+        private val BOOLEAN_PREFERENCE_NAMES = setOf(
+            REMINDER_ENABLED_KEY.name, ONBOARDING_COMPLETED_KEY.name,
+            WHO_AM_I_LESSONS_MIGRATED_KEY.name, YUPANA_LESSONS_MIGRATED_KEY.name,
+            DRIVE_SYNC_ENABLED_KEY.name, DRIVE_SYNC_RESET_PENDING_KEY.name
+        )
+        private val STRING_PREFERENCE_NAMES = setOf(
+            LANGUAGE_KEY.name, LAST_ROUTE_KEY.name, LAST_COMPLETED_DATE_KEY.name,
+            SKIN_COLOR_KEY.name, QUIPU_PRACTICE_STATE_KEY.name, CALENDAR_KEY.name,
+            DRIVE_SYNC_ACCOUNT_KEY.name, DRIVE_SYNC_RESET_ACCOUNT_KEY.name
+        )
+        private val STRING_SET_PREFERENCE_NAMES = setOf(
+            COMPLETED_DATES_KEY.name, STREAK_DAYS_KEY.name, WORKOUT_SECTIONS_KEY.name,
+            FIRST_STEPS_SECTIONS_KEY.name, WHO_AM_I_SECTIONS_KEY.name, ABACUS_SECTIONS_KEY.name,
+            YUPANA_SECTIONS_KEY.name, I_AM_NOT_LIKE_YOU_SECTIONS_KEY.name,
+            ROAD_TO_SOMEWHERE_SECTIONS_KEY.name, RETURNING_SECTIONS_KEY.name,
+            MEASURING_SECTIONS_KEY.name, RUNNING_AND_GROWING_SECTIONS_KEY.name,
+            WHERE_ARE_WE_FROM_SECTIONS_KEY.name, ANOTHER_WAY_TO_COUNT_SECTIONS_KEY.name,
+            AROUND_THE_WORLD_SECTIONS_KEY.name, AROUND_THE_WORLD_ADDITION_SECTIONS_KEY.name,
+            LONG_DIVISION_SECTIONS_KEY.name, CLAIMED_LEVELS_KEY.name,
+            SEEN_NEW_HUBS_KEY.name, AWARDED_SCREENS_KEY.name, ARRIVAL_AWARDED_SCREENS_KEY.name
+        )
+
+        // User-facing settings that must not be overwritten by an older remote backup.
+        private val USER_SETTING_KEYS = setOf(
+            LANGUAGE_KEY.name, BREAK_TIME_KEY.name, SKIN_COLOR_KEY.name,
+            REMINDER_ENABLED_KEY.name, REMINDER_HOUR_KEY.name, REMINDER_MINUTE_KEY.name,
+            CALENDAR_KEY.name
+        )
+
+        private fun declaredPreferenceType(name: String): String? = when (name) {
+            in INT_PREFERENCE_NAMES -> "int"
+            in LONG_PREFERENCE_NAMES -> "long"
+            in BOOLEAN_PREFERENCE_NAMES -> "boolean"
+            in STRING_PREFERENCE_NAMES -> "string"
+            in STRING_SET_PREFERENCE_NAMES -> "stringSet"
+            else -> null
+        }
+
+        private fun isValidIsoDate(value: String): Boolean =
+            runCatching { java.time.LocalDate.parse(value) }.isSuccess
+
+        private fun preferenceValueKey(value: Any): String = when (value) {
+            is Set<*> -> value.map { it.toString() }.sorted().joinToString(",")
+            else -> value.toString()
+        }
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -595,8 +657,10 @@ class UserPreferences(private val context: Context) {
         val lastDateStr = prefs[LAST_COMPLETED_DATE_KEY]
         val currentStreak = prefs[STREAK_COUNT_KEY] ?: 0
         var missedSelectedDay = false
-        if (lastDateStr != null) {
-            val lastDate = java.time.LocalDate.parse(lastDateStr)
+        val lastDate = lastDateStr?.let {
+            runCatching { java.time.LocalDate.parse(it) }.getOrNull()
+        }
+        if (lastDate != null) {
             var checkDate = lastDate.plusDays(1)
             while (checkDate.isBefore(today)) {
                 val dayName = checkDate.dayOfWeek.name
@@ -703,6 +767,46 @@ class UserPreferences(private val context: Context) {
         }
     }
 
+    /** Account the pending reset belongs to (blank when the reset happened before connecting). */
+    val driveSyncResetAccount: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[DRIVE_SYNC_RESET_ACCOUNT_KEY] ?: ""
+    }
+
+    suspend fun setDriveSyncResetAccount(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[DRIVE_SYNC_RESET_ACCOUNT_KEY] = email
+        }
+    }
+
+    /**
+     * Reset epoch, incremented on every reset. It is part of the backup so another
+     * device can detect the reset and clear its stale local progress before merging.
+     * It also prevents an upload from clearing a newer reset that happened during it.
+     */
+    val driveSyncResetVersion: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[DRIVE_SYNC_RESET_VERSION_KEY] ?: 0
+    }
+
+    suspend fun setDriveSyncResetVersion(version: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[DRIVE_SYNC_RESET_VERSION_KEY] = version
+        }
+    }
+
+    /**
+     * Stable revision of the synced preference state. It changes whenever anything that
+     * belongs to the Drive backup changes (score, streak, sections, settings, ...), so
+     * automatic Sync can react to more than just score updates.
+     */
+    val syncRevision: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences.asMap().entries
+            .asSequence()
+            .filterNot { (key, _) -> key.name in DRIVE_SYNC_LOCAL_ONLY_KEYS }
+            .sortedBy { (key, _) -> key.name }
+            .joinToString("|") { (key, value) -> "${key.name}=${preferenceValueKey(value)}" }
+            .hashCode()
+    }
+
     /**
      * Serializes every synced preference (score, streak, completed sections, settings, ...)
      * into a JSON document suitable for storing in the user's own Google Drive.
@@ -724,23 +828,71 @@ class UserPreferences(private val context: Context) {
 
     /**
      * Merges a backup produced by [exportBackupJson] into the local preferences.
-     * Progress is only ever increased: sets are unioned, score/streak keep the larger
-     * value and the completion date keeps the most recent one.
+     * Progress is only ever increased: progress sets are unioned, the score keeps the
+     * larger value, and the streak count follows the most recent completion date.
+     * Invalid values (including dates and known names with the wrong type) are skipped.
      *
      * @return true when the document was a valid backup and was applied.
      */
     suspend fun mergeBackupJson(json: String): Boolean {
         val root = runCatching { JsonParser.parseString(json).asJsonObject }.getOrNull()
             ?: return false
-        val schema = root.get("schema")?.takeIf { it.isJsonPrimitive }?.asInt ?: return false
+        val schemaElement = root.get("schema") ?: return false
+        if (!schemaElement.isJsonPrimitive) return false
+        val schema = runCatching { schemaElement.asInt }.getOrNull() ?: return false
         if (schema > BACKUP_SCHEMA_VERSION) return false
-        val values = root.getAsJsonObject("values") ?: return false
+        val valuesElement = root.get("values") ?: return false
+        if (!valuesElement.isJsonObject) return false
+        val values = valuesElement.asJsonObject
+
+        val importedLastDate = values.get(LAST_COMPLETED_DATE_KEY.name)
+            ?.takeIf { it.isJsonObject }
+            ?.asJsonObject
+            ?.takeIf { it.get("type")?.takeIf { type -> type.isJsonPrimitive }?.asString == "string" }
+            ?.get("value")
+            ?.takeIf { it.isJsonPrimitive }
+            ?.let { runCatching { it.asString }.getOrNull() }
+            ?.takeIf { isValidIsoDate(it) }
+        val localSnapshot = context.dataStore.data.first()
+        val localLastDate = localSnapshot[LAST_COMPLETED_DATE_KEY]?.takeIf { isValidIsoDate(it) }
+        val localResetEpoch = localSnapshot[DRIVE_SYNC_RESET_VERSION_KEY] ?: 0
+        val importedResetEpoch = values.get(DRIVE_SYNC_RESET_VERSION_KEY.name)
+            ?.takeIf { it.isJsonObject }
+            ?.asJsonObject
+            ?.takeIf { it.get("type")?.takeIf { type -> type.isJsonPrimitive }?.asString == "int" }
+            ?.get("value")
+            ?.takeIf { it.isJsonPrimitive }
+            ?.let { runCatching { it.asInt }.getOrNull() }
+        val resetFromRemote = importedResetEpoch != null && importedResetEpoch > localResetEpoch
+        val exportedAt = root.get("exportedAt")
+            ?.takeIf { it.isJsonPrimitive }
+            ?.let { runCatching { it.asLong }.getOrNull() }
+            ?: 0L
+        val lastSync = localSnapshot[DRIVE_SYNC_LAST_SYNC_KEY] ?: 0L
+        val importSettings = lastSync == 0L || exportedAt > lastSync
+
         context.dataStore.edit { preferences ->
+            if (resetFromRemote) {
+                // Another device reset the classes: discard this device's stale progress
+                // before applying the rest of the backup.
+                clearProgress(preferences)
+                preferences[DRIVE_SYNC_RESET_VERSION_KEY] = importedResetEpoch ?: localResetEpoch
+            }
             values.entrySet().forEach { (name, element) ->
+                if (name == DRIVE_SYNC_RESET_VERSION_KEY.name) return@forEach
                 if (name in DRIVE_SYNC_LOCAL_ONLY_KEYS) return@forEach
                 if (!element.isJsonObject) return@forEach
                 // Ignore a single malformed entry instead of discarding the whole backup.
-                runCatching { applyBackupValue(preferences, name, element.asJsonObject) }
+                runCatching {
+                    applyBackupValue(
+                        preferences = preferences,
+                        name = name,
+                        element = element.asJsonObject,
+                        localLastDate = localLastDate,
+                        importedLastDate = importedLastDate,
+                        importSettings = importSettings
+                    )
+                }
             }
         }
         return true
@@ -786,78 +938,128 @@ class UserPreferences(private val context: Context) {
     private fun applyBackupValue(
         preferences: MutablePreferences,
         name: String,
-        element: JsonObject
+        element: JsonObject,
+        localLastDate: String?,
+        importedLastDate: String?,
+        importSettings: Boolean
     ) {
+        val type = element.get("type")?.takeIf { it.isJsonPrimitive }?.asString ?: return
+        val expectedType = declaredPreferenceType(name)
+        if (expectedType != null && expectedType != type) return
         val rawValue = element.get("value") ?: return
-        when (element.get("type")?.asString) {
+
+        when (type) {
             "int" -> {
+                val imported = runCatching { rawValue.asInt }.getOrNull() ?: return
                 val key = intPreferencesKey(name)
-                val imported = rawValue.asInt
-                val current = preferences[key] ?: 0
-                preferences[key] = when (name) {
-                    SCORE_KEY.name, STREAK_COUNT_KEY.name -> maxOf(current, imported)
-                    else -> imported
+                if (!importSettings && name in USER_SETTING_KEYS && preferences[key] != null) return
+                when (name) {
+                    SCORE_KEY.name -> {
+                        preferences[key] = maxOf(preferences[key] ?: 0, imported)
+                    }
+                    STREAK_COUNT_KEY.name -> {
+                        val localCount = preferences[key] ?: 0
+                        val storedDate = preferences[LAST_COMPLETED_DATE_KEY]
+                            ?.takeIf { isValidIsoDate(it) }
+                        val bestLocalDate = when {
+                            localLastDate == null -> storedDate
+                            storedDate == null -> localLastDate
+                            storedDate > localLastDate -> storedDate
+                            else -> localLastDate
+                        }
+                        preferences[key] = when {
+                            importedLastDate == null -> localCount
+                            bestLocalDate == null -> imported
+                            importedLastDate > bestLocalDate -> imported
+                            bestLocalDate > importedLastDate -> localCount
+                            else -> maxOf(localCount, imported)
+                        }
+                    }
+                    else -> preferences[key] = imported
                 }
             }
             "long" -> {
                 val key = longPreferencesKey(name)
-                preferences[key] = rawValue.asLong
+                preferences[key] = runCatching { rawValue.asLong }.getOrNull() ?: return
             }
             "float" -> {
                 val key = floatPreferencesKey(name)
-                preferences[key] = rawValue.asFloat
+                preferences[key] = runCatching { rawValue.asFloat }.getOrNull() ?: return
             }
             "double" -> {
                 val key = doublePreferencesKey(name)
-                preferences[key] = rawValue.asDouble
+                preferences[key] = runCatching { rawValue.asDouble }.getOrNull() ?: return
             }
             "boolean" -> {
                 val key = booleanPreferencesKey(name)
-                preferences[key] = rawValue.asBoolean
+                if (!importSettings && name in USER_SETTING_KEYS && preferences[key] != null) return
+                preferences[key] = runCatching { rawValue.asBoolean }.getOrNull() ?: return
             }
             "string" -> {
                 val key = stringPreferencesKey(name)
-                val imported = rawValue.asString
-                val current = preferences[key]
-                preferences[key] = if (name == LAST_COMPLETED_DATE_KEY.name) {
-                    maxOf(current ?: "", imported)
+                if (!importSettings && name in USER_SETTING_KEYS && preferences[key] != null) return
+                val imported = runCatching { rawValue.asString }.getOrNull() ?: return
+                if (name == LAST_COMPLETED_DATE_KEY.name) {
+                    if (!isValidIsoDate(imported)) return
+                    val current = preferences[key]?.takeIf { isValidIsoDate(it) }
+                    preferences[key] = when {
+                        current == null -> imported
+                        imported > current -> imported
+                        else -> current
+                    }
                 } else {
-                    imported
+                    preferences[key] = imported
                 }
             }
             "stringSet" -> {
                 val key = stringSetPreferencesKey(name)
-                val imported = rawValue.asJsonArray.map { it.asString }.toSet()
-                preferences[key] = (preferences[key] ?: emptySet()) + imported
+                val imported = runCatching {
+                    rawValue.asJsonArray.map { it.asString }.toSet()
+                }.getOrNull() ?: return
+                preferences[key] = if (name == STREAK_DAYS_KEY.name) {
+                    imported
+                } else {
+                    (preferences[key] ?: emptySet()) + imported
+                }
             }
         }
     }
 
+    private fun clearProgress(preferences: MutablePreferences) {
+        preferences[FIRST_STEPS_SECTIONS_KEY] = emptySet()
+        preferences[WHO_AM_I_SECTIONS_KEY] = emptySet()
+        preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] = emptySet()
+        preferences[WORKOUT_SECTIONS_KEY] = emptySet()
+        preferences[ABACUS_SECTIONS_KEY] = emptySet()
+        preferences[YUPANA_SECTIONS_KEY] = emptySet()
+        preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = emptySet()
+        preferences[RETURNING_SECTIONS_KEY] = emptySet()
+        preferences[MEASURING_SECTIONS_KEY] = emptySet()
+        preferences[RUNNING_AND_GROWING_SECTIONS_KEY] = emptySet()
+        preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = emptySet()
+        preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()
+        preferences[AROUND_THE_WORLD_SECTIONS_KEY] = emptySet()
+        preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] = emptySet()
+        preferences[LONG_DIVISION_SECTIONS_KEY] = emptySet()
+        preferences[CLAIMED_LEVELS_KEY] = emptySet()
+        preferences[AWARDED_SCREENS_KEY] = emptySet()
+        preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
+        preferences[UNIVERSE_EXPANSION_STEP_KEY] = 0
+        preferences[QUIPU_PRACTICE_STATE_KEY] = ""
+    }
+
     suspend fun resetAllClasses() {
         context.dataStore.edit { preferences ->
-            preferences[FIRST_STEPS_SECTIONS_KEY] = emptySet()
-            preferences[WHO_AM_I_SECTIONS_KEY] = emptySet()
-            preferences[I_AM_NOT_LIKE_YOU_SECTIONS_KEY] = emptySet()
-            preferences[WORKOUT_SECTIONS_KEY] = emptySet()
-            preferences[ABACUS_SECTIONS_KEY] = emptySet()
-            preferences[YUPANA_SECTIONS_KEY] = emptySet()
-            preferences[ROAD_TO_SOMEWHERE_SECTIONS_KEY] = emptySet()
-            preferences[RETURNING_SECTIONS_KEY] = emptySet()
-            preferences[MEASURING_SECTIONS_KEY] = emptySet()
-            preferences[RUNNING_AND_GROWING_SECTIONS_KEY] = emptySet()
-            preferences[WHERE_ARE_WE_FROM_SECTIONS_KEY] = emptySet()
-            preferences[ANOTHER_WAY_TO_COUNT_SECTIONS_KEY] = emptySet()
-            preferences[AROUND_THE_WORLD_SECTIONS_KEY] = emptySet()
-            preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] = emptySet()
-            preferences[LONG_DIVISION_SECTIONS_KEY] = emptySet()
-            preferences[CLAIMED_LEVELS_KEY] = emptySet()
-            preferences[AWARDED_SCREENS_KEY] = emptySet()
-            preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
-            preferences[UNIVERSE_EXPANSION_STEP_KEY] = 0
-            preferences[QUIPU_PRACTICE_STATE_KEY] = ""
+            clearProgress(preferences)
             // The next sync must overwrite the Drive backup instead of merging the
-            // progress that was just cleared back into the local preferences.
+            // progress that was just cleared back into the local preferences. Remember
+            // which account the reset belongs to so it cannot overwrite another account.
+            // The epoch travels with the backup so other devices also clear their stale
+            // progress instead of merging it back.
             preferences[DRIVE_SYNC_RESET_PENDING_KEY] = true
+            preferences[DRIVE_SYNC_RESET_ACCOUNT_KEY] = preferences[DRIVE_SYNC_ACCOUNT_KEY] ?: ""
+            preferences[DRIVE_SYNC_RESET_VERSION_KEY] =
+                (preferences[DRIVE_SYNC_RESET_VERSION_KEY] ?: 0) + 1
         }
     }
 }

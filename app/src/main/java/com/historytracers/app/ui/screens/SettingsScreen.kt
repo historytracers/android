@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.app.Activity
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
@@ -49,6 +51,7 @@ import com.historytracers.app.ui.theme.parseHexColor
 import com.historytracers.app.calendar.CalendarType
 import java.text.DateFormat
 import java.util.Date
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 private fun availableLanguages(hts: HubTitleStrings) = listOf(
@@ -70,6 +73,7 @@ fun SettingsScreen(
     onBreakTimeChanged: (Int) -> Unit,
     onSkinColorChanged: (String) -> Unit,
     onCalendarChanged: (String) -> Unit,
+    onScoreSynced: (Int) -> Unit = {},
     onNavigateBack: () -> Unit,
     onStartLearning: (() -> Unit)? = null
 ) {
@@ -283,7 +287,7 @@ fun SettingsScreen(
                     Spacer(Modifier.height(8.dp))
                     Divider()
                     Spacer(Modifier.height(8.dp))
-                    DriveSyncSection(xs)
+                    DriveSyncSection(xs = xs, onScoreSynced = onScoreSynced)
                 }
 
                 onStartLearning?.let { onStart ->
@@ -314,7 +318,7 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun DriveSyncSection(xs: SettingsScreenStrings) {
+private fun DriveSyncSection(xs: SettingsScreenStrings, onScoreSynced: (Int) -> Unit) {
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val syncManager = remember { DriveSyncManager(context) }
@@ -327,6 +331,8 @@ private fun DriveSyncSection(xs: SettingsScreenStrings) {
     var busy by remember { mutableStateOf(false) }
     var statusText by remember { mutableStateOf<String?>(null) }
     var statusIsError by remember { mutableStateOf(false) }
+    var pendingRecoverIntent by remember { mutableStateOf<Intent?>(null) }
+    var retrySync by remember { mutableIntStateOf(0) }
 
     val playServicesAvailable = remember { DriveSyncManager.isPlayServicesAvailable(context) }
 
@@ -337,7 +343,15 @@ private fun DriveSyncSection(xs: SettingsScreenStrings) {
                 statusText = null
                 val result = syncManager.syncNow(preferences)
                 busy = false
+                if (result.success) {
+                    onScoreSynced(preferences.score.first())
+                }
                 statusIsError = !result.success
+                if (result.error == DriveSyncError.PERMISSION_REQUIRED &&
+                    result.recoverIntent != null
+                ) {
+                    pendingRecoverIntent = result.recoverIntent
+                }
                 statusText = when {
                     result.success -> xs.driveSyncSuccess
                     result.error == DriveSyncError.NOT_SIGNED_IN -> xs.driveSyncNotSignedIn
@@ -347,6 +361,29 @@ private fun DriveSyncSection(xs: SettingsScreenStrings) {
                 }
             }
         }
+    }
+
+    val recoveryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            retrySync++
+        } else {
+            statusIsError = true
+            statusText = xs.driveSyncPermissionRequired
+        }
+    }
+
+    LaunchedEffect(pendingRecoverIntent) {
+        val intent = pendingRecoverIntent
+        if (intent != null) {
+            pendingRecoverIntent = null
+            recoveryLauncher.launch(intent)
+        }
+    }
+
+    LaunchedEffect(retrySync) {
+        if (retrySync > 0) startSync()
     }
 
     val signInLauncher = rememberLauncherForActivityResult(
@@ -417,7 +454,7 @@ private fun DriveSyncSection(xs: SettingsScreenStrings) {
             text = String.format(xs.driveSyncAccount, account),
             style = MaterialTheme.typography.bodySmall
         )
-        val lastSyncLabel = remember(lastSync) {
+        val lastSyncLabel = remember(lastSync, xs) {
             val formatted = if (lastSync > 0L) {
                 DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
                     .format(Date(lastSync))

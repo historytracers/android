@@ -19,9 +19,12 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 enum class DriveSyncError {
@@ -48,8 +51,8 @@ data class DriveSyncResult(
  *
  * There is no History Tracers server involved: the app talks to the Google Drive REST
  * API directly using the access token obtained from Google Sign-In. The `drive.file`
- * scope only grants access to the backup file this app created, never to the rest of
- * the user's Drive.
+ * scope grants access to files this app creates or that the user explicitly shares with
+ * it; the app uses it to create and update its backup file.
  *
  * Setup required by the app publisher (one time, in Google Cloud Console):
  *  - enable the Google Drive API;
@@ -68,6 +71,10 @@ class DriveSyncManager(private val context: Context) {
         private const val CONNECT_TIMEOUT_MS = 15_000
         private const val READ_TIMEOUT_MS = 15_000
         private const val SIGN_IN_TIMEOUT_SECONDS = 60L
+
+        // A process-wide lock: different DriveSyncManager instances (Settings and the
+        // background sync) must not race while choosing/creating the backup file.
+        private val SYNC_MUTEX = Mutex()
 
         fun isPlayServicesAvailable(context: Context): Boolean =
             GoogleApiAvailability.getInstance()
@@ -91,96 +98,142 @@ class DriveSyncManager(private val context: Context) {
     fun signedInAccount(): GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(context)
 
     /**
-     * Downloads the backup, merges it into the local preferences and uploads the merged
-     * result back to Drive.
+     * Downloads every copy of the backup, merges them into the local preferences and
+     * uploads the merged result back to Drive. When a reset is pending for the connected
+     * account, the cleared local state is uploaded instead of merging.
      */
     suspend fun syncNow(preferences: UserPreferences): DriveSyncResult =
-        runSync(preferences, mergeRemote = true)
-
-    /** Uploads the current local preferences without touching what is stored remotely. */
-    suspend fun uploadNow(preferences: UserPreferences): DriveSyncResult =
-        runSync(preferences, mergeRemote = false)
-
-    suspend fun disconnect(preferences: UserPreferences) = withContext(Dispatchers.IO) {
-        runCatching {
-            Tasks.await(
-                GoogleSignIn.getClient(context, signInOptions()).signOut(),
-                SIGN_IN_TIMEOUT_SECONDS,
-                TimeUnit.SECONDS
-            )
+        SYNC_MUTEX.withLock {
+            withContext(Dispatchers.IO) { runSyncLocked(preferences) }
         }
-        preferences.setDriveSyncEnabled(false)
-        preferences.setDriveSyncAccount("")
-        preferences.setDriveSyncLastSync(0L)
+
+    suspend fun disconnect(preferences: UserPreferences) = SYNC_MUTEX.withLock {
+        withContext(Dispatchers.IO) {
+            runCatching {
+                Tasks.await(
+                    GoogleSignIn.getClient(context, signInOptions()).signOut(),
+                    SIGN_IN_TIMEOUT_SECONDS,
+                    TimeUnit.SECONDS
+                )
+            }
+            preferences.setDriveSyncEnabled(false)
+            preferences.setDriveSyncAccount("")
+            preferences.setDriveSyncLastSync(0L)
+        }
     }
 
-    private suspend fun runSync(
-        preferences: UserPreferences,
-        mergeRemote: Boolean
-    ): DriveSyncResult = withContext(Dispatchers.IO) {
+    private suspend fun runSyncLocked(preferences: UserPreferences): DriveSyncResult {
         if (!isPlayServicesAvailable(context)) {
-            return@withContext DriveSyncResult(false, DriveSyncError.PLAY_SERVICES_UNAVAILABLE)
+            return DriveSyncResult(false, DriveSyncError.PLAY_SERVICES_UNAVAILABLE)
         }
         val account = signedInAccount()
-            ?: return@withContext DriveSyncResult(false, DriveSyncError.NOT_SIGNED_IN)
+            ?: return DriveSyncResult(false, DriveSyncError.NOT_SIGNED_IN)
         val accountObject = account.account
             ?: account.email?.let { android.accounts.Account(it, "com.google") }
-            ?: return@withContext DriveSyncResult(false, DriveSyncError.NOT_SIGNED_IN)
+            ?: return DriveSyncResult(false, DriveSyncError.NOT_SIGNED_IN)
 
         try {
             val token = GoogleAuthUtil.getToken(context, accountObject, DRIVE_SCOPE)
-            val existingFileId = findBackupFile(token)
+            val backups = findBackupFiles(token)
+            val existingFileId = backups.firstOrNull()?.id
 
             // After "Reset Classes" the local state must win: upload it as-is instead
-            // of merging the old remote progress back in.
+            // of merging the old remote progress back in. The reset only applies to the
+            // account it was created for (or to the first account when it happened
+            // before Drive was connected).
+            val currentEmail = account.email ?: ""
             val resetPending = preferences.driveSyncResetPending.first()
-            if (mergeRemote && !resetPending && existingFileId != null) {
-                val remoteBackup = downloadBackup(token, existingFileId)
-                if (remoteBackup.isNullOrBlank() || !preferences.mergeBackupJson(remoteBackup)) {
-                    return@withContext DriveSyncResult(false, DriveSyncError.INVALID_BACKUP)
+            val resetAccount = preferences.driveSyncResetAccount.first()
+            val resetApplies = resetPending &&
+                (resetAccount.isBlank() || resetAccount.equals(currentEmail, ignoreCase = true))
+
+            if (!resetApplies) {
+                var foundNonBlankBackup = false
+                var mergedAnyBackup = false
+                backups.forEach { backup ->
+                    val remoteBackup = runCatching { downloadBackup(token, backup.id) }.getOrNull()
+                    if (!remoteBackup.isNullOrBlank()) {
+                        foundNonBlankBackup = true
+                        if (preferences.mergeBackupJson(remoteBackup)) {
+                            mergedAnyBackup = true
+                        }
+                    }
+                }
+                if (foundNonBlankBackup && !mergedAnyBackup) {
+                    return DriveSyncResult(false, DriveSyncError.INVALID_BACKUP)
                 }
             }
 
+            val resetVersionBefore = preferences.driveSyncResetVersion.first()
             val backupJson = preferences.exportBackupJson()
             uploadBackup(token, existingFileId, backupJson)
 
+            // Keep one canonical backup; remove older duplicates from previous races.
+            backups.drop(1).forEach { duplicate ->
+                runCatching { deleteBackup(token, duplicate.id) }
+            }
+
             val now = System.currentTimeMillis()
-            preferences.setDriveSyncAccount(account.email ?: "")
+            preferences.setDriveSyncAccount(currentEmail)
             preferences.setDriveSyncLastSync(now)
-            preferences.setDriveSyncResetPending(false)
-            DriveSyncResult(success = true, lastSync = now)
+            if (resetApplies &&
+                resetVersionBefore == preferences.driveSyncResetVersion.first()
+            ) {
+                preferences.setDriveSyncResetPending(false)
+            }
+            return DriveSyncResult(success = true, lastSync = now)
         } catch (e: UserRecoverableAuthException) {
-            DriveSyncResult(false, DriveSyncError.PERMISSION_REQUIRED, recoverIntent = e.intent)
+            return DriveSyncResult(false, DriveSyncError.PERMISSION_REQUIRED, recoverIntent = e.intent)
         } catch (e: GoogleAuthException) {
-            DriveSyncResult(false, DriveSyncError.NOT_SIGNED_IN, detail = e.message)
+            return DriveSyncResult(false, DriveSyncError.NOT_SIGNED_IN, detail = e.message)
         } catch (e: DriveHttpException) {
             val error = if (e.status == 401 || e.status == 403) {
                 DriveSyncError.NOT_SIGNED_IN
             } else {
                 DriveSyncError.SERVER
             }
-            DriveSyncResult(false, error, detail = e.message)
+            return DriveSyncResult(false, error, detail = e.message)
         } catch (e: IOException) {
-            DriveSyncResult(false, DriveSyncError.NO_CONNECTION, detail = e.message)
+            return DriveSyncResult(false, DriveSyncError.NO_CONNECTION, detail = e.message)
         } catch (e: Exception) {
-            DriveSyncResult(false, DriveSyncError.UNKNOWN, detail = e.message)
+            return DriveSyncResult(false, DriveSyncError.UNKNOWN, detail = e.message)
         }
     }
 
-    private fun findBackupFile(token: String): String? {
+    private data class RemoteBackup(val id: String, val modifiedTime: Long)
+
+    private fun findBackupFiles(token: String): List<RemoteBackup> {
         val query = URLEncoder.encode("name = '$BACKUP_FILE_NAME' and trashed = false", "UTF-8")
         val body = execute(
             token = token,
             method = "GET",
-            url = "$FILES_URL?pageSize=1&orderBy=modifiedTime%20desc" +
+            url = "$FILES_URL?pageSize=100&orderBy=modifiedTime%20desc" +
                 "&fields=files(id,modifiedTime)&q=$query"
         )
-        val files = JsonParser.parseString(body).asJsonObject.getAsJsonArray("files") ?: return null
-        return files.firstOrNull()?.asJsonObject?.get("id")?.asString
+        val files = JsonParser.parseString(body).asJsonObject.getAsJsonArray("files")
+            ?: return emptyList()
+        return files.mapNotNull { element ->
+            val obj = element.takeIf { it.isJsonObject }?.asJsonObject ?: return@mapNotNull null
+            val id = obj.get("id")?.takeIf { it.isJsonPrimitive }?.asString
+                ?: return@mapNotNull null
+            val modifiedTime = obj.get("modifiedTime")
+                ?.takeIf { it.isJsonPrimitive }
+                ?.asString
+                ?.let { runCatching { Instant.parse(it).toEpochMilli() }.getOrNull() }
+                ?: 0L
+            RemoteBackup(id, modifiedTime)
+        }.sortedWith(
+            compareByDescending<RemoteBackup> { it.modifiedTime }
+                .thenByDescending { it.id }
+        )
     }
 
     private fun downloadBackup(token: String, fileId: String): String? =
         execute(token, "GET", "$FILES_URL/$fileId?alt=media")
+
+    private fun deleteBackup(token: String, fileId: String) {
+        execute(token, "DELETE", "$FILES_URL/$fileId")
+    }
 
     private fun uploadBackup(token: String, existingFileId: String?, content: String) {
         if (existingFileId == null) {
@@ -228,7 +281,7 @@ class DriveSyncManager(private val context: Context) {
             if (status !in 200..299) {
                 throw DriveHttpException(status, readError(connection))
             }
-            return connection.inputStream.bufferedReader().use { it.readText() }
+            return connection.inputStream?.bufferedReader()?.use { it.readText() } ?: ""
         } finally {
             connection.disconnect()
         }

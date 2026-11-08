@@ -572,6 +572,7 @@ import com.historytracers.app.ui.screens.IPreferThisOrientationScreen
 import com.historytracers.app.ui.screens.IPreferThisThinkingScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -748,25 +749,32 @@ fun AppNavigation() {
         preferences.setScore(counter)
     }
 
-    // When Google Drive sync is enabled, merge the remote backup into the local
-    // preferences on launch and upload the merged result again.
+    // Keep the displayed score aligned with any score restored/merged by Drive sync.
     LaunchedEffect(Unit) {
-        if (preferences.driveSyncEnabled.first() && preferences.driveSyncAccount.first().isNotBlank()) {
-            val result = DriveSyncManager(context).syncNow(preferences)
-            if (result.success) {
-                val syncedScore = preferences.score.first()
-                if (syncedScore > counter) counter = syncedScore
-            }
+        preferences.score.collect { stored ->
+            if (stored > counter) counter = stored
         }
     }
 
-    // Debounced background upload so progress made during a session is backed up.
+    // Drive sync: merge once when it becomes enabled, then debounce changes to any
+    // backed-up preference (not only the score) into another merge+upload.
     LaunchedEffect(Unit) {
-        if (!preferences.driveSyncEnabled.first()) return@LaunchedEffect
-        snapshotFlow { counter }.collectLatest {
-            delay(5_000)
-            if (preferences.driveSyncEnabled.first() && preferences.driveSyncAccount.first().isNotBlank()) {
-                DriveSyncManager(context).uploadNow(preferences)
+        preferences.driveSyncEnabled.collectLatest { enabled ->
+            if (!enabled) return@collectLatest
+            var lastSyncedRevision: Int? = null
+            if (preferences.driveSyncAccount.first().isNotBlank()) {
+                val revision = preferences.syncRevision.first()
+                val result = DriveSyncManager(context).syncNow(preferences)
+                if (result.success) lastSyncedRevision = revision
+            }
+            preferences.syncRevision.collect { revision ->
+                if (revision == lastSyncedRevision) return@collect
+                delay(5_000)
+                if (preferences.driveSyncAccount.first().isNotBlank()) {
+                    val revisionBeforeSync = preferences.syncRevision.first()
+                    val result = DriveSyncManager(context).syncNow(preferences)
+                    if (result.success) lastSyncedRevision = revisionBeforeSync
+                }
             }
         }
     }
@@ -9842,6 +9850,9 @@ fun AppNavigation() {
                             },
                             onCalendarChanged = { cal ->
                                 scope.launch { preferences.setCalendar(cal) }
+                            },
+                            onScoreSynced = { synced ->
+                                if (synced > counter) counter = synced
                             },
                             onNavigateBack = {
                                 if (!navController.popBackStack()) {

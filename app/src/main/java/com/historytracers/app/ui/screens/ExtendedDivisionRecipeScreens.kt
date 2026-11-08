@@ -205,6 +205,7 @@ private fun MultiplicationTableOfFive() {
         Surface(
             shape = RoundedCornerShape(12.dp),
             color = Color.White,
+            contentColor = Color(0xFF1A1A1A),
             border = BorderStroke(1.dp, Color(0xFFD6D6D6))
         ) {
             Row(
@@ -360,12 +361,17 @@ private fun ExtendedDivisionRecipeContent(
     val content = contentList.firstOrNull { it.id == contentId }
 
     val initialScore = remember { currentScore }
+    val latestScore by rememberUpdatedState(currentScore)
     var totalAwarded by remember { mutableIntStateOf(0) }
 
     fun award(points: Int) {
         if (points <= 0) return
         totalAwarded += points
-        onScoreChanged(initialScore + totalAwarded)
+        // Build on the latest synchronized score when it is ahead of this screen's
+        // local tally, so a merge received while the screen is open is not lost.
+        val localTotal = initialScore + totalAwarded
+        val syncedTotal = latestScore + points
+        onScoreChanged(maxOf(localTotal, syncedTotal))
     }
 
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
