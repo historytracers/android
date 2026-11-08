@@ -27,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.historytracers.app.data.DriveSyncManager
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.data.detectDefaultLanguage
 import com.historytracers.app.ui.LocalAppLanguage
@@ -180,6 +181,20 @@ import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipSixCh
 import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipThinkingScreen
 import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipTwoChildrenScreen
 import com.historytracers.app.ui.screens.MultiplicationDivisionRelationshipVisualizingScreen
+import com.historytracers.app.ui.screens.DivisionRecipeConclusionScreen
+import com.historytracers.app.ui.screens.DivisionRecipeConnectionScreen
+import com.historytracers.app.ui.screens.DivisionRecipeHiddenElementScreen
+import com.historytracers.app.ui.screens.DivisionRecipeIntroScreen
+import com.historytracers.app.ui.screens.DivisionRecipeProductScreen
+import com.historytracers.app.ui.screens.DivisionRecipeRepresentationsScreen
+import com.historytracers.app.ui.screens.DivisionRecipeSlightDifferenceScreen
+import com.historytracers.app.ui.screens.DivisionRecipeThinkingScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeConclusionScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeExplanationScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeIntroScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeStepByStepScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeTableScreen
+import com.historytracers.app.ui.screens.ExtendedDivisionRecipeThinkingScreen
 import com.historytracers.app.ui.screens.DivisionAndRemainderScreen
 import com.historytracers.app.ui.screens.DivisionAndRemainderIntroScreen
 import com.historytracers.app.ui.screens.WritingTheQuotientScreen
@@ -557,6 +572,8 @@ import com.historytracers.app.ui.screens.IPreferThisOrientationScreen
 import com.historytracers.app.ui.screens.IPreferThisThinkingScreen
 import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -595,7 +612,7 @@ fun AppNavigation() {
            "overcoming_limits_logic", "overcoming_limits_last_foot", "overcoming_limits_conclusion",
            "large_numbers_intro", "large_numbers_quipu", "large_numbers_growing",
            "large_numbers_pattern", "large_numbers_app", "large_numbers_conclusion",
-           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "choosing_dividend_and_divisor_intro", "choosing_dividend_and_divisor", "measuring",
+           "counting_with_bones_intro", "counting_with_bones_game", "counting_with_bones_practice", "universe_expansion", "another_way_to_count", "returning", "long_division", "division_and_remainder_intro", "division_and_remainder", "writing_the_quotient_intro", "writing_the_quotient", "writing_quotient_and_remainder_intro", "writing_quotient_and_remainder", "choosing_dividend_and_divisor_intro", "choosing_dividend_and_divisor", "division_recipe_intro", "division_recipe_product", "division_recipe_representations", "division_recipe_thinking", "division_recipe_connection", "division_recipe_hidden_element", "division_recipe_slight_difference", "division_recipe_conclusion", "extended_division_recipe_intro", "extended_division_recipe_table", "extended_division_recipe_thinking", "extended_division_recipe_step_by_step", "extended_division_recipe_explanation", "extended_division_recipe_conclusion", "measuring",
            "multiplication_and_division_relationship_intro",
            "multiplication_and_division_relationship_grouping",
            "multiplication_and_division_relationship_visualizing",
@@ -730,6 +747,36 @@ fun AppNavigation() {
 
     LaunchedEffect(counter) {
         preferences.setScore(counter)
+    }
+
+    // Keep the displayed score aligned with any score restored/merged by Drive sync.
+    LaunchedEffect(Unit) {
+        preferences.score.collect { stored ->
+            if (stored > counter) counter = stored
+        }
+    }
+
+    // Drive sync: merge once when it becomes enabled, then debounce changes to any
+    // backed-up preference (not only the score) into another merge+upload.
+    LaunchedEffect(Unit) {
+        preferences.driveSyncEnabled.collectLatest { enabled ->
+            if (!enabled) return@collectLatest
+            var lastSyncedRevision: Int? = null
+            if (preferences.driveSyncAccount.first().isNotBlank()) {
+                val revision = preferences.syncRevision.first()
+                val result = DriveSyncManager(context).syncNow(preferences)
+                if (result.success) lastSyncedRevision = revision
+            }
+            preferences.syncRevision.collect { revision ->
+                if (revision == lastSyncedRevision) return@collect
+                delay(5_000)
+                if (preferences.driveSyncAccount.first().isNotBlank()) {
+                    val revisionBeforeSync = preferences.syncRevision.first()
+                    val result = DriveSyncManager(context).syncNow(preferences)
+                    if (result.success) lastSyncedRevision = revisionBeforeSync
+                }
+            }
+        }
     }
 
     var breakStartTime by remember { mutableStateOf(System.currentTimeMillis() / 1000L) }
@@ -1046,6 +1093,12 @@ fun AppNavigation() {
                                     }
                                 }
                             },
+                            onNavigateToDivisionRecipe = {
+                                navController.navigate(Screen.DivisionRecipeIntro.route) { launchSingleTop = true }
+                            },
+                            onNavigateToExtendedDivisionRecipe = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeIntro.route) { launchSingleTop = true }
+                            },
                             onNavigateToDivisionAndRemainder = {
                                 navController.navigate(Screen.DivisionAndRemainderIntro.route) { launchSingleTop = true }
                             },
@@ -1332,6 +1385,296 @@ fun AppNavigation() {
                                 navController.popBackToOrigin(
                                     Screen.MultiplicationDivisionRelationshipSharing.route,
                                     fallback = Screen.MultiplicationDivisionRelationshipSharing.route
+                                )
+                            },
+                            onNavigateToLongDivision = {
+                                navController.popBackToOrigin(
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeIntro.route) {
+                        DivisionRecipeIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeProduct.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeProduct.route) {
+                        DivisionRecipeProductScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeRepresentations.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeRepresentations.route) {
+                        DivisionRecipeRepresentationsScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeProduct.route,
+                                    fallback = Screen.DivisionRecipeProduct.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeThinking.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeThinking.route) {
+                        DivisionRecipeThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeRepresentations.route,
+                                    fallback = Screen.DivisionRecipeRepresentations.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeConnection.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeConnection.route) {
+                        DivisionRecipeConnectionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeThinking.route,
+                                    fallback = Screen.DivisionRecipeThinking.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeHiddenElement.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeHiddenElement.route) {
+                        DivisionRecipeHiddenElementScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeConnection.route,
+                                    fallback = Screen.DivisionRecipeConnection.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeSlightDifference.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeSlightDifference.route) {
+                        DivisionRecipeSlightDifferenceScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeHiddenElement.route,
+                                    fallback = Screen.DivisionRecipeHiddenElement.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.DivisionRecipeConclusion.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.DivisionRecipeConclusion.route) {
+                        DivisionRecipeConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeIntro.route,
+                                    fallback = Screen.DivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.DivisionRecipeSlightDifference.route,
+                                    fallback = Screen.DivisionRecipeSlightDifference.route
+                                )
+                            },
+                            onNavigateToLongDivision = {
+                                navController.popBackToOrigin(
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeIntro.route) {
+                        ExtendedDivisionRecipeIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.LongDivision.route,
+                                    fallback = Screen.LongDivision.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeTable.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeTable.route) {
+                        ExtendedDivisionRecipeTableScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeThinking.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeThinking.route) {
+                        ExtendedDivisionRecipeThinkingScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeTable.route,
+                                    fallback = Screen.ExtendedDivisionRecipeTable.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeStepByStep.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeStepByStep.route) {
+                        ExtendedDivisionRecipeStepByStepScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeThinking.route,
+                                    fallback = Screen.ExtendedDivisionRecipeThinking.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeExplanation.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeExplanation.route) {
+                        ExtendedDivisionRecipeExplanationScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeStepByStep.route,
+                                    fallback = Screen.ExtendedDivisionRecipeStepByStep.route
+                                )
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.ExtendedDivisionRecipeConclusion.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.ExtendedDivisionRecipeConclusion.route) {
+                        ExtendedDivisionRecipeConclusionScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeIntro.route,
+                                    fallback = Screen.ExtendedDivisionRecipeIntro.route
+                                )
+                            },
+                            onNavigatePrev = {
+                                navController.popBackToOrigin(
+                                    Screen.ExtendedDivisionRecipeExplanation.route,
+                                    fallback = Screen.ExtendedDivisionRecipeExplanation.route
                                 )
                             },
                             onNavigateToLongDivision = {
@@ -4003,9 +4346,7 @@ fun AppNavigation() {
                             onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
                             onNavigateToAddingTheSameNumber = { navController.navigate(Screen.AddingSameNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToTheResultIs = { navController.navigate(Screen.TheResultIs.route) { launchSingleTop = true } },
-                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } },
-                            onNavigateToConnectingTheMultiplication = { navController.navigate(Screen.DrawingTheTableOfZeroIntro.route) { launchSingleTop = true } },
-                            onNavigateToDrawingMultiplication = { navController.navigate(Screen.DrawingTheTableOfOneIntro.route) { launchSingleTop = true } }
+                            onNavigateToInversion = { navController.navigate(Screen.InversionIntro.route) { launchSingleTop = true } }
                         )
                     }
                     composable(Screen.RoadToSomewhere.route) {
@@ -9510,6 +9851,9 @@ fun AppNavigation() {
                             onCalendarChanged = { cal ->
                                 scope.launch { preferences.setCalendar(cal) }
                             },
+                            onScoreSynced = { synced ->
+                                if (synced > counter) counter = synced
+                            },
                             onNavigateBack = {
                                 if (!navController.popBackStack()) {
                                     navController.navigate(Screen.Index.route) {
@@ -9531,6 +9875,8 @@ fun AppNavigation() {
                                 }
                             },
                             onNavigateToMultiplicationDivisionRelationship = { navController.navigate(Screen.MultiplicationDivisionRelationshipIntro.route) { launchSingleTop = true } },
+                            onNavigateToDivisionRecipe = { navController.navigate(Screen.DivisionRecipeIntro.route) { launchSingleTop = true } },
+                            onNavigateToExtendedDivisionRecipe = { navController.navigate(Screen.ExtendedDivisionRecipeIntro.route) { launchSingleTop = true } },
                             onNavigateToPlayingWithAxioms = { navController.navigate(Screen.PlayingWithAxiomsGame.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAdditionIntro = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToLargeNumbersIntro = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },

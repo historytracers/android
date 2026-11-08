@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,9 +33,13 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.historytracers.app.data.DriveSyncError
+import com.historytracers.app.data.DriveSyncManager
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.HubTitleStrings
@@ -41,6 +49,10 @@ import com.historytracers.app.ui.features.settingsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.SkinColorPalette
 import com.historytracers.app.ui.theme.parseHexColor
 import com.historytracers.app.calendar.CalendarType
+import java.text.DateFormat
+import java.util.Date
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 private fun availableLanguages(hts: HubTitleStrings) = listOf(
     "en-US" to hts.langEnUs,
@@ -61,6 +73,7 @@ fun SettingsScreen(
     onBreakTimeChanged: (Int) -> Unit,
     onSkinColorChanged: (String) -> Unit,
     onCalendarChanged: (String) -> Unit,
+    onScoreSynced: (Int) -> Unit = {},
     onNavigateBack: () -> Unit,
     onStartLearning: (() -> Unit)? = null
 ) {
@@ -270,6 +283,13 @@ fun SettingsScreen(
                     }
                 }
 
+                if (onStartLearning == null) {
+                    Spacer(Modifier.height(8.dp))
+                    Divider()
+                    Spacer(Modifier.height(8.dp))
+                    DriveSyncSection(xs = xs, onScoreSynced = onScoreSynced)
+                }
+
                 onStartLearning?.let { onStart ->
                     Spacer(Modifier.height(8.dp))
                     Divider()
@@ -293,6 +313,194 @@ fun SettingsScreen(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun DriveSyncSection(xs: SettingsScreenStrings, onScoreSynced: (Int) -> Unit) {
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val syncManager = remember { DriveSyncManager(context) }
+    val scope = rememberCoroutineScope()
+
+    val syncEnabled by preferences.driveSyncEnabled.collectAsState(initial = false)
+    val account by preferences.driveSyncAccount.collectAsState(initial = "")
+    val lastSync by preferences.driveSyncLastSync.collectAsState(initial = 0L)
+
+    var busy by remember { mutableStateOf(false) }
+    var statusText by remember { mutableStateOf<String?>(null) }
+    var statusIsError by remember { mutableStateOf(false) }
+    var pendingRecoverIntent by remember { mutableStateOf<Intent?>(null) }
+    var retrySync by remember { mutableIntStateOf(0) }
+
+    val playServicesAvailable = remember { DriveSyncManager.isPlayServicesAvailable(context) }
+
+    val startSync: () -> Unit = {
+        if (!busy) {
+            scope.launch {
+                busy = true
+                statusText = null
+                val result = syncManager.syncNow(preferences)
+                busy = false
+                if (result.success) {
+                    onScoreSynced(preferences.score.first())
+                }
+                statusIsError = !result.success
+                if (result.error == DriveSyncError.PERMISSION_REQUIRED &&
+                    result.recoverIntent != null
+                ) {
+                    pendingRecoverIntent = result.recoverIntent
+                }
+                statusText = when {
+                    result.success -> xs.driveSyncSuccess
+                    result.error == DriveSyncError.NOT_SIGNED_IN -> xs.driveSyncNotSignedIn
+                    result.error == DriveSyncError.PERMISSION_REQUIRED -> xs.driveSyncPermissionRequired
+                    result.error == DriveSyncError.PLAY_SERVICES_UNAVAILABLE -> xs.driveSyncUnavailable
+                    else -> xs.driveSyncError
+                }
+            }
+        }
+    }
+
+    val recoveryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            retrySync++
+        } else {
+            statusIsError = true
+            statusText = xs.driveSyncPermissionRequired
+        }
+    }
+
+    LaunchedEffect(pendingRecoverIntent) {
+        val intent = pendingRecoverIntent
+        if (intent != null) {
+            pendingRecoverIntent = null
+            recoveryLauncher.launch(intent)
+        }
+    }
+
+    LaunchedEffect(retrySync) {
+        if (retrySync > 0) startSync()
+    }
+
+    val signInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val signedIn = syncManager.completeSignIn(result.data)
+        if (signedIn == null) {
+            statusIsError = true
+            statusText = xs.driveSyncNotSignedIn
+        } else {
+            scope.launch {
+                preferences.setDriveSyncAccount(signedIn.email ?: "")
+                preferences.setDriveSyncEnabled(true)
+            }
+            startSync()
+        }
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = xs.driveSyncTitle,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = xs.driveSyncDescription,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(Modifier.width(12.dp))
+        Switch(
+            checked = syncEnabled,
+            enabled = playServicesAvailable && !busy,
+            onCheckedChange = { checked ->
+                statusText = null
+                if (checked) {
+                    if (account.isBlank()) {
+                        signInLauncher.launch(syncManager.signInIntent())
+                    } else {
+                        scope.launch { preferences.setDriveSyncEnabled(true) }
+                        startSync()
+                    }
+                } else {
+                    scope.launch { preferences.setDriveSyncEnabled(false) }
+                }
+            }
+        )
+    }
+
+    if (!playServicesAvailable) {
+        Text(
+            text = xs.driveSyncUnavailable,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error
+        )
+        return
+    }
+
+    if (syncEnabled && account.isBlank()) {
+        TextButton(onClick = { signInLauncher.launch(syncManager.signInIntent()) }) {
+            Text(xs.driveSyncSignIn)
+        }
+    }
+
+    if (syncEnabled && account.isNotBlank()) {
+        Text(
+            text = String.format(xs.driveSyncAccount, account),
+            style = MaterialTheme.typography.bodySmall
+        )
+        val lastSyncLabel = remember(lastSync, xs) {
+            val formatted = if (lastSync > 0L) {
+                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                    .format(Date(lastSync))
+            } else {
+                xs.driveSyncNever
+            }
+            String.format(xs.driveSyncLastSynced, formatted)
+        }
+        Text(
+            text = lastSyncLabel,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = startSync,
+                enabled = !busy,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(if (busy) xs.driveSyncSyncing else xs.driveSyncNow)
+            }
+            TextButton(
+                onClick = {
+                    scope.launch {
+                        syncManager.disconnect(preferences)
+                        statusText = null
+                    }
+                },
+                enabled = !busy
+            ) {
+                Text(xs.driveSyncDisconnect)
+            }
+        }
+    }
+
+    statusText?.let { text ->
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodySmall,
+            color = if (statusIsError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
         )
     }
 }

@@ -82,8 +82,7 @@ private val anotherWayToCountSectionIds = listOf(
 )
 
 private val runningAndGrowingSectionIds = listOf(
-    "adding_the_same_number", "the_result_is", "inversion",
-    "connecting_the_multiplication", "drawing_multiplication"
+    "adding_the_same_number", "the_result_is", "inversion"
 )
 
 private val aroundTheWorldSectionIds = listOf(
@@ -104,8 +103,9 @@ private val measuringSectionIds = listOf(
 )
 
 private val longDivisionSectionIds = listOf(
-    "multiplication_and_division_relationship", "division_and_remainder", "writing_the_quotient",
-    "writing_quotient_and_remainder", "choosing_dividend_and_divisor"
+    "multiplication_and_division_relationship", "division_recipe", "extended_division_recipe",
+    "division_and_remainder", "writing_the_quotient", "writing_quotient_and_remainder",
+    "choosing_dividend_and_divisor"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).

@@ -92,6 +92,25 @@ ht.key.password=<key-password>
 
 Alternatively, set the `HT_STORE_FILE`, `HT_STORE_PASSWORD`, `HT_KEY_ALIAS` and `HT_KEY_PASSWORD` environment variables with the same values.
 
+## Google Drive sync setup
+
+The optional **Google Drive Sync** setting (off by default) saves a JSON backup of the user's score, streak and preferences as `History Tracers Backup.json` in their own Google Drive. No History Tracers server is involved: the app calls the Google Drive REST API directly with an OAuth token obtained from Google Sign-In, using the `drive.file` scope. That scope lets the app access files it creates or that the user explicitly shares with it; the app uses it to create and update the backup file.
+
+The publisher configures this once in the Google Cloud Console:
+
+1. Create (or reuse) a Google Cloud project.
+2. Enable the **Google Drive API** for that project.
+3. Configure the **OAuth consent screen** and add the scope `https://www.googleapis.com/auth/drive.file`. If the audience is **External** and the app is in **Testing**, only users listed as test users can authorize Drive sync: add the users as testers, or publish the app and complete any required verification.
+4. Create an **OAuth 2.0 Client ID** of type **Android** for the application id `com.historytracers.app`, one per signing certificate, and register that certificate's SHA-1 fingerprint. Register the debug certificate, the release/upload certificate, and — when Play App Signing uses a different key — the app-signing certificate SHA-1 shown in Play Console under *Test and release → App integrity*.
+
+    The debug fingerprint can be printed with:
+
+    ```sh
+    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+    ```
+
+No `google-services.json` is needed: Google Play services resolves the Android OAuth client by package name and signing certificate. Until a matching client is registered, the setting stays visible; when sign-in fails, Settings shows the prompt to sign in with Google to sync progress.
+
 ## Project structure
 
 | Path | Description |
