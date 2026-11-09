@@ -1074,6 +1074,7 @@ fun AppNavigation() {
                             onNavigateToYupana = { navController.navigate(Screen.Yupana.route) { launchSingleTop = true } },
                             onNavigateToRoadToSomewhere = { navController.navigate(Screen.RoadToSomewhere.route) { launchSingleTop = true } },
                             onNavigateToRunningAndGrowing = { navController.navigate(Screen.RunningAndGrowing.route) { launchSingleTop = true } },
+                            onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTable.route) { launchSingleTop = true } },
                             onNavigateToWhereAreWeFrom = { navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true } },
                             onNavigateToAnotherWayToCount = { navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
@@ -10050,12 +10051,11 @@ fun AppNavigation() {
                     composable(Screen.MultiplicationTable.route) {
                         MultiplicationTableScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
+                                navController.popBackToOrigin(
+                                    Screen.Abacus.route,
+                                    Screen.Index.route,
+                                    fallback = Screen.Index.route
+                                )
                             },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
