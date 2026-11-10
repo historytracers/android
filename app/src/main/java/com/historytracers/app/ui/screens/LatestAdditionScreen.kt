@@ -31,7 +31,6 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.divisionRecipeScreenStringsForLanguage
 import com.historytracers.app.ui.features.extendedDivisionRecipeScreenStringsForLanguage
 import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
-import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
@@ -40,6 +39,7 @@ import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLan
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
+import com.historytracers.app.ui.features.whatIsItScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -56,6 +56,7 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToWhatIsIt: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
@@ -121,17 +122,32 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
     val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
     val drs = divisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val edrs = extendedDivisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
+    val wits = whatIsItScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
+    val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "what_is_it",
+            label = wits.fullTitle,
+            icon = {
+                Text(
+                    text = "\u00D7",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "what_is_it" in completedMultiplicationTable },
+            onNavigate = onNavigateToWhatIsIt
+        ),
         LatestAdditionEntry(
             sectionId = "extended_division_recipe",
             label = edrs.title,
@@ -187,20 +203,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "choosing_dividend_and_divisor" in completedLongDivision },
             onNavigate = onNavigateToChoosingDividendAndDivisor
-        ),
-        LatestAdditionEntry(
-            sectionId = "writing_quotient_and_remainder",
-            label = wqars.title,
-            icon = {
-                Text(
-                    text = "987 \u00F7 1",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "writing_quotient_and_remainder" in completedLongDivision },
-            onNavigate = onNavigateToWritingQuotientAndRemainder
         )
     )
 

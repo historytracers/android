@@ -109,6 +109,10 @@ private val longDivisionSectionIds = listOf(
     "choosing_dividend_and_divisor"
 )
 
+private val multiplicationTableSectionIds = listOf(
+    "what_is_it"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
@@ -172,6 +176,7 @@ fun IndexScreen(
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
+    val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -190,7 +195,7 @@ fun IndexScreen(
     val returningDone = returningSectionIds.all { it in completedReturning }
     val measuringDone = measuringSectionIds.all { it in completedMeasuring }
     val longDivisionDone = longDivisionSectionIds.all { it in completedLongDivision }
-    val multiplicationTableDone = "multiplication_table" in completedAbacus
+    val multiplicationTableDone = multiplicationTableSectionIds.all { it in completedMultiplicationTable }
 
     val whoAmINew = isNewHub("who_am_i", seenNewHubs)
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)

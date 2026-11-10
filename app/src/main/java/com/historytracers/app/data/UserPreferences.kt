@@ -89,6 +89,7 @@ class UserPreferences(private val context: Context) {
         private val AROUND_THE_WORLD_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_sections")
         private val AROUND_THE_WORLD_ADDITION_SECTIONS_KEY = stringSetPreferencesKey("around_the_world_addition_sections")
         private val LONG_DIVISION_SECTIONS_KEY = stringSetPreferencesKey("long_division_sections")
+        private val MULTIPLICATION_TABLE_SECTIONS_KEY = stringSetPreferencesKey("multiplication_table_sections")
         private val CLAIMED_LEVELS_KEY = stringSetPreferencesKey("claimed_levels")
         private val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
         private val SEEN_NEW_HUBS_KEY = stringSetPreferencesKey("seen_new_hubs")
@@ -156,7 +157,7 @@ class UserPreferences(private val context: Context) {
             MEASURING_SECTIONS_KEY.name, RUNNING_AND_GROWING_SECTIONS_KEY.name,
             WHERE_ARE_WE_FROM_SECTIONS_KEY.name, ANOTHER_WAY_TO_COUNT_SECTIONS_KEY.name,
             AROUND_THE_WORLD_SECTIONS_KEY.name, AROUND_THE_WORLD_ADDITION_SECTIONS_KEY.name,
-            LONG_DIVISION_SECTIONS_KEY.name, CLAIMED_LEVELS_KEY.name,
+            LONG_DIVISION_SECTIONS_KEY.name, MULTIPLICATION_TABLE_SECTIONS_KEY.name, CLAIMED_LEVELS_KEY.name,
             SEEN_NEW_HUBS_KEY.name, AWARDED_SCREENS_KEY.name, ARRIVAL_AWARDED_SCREENS_KEY.name
         )
 
@@ -594,6 +595,17 @@ class UserPreferences(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[LONG_DIVISION_SECTIONS_KEY] =
                 (preferences[LONG_DIVISION_SECTIONS_KEY] ?: emptySet()) + section
+        }
+    }
+
+    val completedMultiplicationTableSections: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[MULTIPLICATION_TABLE_SECTIONS_KEY] ?: emptySet()
+    }
+
+    suspend fun markMultiplicationTableSectionCompleted(section: String) {
+        context.dataStore.edit { preferences ->
+            preferences[MULTIPLICATION_TABLE_SECTIONS_KEY] =
+                (preferences[MULTIPLICATION_TABLE_SECTIONS_KEY] ?: emptySet()) + section
         }
     }
 
@@ -1041,6 +1053,7 @@ class UserPreferences(private val context: Context) {
         preferences[AROUND_THE_WORLD_SECTIONS_KEY] = emptySet()
         preferences[AROUND_THE_WORLD_ADDITION_SECTIONS_KEY] = emptySet()
         preferences[LONG_DIVISION_SECTIONS_KEY] = emptySet()
+        preferences[MULTIPLICATION_TABLE_SECTIONS_KEY] = emptySet()
         preferences[CLAIMED_LEVELS_KEY] = emptySet()
         preferences[AWARDED_SCREENS_KEY] = emptySet()
         preferences[ARRIVAL_AWARDED_SCREENS_KEY] = emptySet()
