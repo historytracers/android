@@ -34,6 +34,7 @@ import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableEqualSidesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -111,7 +112,8 @@ fun LatestAdditionScreen(
     onNavigateToChoosingDividendAndDivisor: () -> Unit = {},
     onNavigateToMultiplicationDivisionRelationship: () -> Unit = {},
     onNavigateToDivisionRecipe: () -> Unit = {},
-    onNavigateToExtendedDivisionRecipe: () -> Unit = {}
+    onNavigateToExtendedDivisionRecipe: () -> Unit = {},
+    onNavigateToMultiplicationTableEqualSides: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -125,9 +127,9 @@ fun LatestAdditionScreen(
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
     val drs = divisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val edrs = extendedDivisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
-    val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
     val wits = whatIsItScreenStringsForLanguage(LocalAppLanguage.current)
     val mzs = multiplicationTableZeroScreenStringsForLanguage(LocalAppLanguage.current)
+    val eqs = multiplicationTableEqualSidesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -135,6 +137,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "equal_sides",
+            label = eqs.fullTitle,
+            icon = {
+                Text(
+                    text = "1",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "equal_sides" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableEqualSides
+        ),
         LatestAdditionEntry(
             sectionId = "the_same_result",
             label = mzs.fullTitle,
@@ -190,20 +206,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "division_recipe" in completedLongDivision },
             onNavigate = onNavigateToDivisionRecipe
-        ),
-        LatestAdditionEntry(
-            sectionId = "multiplication_and_division_relationship",
-            label = lds.multiplicationAndDivisionRelationship,
-            icon = {
-                Text(
-                    text = "\u00D7 \u00F7",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "multiplication_and_division_relationship" in completedLongDivision },
-            onNavigate = onNavigateToMultiplicationDivisionRelationship
         )
     )
 

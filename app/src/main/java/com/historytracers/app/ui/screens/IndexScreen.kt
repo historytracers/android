@@ -110,7 +110,7 @@ private val longDivisionSectionIds = listOf(
 )
 
 private val multiplicationTableSectionIds = listOf(
-    "what_is_it", "the_same_result"
+    "what_is_it", "the_same_result", "equal_sides"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
