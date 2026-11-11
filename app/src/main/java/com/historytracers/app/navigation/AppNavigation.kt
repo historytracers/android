@@ -411,7 +411,7 @@ import com.historytracers.app.ui.screens.AroundTheWorldAdditionRussiaGameScreen
 import com.historytracers.app.ui.screens.AroundTheWorldAdditionConclusionScreen
 import com.historytracers.app.ui.screens.AbacusHistoryThinkingScreen
 import com.historytracers.app.ui.screens.PracticingAdditionScreen
-import com.historytracers.app.ui.screens.MultiplicationTableScreen
+import com.historytracers.app.ui.screens.MultiplicationTableWithAbacusScreen
 import com.historytracers.app.ui.screens.MultiplicationTableHubScreen
 import com.historytracers.app.ui.screens.WhatIsItIntroductionScreen
 import com.historytracers.app.ui.screens.WhatIsItTableOf5Screen
@@ -8375,7 +8375,7 @@ fun AppNavigation() {
                             onNavigateToSchyotyWriting = { navController.navigate(Screen.SchyotyWriting.route) },
                             onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) },
                             onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAddition.route) },
-                            onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTable.route) },
+                            onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTableWithAbacus.route) },
                             onNavigateToMultiplyingWithAbacus = { navController.navigate(Screen.MultiplyingWithAbacus.route) },
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
                             onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
@@ -10057,8 +10057,8 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
-                    composable(Screen.MultiplicationTable.route) {
-                        MultiplicationTableScreen(
+                    composable(Screen.MultiplicationTableWithAbacus.route) {
+                        MultiplicationTableWithAbacusScreen(
                             onNavigateBack = {
                                 navController.popBackToOrigin(
                                     Screen.Abacus.route,

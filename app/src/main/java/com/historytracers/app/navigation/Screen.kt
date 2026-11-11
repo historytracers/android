@@ -440,7 +440,7 @@ sealed class Screen(val route: String) {
     data object SchyotyWriting : Screen("schyoty_writing")
     data object LargeNumbersWriting : Screen("large_numbers_writing")
     data object PracticingAddition : Screen("practicing_addition")
-    data object MultiplicationTable : Screen("multiplication_table")
+    data object MultiplicationTableWithAbacus : Screen("multiplication_table_with_abacus")
     data object MultiplicationTableHub : Screen("multiplication_table_hub")
     data object WhatIsItIntroduction : Screen("what_is_it_introduction")
     data object WhatIsItTableOf5 : Screen("what_is_it_table_of_5")

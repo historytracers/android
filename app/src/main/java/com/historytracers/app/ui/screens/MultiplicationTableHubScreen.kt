@@ -20,7 +20,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.miscStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableWithAbacusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -33,7 +33,7 @@ fun MultiplicationTableHubScreen(
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
-    val mts = multiplicationTableScreenStringsForLanguage(LocalAppLanguage.current)
+    val mts = multiplicationTableWithAbacusScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }

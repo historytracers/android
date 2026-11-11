@@ -35,7 +35,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.miscStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableWithAbacusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.delay
@@ -95,7 +95,7 @@ private fun setMtAbacusValue(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MultiplicationTableScreen(
+fun MultiplicationTableWithAbacusScreen(
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}
@@ -104,7 +104,7 @@ fun MultiplicationTableScreen(
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
-    val xs = multiplicationTableScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplicationTableWithAbacusScreenStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -190,7 +190,7 @@ fun MultiplicationTableScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = mcs.multiplicationTable,
+                        text = mcs.multiplicationTableWithAbacus,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
