@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MultiplicationTableHubScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToWhatIsIt: () -> Unit = {}
+    onNavigateToWhatIsIt: () -> Unit = {},
+    onNavigateToTheSameResult: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
@@ -42,6 +43,7 @@ fun MultiplicationTableHubScreen(
         initial = emptySet()
     )
     val whatIsItDone = "what_is_it" in completedMultiplicationTableSections
+    val theSameResultDone = "the_same_result" in completedMultiplicationTableSections
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -120,6 +122,36 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = mts.whatIsIt,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "The Same Result" (multiplication table of zero).
+                FilledIconButton(
+                    onClick = onNavigateToTheSameResult,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (theSameResultDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "0",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = mts.theSameResult,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

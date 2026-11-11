@@ -30,11 +30,11 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.divisionRecipeScreenStringsForLanguage
 import com.historytracers.app.ui.features.extendedDivisionRecipeScreenStringsForLanguage
-import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -57,6 +57,7 @@ fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToWhatIsIt: () -> Unit = {},
+    onNavigateToMultiplicationTableZero: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
@@ -122,11 +123,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
     val drs = divisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val edrs = extendedDivisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
     val wits = whatIsItScreenStringsForLanguage(LocalAppLanguage.current)
+    val mzs = multiplicationTableZeroScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -134,6 +135,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "the_same_result",
+            label = mzs.fullTitle,
+            icon = {
+                Text(
+                    text = "0",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "the_same_result" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableZero
+        ),
         LatestAdditionEntry(
             sectionId = "what_is_it",
             label = wits.fullTitle,
@@ -189,20 +204,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "multiplication_and_division_relationship" in completedLongDivision },
             onNavigate = onNavigateToMultiplicationDivisionRelationship
-        ),
-        LatestAdditionEntry(
-            sectionId = "choosing_dividend_and_divisor",
-            label = cdds.title,
-            icon = {
-                Text(
-                    text = "??? \u00F7 ?",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "choosing_dividend_and_divisor" in completedLongDivision },
-            onNavigate = onNavigateToChoosingDividendAndDivisor
         )
     )
 

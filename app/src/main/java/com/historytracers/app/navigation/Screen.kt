@@ -449,6 +449,20 @@ sealed class Screen(val route: String) {
     data object WhatIsItStep1 : Screen("what_is_it_step_1")
     data object WhatIsItStep2 : Screen("what_is_it_step_2")
     data object WhatIsItConclusion : Screen("what_is_it_conclusion")
+
+    data object MultiplicationTableZeroIntroduction : Screen("multiplication_table_zero_introduction")
+
+    data object MultiplicationTableZeroWhereIsMyFood : Screen("multiplication_table_zero_where_is_my_food")
+
+    data object MultiplicationTableZeroThinking : Screen("multiplication_table_zero_thinking")
+
+    data object MultiplicationTableZeroVisualizing : Screen("multiplication_table_zero_visualizing")
+
+    data object MultiplicationTableZeroRule : Screen("multiplication_table_zero_rule")
+
+    data object MultiplicationTableZeroReadingRule : Screen("multiplication_table_zero_reading_rule")
+
+    data object MultiplicationTableZeroConclusion : Screen("multiplication_table_zero_conclusion")
     data object MultiplyingWithAbacus : Screen("multiplying_with_abacus")
     data object MultiplyingWithAbacusLevel2 : Screen("multiplying_with_abacus_level2")
     data object MultiplyingWithoutLimits : Screen("multiplying_without_limits")
