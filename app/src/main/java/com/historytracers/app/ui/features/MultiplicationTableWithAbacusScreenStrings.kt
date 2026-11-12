@@ -7,24 +7,28 @@ data class MultiplicationTableWithAbacusScreenStrings(
     val whatIsIt: String,
     val theSameResult: String,
     val equalSides: String,
+    val doubleValues: String,
 )
 
 val EnMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
     whatIsIt = "What is it?",
     theSameResult = "The Same Result",
     equalSides = "Equal Sides",
+    doubleValues = "Double Values",
 )
 
 val PtMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
     whatIsIt = "O que \u00e9 isto?",
     theSameResult = "O Mesmo Resultado",
     equalSides = "Lados Iguais",
+    doubleValues = "Valores Dobrados",
 )
 
 val EsMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
     whatIsIt = "\u00bfQu\u00e9 es esto?",
     theSameResult = "El Mismo Resultado",
     equalSides = "Lados Iguales",
+    doubleValues = "Valores Duplicados",
 )
 
 val LocalMultiplicationTableWithAbacusScreenStrings = staticCompositionLocalOf { EnMultiplicationTableWithAbacusScreenStrings }

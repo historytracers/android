@@ -31,7 +31,8 @@ fun MultiplicationTableHubScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToWhatIsIt: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
-    onNavigateToEqualSides: () -> Unit = {}
+    onNavigateToEqualSides: () -> Unit = {},
+    onNavigateToDoubleValues: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
@@ -46,6 +47,7 @@ fun MultiplicationTableHubScreen(
     val whatIsItDone = "what_is_it" in completedMultiplicationTableSections
     val theSameResultDone = "the_same_result" in completedMultiplicationTableSections
     val equalSidesDone = "equal_sides" in completedMultiplicationTableSections
+    val doubleValuesDone = "double_values" in completedMultiplicationTableSections
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -184,6 +186,36 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = mts.equalSides,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Double Values" (multiplication table of two).
+                FilledIconButton(
+                    onClick = onNavigateToDoubleValues,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (doubleValuesDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "2",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = mts.doubleValues,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
