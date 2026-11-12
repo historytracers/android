@@ -72,6 +72,7 @@ class UserPreferences(private val context: Context) {
         private val ROAD_TO_SOMEWHERE_SCROLL_KEY = intPreferencesKey("road_to_somewhere_scroll")
         private val WHERE_ARE_WE_FROM_SCROLL_KEY = intPreferencesKey("where_are_we_from_scroll")
         private val UNIVERSE_EXPANSION_STEP_KEY = intPreferencesKey("universe_expansion_step")
+        private val MULTIPLICATION_OBJECT_KEY = intPreferencesKey("multiplication_object")
         private val QUIPU_PRACTICE_STATE_KEY = stringPreferencesKey("quipu_practice_state")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
@@ -123,7 +124,8 @@ class UserPreferences(private val context: Context) {
             YUPANA_SCROLL_KEY.name,
             ANOTHER_WAY_TO_COUNT_SCROLL_KEY.name,
             ROAD_TO_SOMEWHERE_SCROLL_KEY.name,
-            WHERE_ARE_WE_FROM_SCROLL_KEY.name
+            WHERE_ARE_WE_FROM_SCROLL_KEY.name,
+            MULTIPLICATION_OBJECT_KEY.name
         )
 
         // Known preference names and their declared types. Used to reject imports that
@@ -134,7 +136,8 @@ class UserPreferences(private val context: Context) {
             FIRST_STEPS_SCROLL_KEY.name, WORKOUT_SCROLL_KEY.name, ABACUS_SCROLL_KEY.name,
             YUPANA_SCROLL_KEY.name, ANOTHER_WAY_TO_COUNT_SCROLL_KEY.name,
             ROAD_TO_SOMEWHERE_SCROLL_KEY.name, WHERE_ARE_WE_FROM_SCROLL_KEY.name,
-            UNIVERSE_EXPANSION_STEP_KEY.name, DRIVE_SYNC_RESET_VERSION_KEY.name
+            UNIVERSE_EXPANSION_STEP_KEY.name, DRIVE_SYNC_RESET_VERSION_KEY.name,
+            MULTIPLICATION_OBJECT_KEY.name
         )
         private val LONG_PREFERENCE_NAMES = setOf(
             BREAK_START_TIME_KEY.name, DRIVE_SYNC_LAST_SYNC_KEY.name
@@ -732,6 +735,22 @@ class UserPreferences(private val context: Context) {
     suspend fun markNewHubSeen(hubId: String) {
         context.dataStore.edit { preferences ->
             preferences[SEEN_NEW_HUBS_KEY] = (preferences[SEEN_NEW_HUBS_KEY] ?: emptySet()) + hubId
+        }
+    }
+
+    /**
+     * Object selected in the multiplication table visualizers (index into the
+     * shared object list). Persisted so the choice follows the user across
+     * screens and app restarts, mirroring the web version's
+     * `ht_multiplication_object` preference.
+     */
+    val multiplicationObject: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[MULTIPLICATION_OBJECT_KEY] ?: 0
+    }
+
+    suspend fun setMultiplicationObject(objectIndex: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[MULTIPLICATION_OBJECT_KEY] = objectIndex
         }
     }
 

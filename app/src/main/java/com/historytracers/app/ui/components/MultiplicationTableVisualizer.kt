@@ -20,10 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,8 +40,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.features.multiplicationTableVisualizerStringsForLanguage
+import kotlinx.coroutines.launch
 
 private val PANEL_BLUE = Color(0xFFADD8E6)
 private val PANEL_TEXT = Color(0xFF1A2340)
@@ -89,8 +95,19 @@ fun MultiplicationTableVisualizer(
 ) {
     val vs = multiplicationTableVisualizerStringsForLanguage(LocalAppLanguage.current)
 
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val savedObject by preferences.multiplicationObject.collectAsState(initial = -1)
+
     var selectedObject by remember { mutableIntStateOf(0) }
     var selectedMultiplier by remember { mutableStateOf<Int?>(null) }
+
+    // Sync the selection with the persisted preference: on first composition it
+    // restores the last chosen object; afterwards it simply mirrors our writes.
+    LaunchedEffect(savedObject) {
+        if (savedObject >= 0) selectedObject = savedObject
+    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -128,7 +145,10 @@ fun MultiplicationTableVisualizer(
                             else MaterialTheme.colorScheme.surfaceVariant,
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .clickable { selectedObject = index },
+                        .clickable {
+                            selectedObject = index
+                            scope.launch { preferences.setMultiplicationObject(index) }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = emoji, fontSize = 22.sp)
@@ -202,7 +222,12 @@ fun MultiplicationTableVisualizer(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         repeat(multiplier) {
-                            MultiplicationGroup(factor, VISUALIZER_OBJECT_EMOJIS[selectedObject])
+                            MultiplicationGroup(
+                                factor,
+                                VISUALIZER_OBJECT_EMOJIS[
+                                    selectedObject.coerceIn(0, VISUALIZER_OBJECT_EMOJIS.lastIndex)
+                                ]
+                            )
                         }
                     }
                 }
