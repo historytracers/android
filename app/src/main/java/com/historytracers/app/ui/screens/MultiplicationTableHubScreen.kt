@@ -13,9 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -23,6 +27,8 @@ import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableWithAbacusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
@@ -33,7 +39,11 @@ fun MultiplicationTableHubScreen(
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToEqualSides: () -> Unit = {},
     onNavigateToDoubleValues: () -> Unit = {},
-    onNavigateToTripleValues: () -> Unit = {}
+    onNavigateToTripleValues: () -> Unit = {},
+    onNavigateToMultiplyingWithGroups: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
@@ -50,6 +60,33 @@ fun MultiplicationTableHubScreen(
     val equalSidesDone = "equal_sides" in completedMultiplicationTableSections
     val doubleValuesDone = "double_values" in completedMultiplicationTableSections
     val tripleValuesDone = "triple_values" in completedMultiplicationTableSections
+    val multiplyingWithGroupsDone = "multiplying_with_groups" in completedMultiplicationTableSections
+
+    // One "Next Level" flag button covering every class in this hub.
+    val levelGroupController = remember {
+        LevelGroupController(
+            listOf(
+                "what_is_it",
+                "the_same_result",
+                "equal_sides",
+                "double_values",
+                "triple_values",
+                "multiplying_with_groups"
+            ),
+            completedMultiplicationTableSections
+        )
+    }
+    LaunchedEffect(completedMultiplicationTableSections) {
+        levelGroupController.syncFromPersisted(completedMultiplicationTableSections)
+    }
+
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
+
+    fun claimLevel(levelId: String) {
+        if (levelId in claimedLevels) return
+        onScoreChanged(currentScore + 10)
+        scope.launch { preferences.markLevelClaimed(levelId) }
+    }
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -248,6 +285,73 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = mts.tripleValues,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Multiplying with Groups (0 to 3)".
+                FilledIconButton(
+                    onClick = onNavigateToMultiplyingWithGroups,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (multiplyingWithGroupsDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u00D7 0, 1\n2, 3",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = mts.multiplyingWithGroups,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Next Level" flag button: unlocks when every class above is
+                // completed and awards its bonus points once.
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("multiplication_table_group1")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = levelGroupController.allCompleted,
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("multiplication_table_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

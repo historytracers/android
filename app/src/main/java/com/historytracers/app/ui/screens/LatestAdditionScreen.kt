@@ -35,11 +35,11 @@ import com.historytracers.app.ui.features.multiplicationTableDoubleValuesScreenS
 import com.historytracers.app.ui.features.multiplicationTableEqualSidesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableTripleValuesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithGroupsScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
-import com.historytracers.app.ui.features.whatIsItScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -114,7 +114,8 @@ fun LatestAdditionScreen(
     onNavigateToExtendedDivisionRecipe: () -> Unit = {},
     onNavigateToMultiplicationTableEqualSides: () -> Unit = {},
     onNavigateToMultiplicationTableDoubleValues: () -> Unit = {},
-    onNavigateToMultiplicationTableTripleValues: () -> Unit = {}
+    onNavigateToMultiplicationTableTripleValues: () -> Unit = {},
+    onNavigateToMultiplyingWithGroups: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -126,11 +127,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val wits = whatIsItScreenStringsForLanguage(LocalAppLanguage.current)
     val mzs = multiplicationTableZeroScreenStringsForLanguage(LocalAppLanguage.current)
     val eqs = multiplicationTableEqualSidesScreenStringsForLanguage(LocalAppLanguage.current)
     val dvs = multiplicationTableDoubleValuesScreenStringsForLanguage(LocalAppLanguage.current)
     val tvs = multiplicationTableTripleValuesScreenStringsForLanguage(LocalAppLanguage.current)
+    val mwg = multiplyingWithGroupsScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -138,6 +139,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "multiplying_with_groups",
+            label = mwg.fullTitle,
+            icon = {
+                Text(
+                    text = "\u00D7 0-3",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "multiplying_with_groups" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplyingWithGroups
+        ),
         LatestAdditionEntry(
             sectionId = "triple_values",
             label = tvs.fullTitle,
@@ -193,20 +208,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "the_same_result" in completedMultiplicationTable },
             onNavigate = onNavigateToMultiplicationTableZero
-        ),
-        LatestAdditionEntry(
-            sectionId = "what_is_it",
-            label = wits.fullTitle,
-            icon = {
-                Text(
-                    text = "\u00D7",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "what_is_it" in completedMultiplicationTable },
-            onNavigate = onNavigateToWhatIsIt
         )
     )
 

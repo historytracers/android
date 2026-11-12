@@ -9,6 +9,7 @@ data class MultiplicationTableWithAbacusScreenStrings(
     val equalSides: String,
     val doubleValues: String,
     val tripleValues: String,
+    val multiplyingWithGroups: String,
 )
 
 val EnMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
@@ -17,6 +18,7 @@ val EnMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacus
     equalSides = "Equal Sides",
     doubleValues = "Double Values",
     tripleValues = "Triple Values",
+    multiplyingWithGroups = "Multiplying with Groups (0 to 3)",
 )
 
 val PtMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
@@ -25,6 +27,7 @@ val PtMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacus
     equalSides = "Lados Iguais",
     doubleValues = "Valores Dobrados",
     tripleValues = "Valores Triplicados",
+    multiplyingWithGroups = "Multiplicando com Grupos (0 a 3)",
 )
 
 val EsMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
@@ -33,6 +36,7 @@ val EsMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacus
     equalSides = "Lados Iguales",
     doubleValues = "Valores Duplicados",
     tripleValues = "Valores Triplicados",
+    multiplyingWithGroups = "Multiplicando con Grupos (0 a 3)",
 )
 
 val LocalMultiplicationTableWithAbacusScreenStrings = staticCompositionLocalOf { EnMultiplicationTableWithAbacusScreenStrings }
