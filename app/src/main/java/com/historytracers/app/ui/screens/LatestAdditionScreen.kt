@@ -28,13 +28,12 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.extendedDivisionRecipeScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableDoubleValuesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableEqualSidesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableTripleValuesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -114,7 +113,8 @@ fun LatestAdditionScreen(
     onNavigateToDivisionRecipe: () -> Unit = {},
     onNavigateToExtendedDivisionRecipe: () -> Unit = {},
     onNavigateToMultiplicationTableEqualSides: () -> Unit = {},
-    onNavigateToMultiplicationTableDoubleValues: () -> Unit = {}
+    onNavigateToMultiplicationTableDoubleValues: () -> Unit = {},
+    onNavigateToMultiplicationTableTripleValues: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -126,11 +126,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val edrs = extendedDivisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
     val wits = whatIsItScreenStringsForLanguage(LocalAppLanguage.current)
     val mzs = multiplicationTableZeroScreenStringsForLanguage(LocalAppLanguage.current)
     val eqs = multiplicationTableEqualSidesScreenStringsForLanguage(LocalAppLanguage.current)
     val dvs = multiplicationTableDoubleValuesScreenStringsForLanguage(LocalAppLanguage.current)
+    val tvs = multiplicationTableTripleValuesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -138,6 +138,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "triple_values",
+            label = tvs.fullTitle,
+            icon = {
+                Text(
+                    text = "3",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "triple_values" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableTripleValues
+        ),
         LatestAdditionEntry(
             sectionId = "double_values",
             label = dvs.fullTitle,
@@ -193,20 +207,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "what_is_it" in completedMultiplicationTable },
             onNavigate = onNavigateToWhatIsIt
-        ),
-        LatestAdditionEntry(
-            sectionId = "extended_division_recipe",
-            label = edrs.title,
-            icon = {
-                Text(
-                    text = "320 \u00F7 5",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "extended_division_recipe" in completedLongDivision },
-            onNavigate = onNavigateToExtendedDivisionRecipe
         )
     )
 

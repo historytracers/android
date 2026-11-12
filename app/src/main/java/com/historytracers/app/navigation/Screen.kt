@@ -491,6 +491,22 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableDoubleValuesReadingRule : Screen("multiplication_table_double_values_reading_rule")
 
     data object MultiplicationTableDoubleValuesConclusion : Screen("multiplication_table_double_values_conclusion")
+
+    data object MultiplicationTableTripleValuesIntroduction : Screen("multiplication_table_triple_values_introduction")
+
+    data object MultiplicationTableTripleValuesLikeYou : Screen("multiplication_table_triple_values_like_you")
+
+    data object MultiplicationTableTripleValuesThinking : Screen("multiplication_table_triple_values_thinking")
+
+    data object MultiplicationTableTripleValuesCommon : Screen("multiplication_table_triple_values_common")
+
+    data object MultiplicationTableTripleValuesVisualizing : Screen("multiplication_table_triple_values_visualizing")
+
+    data object MultiplicationTableTripleValuesRule : Screen("multiplication_table_triple_values_rule")
+
+    data object MultiplicationTableTripleValuesReadingRule : Screen("multiplication_table_triple_values_reading_rule")
+
+    data object MultiplicationTableTripleValuesConclusion : Screen("multiplication_table_triple_values_conclusion")
     data object MultiplyingWithAbacus : Screen("multiplying_with_abacus")
     data object MultiplyingWithAbacusLevel2 : Screen("multiplying_with_abacus_level2")
     data object MultiplyingWithoutLimits : Screen("multiplying_without_limits")

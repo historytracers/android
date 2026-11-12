@@ -262,3 +262,45 @@ private fun MultiplicationGroup(count: Int, emoji: String) {
         }
     }
 }
+
+/**
+ * Draws the same total (6) grouped in three different ways — 1 × 6, 2 × 3 and
+ * 3 × 2 — using the object the user selected in the multiplication table
+ * visualizer. If nothing was selected yet, the star (index 0) is used.
+ *
+ * Shared by the multiplication table screens that talk about common multiples.
+ */
+@Composable
+fun MultiplicationTableCommonMultiples(
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val savedObject by preferences.multiplicationObject.collectAsState(initial = -1)
+
+    val emoji = VISUALIZER_OBJECT_EMOJIS[
+        savedObject.coerceIn(0, VISUALIZER_OBJECT_EMOJIS.lastIndex)
+    ]
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        listOf(1 to 6, 2 to 3, 3 to 2).forEach { (groups, perGroup) ->
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "$groups \u00D7 $perGroup = 6",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                repeat(groups) {
+                    MultiplicationGroup(perGroup, emoji)
+                }
+            }
+        }
+    }
+}
