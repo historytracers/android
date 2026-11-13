@@ -26,6 +26,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -108,11 +109,16 @@ private val longDivisionSectionIds = listOf(
     "choosing_dividend_and_divisor"
 )
 
+private val multiplicationTableSectionIds = listOf(
+    "what_is_it", "the_same_result", "equal_sides", "double_values", "triple_values",
+    "multiplying_with_groups"
+)
+
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).
 // When a new, fully functional hub button is added to this screen, insert its id
 // here so isNewHub flags it; the badge hides once the user taps it (persisted via
 // UserPreferences.markNewHubSeen).
-private val newHubIds = setOf("who_am_i", "another_way_to_count", "around_the_world", "measuring", "around_the_world_addition", "long_division")
+private val newHubIds = setOf("who_am_i", "another_way_to_count", "around_the_world", "measuring", "around_the_world_addition", "long_division", "multiplication_table")
 
 private fun isNewHub(hubId: String, seenNewHubs: Set<String>): Boolean =
     hubId in newHubIds && hubId !in seenNewHubs
@@ -141,6 +147,7 @@ fun IndexScreen(
     onNavigateToRoadToSomewhere: () -> Unit = {},
     onNavigateToAroundTheWorldAddition: () -> Unit = {},
     onNavigateToRunningAndGrowing: () -> Unit = {},
+    onNavigateToMultiplicationTable: () -> Unit = {},
     onNavigateToWhereAreWeFrom: () -> Unit = {},
     onNavigateToAnotherWayToCount: () -> Unit = {},
     onNavigateToAroundTheWorld: () -> Unit = {},
@@ -150,6 +157,7 @@ fun IndexScreen(
 ) {
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val ms = miscStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
@@ -169,6 +177,7 @@ fun IndexScreen(
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedMeasuring by preferences.completedMeasuringSections.collectAsState(initial = emptySet())
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
+    val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
     val seenNewHubs by preferences.seenNewHubs.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
@@ -187,6 +196,7 @@ fun IndexScreen(
     val returningDone = returningSectionIds.all { it in completedReturning }
     val measuringDone = measuringSectionIds.all { it in completedMeasuring }
     val longDivisionDone = longDivisionSectionIds.all { it in completedLongDivision }
+    val multiplicationTableDone = multiplicationTableSectionIds.all { it in completedMultiplicationTable }
 
     val whoAmINew = isNewHub("who_am_i", seenNewHubs)
     val firstStepsNew = isNewHub("first_steps", seenNewHubs)
@@ -199,6 +209,7 @@ fun IndexScreen(
     val aroundTheWorldAdditionNew = isNewHub("around_the_world_addition", seenNewHubs)
     val measuringNew = isNewHub("measuring", seenNewHubs)
     val longDivisionNew = isNewHub("long_division", seenNewHubs)
+    val multiplicationTableNew = isNewHub("multiplication_table", seenNewHubs)
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -459,6 +470,34 @@ fun IndexScreen(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Box(modifier = Modifier.padding(horizontal = 32.dp)) {
+                FilledTonalButton(
+                    onClick = {
+                        if (multiplicationTableNew) scope.launch { preferences.markNewHubSeen("multiplication_table") }
+                        onNavigateToMultiplicationTable()
+                    },
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = if (multiplicationTableNew) ButtonYellow else if (multiplicationTableDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u00D7",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = ms.multiplicationTable,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                if (multiplicationTableNew) NewHubSunBadge()
             }
 
             Spacer(Modifier.height(16.dp))

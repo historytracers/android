@@ -141,18 +141,25 @@ private class ScreenAudioController(
  * `https://www.historytracers.org/audios/{lessonId}_{contentId}_{language}.ogg`,
  * so playback requires an internet connection. Tapping the button while the
  * audio is playing stops it.
+ *
+ * Passing a `null` [contentId] selects the class-level narration instead,
+ * hosted as `https://www.historytracers.org/audios/{lessonId}_{language}.ogg`.
  */
 @Composable
 fun ScreenAudioButton(
     lessonId: String,
-    contentId: String,
+    contentId: String?,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val language = LocalAppLanguage.current
     val s = LocalUiStrings.current
     val audioUrl = remember(lessonId, contentId, language) {
-        "$AUDIO_BASE_URL${lessonId}_${contentId}_$language.ogg"
+        if (contentId == null) {
+            "$AUDIO_BASE_URL${lessonId}_$language.ogg"
+        } else {
+            "$AUDIO_BASE_URL${lessonId}_${contentId}_$language.ogg"
+        }
     }
 
     val audioManager = remember(context) {

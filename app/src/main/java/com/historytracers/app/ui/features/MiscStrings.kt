@@ -5,28 +5,28 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 data class MiscStrings(
     val multiplicationTable: String,
-    val multiplicationTableDescription: String,
+    val multiplicationTableWithAbacus: String,
     val abacusInOrdersReading: String,
     val carrying: String,
 )
 
 val EnMiscStrings = MiscStrings(
     multiplicationTable = "Multiplication Table",
-    multiplicationTableDescription = "Select a number, then tap Auto to watch the abacus display each multiplication step, or tap Next Step to advance manually. Complete all 10 steps to finish.",
+    multiplicationTableWithAbacus = "Multiplication Table with Abacus",
     abacusInOrdersReading = "1, 10,...",
     carrying = "Carrying",
 )
 
 val PtMiscStrings = MiscStrings(
     multiplicationTable = "Tabela de Multiplica\u00e7\u00e3o",
-    multiplicationTableDescription = "Selecione um n\u00famero, depois toque em Autom\u00e1tico para ver o \u00e1baco mostrar cada passo da multiplica\u00e7\u00e3o, ou toque em Pr\u00f3ximo Passo para avan\u00e7ar manualmente. Complete todos os 10 passos para finalizar.",
+    multiplicationTableWithAbacus = "Tabela de Multiplica\u00e7\u00e3o com \u00c1baco",
     abacusInOrdersReading = "1, 10,...",
     carrying = "Levando 1",
 )
 
 val EsMiscStrings = MiscStrings(
     multiplicationTable = "Tabla de Multiplicar",
-    multiplicationTableDescription = "Selecciona un n\u00famero, luego toca Autom\u00e1tico para ver el \u00e1baco mostrar cada paso de la multiplicaci\u00f3n, o toca Siguiente Paso para avanzar manualmente. Completa los 10 pasos para finalizar.",
+    multiplicationTableWithAbacus = "Tabla de Multiplicar con \u00c1baco",
     abacusInOrdersReading = "1, 10,...",
     carrying = "Llevando 1",
 )

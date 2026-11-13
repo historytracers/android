@@ -9,6 +9,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,6 +35,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.miscStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableWithAbacusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.delay
@@ -93,7 +95,7 @@ private fun setMtAbacusValue(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MultiplicationTableScreen(
+fun MultiplicationTableWithAbacusScreen(
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {}
@@ -102,6 +104,7 @@ fun MultiplicationTableScreen(
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplicationTableWithAbacusScreenStringsForLanguage(LocalAppLanguage.current)
     var abacusMode by remember { mutableStateOf("soroban") }
     val schyotyBeads = remember { mutableStateOf(List(9) { 0 }) }
     val upperMax = if (abacusMode == "soroban") SOROBAN_UPPER else SUANPAN_UPPER
@@ -117,6 +120,7 @@ fun MultiplicationTableScreen(
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showJessicaSubmenu by remember { mutableStateOf(false) }
+    var showWhatIsItDialog by remember { mutableStateOf(false) }
 
     val currentResult = selectedNumber.toLong() * currentStep.toLong()
     val equationText = if (currentStep > 0) "$currentStep \u00D7 $selectedNumber = $currentResult" else ""
@@ -186,7 +190,7 @@ fun MultiplicationTableScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
                     Text(
-                        text = mcs.multiplicationTable,
+                        text = mcs.multiplicationTableWithAbacus,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -202,7 +206,7 @@ fun MultiplicationTableScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = mcs.multiplicationTableDescription,
+                    text = xs.multiplicationTableDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -514,6 +518,35 @@ fun MultiplicationTableScreen(
                     }
                 }
 
+                Spacer(Modifier.height(24.dp))
+
+                FilledIconButton(
+                    onClick = { showWhatIsItDialog = true },
+                    modifier = Modifier.size(96.dp),
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "?",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = OnButtonYellow
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = xs.whatIsIt,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
                 Spacer(Modifier.height(12.dp))
             }
         }
@@ -613,6 +646,19 @@ fun MultiplicationTableScreen(
                 )
             }
         }
+    }
+
+    if (showWhatIsItDialog) {
+        AlertDialog(
+            onDismissRequest = { showWhatIsItDialog = false },
+            title = { Text(xs.whatIsIt) },
+            text = { Text(xs.multiplicationTableDescription) },
+            confirmButton = {
+                TextButton(onClick = { showWhatIsItDialog = false }) {
+                    Text(s.common.ok)
+                }
+            }
+        )
     }
 }
 

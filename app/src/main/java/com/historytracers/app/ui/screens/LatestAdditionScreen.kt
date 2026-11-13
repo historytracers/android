@@ -28,14 +28,14 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
-import com.historytracers.app.ui.features.divisionRecipeScreenStringsForLanguage
-import com.historytracers.app.ui.features.extendedDivisionRecipeScreenStringsForLanguage
-import com.historytracers.app.ui.features.choosingDividendAndDivisorScreenStringsForLanguage
-import com.historytracers.app.ui.features.writingQuotientAndRemainderScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.longDivisionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableDoubleValuesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableEqualSidesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableTripleValuesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithGroupsRulesScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -56,6 +56,8 @@ private data class LatestAdditionEntry(
 fun LatestAdditionScreen(
     scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
+    onNavigateToWhatIsIt: () -> Unit = {},
+    onNavigateToMultiplicationTableZero: () -> Unit = {},
     onNavigateToDivisionAndRemainder: () -> Unit = {},
     onNavigateToWritingTheQuotient: () -> Unit = {},
     onNavigateToPlayingWithAxioms: () -> Unit = {},
@@ -109,7 +111,11 @@ fun LatestAdditionScreen(
     onNavigateToChoosingDividendAndDivisor: () -> Unit = {},
     onNavigateToMultiplicationDivisionRelationship: () -> Unit = {},
     onNavigateToDivisionRecipe: () -> Unit = {},
-    onNavigateToExtendedDivisionRecipe: () -> Unit = {}
+    onNavigateToExtendedDivisionRecipe: () -> Unit = {},
+    onNavigateToMultiplicationTableEqualSides: () -> Unit = {},
+    onNavigateToMultiplicationTableDoubleValues: () -> Unit = {},
+    onNavigateToMultiplicationTableTripleValues: () -> Unit = {},
+    onNavigateToMultiplyingWithGroups: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -121,86 +127,87 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val wqars = writingQuotientAndRemainderScreenStringsForLanguage(LocalAppLanguage.current)
-    val cdds = choosingDividendAndDivisorScreenStringsForLanguage(LocalAppLanguage.current)
-    val drs = divisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
-    val edrs = extendedDivisionRecipeScreenStringsForLanguage(LocalAppLanguage.current)
-    val lds = longDivisionScreenStringsForLanguage(LocalAppLanguage.current)
+    val mzs = multiplicationTableZeroScreenStringsForLanguage(LocalAppLanguage.current)
+    val eqs = multiplicationTableEqualSidesScreenStringsForLanguage(LocalAppLanguage.current)
+    val dvs = multiplicationTableDoubleValuesScreenStringsForLanguage(LocalAppLanguage.current)
+    val tvs = multiplicationTableTripleValuesScreenStringsForLanguage(LocalAppLanguage.current)
+    val mwg = multiplyingWithGroupsRulesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
+    val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
         LatestAdditionEntry(
-            sectionId = "extended_division_recipe",
-            label = edrs.title,
+            sectionId = "multiplying_with_groups",
+            label = mwg.title,
             icon = {
                 Text(
-                    text = "320 \u00F7 5",
-                    fontSize = 14.sp,
+                    text = "\u00D7 0-3",
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
             },
-            isCompleted = { "extended_division_recipe" in completedLongDivision },
-            onNavigate = onNavigateToExtendedDivisionRecipe
+            isCompleted = { "multiplying_with_groups" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplyingWithGroups
         ),
         LatestAdditionEntry(
-            sectionId = "division_recipe",
-            label = drs.title,
+            sectionId = "triple_values",
+            label = tvs.fullTitle,
             icon = {
                 Text(
-                    text = "12 \u00F7 4",
-                    fontSize = 14.sp,
+                    text = "3",
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
             },
-            isCompleted = { "division_recipe" in completedLongDivision },
-            onNavigate = onNavigateToDivisionRecipe
+            isCompleted = { "triple_values" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableTripleValues
         ),
         LatestAdditionEntry(
-            sectionId = "multiplication_and_division_relationship",
-            label = lds.multiplicationAndDivisionRelationship,
+            sectionId = "double_values",
+            label = dvs.fullTitle,
             icon = {
                 Text(
-                    text = "\u00D7 \u00F7",
-                    fontSize = 14.sp,
+                    text = "2",
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
             },
-            isCompleted = { "multiplication_and_division_relationship" in completedLongDivision },
-            onNavigate = onNavigateToMultiplicationDivisionRelationship
+            isCompleted = { "double_values" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableDoubleValues
         ),
         LatestAdditionEntry(
-            sectionId = "choosing_dividend_and_divisor",
-            label = cdds.title,
+            sectionId = "equal_sides",
+            label = eqs.fullTitle,
             icon = {
                 Text(
-                    text = "??? \u00F7 ?",
-                    fontSize = 14.sp,
+                    text = "1",
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
             },
-            isCompleted = { "choosing_dividend_and_divisor" in completedLongDivision },
-            onNavigate = onNavigateToChoosingDividendAndDivisor
+            isCompleted = { "equal_sides" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableEqualSides
         ),
         LatestAdditionEntry(
-            sectionId = "writing_quotient_and_remainder",
-            label = wqars.title,
+            sectionId = "the_same_result",
+            label = mzs.fullTitle,
             icon = {
                 Text(
-                    text = "987 \u00F7 1",
-                    fontSize = 14.sp,
+                    text = "0",
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
             },
-            isCompleted = { "writing_quotient_and_remainder" in completedLongDivision },
-            onNavigate = onNavigateToWritingQuotientAndRemainder
+            isCompleted = { "the_same_result" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableZero
         )
     )
 

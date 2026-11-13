@@ -440,7 +440,77 @@ sealed class Screen(val route: String) {
     data object SchyotyWriting : Screen("schyoty_writing")
     data object LargeNumbersWriting : Screen("large_numbers_writing")
     data object PracticingAddition : Screen("practicing_addition")
-    data object MultiplicationTable : Screen("multiplication_table")
+    data object MultiplicationTableWithAbacus : Screen("multiplication_table_with_abacus")
+    data object MultiplicationTableHub : Screen("multiplication_table_hub")
+    data object WhatIsItIntroduction : Screen("what_is_it_introduction")
+    data object WhatIsItTableOf5 : Screen("what_is_it_table_of_5")
+    data object WhatIsItThinking : Screen("what_is_it_thinking")
+    data object WhatIsItStepByStep : Screen("what_is_it_step_by_step")
+    data object WhatIsItStep1 : Screen("what_is_it_step_1")
+    data object WhatIsItStep2 : Screen("what_is_it_step_2")
+    data object WhatIsItConclusion : Screen("what_is_it_conclusion")
+
+    data object MultiplicationTableZeroIntroduction : Screen("multiplication_table_zero_introduction")
+
+    data object MultiplicationTableZeroWhereIsMyFood : Screen("multiplication_table_zero_where_is_my_food")
+
+    data object MultiplicationTableZeroThinking : Screen("multiplication_table_zero_thinking")
+
+    data object MultiplicationTableZeroVisualizing : Screen("multiplication_table_zero_visualizing")
+
+    data object MultiplicationTableZeroRule : Screen("multiplication_table_zero_rule")
+
+    data object MultiplicationTableZeroReadingRule : Screen("multiplication_table_zero_reading_rule")
+
+    data object MultiplicationTableZeroConclusion : Screen("multiplication_table_zero_conclusion")
+
+    data object MultiplicationTableEqualSidesIntroduction : Screen("multiplication_table_equal_sides_introduction")
+
+    data object MultiplicationTableEqualSidesLikeYou : Screen("multiplication_table_equal_sides_like_you")
+
+    data object MultiplicationTableEqualSidesThinking : Screen("multiplication_table_equal_sides_thinking")
+
+    data object MultiplicationTableEqualSidesVisualizing : Screen("multiplication_table_equal_sides_visualizing")
+
+    data object MultiplicationTableEqualSidesRule : Screen("multiplication_table_equal_sides_rule")
+
+    data object MultiplicationTableEqualSidesReadingRule : Screen("multiplication_table_equal_sides_reading_rule")
+
+    data object MultiplicationTableEqualSidesConclusion : Screen("multiplication_table_equal_sides_conclusion")
+
+    data object MultiplicationTableDoubleValuesIntroduction : Screen("multiplication_table_double_values_introduction")
+
+    data object MultiplicationTableDoubleValuesLikeYou : Screen("multiplication_table_double_values_like_you")
+
+    data object MultiplicationTableDoubleValuesThinking : Screen("multiplication_table_double_values_thinking")
+
+    data object MultiplicationTableDoubleValuesVisualizing : Screen("multiplication_table_double_values_visualizing")
+
+    data object MultiplicationTableDoubleValuesRule : Screen("multiplication_table_double_values_rule")
+
+    data object MultiplicationTableDoubleValuesReadingRule : Screen("multiplication_table_double_values_reading_rule")
+
+    data object MultiplicationTableDoubleValuesConclusion : Screen("multiplication_table_double_values_conclusion")
+
+    data object MultiplicationTableTripleValuesIntroduction : Screen("multiplication_table_triple_values_introduction")
+
+    data object MultiplicationTableTripleValuesLikeYou : Screen("multiplication_table_triple_values_like_you")
+
+    data object MultiplicationTableTripleValuesThinking : Screen("multiplication_table_triple_values_thinking")
+
+    data object MultiplicationTableTripleValuesCommon : Screen("multiplication_table_triple_values_common")
+
+    data object MultiplicationTableTripleValuesVisualizing : Screen("multiplication_table_triple_values_visualizing")
+
+    data object MultiplicationTableTripleValuesRule : Screen("multiplication_table_triple_values_rule")
+
+    data object MultiplicationTableTripleValuesReadingRule : Screen("multiplication_table_triple_values_reading_rule")
+
+    data object MultiplicationTableTripleValuesConclusion : Screen("multiplication_table_triple_values_conclusion")
+
+    data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
+
+    data object MultiplyingWithGroupsGame : Screen("multiplying_with_groups_game")
     data object MultiplyingWithAbacus : Screen("multiplying_with_abacus")
     data object MultiplyingWithAbacusLevel2 : Screen("multiplying_with_abacus_level2")
     data object MultiplyingWithoutLimits : Screen("multiplying_without_limits")

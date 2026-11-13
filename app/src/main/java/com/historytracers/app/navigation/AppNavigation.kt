@@ -411,7 +411,46 @@ import com.historytracers.app.ui.screens.AroundTheWorldAdditionRussiaGameScreen
 import com.historytracers.app.ui.screens.AroundTheWorldAdditionConclusionScreen
 import com.historytracers.app.ui.screens.AbacusHistoryThinkingScreen
 import com.historytracers.app.ui.screens.PracticingAdditionScreen
-import com.historytracers.app.ui.screens.MultiplicationTableScreen
+import com.historytracers.app.ui.screens.MultiplicationTableWithAbacusScreen
+import com.historytracers.app.ui.screens.MultiplicationTableHubScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesIntroductionScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesLikeYouScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesThinkingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesVisualizingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesReadingRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableEqualSidesConclusionScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesIntroductionScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesLikeYouScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesThinkingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesVisualizingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesReadingRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableDoubleValuesConclusionScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesIntroductionScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesLikeYouScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesThinkingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesCommonScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesVisualizingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesReadingRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableTripleValuesConclusionScreen
+import com.historytracers.app.ui.screens.MultiplyingWithGroupsRulesScreen
+import com.historytracers.app.ui.screens.MultiplyingWithGroupsGameScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroIntroductionScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroWhereIsMyFoodScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroThinkingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroVisualizingScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroReadingRuleScreen
+import com.historytracers.app.ui.screens.MultiplicationTableZeroConclusionScreen
+import com.historytracers.app.ui.screens.WhatIsItIntroductionScreen
+import com.historytracers.app.ui.screens.WhatIsItTableOf5Screen
+import com.historytracers.app.ui.screens.WhatIsItThinkingScreen
+import com.historytracers.app.ui.screens.WhatIsItStepByStepScreen
+import com.historytracers.app.ui.screens.WhatIsItStep1Screen
+import com.historytracers.app.ui.screens.WhatIsItStep2Screen
+import com.historytracers.app.ui.screens.WhatIsItConclusionScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusScreen
 import com.historytracers.app.ui.screens.MultiplyingWithAbacusLevel2Screen
 import com.historytracers.app.ui.screens.MultiplyingWithoutLimitsScreen
@@ -587,7 +626,7 @@ fun AppNavigation() {
     val skinColor by preferences.skinColor.collectAsState(initial = "#A5672C")
     val calendar by preferences.calendar.collectAsState(initial = "gregorian")
     val scope = rememberCoroutineScope()
-    val simpleRoutes = setOf("index", "who_am_i", "running_and_growing", "i_am_not_like_you", "equality_intro", "equality_question", "equality_equal", "equality_expanding", "equality_in_general", "equality_conclusion", "totally_equal_intro", "totally_equal_question", "totally_equal_sign", "totally_equal_exercise", "totally_equal_conclusion", "historical_equality_intro", "historical_equality_mapping", "historical_equality_objects", "historical_equality_question", "historical_equality_evidence", "historical_equality_conclusion", "historical_equality_pyramids_intro", "historical_equality_pyramids_definition", "historical_equality_pyramids_mesoamerica", "historical_equality_pyramids_question", "historical_equality_pyramids_look_alike", "historical_equality_pyramids_precision", "historical_equality_pyramids_conclusion", "equal_same_group_different", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "sun_tzu_learning_intro", "sun_tzu_learning_who_was", "sun_tzu_learning_morale", "sun_tzu_learning_heaven", "sun_tzu_learning_terrain", "sun_tzu_learning_commander", "sun_tzu_learning_method", "sun_tzu_learning_thinking", "sun_tzu_learning_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "drawing_and_couting_intro", "drawing_and_couting_circles", "drawing_and_couting_rectangles", "drawing_and_couting_mesoamericans", "drawing_and_couting_question", "drawing_and_couting_examples", "drawing_and_couting_conclusion", "numbers_intro", "numbers_origin", "numbers_question", "numbers_equal", "numbers_visualizing", "numbers_conclusion", "family_part1_intro", "family_part1_orders", "family_part1_order", "family_part1_altar", "family_part1_continuity", "family_part1_stages", "family_part1_rule", "family_part1_conclusion", "natural_families_part2_intro", "natural_families_part2_question", "natural_families_part2_logic", "natural_families_part2_orders_question", "natural_families_part2_copan", "natural_families_part2_naming", "natural_families_part2_billion_question", "natural_families_part2_conclusion", "the_zero_intro", "the_zero_what_is", "the_zero_intuitive", "the_zero_number", "the_zero_question", "the_zero_conclusion", "workout", "road_to_somewhere", "walk_among_numbers_intro", "walk_among_numbers_roads", "walk_among_numbers_inca_roads", "walk_among_numbers_axes", "walk_among_numbers_hands", "walk_among_numbers_question", "walk_among_numbers_conclusion", "carrying_in_addition_intro", "carrying_in_addition_adding", "carrying_in_addition_hidden_zero", "carrying_in_addition_question", "carrying_in_addition_identity", "carrying_in_addition_zero_in_hands", "carrying_in_addition_conclusion", "adding_same_numbers_intro", "adding_same_numbers_body", "adding_same_numbers_think", "adding_same_numbers_count_one", "adding_same_numbers_count_five", "adding_same_numbers_question", "adding_same_numbers_new_sign", "adding_same_numbers_conclusion", "the_result_is", "inversion_intro", "inversion_squares_going_up", "inversion_squares_lying_down", "inversion_question", "inversion_order", "inversion_conclusion", "order_of_addition_intro", "order_of_addition_where", "order_of_addition_commutative", "order_of_addition_question", "order_of_addition_conclusion", "playing_with_axioms_game", "running_among_numbers_intro", "running_among_numbers_temple", "running_among_numbers_reconstruction", "running_among_numbers_adding", "running_among_numbers_question", "running_among_numbers_conclusion", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", Screen.SchyotyWriting.route, "large_numbers_writing", "abacus_history_intro", "abacus_history_suanpan", "abacus_history_soroban", "abacus_history_thinking", "abacus_history_similarities", "abacus_history_schyoty", "abacus_history_calculi", "abacus_history_conclusion", "practicing_addition", "practicing_addition_road", "carry_or_not_carry_intro", "carry_or_not_carry_game", "advancing_and_complementing_intro", "advancing_and_complementing_complement", "advancing_and_complementing_ourselves", "advancing_and_complementing_limit", "advancing_and_complementing_exercising", "advancing_and_complementing_thinking", "advancing_and_complementing_conclusion", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement", "toward_infinity_maximum", "toward_infinity_law", "toward_infinity_without_limits", "toward_infinity_symbol", "toward_infinity_direction", "toward_infinity_conclusion", "limits_min_max_between_both", "limits_min_max_question", "limits_min_max_tending", "limits_min_max_hands", "limits_min_max_conclusion", "where_are_they_intro", "where_are_they_in_us", "where_are_they_in_texts", "where_are_they_ages", "where_are_they_question", "where_are_they_wrong", "where_are_they_species", "where_are_they_universe", "where_are_they_conclusion", "where_are_we_from", "odd_or_even_game", "shared_origin_intro", "shared_origin_expanding", "shared_origin_think", "shared_origin_history", "shared_origin_cmb",            "shared_origin_contract", "shared_origin_conclusion", "matter_and_energy_intro",
+    val simpleRoutes = setOf("index", "multiplication_table_hub", "multiplication_table_with_abacus", "multiplication_table_zero_introduction", "multiplication_table_zero_where_is_my_food", "multiplication_table_zero_thinking", "multiplication_table_zero_visualizing", "multiplication_table_zero_rule", "multiplication_table_zero_reading_rule", "multiplication_table_zero_conclusion", "multiplication_table_equal_sides_introduction", "multiplication_table_equal_sides_like_you", "multiplication_table_equal_sides_thinking", "multiplication_table_equal_sides_visualizing", "multiplication_table_equal_sides_rule", "multiplication_table_equal_sides_reading_rule", "multiplication_table_equal_sides_conclusion", "multiplication_table_double_values_introduction", "multiplication_table_double_values_like_you", "multiplication_table_double_values_thinking", "multiplication_table_double_values_visualizing", "multiplication_table_double_values_rule", "multiplication_table_double_values_reading_rule", "multiplication_table_double_values_conclusion", "multiplication_table_triple_values_introduction", "multiplication_table_triple_values_like_you", "multiplication_table_triple_values_thinking", "multiplication_table_triple_values_common", "multiplication_table_triple_values_visualizing", "multiplication_table_triple_values_rule", "multiplication_table_triple_values_reading_rule", "multiplication_table_triple_values_conclusion", "multiplying_with_groups_rules", "multiplying_with_groups_game", "what_is_it_introduction","what_is_it_table_of_5", "what_is_it_thinking", "what_is_it_step_by_step", "what_is_it_step_1", "what_is_it_step_2", "what_is_it_conclusion", "who_am_i", "running_and_growing", "i_am_not_like_you", "equality_intro", "equality_question", "equality_equal", "equality_expanding", "equality_in_general", "equality_conclusion", "totally_equal_intro", "totally_equal_question", "totally_equal_sign", "totally_equal_exercise", "totally_equal_conclusion", "historical_equality_intro", "historical_equality_mapping", "historical_equality_objects", "historical_equality_question", "historical_equality_evidence", "historical_equality_conclusion", "historical_equality_pyramids_intro", "historical_equality_pyramids_definition", "historical_equality_pyramids_mesoamerica", "historical_equality_pyramids_question", "historical_equality_pyramids_look_alike", "historical_equality_pyramids_precision", "historical_equality_pyramids_conclusion", "equal_same_group_different", "first_steps", "sequence_game", "sequence_game_orders", "sequence_game_families", "building_game", "socrates", "socrates_question", "socrates_motivation", "socrates_conclusion", "sun_tzu_learning_intro", "sun_tzu_learning_who_was", "sun_tzu_learning_morale", "sun_tzu_learning_heaven", "sun_tzu_learning_terrain", "sun_tzu_learning_commander", "sun_tzu_learning_method", "sun_tzu_learning_thinking", "sun_tzu_learning_conclusion", "learning_in_layers_intro", "learning_in_layers_toy", "learning_in_layers_stages", "learning_in_layers_question", "learning_in_layers_playing", "learning_in_layers_conclusion", "how_do_i_learn_intro", "how_do_i_learn_comparisons", "how_do_i_learn_question", "how_do_i_learn_horizon", "how_do_i_learn_chart", "how_do_i_learn_chart_understanding", "how_do_i_learn_decision", "my_hands", "my_hands_question", "my_hands_counting", "my_hands_fingers", "my_hands_conclusion", "my_body", "my_body_feet_question", "my_body_feet", "my_body_everything_question", "my_body_improvement", "my_body_conclusion", "first_hands", "first_hands_question", "first_hands_knowledge", "first_hands_habilis", "first_hands_reflection", "first_hands_counting", "first_hands_conclusion", "first_voice", "first_voice_voice", "first_voice_reflection", "first_voice_difference", "first_voice_conclusion", "drawing_and_couting_intro", "drawing_and_couting_circles", "drawing_and_couting_rectangles", "drawing_and_couting_mesoamericans", "drawing_and_couting_question", "drawing_and_couting_examples", "drawing_and_couting_conclusion", "numbers_intro", "numbers_origin", "numbers_question", "numbers_equal", "numbers_visualizing", "numbers_conclusion", "family_part1_intro", "family_part1_orders", "family_part1_order", "family_part1_altar", "family_part1_continuity", "family_part1_stages", "family_part1_rule", "family_part1_conclusion", "natural_families_part2_intro", "natural_families_part2_question", "natural_families_part2_logic", "natural_families_part2_orders_question", "natural_families_part2_copan", "natural_families_part2_naming", "natural_families_part2_billion_question", "natural_families_part2_conclusion", "the_zero_intro", "the_zero_what_is", "the_zero_intuitive", "the_zero_number", "the_zero_question", "the_zero_conclusion", "workout", "road_to_somewhere", "walk_among_numbers_intro", "walk_among_numbers_roads", "walk_among_numbers_inca_roads", "walk_among_numbers_axes", "walk_among_numbers_hands", "walk_among_numbers_question", "walk_among_numbers_conclusion", "carrying_in_addition_intro", "carrying_in_addition_adding", "carrying_in_addition_hidden_zero", "carrying_in_addition_question", "carrying_in_addition_identity", "carrying_in_addition_zero_in_hands", "carrying_in_addition_conclusion", "adding_same_numbers_intro", "adding_same_numbers_body", "adding_same_numbers_think", "adding_same_numbers_count_one", "adding_same_numbers_count_five", "adding_same_numbers_question", "adding_same_numbers_new_sign", "adding_same_numbers_conclusion", "the_result_is", "inversion_intro", "inversion_squares_going_up", "inversion_squares_lying_down", "inversion_question", "inversion_order", "inversion_conclusion", "order_of_addition_intro", "order_of_addition_where", "order_of_addition_commutative", "order_of_addition_question", "order_of_addition_conclusion", "playing_with_axioms_game", "running_among_numbers_intro", "running_among_numbers_temple", "running_among_numbers_reconstruction", "running_among_numbers_adding", "running_among_numbers_question", "running_among_numbers_conclusion", "abacus", "yupana", "settings", "about", "is_it_free", "streak", "clap", "feet_and_hands", "congratulation", "exercising_addition", "soroban_writing", "suanpan_writing", Screen.SchyotyWriting.route, "large_numbers_writing", "abacus_history_intro", "abacus_history_suanpan", "abacus_history_soroban", "abacus_history_thinking", "abacus_history_similarities", "abacus_history_schyoty", "abacus_history_calculi", "abacus_history_conclusion", "practicing_addition", "practicing_addition_road", "carry_or_not_carry_intro", "carry_or_not_carry_game", "advancing_and_complementing_intro", "advancing_and_complementing_complement", "advancing_and_complementing_ourselves", "advancing_and_complementing_limit", "advancing_and_complementing_exercising", "advancing_and_complementing_thinking", "advancing_and_complementing_conclusion", "multiplication_table", "multiplying_with_abacus", "multiplying_with_abacus_level2", "multiplying_without_limits", "carrying", "subtracting_with_abacus", "adding_with_abacus", "complement_to_ten", "adding_large_numbers", "relationship", "exercising_multiplication_l2", "practicing_addition_yupana", "practicing_multiplication_yupana", "hands_on_yupana", "drawing_to_count", "iskay_movement", "kimsa_movement", "pisqa_movement", "pichana_movement", "kinkin_movement", "toward_infinity_maximum", "toward_infinity_law", "toward_infinity_without_limits", "toward_infinity_symbol", "toward_infinity_direction", "toward_infinity_conclusion", "limits_min_max_between_both", "limits_min_max_question", "limits_min_max_tending", "limits_min_max_hands", "limits_min_max_conclusion", "where_are_they_intro", "where_are_they_in_us", "where_are_they_in_texts", "where_are_they_ages", "where_are_they_question", "where_are_they_wrong", "where_are_they_species", "where_are_they_universe", "where_are_they_conclusion", "where_are_we_from", "odd_or_even_game", "shared_origin_intro", "shared_origin_expanding", "shared_origin_think", "shared_origin_history", "shared_origin_cmb",            "shared_origin_contract", "shared_origin_conclusion", "matter_and_energy_intro",
            "matter_and_energy_transformation", "matter_and_energy_law", "matter_and_energy_question",
            "matter_and_energy_energy", "matter_and_energy_together", "matter_and_energy_conclusion",
            "sharing_with_whom_intro", "sharing_with_whom_nobody", "sharing_with_whom_think",
@@ -1074,6 +1113,7 @@ fun AppNavigation() {
                             onNavigateToYupana = { navController.navigate(Screen.Yupana.route) { launchSingleTop = true } },
                             onNavigateToRoadToSomewhere = { navController.navigate(Screen.RoadToSomewhere.route) { launchSingleTop = true } },
                             onNavigateToRunningAndGrowing = { navController.navigate(Screen.RunningAndGrowing.route) { launchSingleTop = true } },
+                            onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTableHub.route) { launchSingleTop = true } },
                             onNavigateToWhereAreWeFrom = { navController.navigate(Screen.WhereAreWeFrom.route) { launchSingleTop = true } },
                             onNavigateToAnotherWayToCount = { navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true } },
                             onNavigateToAroundTheWorld = { navController.navigate(Screen.AroundTheWorldIntro.route) { launchSingleTop = true } },
@@ -8366,7 +8406,7 @@ fun AppNavigation() {
                             onNavigateToSchyotyWriting = { navController.navigate(Screen.SchyotyWriting.route) },
                             onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWriting.route) },
                             onNavigateToPracticingAddition = { navController.navigate(Screen.PracticingAddition.route) },
-                            onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTable.route) },
+                            onNavigateToMultiplicationTable = { navController.navigate(Screen.MultiplicationTableWithAbacus.route) },
                             onNavigateToMultiplyingWithAbacus = { navController.navigate(Screen.MultiplyingWithAbacus.route) },
                             onNavigateToMultiplyingWithAbacusLevel2 = { navController.navigate(Screen.MultiplyingWithAbacusLevel2.route) },
                             onNavigateToMultiplyingWithoutLimits = { navController.navigate(Screen.MultiplyingWithoutLimits.route) },
@@ -9874,10 +9914,15 @@ fun AppNavigation() {
                                     }
                                 }
                             },
+                            onNavigateToWhatIsIt = { navController.navigate(Screen.WhatIsItIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToMultiplicationTableZero = { navController.navigate(Screen.MultiplicationTableZeroIntroduction.route) { launchSingleTop = true } },
                             onNavigateToMultiplicationDivisionRelationship = { navController.navigate(Screen.MultiplicationDivisionRelationshipIntro.route) { launchSingleTop = true } },
                             onNavigateToDivisionRecipe = { navController.navigate(Screen.DivisionRecipeIntro.route) { launchSingleTop = true } },
                             onNavigateToExtendedDivisionRecipe = { navController.navigate(Screen.ExtendedDivisionRecipeIntro.route) { launchSingleTop = true } },
-                            onNavigateToPlayingWithAxioms = { navController.navigate(Screen.PlayingWithAxiomsGame.route) { launchSingleTop = true } },
+                            onNavigateToMultiplicationTableEqualSides = { navController.navigate(Screen.MultiplicationTableEqualSidesIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToMultiplicationTableDoubleValues = { navController.navigate(Screen.MultiplicationTableDoubleValuesIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToMultiplicationTableTripleValues = { navController.navigate(Screen.MultiplicationTableTripleValuesIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToMultiplyingWithGroups = { navController.navigate(Screen.MultiplyingWithGroupsRules.route) { launchSingleTop = true } },
                             onNavigateToCarryingInAdditionIntro = { navController.navigate(Screen.CarryingInAdditionIntro.route) { launchSingleTop = true } },
                             onNavigateToLargeNumbersIntro = { navController.navigate(Screen.LargeNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToQuipuOnTheYupana = { navController.navigate(Screen.QuipuOnTheYupana.route) { launchSingleTop = true } },
@@ -10047,15 +10092,633 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
-                    composable(Screen.MultiplicationTable.route) {
-                        MultiplicationTableScreen(
+                    composable(Screen.MultiplicationTableWithAbacus.route) {
+                        MultiplicationTableWithAbacusScreen(
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
-                                    navController.navigate(Screen.Abacus.route) {
+                                navController.popBackToOrigin(
+                                    Screen.Abacus.route,
+                                    Screen.Index.route,
+                                    fallback = Screen.Index.route
+                                )
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableHub.route) {
+                        MultiplicationTableHubScreen(
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.Index.route, false)) {
+                                    navController.navigate(Screen.Index.route) {
                                         popUpTo(0) { inclusive = true }
                                         launchSingleTop = true
                                     }
                                 }
+                            },
+                            onNavigateToWhatIsIt = { navController.navigate(Screen.WhatIsItIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToTheSameResult = { navController.navigate(Screen.MultiplicationTableZeroIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToEqualSides = { navController.navigate(Screen.MultiplicationTableEqualSidesIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToDoubleValues = { navController.navigate(Screen.MultiplicationTableDoubleValuesIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToTripleValues = { navController.navigate(Screen.MultiplicationTableTripleValuesIntroduction.route) { launchSingleTop = true } },
+                            onNavigateToMultiplyingWithGroups = { navController.navigate(Screen.MultiplyingWithGroupsRules.route) { launchSingleTop = true } },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroIntroduction.route) {
+                        MultiplicationTableZeroIntroductionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableZeroWhereIsMyFood.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroWhereIsMyFood.route) {
+                        MultiplicationTableZeroWhereIsMyFoodScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableZeroThinking.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroThinking.route) {
+                        MultiplicationTableZeroThinkingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableZeroVisualizing.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroVisualizing.route) {
+                        MultiplicationTableZeroVisualizingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableZeroRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroRule.route) {
+                        MultiplicationTableZeroRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableZeroReadingRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroReadingRule.route) {
+                        MultiplicationTableZeroReadingRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableZeroConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableZeroConclusion.route) {
+                        MultiplicationTableZeroConclusionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateToMultiplicationTableHub = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesIntroduction.route) {
+                        MultiplicationTableEqualSidesIntroductionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableEqualSidesLikeYou.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesLikeYou.route) {
+                        MultiplicationTableEqualSidesLikeYouScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableEqualSidesThinking.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesThinking.route) {
+                        MultiplicationTableEqualSidesThinkingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableEqualSidesVisualizing.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesVisualizing.route) {
+                        MultiplicationTableEqualSidesVisualizingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableEqualSidesRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesRule.route) {
+                        MultiplicationTableEqualSidesRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableEqualSidesReadingRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesReadingRule.route) {
+                        MultiplicationTableEqualSidesReadingRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableEqualSidesConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableEqualSidesConclusion.route) {
+                        MultiplicationTableEqualSidesConclusionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateToMultiplicationTableHub = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesIntroduction.route) {
+                        MultiplicationTableDoubleValuesIntroductionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableDoubleValuesLikeYou.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesLikeYou.route) {
+                        MultiplicationTableDoubleValuesLikeYouScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableDoubleValuesThinking.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesThinking.route) {
+                        MultiplicationTableDoubleValuesThinkingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableDoubleValuesVisualizing.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesVisualizing.route) {
+                        MultiplicationTableDoubleValuesVisualizingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableDoubleValuesRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesRule.route) {
+                        MultiplicationTableDoubleValuesRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableDoubleValuesReadingRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesReadingRule.route) {
+                        MultiplicationTableDoubleValuesReadingRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableDoubleValuesConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableDoubleValuesConclusion.route) {
+                        MultiplicationTableDoubleValuesConclusionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateToMultiplicationTableHub = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesIntroduction.route) {
+                        MultiplicationTableTripleValuesIntroductionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesLikeYou.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesLikeYou.route) {
+                        MultiplicationTableTripleValuesLikeYouScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesThinking.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesThinking.route) {
+                        MultiplicationTableTripleValuesThinkingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesCommon.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesCommon.route) {
+                        MultiplicationTableTripleValuesCommonScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesVisualizing.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesVisualizing.route) {
+                        MultiplicationTableTripleValuesVisualizingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesRule.route) {
+                        MultiplicationTableTripleValuesRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesReadingRule.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesReadingRule.route) {
+                        MultiplicationTableTripleValuesReadingRuleScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.MultiplicationTableTripleValuesConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplicationTableTripleValuesConclusion.route) {
+                        MultiplicationTableTripleValuesConclusionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateToMultiplicationTableHub = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.MultiplyingWithGroupsRules.route) {
+                        MultiplyingWithGroupsRulesScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.MultiplyingWithGroupsGame.route) { launchSingleTop = true } }
+                        )
+                    }
+                    composable(Screen.MultiplyingWithGroupsGame.route) {
+                        MultiplyingWithGroupsGameScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateToMultiplicationTableHub = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItIntroduction.route) {
+                        WhatIsItIntroductionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigateNext = { navController.navigate(Screen.WhatIsItTableOf5.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItTableOf5.route) {
+                        WhatIsItTableOf5Screen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.WhatIsItThinking.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItThinking.route) {
+                        WhatIsItThinkingScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.WhatIsItStepByStep.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItStepByStep.route) {
+                        WhatIsItStepByStepScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.WhatIsItStep1.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItStep1.route) {
+                        WhatIsItStep1Screen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.WhatIsItStep2.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItStep2.route) {
+                        WhatIsItStep2Screen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateNext = { navController.navigate(Screen.WhatIsItConclusion.route) { launchSingleTop = true } },
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore }
+                        )
+                    }
+                    composable(Screen.WhatIsItConclusion.route) {
+                        WhatIsItConclusionScreen(
+                            onNavigateBack = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
+                            },
+                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigateToMultiplicationTableHub = {
+                                navController.popBackToOrigin(
+                                    Screen.LatestAddition.route,
+                                    Screen.MultiplicationTableHub.route,
+                                    fallback = Screen.MultiplicationTableHub.route
+                                )
                             },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }

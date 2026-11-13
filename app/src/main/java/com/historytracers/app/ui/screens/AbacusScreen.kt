@@ -338,7 +338,7 @@ fun AbacusScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = mcs.multiplicationTable,
+                text = mcs.multiplicationTableWithAbacus,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
