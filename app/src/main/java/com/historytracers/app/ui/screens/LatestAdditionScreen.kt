@@ -26,15 +26,16 @@ import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableDoubleValuesScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableEqualSidesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableFirstSquareNumberScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableMyBodyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableTripleValuesScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithGroupsRulesScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -115,6 +116,8 @@ fun LatestAdditionScreen(
     onNavigateToMultiplicationTableEqualSides: () -> Unit = {},
     onNavigateToMultiplicationTableDoubleValues: () -> Unit = {},
     onNavigateToMultiplicationTableTripleValues: () -> Unit = {},
+    onNavigateToMultiplicationTableFirstSquareNumber: () -> Unit = {},
+    onNavigateToMultiplicationTableMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -127,10 +130,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val mzs = multiplicationTableZeroScreenStringsForLanguage(LocalAppLanguage.current)
-    val eqs = multiplicationTableEqualSidesScreenStringsForLanguage(LocalAppLanguage.current)
     val dvs = multiplicationTableDoubleValuesScreenStringsForLanguage(LocalAppLanguage.current)
     val tvs = multiplicationTableTripleValuesScreenStringsForLanguage(LocalAppLanguage.current)
+    val fsns = multiplicationTableFirstSquareNumberScreenStringsForLanguage(LocalAppLanguage.current)
+    val mbss = multiplicationTableMyBodyScreenStringsForLanguage(LocalAppLanguage.current)
     val mwg = multiplyingWithGroupsRulesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -139,6 +142,34 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "my_body_multiplication_table",
+            label = mbss.fullTitle,
+            icon = {
+                Text(
+                    text = "5",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "my_body_multiplication_table" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableMyBody
+        ),
+        LatestAdditionEntry(
+            sectionId = "first_square_number",
+            label = fsns.fullTitle,
+            icon = {
+                Text(
+                    text = "4",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "first_square_number" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplicationTableFirstSquareNumber
+        ),
         LatestAdditionEntry(
             sectionId = "multiplying_with_groups",
             label = mwg.title,
@@ -180,34 +211,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "double_values" in completedMultiplicationTable },
             onNavigate = onNavigateToMultiplicationTableDoubleValues
-        ),
-        LatestAdditionEntry(
-            sectionId = "equal_sides",
-            label = eqs.fullTitle,
-            icon = {
-                Text(
-                    text = "1",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "equal_sides" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplicationTableEqualSides
-        ),
-        LatestAdditionEntry(
-            sectionId = "the_same_result",
-            label = mzs.fullTitle,
-            icon = {
-                Text(
-                    text = "0",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "the_same_result" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplicationTableZero
         )
     )
 
@@ -226,9 +229,8 @@ fun LatestAdditionScreen(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }

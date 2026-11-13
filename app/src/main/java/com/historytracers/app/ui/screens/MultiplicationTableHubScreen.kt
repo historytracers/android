@@ -25,6 +25,7 @@ import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableHubScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -42,6 +43,8 @@ fun MultiplicationTableHubScreen(
     onNavigateToEqualSides: () -> Unit = {},
     onNavigateToDoubleValues: () -> Unit = {},
     onNavigateToTripleValues: () -> Unit = {},
+    onNavigateToFirstSquareNumber: () -> Unit = {},
+    onNavigateToMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -63,6 +66,8 @@ fun MultiplicationTableHubScreen(
     val doubleValuesDone = "double_values" in completedMultiplicationTableSections
     val tripleValuesDone = "triple_values" in completedMultiplicationTableSections
     val multiplyingWithGroupsDone = "multiplying_with_groups" in completedMultiplicationTableSections
+    val firstSquareNumberDone = "first_square_number" in completedMultiplicationTableSections
+    val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -115,9 +120,8 @@ fun MultiplicationTableHubScreen(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = mcs.multiplicationTable,
-                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 Spacer(Modifier.weight(1f))
@@ -375,6 +379,70 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "The First Square Number" (multiplication table of four).
+                FilledIconButton(
+                    onClick = onNavigateToFirstSquareNumber,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.firstSquareNumber },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (firstSquareNumberDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "4",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.firstSquareNumber,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "My Body, as a Multiplication Table" (multiplication table of five).
+                FilledIconButton(
+                    onClick = onNavigateToMyBody,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.myBodyAsMultiplicationTable },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (myBodyDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "5",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.myBodyAsMultiplicationTable,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

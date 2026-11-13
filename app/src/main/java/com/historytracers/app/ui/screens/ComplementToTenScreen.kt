@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.complementToTenScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -106,9 +107,8 @@ fun ComplementToTenScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
-                    Text(
+                    AutoSizeTitleText(
                         text = cs.title,
-                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }

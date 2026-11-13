@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.AddingWithAbacusScreenStrings
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.addingWithAbacusScreenStringsForLanguage
@@ -246,9 +247,8 @@ fun AddingWithAbacusScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
-                    Text(
+                    AutoSizeTitleText(
                         text = awas.title,
-                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }

@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.data.ContentRepository
@@ -35,6 +34,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.TextRenderer
@@ -403,11 +403,8 @@ private fun ExtendedDivisionRecipeContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

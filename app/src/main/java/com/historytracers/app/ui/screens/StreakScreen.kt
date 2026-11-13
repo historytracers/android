@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.calendar.CalendarType
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.StreakScreenStrings
 import com.historytracers.app.ui.features.streakScreenStringsForLanguage
 import java.time.DayOfWeek
@@ -101,9 +102,8 @@ fun StreakScreen(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = s.common.streak,
-                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import kotlinx.coroutines.launch
@@ -193,9 +194,8 @@ fun CarryOrNotCarryScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
-                    Text(
+                    AutoSizeTitleText(
                         text = xs.title,
-                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }

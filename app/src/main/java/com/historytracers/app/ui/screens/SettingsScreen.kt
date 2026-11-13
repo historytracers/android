@@ -42,6 +42,7 @@ import com.historytracers.app.data.DriveSyncManager
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.HubTitleStrings
 import com.historytracers.app.ui.features.SettingsScreenStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -104,9 +105,8 @@ fun SettingsScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
-                    Text(
+                    AutoSizeTitleText(
                         text = s.common.settings,
-                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }

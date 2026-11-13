@@ -508,6 +508,38 @@ sealed class Screen(val route: String) {
 
     data object MultiplicationTableTripleValuesConclusion : Screen("multiplication_table_triple_values_conclusion")
 
+    data object MultiplicationTableFirstSquareNumberIntroduction : Screen("multiplication_table_first_square_number_introduction")
+
+    data object MultiplicationTableFirstSquareNumberSquares : Screen("multiplication_table_first_square_number_squares")
+
+    data object MultiplicationTableFirstSquareNumberThinking : Screen("multiplication_table_first_square_number_thinking")
+
+    data object MultiplicationTableFirstSquareNumberTimesTwo : Screen("multiplication_table_first_square_number_times_two")
+
+    data object MultiplicationTableFirstSquareNumberVisualizing : Screen("multiplication_table_first_square_number_visualizing")
+
+    data object MultiplicationTableFirstSquareNumberRule : Screen("multiplication_table_first_square_number_rule")
+
+    data object MultiplicationTableFirstSquareNumberReadingRule : Screen("multiplication_table_first_square_number_reading_rule")
+
+    data object MultiplicationTableFirstSquareNumberConclusion : Screen("multiplication_table_first_square_number_conclusion")
+
+    data object MultiplicationTableMyBodyIntroduction : Screen("multiplication_table_my_body_introduction")
+
+    data object MultiplicationTableMyBody : Screen("multiplication_table_my_body")
+
+    data object MultiplicationTableMyBodyThinking : Screen("multiplication_table_my_body_thinking")
+
+    data object MultiplicationTableMyBodyTimesFive : Screen("multiplication_table_my_body_times_five")
+
+    data object MultiplicationTableMyBodyVisualizing : Screen("multiplication_table_my_body_visualizing")
+
+    data object MultiplicationTableMyBodyRule : Screen("multiplication_table_my_body_rule")
+
+    data object MultiplicationTableMyBodyReadingRule : Screen("multiplication_table_my_body_reading_rule")
+
+    data object MultiplicationTableMyBodyConclusion : Screen("multiplication_table_my_body_conclusion")
+
     data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
 
     data object MultiplyingWithGroupsGame : Screen("multiplying_with_groups_game")

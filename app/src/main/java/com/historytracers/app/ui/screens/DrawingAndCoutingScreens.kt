@@ -34,6 +34,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
@@ -44,7 +45,6 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.components.ScreenAudioButton
-import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "2f710a64-a076-457e-bbd3-138f7475f67f"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -305,11 +305,8 @@ private fun DrawingAndCoutingGameContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

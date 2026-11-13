@@ -41,6 +41,7 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.bodyExerciseStringsForLanguage
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.delay
@@ -245,9 +246,8 @@ fun FeetAndHandsScreen(
                 IconButton(onClick = { onNavigateBack() }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = bs.exercisingFeetAndHands,
-                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
