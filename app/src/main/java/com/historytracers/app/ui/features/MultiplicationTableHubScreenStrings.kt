@@ -10,6 +10,7 @@ data class MultiplicationTableHubScreenStrings(
     val doubleValues: String,
     val tripleValues: String,
     val multiplyingWithGroups: String,
+    val firstSquareNumber: String,
 )
 
 val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -19,6 +20,7 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     doubleValues = "Double Values",
     tripleValues = "Triple Values",
     multiplyingWithGroups = "Multiplying with Groups (0 to 3)",
+    firstSquareNumber = "The First Square Number",
 )
 
 val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -28,6 +30,7 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     doubleValues = "Valores Dobrados",
     tripleValues = "Valores Triplicados",
     multiplyingWithGroups = "Multiplicando com Grupos (0 a 3)",
+    firstSquareNumber = "O Primeiro N\u00famero Quadrado",
 )
 
 val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -37,6 +40,7 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     doubleValues = "Valores Duplicados",
     tripleValues = "Valores Triplicados",
     multiplyingWithGroups = "Multiplicando con Grupos (0 a 3)",
+    firstSquareNumber = "El Primer N\u00famero Cuadrado",
 )
 
 val LocalMultiplicationTableHubScreenStrings = staticCompositionLocalOf { EnMultiplicationTableHubScreenStrings }
