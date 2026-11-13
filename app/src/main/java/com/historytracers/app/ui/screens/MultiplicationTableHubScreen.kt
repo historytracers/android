@@ -18,13 +18,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.historytracers.app.R
 import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.features.miscStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableWithAbacusScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableHubScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
@@ -47,7 +49,7 @@ fun MultiplicationTableHubScreen(
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
-    val mts = multiplicationTableWithAbacusScreenStringsForLanguage(LocalAppLanguage.current)
+    val hss = multiplicationTableHubScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -63,29 +65,36 @@ fun MultiplicationTableHubScreen(
     val multiplyingWithGroupsDone = "multiplying_with_groups" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
-    val levelGroupController = remember {
-        LevelGroupController(
-            listOf(
-                "what_is_it",
-                "the_same_result",
-                "equal_sides",
-                "double_values",
-                "triple_values",
-                "multiplying_with_groups"
-            ),
-            completedMultiplicationTableSections
+    val levelGroupSections = remember {
+        listOf(
+            "what_is_it",
+            "the_same_result",
+            "equal_sides",
+            "double_values",
+            "triple_values",
+            "multiplying_with_groups"
         )
+    }
+    val levelGroupController = remember {
+        LevelGroupController(levelGroupSections, completedMultiplicationTableSections)
     }
     LaunchedEffect(completedMultiplicationTableSections) {
         levelGroupController.syncFromPersisted(completedMultiplicationTableSections)
     }
+    // Compose-observed gate: derives straight from the collected persisted set
+    // so the button unlocks as soon as the sixth section is completed.
+    val nextLevelUnlocked = levelGroupSections.all { it in completedMultiplicationTableSections }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
     fun claimLevel(levelId: String) {
-        if (levelId in claimedLevels) return
-        onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed(levelId) }
+        scope.launch {
+            // Transactional + idempotent: only the first claim wins, so rapid
+            // taps can never award the bonus twice.
+            if (preferences.claimLevel(levelId, currentScore + 10)) {
+                onScoreChanged(currentScore + 10)
+            }
+        }
     }
 
     var showResetMenu by remember { mutableStateOf(false) }
@@ -147,7 +156,9 @@ fun MultiplicationTableHubScreen(
             ) {
                 FilledIconButton(
                     onClick = onNavigateToWhatIsIt,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.whatIsIt },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (whatIsItDone) ButtonYellowDark else ButtonYellow,
@@ -164,7 +175,7 @@ fun MultiplicationTableHubScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = mts.whatIsIt,
+                    text = hss.whatIsIt,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -177,7 +188,9 @@ fun MultiplicationTableHubScreen(
                 // "The Same Result" (multiplication table of zero).
                 FilledIconButton(
                     onClick = onNavigateToTheSameResult,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.theSameResult },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (theSameResultDone) ButtonYellowDark else ButtonYellow,
@@ -194,7 +207,7 @@ fun MultiplicationTableHubScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = mts.theSameResult,
+                    text = hss.theSameResult,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -207,7 +220,9 @@ fun MultiplicationTableHubScreen(
                 // "Equal Sides" (multiplication table of one).
                 FilledIconButton(
                     onClick = onNavigateToEqualSides,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.equalSides },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (equalSidesDone) ButtonYellowDark else ButtonYellow,
@@ -224,7 +239,7 @@ fun MultiplicationTableHubScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = mts.equalSides,
+                    text = hss.equalSides,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -237,7 +252,9 @@ fun MultiplicationTableHubScreen(
                 // "Double Values" (multiplication table of two).
                 FilledIconButton(
                     onClick = onNavigateToDoubleValues,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.doubleValues },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (doubleValuesDone) ButtonYellowDark else ButtonYellow,
@@ -254,7 +271,7 @@ fun MultiplicationTableHubScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = mts.doubleValues,
+                    text = hss.doubleValues,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -267,7 +284,9 @@ fun MultiplicationTableHubScreen(
                 // "Triple Values" (multiplication table of three).
                 FilledIconButton(
                     onClick = onNavigateToTripleValues,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.tripleValues },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (tripleValuesDone) ButtonYellowDark else ButtonYellow,
@@ -284,7 +303,7 @@ fun MultiplicationTableHubScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = mts.tripleValues,
+                    text = hss.tripleValues,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -297,7 +316,9 @@ fun MultiplicationTableHubScreen(
                 // "Multiplying with Groups (0 to 3)".
                 FilledIconButton(
                     onClick = onNavigateToMultiplyingWithGroups,
-                    modifier = Modifier.size(96.dp),
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.multiplyingWithGroups },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (multiplyingWithGroupsDone) ButtonYellowDark else ButtonYellow,
@@ -315,7 +336,7 @@ fun MultiplicationTableHubScreen(
                 Spacer(Modifier.height(24.dp))
 
                 Text(
-                    text = mts.multiplyingWithGroups,
+                    text = hss.multiplyingWithGroups,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -332,8 +353,10 @@ fun MultiplicationTableHubScreen(
                         claimLevel("multiplication_table_group1")
                         onNavigateToCongratulation()
                     },
-                    enabled = levelGroupController.allCompleted,
-                    modifier = Modifier.size(96.dp),
+                    enabled = nextLevelUnlocked,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = s.common.nextLevel },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if ("multiplication_table_group1" in claimedLevels) FlagBlueDark else FlagBlueLight,

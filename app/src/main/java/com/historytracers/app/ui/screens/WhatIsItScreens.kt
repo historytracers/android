@@ -263,15 +263,22 @@ private fun WhatIsItGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
+    // Visit-local arrival guard: switching the app language reloads the content
+    // object, which would re-run this effect and award the same visit again.
+    val arrivalAwarded = remember { mutableSetOf<String>() }
+    var completionWritesDone by remember { mutableStateOf(false) }
+
     LaunchedEffect(content) {
         val node = content
-        if (node != null) {
+        if (node != null && node.id !in arrivalAwarded) {
+            arrivalAwarded.add(node.id)
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
             if (onNavigateToMultiplicationTableHub != null) {
                 preferences.markMultiplicationTableSectionCompleted("what_is_it")
                 preferences.recordLessonCompletion()
+                completionWritesDone = true
             }
-            award(node.score)
-            preferences.markArrivalAwarded(node.id)
         }
     }
 
@@ -393,7 +400,7 @@ private fun WhatIsItGameContent(
                     if (onNavigateToMultiplicationTableHub != null) {
                         Spacer(Modifier.height(16.dp))
                         FilledTonalButton(
-                            onClick = onNavigateToMultiplicationTableHub,
+                            onClick = { if (completionWritesDone) onNavigateToMultiplicationTableHub() },
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White

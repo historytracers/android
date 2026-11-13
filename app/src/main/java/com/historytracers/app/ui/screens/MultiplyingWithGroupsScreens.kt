@@ -66,8 +66,8 @@ import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.miscStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableWithAbacusScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplyingWithGroupsScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithGroupsGameScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithGroupsRulesScreenStringsForLanguage
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -110,8 +110,7 @@ fun MultiplyingWithGroupsRulesScreen(
     onNavigateNext: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
-    val mts = multiplicationTableWithAbacusScreenStringsForLanguage(LocalAppLanguage.current)
-    val xs = multiplyingWithGroupsScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplyingWithGroupsRulesScreenStringsForLanguage(LocalAppLanguage.current)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -129,7 +128,7 @@ fun MultiplyingWithGroupsRulesScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 Text(
-                    text = mts.multiplyingWithGroups,
+                    text = xs.title,
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -190,7 +189,7 @@ fun MultiplyingWithGroupsGameScreen(
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
-    val xs = multiplyingWithGroupsScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplyingWithGroupsGameScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -437,7 +436,7 @@ private fun MultGroupBoard(
     matchedIds: Set<Int>,
     onSelect: (String, Int) -> Unit
 ) {
-    val xs = multiplyingWithGroupsScreenStringsForLanguage(LocalAppLanguage.current)
+    val xs = multiplyingWithGroupsGameScreenStringsForLanguage(LocalAppLanguage.current)
 
     Row(
         modifier = Modifier.fillMaxWidth(),

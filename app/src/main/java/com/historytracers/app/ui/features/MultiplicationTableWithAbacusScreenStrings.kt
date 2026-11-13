@@ -5,38 +5,22 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 data class MultiplicationTableWithAbacusScreenStrings(
     val whatIsIt: String,
-    val theSameResult: String,
-    val equalSides: String,
-    val doubleValues: String,
-    val tripleValues: String,
-    val multiplyingWithGroups: String,
+    val multiplicationTableDescription: String,
 )
 
 val EnMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
     whatIsIt = "What is it?",
-    theSameResult = "The Same Result",
-    equalSides = "Equal Sides",
-    doubleValues = "Double Values",
-    tripleValues = "Triple Values",
-    multiplyingWithGroups = "Multiplying with Groups (0 to 3)",
+    multiplicationTableDescription = "Select a number, then tap Auto to watch the abacus display each multiplication step, or tap Next Step to advance manually. Complete all 10 steps to finish.",
 )
 
 val PtMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
     whatIsIt = "O que \u00e9 isto?",
-    theSameResult = "O Mesmo Resultado",
-    equalSides = "Lados Iguais",
-    doubleValues = "Valores Dobrados",
-    tripleValues = "Valores Triplicados",
-    multiplyingWithGroups = "Multiplicando com Grupos (0 a 3)",
+    multiplicationTableDescription = "Selecione um n\u00famero, depois toque em Autom\u00e1tico para ver o \u00e1baco mostrar cada passo da multiplica\u00e7\u00e3o, ou toque em Pr\u00f3ximo Passo para avan\u00e7ar manualmente. Complete todos os 10 passos para finalizar.",
 )
 
 val EsMultiplicationTableWithAbacusScreenStrings = MultiplicationTableWithAbacusScreenStrings(
     whatIsIt = "\u00bfQu\u00e9 es esto?",
-    theSameResult = "El Mismo Resultado",
-    equalSides = "Lados Iguales",
-    doubleValues = "Valores Duplicados",
-    tripleValues = "Valores Triplicados",
-    multiplyingWithGroups = "Multiplicando con Grupos (0 a 3)",
+    multiplicationTableDescription = "Selecciona un n\u00famero, luego toca Autom\u00e1tico para ver el \u00e1baco mostrar cada paso de la multiplicaci\u00f3n, o toca Siguiente Paso para avanzar manualmente. Completa los 10 pasos para finalizar.",
 )
 
 val LocalMultiplicationTableWithAbacusScreenStrings = staticCompositionLocalOf { EnMultiplicationTableWithAbacusScreenStrings }

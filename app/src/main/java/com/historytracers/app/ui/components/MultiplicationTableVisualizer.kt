@@ -8,6 +8,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -236,6 +238,7 @@ fun MultiplicationTableVisualizer(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun MultiplicationGroup(count: Int, emoji: String) {
     if (count == 0) {
@@ -255,7 +258,11 @@ private fun MultiplicationGroup(count: Int, emoji: String) {
                 }
         )
     } else {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        // FlowRow so large groups wrap onto extra lines instead of
+        // overflowing the panel at large font scales.
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             repeat(count) {
                 Text(text = emoji, fontSize = 20.sp)
             }

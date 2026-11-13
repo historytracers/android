@@ -206,7 +206,7 @@ fun MultiplicationTableWithAbacusScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = mcs.multiplicationTableDescription,
+                    text = xs.multiplicationTableDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -652,7 +652,7 @@ fun MultiplicationTableWithAbacusScreen(
         AlertDialog(
             onDismissRequest = { showWhatIsItDialog = false },
             title = { Text(xs.whatIsIt) },
-            text = { Text(mcs.multiplicationTableDescription) },
+            text = { Text(xs.multiplicationTableDescription) },
             confirmButton = {
                 TextButton(onClick = { showWhatIsItDialog = false }) {
                     Text(s.common.ok)

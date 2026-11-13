@@ -236,15 +236,20 @@ private fun MultiplicationTableDoubleValuesGameContent(
         onScoreChanged(initialScore + totalAwarded)
     }
 
+    // Visit-local arrival guard: switching the app language reloads the content
+    // object, which would re-run this effect and award the same visit again.
+    val arrivalAwarded = remember { mutableSetOf<String>() }
+
     LaunchedEffect(content) {
         val node = content
-        if (node != null) {
+        if (node != null && node.id !in arrivalAwarded) {
+            arrivalAwarded.add(node.id)
+            award(node.score)
+            preferences.markArrivalAwarded(node.id)
             if (onNavigateToMultiplicationTableHub != null) {
                 preferences.markMultiplicationTableSectionCompleted("double_values")
                 preferences.recordLessonCompletion()
             }
-            award(node.score)
-            preferences.markArrivalAwarded(node.id)
         }
     }
 

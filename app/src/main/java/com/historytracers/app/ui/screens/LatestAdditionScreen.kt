@@ -35,7 +35,7 @@ import com.historytracers.app.ui.features.multiplicationTableDoubleValuesScreenS
 import com.historytracers.app.ui.features.multiplicationTableEqualSidesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableTripleValuesScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableZeroScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplyingWithGroupsScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithGroupsRulesScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -131,7 +131,7 @@ fun LatestAdditionScreen(
     val eqs = multiplicationTableEqualSidesScreenStringsForLanguage(LocalAppLanguage.current)
     val dvs = multiplicationTableDoubleValuesScreenStringsForLanguage(LocalAppLanguage.current)
     val tvs = multiplicationTableTripleValuesScreenStringsForLanguage(LocalAppLanguage.current)
-    val mwg = multiplyingWithGroupsScreenStringsForLanguage(LocalAppLanguage.current)
+    val mwg = multiplyingWithGroupsRulesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -141,7 +141,7 @@ fun LatestAdditionScreen(
     val entries = listOf(
         LatestAdditionEntry(
             sectionId = "multiplying_with_groups",
-            label = mwg.fullTitle,
+            label = mwg.title,
             icon = {
                 Text(
                     text = "\u00D7 0-3",
