@@ -33,6 +33,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
@@ -43,7 +44,6 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.components.ScreenAudioButton
-import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "93b8800e-6f1d-4a79-b53f-7607a59f96b2"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -374,11 +374,8 @@ private fun WhereAreTheyGameContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

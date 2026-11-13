@@ -52,6 +52,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.components.drawYupanaRow
@@ -66,7 +67,6 @@ import com.historytracers.common.SMGameFile
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.historytracers.app.ui.components.ScreenAudioButton
-import androidx.compose.ui.text.style.TextOverflow
 
 private const val ATW_ADD_SMARTPHONE_FILE = "49bf2fba-e9f4-4650-ab96-4d4901795477"
 private const val ATW_ADD_SECTION_ID = "around_the_world_addition"
@@ -552,11 +552,8 @@ private fun AtwAdditionContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = hts.aroundTheWorldAddition,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

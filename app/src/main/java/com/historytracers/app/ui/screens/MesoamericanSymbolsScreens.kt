@@ -40,6 +40,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
 import com.historytracers.app.ui.components.TextRenderer
@@ -52,7 +53,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.components.ScreenAudioButton
-import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "5a3ab520-1c8c-4f40-94d7-96c109ad9ba3"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -435,11 +435,8 @@ private fun MesoamericanSymbolsGameContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

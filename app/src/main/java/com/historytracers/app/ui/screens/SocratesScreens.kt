@@ -30,6 +30,7 @@ import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.TextRenderer
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -39,7 +40,6 @@ import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.components.ScreenAudioButton
-import androidx.compose.ui.text.style.TextOverflow
 
 private const val SMARTPHONE_GAME_FILE = "20c8240d-6ddf-4949-88c7-c8964e1cf92d"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -193,11 +193,8 @@ private fun SocratesGameContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = xs.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

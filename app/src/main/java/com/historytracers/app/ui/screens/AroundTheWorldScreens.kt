@@ -43,6 +43,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppCalendar
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.DateUtils
 import com.historytracers.app.ui.components.HtmlRenderer
 import com.historytracers.app.ui.components.MarkdownText
@@ -63,7 +64,6 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.components.ScreenAudioButton
-import androidx.compose.ui.text.style.TextOverflow
 
 private const val ATW_SMARTPHONE_FILE = "1071ad37-4ee3-477a-85bb-9cd3e40e3139"
 private const val ATW_HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -628,11 +628,8 @@ private fun AtwContent(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = hts.aroundTheWorld,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(

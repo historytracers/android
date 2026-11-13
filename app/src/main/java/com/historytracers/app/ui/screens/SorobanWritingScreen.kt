@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.historytracers.app.data.UserPreferences
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import kotlinx.coroutines.launch
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalAppLanguage
@@ -97,9 +98,8 @@ fun SorobanWritingScreen(
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
-                Text(
+                AutoSizeTitleText(
                     text = aws.writingToSoroban,
-                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
