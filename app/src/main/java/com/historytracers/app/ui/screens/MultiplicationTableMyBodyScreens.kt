@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
 import android.content.ClipData
@@ -36,6 +36,7 @@ import com.historytracers.app.ui.components.HandsAndFeetFigure
 import com.historytracers.app.ui.components.HtmlRenderer
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.MultiplicationTableVisualizer
+import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.miscStringsForLanguage
@@ -250,6 +251,12 @@ private fun MultiplicationTableMyBodyGameContent(
     val contentList = game?.content ?: emptyList()
     val content = contentList.firstOrNull { it.id == contentId }
 
+    // Screens showing the interactive table use a layout that never
+    // needs the whole page to scroll.
+    val hasVisualizer = showVisualizer &&
+        contentId == VISUALIZING_ID &&
+        multiplicationTableFitsOnScreen()
+
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
 
@@ -321,51 +328,78 @@ private fun MultiplicationTableMyBodyGameContent(
                 else -> Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .then(
+                            if (hasVisualizer) Modifier
+                            else Modifier.verticalScroll(rememberScrollState())
+                        )
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    content.text?.forEach { text ->
-                        if (text == null) return@forEach
-                        val html = text.text ?: ""
-                        when {
-                            text.format?.contains("html") == true -> HtmlRenderer(html = html)
-                            else -> MarkdownText(text = html)
+                    // The lesson text is the only part that may scroll, and only
+                    // on screens too short to hold it, so the interactive table
+                    // and the navigation buttons always stay visible.
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(
+                                if (hasVisualizer) {
+                                    Modifier
+                                        .weight(1f, fill = false)
+                                        .verticalScroll(rememberScrollState())
+                                } else {
+                                    Modifier
+                                }
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        content.text?.forEach { text ->
+                            if (text == null) return@forEach
+                            val html = text.text ?: ""
+                            when {
+                                text.format?.contains("html") == true -> HtmlRenderer(html = html)
+                                else -> MarkdownText(text = html)
+                            }
+                            Spacer(Modifier.height(8.dp))
                         }
-                        Spacer(Modifier.height(8.dp))
+
+                        if (showHandsAndFeet && contentId == MY_BODY_ID) {
+                            Spacer(Modifier.height(30.dp))
+                            HandsAndFeetFigure(modifier = Modifier.fillMaxWidth())
+                            // The caption sits below the feet, close to the buttons.
+                            Spacer(Modifier.height(48.dp))
+                            Text(
+                                text = xs.figureCaption,
+                                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+
+                        if (content.answer != null) {
+                            MultiplicationTableMyBodyAnswerSection(
+                                content = content,
+                                onAnswered = { points -> award(points) }
+                            )
+                        }
                     }
 
-                    if (showHandsAndFeet && contentId == MY_BODY_ID) {
-                        Spacer(Modifier.height(30.dp))
-                        HandsAndFeetFigure(modifier = Modifier.fillMaxWidth())
-                        // The caption sits below the feet, close to the buttons.
-                        Spacer(Modifier.height(48.dp))
-                        Text(
-                            text = xs.figureCaption,
-                            style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    if (showVisualizer && contentId == VISUALIZING_ID) {
+                    if (hasVisualizer) {
                         MultiplicationTableVisualizer(
                             factor = TABLE_OF_FIVE,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
 
-                    if (content.answer != null) {
-                        MultiplicationTableMyBodyAnswerSection(
-                            content = content,
-                            onAnswered = { points -> award(points) }
-                        )
-                    }
-
                     // The "My Body" screen pushes the navigation buttons 30 dp
                     // further down, below the body figure and its caption.
-                    Spacer(Modifier.height(if (showHandsAndFeet && contentId == MY_BODY_ID) 14.dp else 24.dp))
+                    Spacer(
+                        Modifier.height(
+                            if (hasVisualizer) 12.dp
+                            else if (showHandsAndFeet && contentId == MY_BODY_ID) 14.dp
+                            else 24.dp
+                        )
+                    )
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -420,7 +454,7 @@ private fun MultiplicationTableMyBodyGameContent(
                         }
                     }
 
-                    Spacer(Modifier.height(48.dp))
+                    Spacer(Modifier.height(if (hasVisualizer) 8.dp else 48.dp))
                 }
             }
 

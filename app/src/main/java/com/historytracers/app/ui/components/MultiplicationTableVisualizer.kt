@@ -7,17 +7,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,8 +42,10 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
@@ -82,13 +86,22 @@ private val VISUALIZER_OBJECT_EMOJIS = listOf(
 )
 
 /**
+ * Whether the screen is tall enough to keep the interactive table and the
+ * navigation buttons visible at the same time. On shorter screens (for example
+ * in landscape) the visualizing screen falls back to a normally scrolling page.
+ */
+@Composable
+fun multiplicationTableFitsOnScreen(): Boolean =
+    LocalConfiguration.current.screenHeightDp >= 480
+
+/**
  * Interactive "multiplication table" app, analogous to the web version's
  * Table of N. The user selects one of the objects in the selector and taps
- * one of the multiplications (factor x 0 .. factor x 9); the area below then
+ * one of the multiplications (factor x 0 .. factor x 10); the area below then
  * shows the selected multiplier groups, each holding `factor` of the chosen
  * objects. For the table of zero every group is shown empty.
  *
- * Reused by the multiplication table screens (0..9).
+ * Reused by the multiplication table screens (tables 0 to 5).
  */
 @Composable
 fun MultiplicationTableVisualizer(
@@ -96,6 +109,11 @@ fun MultiplicationTableVisualizer(
     modifier: Modifier = Modifier
 ) {
     val vs = multiplicationTableVisualizerStringsForLanguage(LocalAppLanguage.current)
+    // The panels scale with the screen instead of using a fixed height, so the
+    // lesson text and the navigation buttons stay visible without scrolling.
+    val panelHeight = (LocalConfiguration.current.screenHeightDp * 0.34f)
+        .dp
+        .coerceIn(190.dp, 340.dp)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -111,6 +129,10 @@ fun MultiplicationTableVisualizer(
         if (savedObject >= 0) selectedObject = savedObject
     }
 
+    val selectedEmoji = VISUALIZER_OBJECT_EMOJIS[
+        selectedObject.coerceIn(0, VISUALIZER_OBJECT_EMOJIS.lastIndex)
+    ]
+
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -122,7 +144,7 @@ fun MultiplicationTableVisualizer(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(6.dp))
 
         Row(
             modifier = Modifier
@@ -134,8 +156,8 @@ fun MultiplicationTableVisualizer(
                 val selected = selectedObject == index
                 Box(
                     modifier = Modifier
-                        .padding(4.dp)
-                        .size(44.dp)
+                        .padding(3.dp)
+                        .size(42.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(
                             if (selected) MaterialTheme.colorScheme.primaryContainer
@@ -153,83 +175,93 @@ fun MultiplicationTableVisualizer(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = emoji, fontSize = 22.sp)
+                    Text(text = emoji, fontSize = 20.sp)
                 }
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(10.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .weight(1f)
+                    .height(panelHeight)
                     .clip(RoundedCornerShape(30.dp))
                     .background(PANEL_BLUE)
-                    .padding(horizontal = 6.dp, vertical = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 4.dp, vertical = 6.dp)
             ) {
-                Text(
-                    text = vs.tableOf.format(factor),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = PANEL_TEXT
-                )
+                // The eleven multiplications always fit the panel: each row gets
+                // an equal share of the available height, which also shrinks the
+                // font on short screens.
+                BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                    val rowHeight = maxHeight / 11
+                    val rowFontSize = if (rowHeight < 22.dp) 12.sp else 14.sp
 
-                Spacer(Modifier.height(4.dp))
-
-                (0..9).forEach { e ->
-                    val selected = selectedMultiplier == e
-                    Text(
-                        text = "${factor * e} = $factor \u00D7 $e",
-                        fontSize = 16.sp,
-                        fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                        color = PANEL_TEXT,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 1.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (selected) SELECTED_ROW_BLUE else Color.Transparent)
-                            .clickable { selectedMultiplier = e }
-                            .padding(vertical = 4.dp)
-                    )
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        (0..10).forEach { e ->
+                            val selected = selectedMultiplier == e
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(rowHeight)
+                                    .padding(vertical = 1.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(if (selected) SELECTED_ROW_BLUE else Color.Transparent)
+                                    .clickable { selectedMultiplier = e },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "${factor * e} = $factor \u00D7 $e",
+                                    fontSize = rowFontSize,
+                                    maxLines = 1,
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                                    color = PANEL_TEXT,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight()
+                    .height(panelHeight)
                     .clip(RoundedCornerShape(30.dp))
                     .background(PANEL_BLUE)
-                    .padding(10.dp),
+                    .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 val multiplier = selectedMultiplier
                 if (multiplier == null) {
                     Text(
                         text = vs.tapHint,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = PANEL_TEXT,
                         textAlign = TextAlign.Center
                     )
                 } else {
+                    // Large multipliers use smaller objects so the whole group
+                    // set fits without needing to scroll.
+                    val emojiSize = when {
+                        multiplier <= 3 -> 20.sp
+                        multiplier <= 6 -> 16.sp
+                        else -> 12.sp
+                    }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
                     ) {
                         repeat(multiplier) {
-                            MultiplicationGroup(
-                                factor,
-                                VISUALIZER_OBJECT_EMOJIS[
-                                    selectedObject.coerceIn(0, VISUALIZER_OBJECT_EMOJIS.lastIndex)
-                                ]
-                            )
+                            MultiplicationGroup(factor, selectedEmoji, emojiSize)
                         }
                     }
                 }
@@ -240,12 +272,12 @@ fun MultiplicationTableVisualizer(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun MultiplicationGroup(count: Int, emoji: String) {
+private fun MultiplicationGroup(count: Int, emoji: String, emojiSize: TextUnit = 20.sp) {
     if (count == 0) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
-                .height(32.dp)
+                .height(24.dp)
                 .drawBehind {
                     drawRoundRect(
                         color = EMPTY_GROUP_STROKE,
@@ -261,10 +293,10 @@ private fun MultiplicationGroup(count: Int, emoji: String) {
         // FlowRow so large groups wrap onto extra lines instead of
         // overflowing the panel at large font scales.
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             repeat(count) {
-                Text(text = emoji, fontSize = 20.sp)
+                Text(text = emoji, fontSize = emojiSize)
             }
         }
     }
