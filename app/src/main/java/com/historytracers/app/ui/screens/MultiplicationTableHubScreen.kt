@@ -94,6 +94,23 @@ fun MultiplicationTableHubScreen(
     // so the button unlocks as soon as the sixth section is completed.
     val nextLevelUnlocked = levelGroupSections.all { it in completedMultiplicationTableSections }
 
+    // Second "Next Level" group: every class after the first flag button.
+    val levelGroup2Sections = remember {
+        listOf(
+            "first_square_number",
+            "my_body_multiplication_table",
+            "multiplying_with_flowers",
+            "weeks_of_life"
+        )
+    }
+    val levelGroup2Controller = remember {
+        LevelGroupController(levelGroup2Sections, completedMultiplicationTableSections)
+    }
+    LaunchedEffect(completedMultiplicationTableSections) {
+        levelGroup2Controller.syncFromPersisted(completedMultiplicationTableSections)
+    }
+    val nextLevel2Unlocked = levelGroup2Sections.all { it in completedMultiplicationTableSections }
+
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
     fun claimLevel(levelId: String) {
@@ -511,6 +528,44 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.weeksOfLife,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // Second "Next Level" flag button: unlocks when every class
+                // between the first flag and this one is completed.
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("multiplication_table_group2")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = nextLevel2Unlocked,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = s.common.nextLevel },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("multiplication_table_group2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
