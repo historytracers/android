@@ -69,6 +69,7 @@ fun MultiplicationTableHubScreen(
     val multiplyingWithGroupsDone = "multiplying_with_groups" in completedMultiplicationTableSections
     val firstSquareNumberDone = "first_square_number" in completedMultiplicationTableSections
     val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
+    val multiplyingWithFlowersDone = "multiplying_with_flowers" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -461,7 +462,7 @@ fun MultiplicationTableHubScreen(
                         .semantics { contentDescription = hss.multiplyingWithFlowers },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
+                        containerColor = if (multiplyingWithFlowersDone) ButtonYellowDark else ButtonYellow,
                         contentColor = OnButtonYellow
                     )
                 ) {

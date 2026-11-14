@@ -31,13 +31,13 @@ private const val AUDIO_BASE_URL = "https://www.historytracers.org/audios/"
 /**
  * Returns true when the device currently has network access.
  */
-private fun hasInternetConnection(context: Context): Boolean {
+private fun hasInternetConnection(context: Context): Boolean = runCatching {
     val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
-        ?: return false
-    val network = manager.activeNetwork ?: return false
-    val capabilities = manager.getNetworkCapabilities(network) ?: return false
-    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-}
+        ?: return@runCatching false
+    val network = manager.activeNetwork ?: return@runCatching false
+    val capabilities = manager.getNetworkCapabilities(network) ?: return@runCatching false
+    capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+}.getOrDefault(false)
 
 /**
  * Owns the [MediaPlayer] and the audio focus request used by [ScreenAudioButton].

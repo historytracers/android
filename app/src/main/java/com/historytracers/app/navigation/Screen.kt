@@ -540,6 +540,33 @@ sealed class Screen(val route: String) {
 
     data object MultiplicationTableMyBodyConclusion : Screen("multiplication_table_my_body_conclusion")
 
+    data object MultiplicationTableMultiplyingWithFlowersIntroduction :
+        Screen("multiplication_table_multiplying_with_flowers_introduction")
+
+    data object MultiplicationTableMultiplyingWithFlowersFlowers :
+        Screen("multiplication_table_multiplying_with_flowers_flowers")
+
+    data object MultiplicationTableMultiplyingWithFlowersThinking :
+        Screen("multiplication_table_multiplying_with_flowers_thinking")
+
+    data object MultiplicationTableMultiplyingWithFlowersTimesTwo :
+        Screen("multiplication_table_multiplying_with_flowers_times_two")
+
+    data object MultiplicationTableMultiplyingWithFlowersTimesThree :
+        Screen("multiplication_table_multiplying_with_flowers_times_three")
+
+    data object MultiplicationTableMultiplyingWithFlowersVisualizing :
+        Screen("multiplication_table_multiplying_with_flowers_visualizing")
+
+    data object MultiplicationTableMultiplyingWithFlowersRule :
+        Screen("multiplication_table_multiplying_with_flowers_rule")
+
+    data object MultiplicationTableMultiplyingWithFlowersReadingRule :
+        Screen("multiplication_table_multiplying_with_flowers_reading_rule")
+
+    data object MultiplicationTableMultiplyingWithFlowersConclusion :
+        Screen("multiplication_table_multiplying_with_flowers_conclusion")
+
     data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
 
     data object MultiplyingWithGroupsGame : Screen("multiplying_with_groups_game")
