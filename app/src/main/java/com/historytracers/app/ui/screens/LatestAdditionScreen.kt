@@ -35,7 +35,7 @@ import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguag
 import com.historytracers.app.ui.features.multiplicationTableFirstSquareNumberScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableMyBodyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableTripleValuesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplicationTableWeeksOfLifeScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithGroupsRulesScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
@@ -119,6 +119,7 @@ fun LatestAdditionScreen(
     onNavigateToMultiplicationTableFirstSquareNumber: () -> Unit = {},
     onNavigateToMultiplicationTableMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
+    onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -131,10 +132,10 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val tvs = multiplicationTableTripleValuesScreenStringsForLanguage(LocalAppLanguage.current)
     val fsns = multiplicationTableFirstSquareNumberScreenStringsForLanguage(LocalAppLanguage.current)
     val mbss = multiplicationTableMyBodyScreenStringsForLanguage(LocalAppLanguage.current)
     val mwfs = multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage(LocalAppLanguage.current)
+    val wls = multiplicationTableWeeksOfLifeScreenStringsForLanguage(LocalAppLanguage.current)
     val mwg = multiplyingWithGroupsRulesScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -143,6 +144,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "weeks_of_life",
+            label = wls.fullTitle,
+            icon = {
+                Text(
+                    text = "7",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "weeks_of_life" in completedMultiplicationTable },
+            onNavigate = onNavigateToWeeksOfLife
+        ),
         LatestAdditionEntry(
             sectionId = "multiplying_with_flowers",
             label = mwfs.fullTitle,
@@ -198,20 +213,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "multiplying_with_groups" in completedMultiplicationTable },
             onNavigate = onNavigateToMultiplyingWithGroups
-        ),
-        LatestAdditionEntry(
-            sectionId = "triple_values",
-            label = tvs.fullTitle,
-            icon = {
-                Text(
-                    text = "3",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "triple_values" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplicationTableTripleValues
         )
     )
 

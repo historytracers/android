@@ -46,6 +46,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToFirstSquareNumber: () -> Unit = {},
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
+    onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -70,6 +71,7 @@ fun MultiplicationTableHubScreen(
     val firstSquareNumberDone = "first_square_number" in completedMultiplicationTableSections
     val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
     val multiplyingWithFlowersDone = "multiplying_with_flowers" in completedMultiplicationTableSections
+    val weeksOfLifeDone = "weeks_of_life" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -477,6 +479,38 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.multiplyingWithFlowers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Weeks of Life" (multiplication table of seven).
+                FilledIconButton(
+                    onClick = onNavigateToWeeksOfLife,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.weeksOfLife },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (weeksOfLifeDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "7",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.weeksOfLife,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

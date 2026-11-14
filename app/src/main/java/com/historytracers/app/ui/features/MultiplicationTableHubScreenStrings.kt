@@ -13,6 +13,7 @@ data class MultiplicationTableHubScreenStrings(
     val firstSquareNumber: String,
     val myBodyAsMultiplicationTable: String,
     val multiplyingWithFlowers: String,
+    val weeksOfLife: String,
 )
 
 val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -25,6 +26,7 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     firstSquareNumber = "The First Square Number",
     myBodyAsMultiplicationTable = "My Body, as a Multiplication Table",
     multiplyingWithFlowers = "Multiplying with Flowers",
+    weeksOfLife = "Weeks of Life",
 )
 
 val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -37,6 +39,7 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     firstSquareNumber = "O Primeiro N\u00famero Quadrado",
     myBodyAsMultiplicationTable = "Meu Corpo, como uma Tabuada",
     multiplyingWithFlowers = "Multiplicando com Flores",
+    weeksOfLife = "Semanas da Vida",
 )
 
 val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -49,6 +52,7 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     firstSquareNumber = "El Primer N\u00famero Cuadrado",
     myBodyAsMultiplicationTable = "Mi Cuerpo, como una Tabla de Multiplicar",
     multiplyingWithFlowers = "Multiplicando con Flores",
+    weeksOfLife = "Semanas de la Vida",
 )
 
 val LocalMultiplicationTableHubScreenStrings = staticCompositionLocalOf { EnMultiplicationTableHubScreenStrings }

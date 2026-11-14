@@ -567,6 +567,27 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableMultiplyingWithFlowersConclusion :
         Screen("multiplication_table_multiplying_with_flowers_conclusion")
 
+    data object MultiplicationTableWeeksOfLifeIntroduction :
+        Screen("multiplication_table_weeks_of_life_introduction")
+
+    data object MultiplicationTableWeeksOfLifeWeeks :
+        Screen("multiplication_table_weeks_of_life_weeks")
+
+    data object MultiplicationTableWeeksOfLifeVisualizing :
+        Screen("multiplication_table_weeks_of_life_visualizing")
+
+    data object MultiplicationTableWeeksOfLifeRule :
+        Screen("multiplication_table_weeks_of_life_rule")
+
+    data object MultiplicationTableWeeksOfLifeFromSix :
+        Screen("multiplication_table_weeks_of_life_from_six")
+
+    data object MultiplicationTableWeeksOfLifeReadingRule :
+        Screen("multiplication_table_weeks_of_life_reading_rule")
+
+    data object MultiplicationTableWeeksOfLifeConclusion :
+        Screen("multiplication_table_weeks_of_life_conclusion")
+
     data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
 
     data object MultiplyingWithGroupsGame : Screen("multiplying_with_groups_game")

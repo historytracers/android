@@ -1,4 +1,4 @@
-## Line Ending Rules
+﻿## Line Ending Rules
 
 - Always use LF line endings when creating or editing files. Never use CRLF. The repo enforces this via `.gitattributes` (`* text=auto eol=lf`); a CRLF working copy triggers git warnings and creates diff noise.
 
@@ -157,7 +157,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `multiplying_with_flowers` (Multiplying with Flowers), `my_body_multiplication_table` (My Body, as a Multiplication Table), `first_square_number` (The First Square Number), `multiplying_with_groups` (Multiplying with Groups (0 to 3)), `triple_values` (Triple Values).
+- Current list (latest first): `weeks_of_life` (Weeks of Life), `multiplying_with_flowers` (Multiplying with Flowers), `my_body_multiplication_table` (My Body, as a Multiplication Table), `first_square_number` (The First Square Number), `multiplying_with_groups` (Multiplying with Groups (0 to 3)).
 
 ## New Main-Screen Buttons (Sun Badge)
 
@@ -295,6 +295,7 @@ When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `
   - `unix` and `julian` epoch `date_type`s are also handled.
 - **Direct date fields must also follow the calendar**, not only `<htdateN>` placeholders. Example: family/person birth and death dates in `ContentScreen.kt` (`DateUtils.formatDate(it, calendar, s.common)`).
 - The new global strings `dateJulianDays` and `bce` live in `AppCommonStrings` with translations in `UiStrings.kt` (`EnStrings`/`PtStrings`/`EsStrings`). Reuse them; do not hardcode the JD suffix or the BCE label.
+- **Weekday names must follow the selected calendar too.** The four-week calendar figure (`CalendarWeeksFigure` in `app/src/main/java/com/historytracers/app/ui/components/CalendarWeeksFigure.kt`) reads `LocalAppCalendar` and shows the calendar's own day names (Islamic: Ahad..Sabt, Hebrew: Rishon..Shabbat, Persian/Shaka: Shanbeh..Jomeh, Indian civil: Ravivara..Shanivara, Javanese: Ahad..Setu); for calendars that share the ordinary week it falls back to the localized short names of the app language. Never hardcode "Sun..Sat".
 
 ## Creating Screens from Smartphone Game JSON (sm_game)
 
