@@ -61,6 +61,28 @@
 - **Use a contextual title** derived from the screen's subject (e.g. "Let Us Think!", "Is There a Limit?", "Counting with Our Feet"), not a bare placeholder. Apply the English Title Case rule above.
 - When creating, porting, or reviewing a screen, always inspect every content screen in its JSON for a leading `####` heading and add one if missing; also verify the Kotlin top app bar renders a title. Fix missing titles in all three locales.
 
+## Responsive Layout Rules
+
+- **The whole project must be responsive: every screen, component and game must look and work correctly on any smartphone screen, in portrait and landscape, at any density and font scale.** Never assume one fixed screen size when choosing sizes, spacings or heights.
+- **The whole page must never need to scroll just to reach its main content or the navigation buttons.** The navigation buttons (Previous/Next/Back/Next Level/New Exercise, etc.) and the screen's central interactive element (abacus, yupana, multiplication table, figure, board) must be visible as soon as the screen opens. Only the body text may scroll, and only when the screen is genuinely too short to hold it (e.g. very small phones, landscape, or large accessibility font scales).
+- **Never let a child push the buttons off screen.** Give the text block a flexible/weighted container (e.g. `Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())`) and keep the action buttons and the main interactive area as separately measured children of the root `Column`, so they always keep their space.
+- **Size large visuals relative to the screen**, never with a fixed height that only works on one phone: derive heights from `LocalConfiguration.current.screenHeightDp` (or wrap in `BoxWithConstraints` and use its `maxHeight`/`maxWidth`), and clamp them (e.g. `coerceIn(min, max)`).
+- **Make lists, tables and grids fit the space they get.** When a fixed number of items must always be visible (e.g. the 11 multiplications of a table), divide the available height equally among them (`BoxWithConstraints` + row height) and shrink the font/emoji size when the space is tight, instead of letting the list grow and overflow.
+- **Scale drawn and emoji-based content** (abacus beads, groups of objects, figures, boards) with the available width/height, and reduce the object size for dense content so it stays inside its panel.
+- **Use horizontal scrolling only for deliberately long strips** (e.g. the object selector of the multiplication table). Vertical page scrolling is a fallback, not the default layout.
+- **Provide a graceful fallback for very short windows** (landscape, split screen, small phones): when the layout cannot fit everything (e.g. `screenHeightDp` below ~480), fall back to a normally scrolling page instead of squeezing or clipping content — buttons must still be reachable.
+- **Never hard-code text columns into fixed widths or use fixed `height` on text and buttons** that would clip at larger font scales; prefer `wrapContent`, `heightIn`, `weight` and `maxLines`/`TextOverflow.Ellipsis` only for titles.
+- **Verify every screen on at least two screen sizes** (e.g. a ~360×640 dp phone and a ~411×914 dp phone, plus landscape when the screen is dense), for example by changing the emulator size and density:
+  ```powershell
+  adb shell wm size 720x1280
+  adb shell wm density 320
+  # ... check the screen ...
+  adb shell wm size reset
+  adb shell wm density reset
+  ```
+  Confirm with `adb shell uiautomator dump` that the navigation buttons and the main interactive element are inside the visible bounds without scrolling.
+- **Whenever a screen's content is added, changed or ported, re-check its responsiveness** — the rule applies to new and existing screens alike, in all three languages.
+
 ## Sources Menu
 
 - Every exercise screen (Clap, FeetAndHands, ExercisingAddition, ExercisingMultiplication, etc.) can have a Sources menu in the bottom-left corner.

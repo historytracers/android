@@ -351,11 +351,21 @@ private fun MultiplicationTableFirstSquareNumberGameContent(
                         content.text?.forEach { text ->
                             if (text == null) return@forEach
                             val html = text.text ?: ""
+                            val isHtml = text.format?.contains("html") == true
                             when {
-                                text.format?.contains("html") == true -> HtmlRenderer(html = html)
+                                // On the "Squares" screen the figure is drawn at
+                                // half width: it is a plain single square, so a
+                                // full-width drawing would take over the screen.
+                                isHtml && contentId == SQUARES_ID -> HtmlRenderer(
+                                    html = html,
+                                    modifier = Modifier.fillMaxWidth(0.5f)
+                                )
+                                isHtml -> HtmlRenderer(html = html)
                                 else -> MarkdownText(text = html)
                             }
-                            Spacer(Modifier.height(8.dp))
+                            // Keep the caption right below the half-sized square
+                            // instead of leaving a large empty gap.
+                            Spacer(Modifier.height(if (isHtml && contentId == SQUARES_ID) 0.dp else 8.dp))
                         }
 
                         if (content.answer != null) {
