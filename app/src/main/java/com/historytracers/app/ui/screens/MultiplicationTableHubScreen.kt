@@ -45,6 +45,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToTripleValues: () -> Unit = {},
     onNavigateToFirstSquareNumber: () -> Unit = {},
     onNavigateToMyBody: () -> Unit = {},
+    onNavigateToMultiplyingWithFlowers: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -443,6 +444,38 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.myBodyAsMultiplicationTable,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Multiplying with Flowers" (multiplication table of six).
+                FilledIconButton(
+                    onClick = onNavigateToMultiplyingWithFlowers,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.multiplyingWithFlowers },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "6",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.multiplyingWithFlowers,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
