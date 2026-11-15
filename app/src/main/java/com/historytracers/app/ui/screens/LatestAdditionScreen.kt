@@ -31,8 +31,8 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.matchingTablesStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableFirstSquareNumberScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableMyBodyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableWeeksOfLifeScreenStringsForLanguage
@@ -121,7 +121,8 @@ fun LatestAdditionScreen(
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
     onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
-    onNavigateToMultiplyingWithGroups: () -> Unit = {}
+    onNavigateToMultiplyingWithGroups: () -> Unit = {},
+    onNavigateToMatchingTables: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -133,11 +134,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val fsns = multiplicationTableFirstSquareNumberScreenStringsForLanguage(LocalAppLanguage.current)
     val mbss = multiplicationTableMyBodyScreenStringsForLanguage(LocalAppLanguage.current)
     val mwfs = multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage(LocalAppLanguage.current)
     val wls = multiplicationTableWeeksOfLifeScreenStringsForLanguage(LocalAppLanguage.current)
     val mwgl2 = multiplyingWithGroupsLevel2StringsForLanguage(LocalAppLanguage.current)
+    val mts = matchingTablesStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -145,6 +146,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "matching_tables",
+            label = mts.rulesTitle,
+            icon = {
+                Text(
+                    text = "2\u00D73\n=3\u00D72",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "matching_tables" in completedMultiplicationTable },
+            onNavigate = onNavigateToMatchingTables
+        ),
         LatestAdditionEntry(
             sectionId = "multiplying_with_groups_level2",
             label = mwgl2.rulesTitle,
@@ -200,20 +215,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "my_body_multiplication_table" in completedMultiplicationTable },
             onNavigate = onNavigateToMultiplicationTableMyBody
-        ),
-        LatestAdditionEntry(
-            sectionId = "first_square_number",
-            label = fsns.fullTitle,
-            icon = {
-                Text(
-                    text = "4",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "first_square_number" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplicationTableFirstSquareNumber
         )
     )
 

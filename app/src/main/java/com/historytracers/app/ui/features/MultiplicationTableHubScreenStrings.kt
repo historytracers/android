@@ -14,6 +14,7 @@ data class MultiplicationTableHubScreenStrings(
     val firstSquareNumber: String,
     val myBodyAsMultiplicationTable: String,
     val multiplyingWithFlowers: String,
+    val matchingTables: String,
     val weeksOfLife: String,
 )
 
@@ -28,6 +29,7 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     firstSquareNumber = "The First Square Number",
     myBodyAsMultiplicationTable = "My Body, as a Multiplication Table",
     multiplyingWithFlowers = "Multiplying with Flowers",
+    matchingTables = "Matching the Tables of 2, 3, and 6",
     weeksOfLife = "Weeks of Life",
 )
 
@@ -42,6 +44,7 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     firstSquareNumber = "O Primeiro N\u00famero Quadrado",
     myBodyAsMultiplicationTable = "Meu Corpo, como uma Tabuada",
     multiplyingWithFlowers = "Multiplicando com Flores",
+    matchingTables = "Combinando as Tabuadas de 2, 3 e 6",
     weeksOfLife = "Semanas da Vida",
 )
 
@@ -56,6 +59,7 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     firstSquareNumber = "El Primer N\u00famero Cuadrado",
     myBodyAsMultiplicationTable = "Mi Cuerpo, como una Tabla de Multiplicar",
     multiplyingWithFlowers = "Multiplicando con Flores",
+    matchingTables = "Combinando las Tablas de 2, 3 y 6",
     weeksOfLife = "Semanas de la Vida",
 )
 

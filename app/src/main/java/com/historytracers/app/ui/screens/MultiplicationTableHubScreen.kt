@@ -48,6 +48,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToFirstSquareNumber: () -> Unit = {},
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
+    onNavigateToMatchingTables: () -> Unit = {},
     onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
@@ -74,6 +75,7 @@ fun MultiplicationTableHubScreen(
     val firstSquareNumberDone = "first_square_number" in completedMultiplicationTableSections
     val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
     val multiplyingWithFlowersDone = "multiplying_with_flowers" in completedMultiplicationTableSections
+    val matchingTablesDone = "matching_tables" in completedMultiplicationTableSections
     val weeksOfLifeDone = "weeks_of_life" in completedMultiplicationTableSections
     val multiplyingWithGroupsLevel2Done =
         "multiplying_with_groups_level2" in completedMultiplicationTableSections
@@ -105,6 +107,7 @@ fun MultiplicationTableHubScreen(
             "first_square_number",
             "my_body_multiplication_table",
             "multiplying_with_flowers",
+            "matching_tables",
             "weeks_of_life",
             "multiplying_with_groups_level2"
         )
@@ -502,6 +505,40 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.multiplyingWithFlowers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Matching the Tables of 2, 3, and 6" (commutativity bridge:
+                // 2 × 3 = 3 × 2 = 6).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTablesDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "2 \u00d7 3\n= 3 \u00d7 2",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
