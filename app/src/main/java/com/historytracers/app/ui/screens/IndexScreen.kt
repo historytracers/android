@@ -111,8 +111,9 @@ private val longDivisionSectionIds = listOf(
 
 private val multiplicationTableSectionIds = listOf(
     "what_is_it", "the_same_result", "equal_sides", "double_values", "triple_values",
-    "multiplying_with_groups", "first_square_number", "my_body_multiplication_table",
-    "matching_tables"
+    "multiplying_with_groups", "first_square_number", "matching_tables_2_4",
+    "my_body_multiplication_table", "multiplying_with_flowers", "matching_tables",
+    "weeks_of_life", "matching_tables_6_7", "multiplying_with_groups_level2"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).

@@ -49,6 +49,8 @@ fun MultiplicationTableHubScreen(
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
     onNavigateToMatchingTables: () -> Unit = {},
+    onNavigateToMatchingTables67: () -> Unit = {},
+    onNavigateToMatchingTables24: () -> Unit = {},
     onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
@@ -76,6 +78,8 @@ fun MultiplicationTableHubScreen(
     val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
     val multiplyingWithFlowersDone = "multiplying_with_flowers" in completedMultiplicationTableSections
     val matchingTablesDone = "matching_tables" in completedMultiplicationTableSections
+    val matchingTables67Done = "matching_tables_6_7" in completedMultiplicationTableSections
+    val matchingTables24Done = "matching_tables_2_4" in completedMultiplicationTableSections
     val weeksOfLifeDone = "weeks_of_life" in completedMultiplicationTableSections
     val multiplyingWithGroupsLevel2Done =
         "multiplying_with_groups_level2" in completedMultiplicationTableSections
@@ -105,10 +109,12 @@ fun MultiplicationTableHubScreen(
     val levelGroup2Sections = remember {
         listOf(
             "first_square_number",
+            "matching_tables_2_4",
             "my_body_multiplication_table",
             "multiplying_with_flowers",
             "matching_tables",
             "weeks_of_life",
+            "matching_tables_6_7",
             "multiplying_with_groups_level2"
         )
     }
@@ -450,6 +456,39 @@ fun MultiplicationTableHubScreen(
 
                 Spacer(Modifier.height(48.dp))
 
+                // "Matching the Tables of 2 and 4" (4 × N = 2 × (2 × N)).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables24,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables2And4 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTables24Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "2 \u00d7 2 \u00d7 N\n= 4 \u00d7 N",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables2And4,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
                 // "My Body, as a Multiplication Table" (multiplication table of five).
                 FilledIconButton(
                     onClick = onNavigateToMyBody,
@@ -571,6 +610,39 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.weeksOfLife,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Matching the Tables of 6 and 7" (7 × N = 6 × N + N).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables67,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables6And7 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTables67Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "6 \u00d7 N + N\n= 7 \u00d7 N",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables6And7,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

@@ -32,9 +32,9 @@ import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLangu
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matchingTablesStringsForLanguage
+import com.historytracers.app.ui.features.matchingTables24StringsForLanguage
+import com.historytracers.app.ui.features.matchingTables67StringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableMyBodyScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableWeeksOfLifeScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithGroupsLevel2StringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
@@ -122,7 +122,9 @@ fun LatestAdditionScreen(
     onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
-    onNavigateToMatchingTables: () -> Unit = {}
+    onNavigateToMatchingTables: () -> Unit = {},
+    onNavigateToMatchingTables67: () -> Unit = {},
+    onNavigateToMatchingTables24: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -134,11 +136,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val mbss = multiplicationTableMyBodyScreenStringsForLanguage(LocalAppLanguage.current)
-    val mwfs = multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage(LocalAppLanguage.current)
     val wls = multiplicationTableWeeksOfLifeScreenStringsForLanguage(LocalAppLanguage.current)
     val mwgl2 = multiplyingWithGroupsLevel2StringsForLanguage(LocalAppLanguage.current)
     val mts = matchingTablesStringsForLanguage(LocalAppLanguage.current)
+    val mts67 = matchingTables67StringsForLanguage(LocalAppLanguage.current)
+    val mts24 = matchingTables24StringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -146,6 +148,34 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "matching_tables_2_4",
+            label = mts24.rulesTitle,
+            icon = {
+                Text(
+                    text = "2\u00D72\u00D7N\n=4\u00D7N",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "matching_tables_2_4" in completedMultiplicationTable },
+            onNavigate = onNavigateToMatchingTables24
+        ),
+        LatestAdditionEntry(
+            sectionId = "matching_tables_6_7",
+            label = mts67.rulesTitle,
+            icon = {
+                Text(
+                    text = "6\u00D7N+N\n=7\u00D7N",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "matching_tables_6_7" in completedMultiplicationTable },
+            onNavigate = onNavigateToMatchingTables67
+        ),
         LatestAdditionEntry(
             sectionId = "matching_tables",
             label = mts.rulesTitle,
@@ -187,34 +217,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "weeks_of_life" in completedMultiplicationTable },
             onNavigate = onNavigateToWeeksOfLife
-        ),
-        LatestAdditionEntry(
-            sectionId = "multiplying_with_flowers",
-            label = mwfs.fullTitle,
-            icon = {
-                Text(
-                    text = "6",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "multiplying_with_flowers" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplyingWithFlowers
-        ),
-        LatestAdditionEntry(
-            sectionId = "my_body_multiplication_table",
-            label = mbss.fullTitle,
-            icon = {
-                Text(
-                    text = "5",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "my_body_multiplication_table" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplicationTableMyBody
         )
     )
 

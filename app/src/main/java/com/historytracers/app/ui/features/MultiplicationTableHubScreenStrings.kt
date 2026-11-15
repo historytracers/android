@@ -12,9 +12,11 @@ data class MultiplicationTableHubScreenStrings(
     val multiplyingWithGroups: String,
     val multiplyingWithGroupsLevel2: String,
     val firstSquareNumber: String,
+    val matchingTables2And4: String,
     val myBodyAsMultiplicationTable: String,
     val multiplyingWithFlowers: String,
     val matchingTables: String,
+    val matchingTables6And7: String,
     val weeksOfLife: String,
 )
 
@@ -27,9 +29,11 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     multiplyingWithGroups = "Multiplying with Groups (0 to 3)",
     multiplyingWithGroupsLevel2 = "Multiplying with Groups (4 to 7)",
     firstSquareNumber = "The First Square Number",
+    matchingTables2And4 = "Matching the Tables of 2 and 4",
     myBodyAsMultiplicationTable = "My Body, as a Multiplication Table",
     multiplyingWithFlowers = "Multiplying with Flowers",
     matchingTables = "Matching the Tables of 2, 3, and 6",
+    matchingTables6And7 = "Matching the Tables of 6 and 7",
     weeksOfLife = "Weeks of Life",
 )
 
@@ -42,9 +46,11 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     multiplyingWithGroups = "Multiplicando com Grupos (0 a 3)",
     multiplyingWithGroupsLevel2 = "Multiplicando com Grupos (4 a 7)",
     firstSquareNumber = "O Primeiro N\u00famero Quadrado",
+    matchingTables2And4 = "Combinando as Tabuadas de 2 e 4",
     myBodyAsMultiplicationTable = "Meu Corpo, como uma Tabuada",
     multiplyingWithFlowers = "Multiplicando com Flores",
     matchingTables = "Combinando as Tabuadas de 2, 3 e 6",
+    matchingTables6And7 = "Combinando as Tabuadas de 6 e 7",
     weeksOfLife = "Semanas da Vida",
 )
 
@@ -57,9 +63,11 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     multiplyingWithGroups = "Multiplicando con Grupos (0 a 3)",
     multiplyingWithGroupsLevel2 = "Multiplicando con Grupos (4 a 7)",
     firstSquareNumber = "El Primer N\u00famero Cuadrado",
+    matchingTables2And4 = "Combinando las Tablas de 2 y 4",
     myBodyAsMultiplicationTable = "Mi Cuerpo, como una Tabla de Multiplicar",
     multiplyingWithFlowers = "Multiplicando con Flores",
     matchingTables = "Combinando las Tablas de 2, 3 y 6",
+    matchingTables6And7 = "Combinando las Tablas de 6 y 7",
     weeksOfLife = "Semanas de la Vida",
 )
 

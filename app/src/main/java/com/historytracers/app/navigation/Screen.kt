@@ -573,6 +573,18 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableMatchingTablesGame :
         Screen("multiplication_table_matching_tables_game")
 
+    data object MultiplicationTableMatchingTables67Rules :
+        Screen("multiplication_table_matching_tables_67_rules")
+
+    data object MultiplicationTableMatchingTables67Game :
+        Screen("multiplication_table_matching_tables_67_game")
+
+    data object MultiplicationTableMatchingTables24Rules :
+        Screen("multiplication_table_matching_tables_24_rules")
+
+    data object MultiplicationTableMatchingTables24Game :
+        Screen("multiplication_table_matching_tables_24_game")
+
     data object MultiplicationTableWeeksOfLifeIntroduction :
         Screen("multiplication_table_weeks_of_life_introduction")
 
