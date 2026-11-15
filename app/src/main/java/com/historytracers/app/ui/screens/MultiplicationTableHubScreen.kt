@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -35,8 +36,12 @@ import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
+// Points awarded the first time a "Next Level" flag is claimed.
+private const val LEVEL_CLAIM_BONUS = 10
+
 @Composable
 fun MultiplicationTableHubScreen(
+    scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToWhatIsIt: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
@@ -45,6 +50,12 @@ fun MultiplicationTableHubScreen(
     onNavigateToTripleValues: () -> Unit = {},
     onNavigateToFirstSquareNumber: () -> Unit = {},
     onNavigateToMyBody: () -> Unit = {},
+    onNavigateToMultiplyingWithFlowers: () -> Unit = {},
+    onNavigateToMatchingTables: () -> Unit = {},
+    onNavigateToMatchingTables67: () -> Unit = {},
+    onNavigateToMatchingTables24: () -> Unit = {},
+    onNavigateToWeeksOfLife: () -> Unit = {},
+    onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -68,6 +79,13 @@ fun MultiplicationTableHubScreen(
     val multiplyingWithGroupsDone = "multiplying_with_groups" in completedMultiplicationTableSections
     val firstSquareNumberDone = "first_square_number" in completedMultiplicationTableSections
     val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
+    val multiplyingWithFlowersDone = "multiplying_with_flowers" in completedMultiplicationTableSections
+    val matchingTablesDone = "matching_tables" in completedMultiplicationTableSections
+    val matchingTables67Done = "matching_tables_6_7" in completedMultiplicationTableSections
+    val matchingTables24Done = "matching_tables_2_4" in completedMultiplicationTableSections
+    val weeksOfLifeDone = "weeks_of_life" in completedMultiplicationTableSections
+    val multiplyingWithGroupsLevel2Done =
+        "multiplying_with_groups_level2" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -90,14 +108,36 @@ fun MultiplicationTableHubScreen(
     // so the button unlocks as soon as the sixth section is completed.
     val nextLevelUnlocked = levelGroupSections.all { it in completedMultiplicationTableSections }
 
+    // Second "Next Level" group: every class after the first flag button.
+    val levelGroup2Sections = remember {
+        listOf(
+            "first_square_number",
+            "matching_tables_2_4",
+            "my_body_multiplication_table",
+            "multiplying_with_flowers",
+            "matching_tables",
+            "weeks_of_life",
+            "matching_tables_6_7",
+            "multiplying_with_groups_level2"
+        )
+    }
+    val levelGroup2Controller = remember {
+        LevelGroupController(levelGroup2Sections, completedMultiplicationTableSections)
+    }
+    LaunchedEffect(completedMultiplicationTableSections) {
+        levelGroup2Controller.syncFromPersisted(completedMultiplicationTableSections)
+    }
+    val nextLevel2Unlocked = levelGroup2Sections.all { it in completedMultiplicationTableSections }
+
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
     fun claimLevel(levelId: String) {
         scope.launch {
             // Transactional + idempotent: only the first claim wins, so rapid
-            // taps can never award the bonus twice.
-            if (preferences.claimLevel(levelId, currentScore + 10)) {
-                onScoreChanged(currentScore + 10)
+            // taps can never award the bonus twice. The bonus is added to the
+            // stored score inside the same write, so a newer score is kept.
+            preferences.claimLevel(levelId, LEVEL_CLAIM_BONUS)?.let { total ->
+                onScoreChanged(total)
             }
         }
     }
@@ -154,7 +194,7 @@ fun MultiplicationTableHubScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -420,6 +460,39 @@ fun MultiplicationTableHubScreen(
 
                 Spacer(Modifier.height(48.dp))
 
+                // "Matching the Tables of 2 and 4" (4 × N = 2 × (2 × N)).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables24,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables2And4 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTables24Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "2 \u00d7 2 \u00d7 N\n= 4 \u00d7 N",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables2And4,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
                 // "My Body, as a Multiplication Table" (multiplication table of five).
                 FilledIconButton(
                     onClick = onNavigateToMyBody,
@@ -443,6 +516,208 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.myBodyAsMultiplicationTable,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Multiplying with Flowers" (multiplication table of six).
+                FilledIconButton(
+                    onClick = onNavigateToMultiplyingWithFlowers,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.multiplyingWithFlowers },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (multiplyingWithFlowersDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "6",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.multiplyingWithFlowers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Matching the Tables of 2, 3, and 6" (commutativity bridge:
+                // 2 × 3 = 3 × 2 = 6).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTablesDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "2 \u00d7 3\n= 3 \u00d7 2",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Weeks of Life" (multiplication table of seven).
+                FilledIconButton(
+                    onClick = onNavigateToWeeksOfLife,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.weeksOfLife },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (weeksOfLifeDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "7",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.weeksOfLife,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Matching the Tables of 6 and 7" (7 × N = 6 × N + N).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables67,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables6And7 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTables67Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "6 \u00d7 N + N\n= 7 \u00d7 N",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables6And7,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Multiplying with Groups (4 to 7)".
+                FilledIconButton(
+                    onClick = onNavigateToMultiplyingWithGroupsLevel2,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.multiplyingWithGroupsLevel2 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (multiplyingWithGroupsLevel2Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u00D7 4, 5\n6, 7",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.multiplyingWithGroupsLevel2,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // Second "Next Level" flag button: unlocks when every class
+                // between the first flag and this one is completed.
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("multiplication_table_group2")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = nextLevel2Unlocked,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = s.common.nextLevel },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("multiplication_table_group2" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

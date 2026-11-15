@@ -540,9 +540,79 @@ sealed class Screen(val route: String) {
 
     data object MultiplicationTableMyBodyConclusion : Screen("multiplication_table_my_body_conclusion")
 
+    data object MultiplicationTableMultiplyingWithFlowersIntroduction :
+        Screen("multiplication_table_multiplying_with_flowers_introduction")
+
+    data object MultiplicationTableMultiplyingWithFlowersFlowers :
+        Screen("multiplication_table_multiplying_with_flowers_flowers")
+
+    data object MultiplicationTableMultiplyingWithFlowersThinking :
+        Screen("multiplication_table_multiplying_with_flowers_thinking")
+
+    data object MultiplicationTableMultiplyingWithFlowersTimesTwo :
+        Screen("multiplication_table_multiplying_with_flowers_times_two")
+
+    data object MultiplicationTableMultiplyingWithFlowersTimesThree :
+        Screen("multiplication_table_multiplying_with_flowers_times_three")
+
+    data object MultiplicationTableMultiplyingWithFlowersVisualizing :
+        Screen("multiplication_table_multiplying_with_flowers_visualizing")
+
+    data object MultiplicationTableMultiplyingWithFlowersRule :
+        Screen("multiplication_table_multiplying_with_flowers_rule")
+
+    data object MultiplicationTableMultiplyingWithFlowersReadingRule :
+        Screen("multiplication_table_multiplying_with_flowers_reading_rule")
+
+    data object MultiplicationTableMultiplyingWithFlowersConclusion :
+        Screen("multiplication_table_multiplying_with_flowers_conclusion")
+
+    data object MultiplicationTableMatchingTablesRules :
+        Screen("multiplication_table_matching_tables_rules")
+
+    data object MultiplicationTableMatchingTablesGame :
+        Screen("multiplication_table_matching_tables_game")
+
+    data object MultiplicationTableMatchingTables67Rules :
+        Screen("multiplication_table_matching_tables_67_rules")
+
+    data object MultiplicationTableMatchingTables67Game :
+        Screen("multiplication_table_matching_tables_67_game")
+
+    data object MultiplicationTableMatchingTables24Rules :
+        Screen("multiplication_table_matching_tables_24_rules")
+
+    data object MultiplicationTableMatchingTables24Game :
+        Screen("multiplication_table_matching_tables_24_game")
+
+    data object MultiplicationTableWeeksOfLifeIntroduction :
+        Screen("multiplication_table_weeks_of_life_introduction")
+
+    data object MultiplicationTableWeeksOfLifeWeeks :
+        Screen("multiplication_table_weeks_of_life_weeks")
+
+    data object MultiplicationTableWeeksOfLifeVisualizing :
+        Screen("multiplication_table_weeks_of_life_visualizing")
+
+    data object MultiplicationTableWeeksOfLifeRule :
+        Screen("multiplication_table_weeks_of_life_rule")
+
+    data object MultiplicationTableWeeksOfLifeFromSix :
+        Screen("multiplication_table_weeks_of_life_from_six")
+
+    data object MultiplicationTableWeeksOfLifeReadingRule :
+        Screen("multiplication_table_weeks_of_life_reading_rule")
+
+    data object MultiplicationTableWeeksOfLifeConclusion :
+        Screen("multiplication_table_weeks_of_life_conclusion")
+
     data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
 
     data object MultiplyingWithGroupsGame : Screen("multiplying_with_groups_game")
+
+    data object MultiplyingWithGroupsLevel2Rules : Screen("multiplying_with_groups_level2_rules")
+
+    data object MultiplyingWithGroupsLevel2Game : Screen("multiplying_with_groups_level2_game")
     data object MultiplyingWithAbacus : Screen("multiplying_with_abacus")
     data object MultiplyingWithAbacusLevel2 : Screen("multiplying_with_abacus_level2")
     data object MultiplyingWithoutLimits : Screen("multiplying_without_limits")

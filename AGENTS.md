@@ -1,4 +1,4 @@
-## Line Ending Rules
+﻿## Line Ending Rules
 
 - Always use LF line endings when creating or editing files. Never use CRLF. The repo enforces this via `.gitattributes` (`* text=auto eol=lf`); a CRLF working copy triggers git warnings and creates diff noise.
 
@@ -60,6 +60,28 @@
 - **Add the title for all languages.** For sm_game JSON, add the heading to `en-US`, `pt-BR`, and `es-ES` in `common/src/smartphone/{lang}/<uuid>.json`. For Kotlin screens, add the title to the `En`/`Pt`/`Es` objects in the screen's strings file.
 - **Use a contextual title** derived from the screen's subject (e.g. "Let Us Think!", "Is There a Limit?", "Counting with Our Feet"), not a bare placeholder. Apply the English Title Case rule above.
 - When creating, porting, or reviewing a screen, always inspect every content screen in its JSON for a leading `####` heading and add one if missing; also verify the Kotlin top app bar renders a title. Fix missing titles in all three locales.
+
+## Responsive Layout Rules
+
+- **The whole project must be responsive: every screen, component and game must look and work correctly on any smartphone screen, in portrait and landscape, at any density and font scale.** Never assume one fixed screen size when choosing sizes, spacings or heights.
+- **The whole page must never need to scroll just to reach its main content or the navigation buttons.** The navigation buttons (Previous/Next/Back/Next Level/New Exercise, etc.) and the screen's central interactive element (abacus, yupana, multiplication table, figure, board) must be visible as soon as the screen opens. Only the body text may scroll, and only when the screen is genuinely too short to hold it (e.g. very small phones, landscape, or large accessibility font scales).
+- **Never let a child push the buttons off screen.** Give the text block a flexible/weighted container (e.g. `Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())`) and keep the action buttons and the main interactive area as separately measured children of the root `Column`, so they always keep their space.
+- **Size large visuals relative to the screen**, never with a fixed height that only works on one phone: derive heights from `LocalConfiguration.current.screenHeightDp` (or wrap in `BoxWithConstraints` and use its `maxHeight`/`maxWidth`), and clamp them (e.g. `coerceIn(min, max)`).
+- **Make lists, tables and grids fit the space they get.** When a fixed number of items must always be visible (e.g. the 11 multiplications of a table), divide the available height equally among them (`BoxWithConstraints` + row height) and shrink the font/emoji size when the space is tight, instead of letting the list grow and overflow.
+- **Scale drawn and emoji-based content** (abacus beads, groups of objects, figures, boards) with the available width/height, and reduce the object size for dense content so it stays inside its panel.
+- **Use horizontal scrolling only for deliberately long strips** (e.g. the object selector of the multiplication table). Vertical page scrolling is a fallback, not the default layout.
+- **Provide a graceful fallback for very short windows** (landscape, split screen, small phones): when the layout cannot fit everything (e.g. `screenHeightDp` below ~480), fall back to a normally scrolling page instead of squeezing or clipping content — buttons must still be reachable.
+- **Never hard-code text columns into fixed widths or use fixed `height` on text and buttons** that would clip at larger font scales; prefer `wrapContent`, `heightIn`, `weight` and `maxLines`/`TextOverflow.Ellipsis` only for titles.
+- **Verify every screen on at least two screen sizes** (e.g. a ~360×640 dp phone and a ~411×914 dp phone, plus landscape when the screen is dense), for example by changing the emulator size and density:
+  ```powershell
+  adb shell wm size 720x1280
+  adb shell wm density 320
+  # ... check the screen ...
+  adb shell wm size reset
+  adb shell wm density reset
+  ```
+  Confirm with `adb shell uiautomator dump` that the navigation buttons and the main interactive element are inside the visible bounds without scrolling.
+- **Whenever a screen's content is added, changed or ported, re-check its responsiveness** — the rule applies to new and existing screens alike, in all three languages.
 
 ## Sources Menu
 
@@ -135,7 +157,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `walking_backwards` (Walking Backwards), `half_piece` (Half Piece), `the_same_result` (The Same Result), `around_the_world` (Around the World (Counting)), `calculi` (Calculi).
+- Current list (latest first): `multiplying_with_groups_level2` (Multiplying with Groups (4 to 7)), `weeks_of_life` (Weeks of Life), `multiplying_with_flowers` (Multiplying with Flowers), `my_body_multiplication_table` (My Body, as a Multiplication Table), `first_square_number` (The First Square Number).
 
 ## New Main-Screen Buttons (Sun Badge)
 
@@ -273,6 +295,7 @@ When porting a JS abacus-based tutorial/game from the `historytracers/js/` and `
   - `unix` and `julian` epoch `date_type`s are also handled.
 - **Direct date fields must also follow the calendar**, not only `<htdateN>` placeholders. Example: family/person birth and death dates in `ContentScreen.kt` (`DateUtils.formatDate(it, calendar, s.common)`).
 - The new global strings `dateJulianDays` and `bce` live in `AppCommonStrings` with translations in `UiStrings.kt` (`EnStrings`/`PtStrings`/`EsStrings`). Reuse them; do not hardcode the JD suffix or the BCE label.
+- **Weekday names must follow the selected calendar too.** The four-week calendar figure (`CalendarWeeksFigure` in `app/src/main/java/com/historytracers/app/ui/components/CalendarWeeksFigure.kt`) reads `LocalAppCalendar` and shows the calendar's own day names (Islamic: Ahad..Sabt, Hebrew: Rishon..Shabbat, Persian/Shaka: Shanbeh..Jomeh, Indian civil: Ravivara..Shanivara, Javanese: Ahad..Setu); for calendars that share the ordinary week it falls back to the localized short names of the app language. Never hardcode "Sun..Sat".
 
 ## Creating Screens from Smartphone Game JSON (sm_game)
 

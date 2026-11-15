@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
 import android.content.ClipData
@@ -34,6 +34,7 @@ import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.HtmlRenderer
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.MultiplicationTableVisualizer
+import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.miscStringsForLanguage
@@ -227,6 +228,11 @@ private fun MultiplicationTableZeroGameContent(
     val contentList = game?.content ?: emptyList()
     val content = contentList.firstOrNull { it.id == contentId }
 
+    // The interactive table stays composed on every screen size; on short
+    // windows the page scrolls instead, so the fit check only picks the layout.
+    val wantsVisualizer = showVisualizer && contentId == VISUALIZING_ID
+    val fitsOnScreen = multiplicationTableFitsOnScreen()
+
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
 
@@ -298,35 +304,56 @@ private fun MultiplicationTableZeroGameContent(
                 else -> Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .then(
+                            if (fitsOnScreen) Modifier
+                            else Modifier.verticalScroll(rememberScrollState())
+                        )
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    content.text?.forEach { text ->
-                        if (text == null) return@forEach
-                        val html = text.text ?: ""
-                        when {
-                            text.format?.contains("html") == true -> HtmlRenderer(html = html)
-                            else -> MarkdownText(text = html)
+                    // The lesson text is the only part that may scroll, and only
+                    // on screens too short to hold it, so the interactive table
+                    // and the navigation buttons always stay visible.
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(
+                                if (fitsOnScreen) {
+                                    Modifier
+                                        .weight(1f, fill = false)
+                                        .verticalScroll(rememberScrollState())
+                                } else {
+                                    Modifier
+                                }
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        content.text?.forEach { text ->
+                            if (text == null) return@forEach
+                            val html = text.text ?: ""
+                            when {
+                                text.format?.contains("html") == true -> HtmlRenderer(html = html)
+                                else -> MarkdownText(text = html)
+                            }
+                            Spacer(Modifier.height(8.dp))
                         }
-                        Spacer(Modifier.height(8.dp))
+
+                        if (content.answer != null) {
+                            MultiplicationTableZeroAnswerSection(
+                                content = content,
+                                onAnswered = { points -> award(points) }
+                            )
+                        }
                     }
 
-                    if (showVisualizer && contentId == VISUALIZING_ID) {
+                    if (wantsVisualizer) {
                         MultiplicationTableVisualizer(
                             factor = TABLE_OF_ZERO,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
 
-                    if (content.answer != null) {
-                        MultiplicationTableZeroAnswerSection(
-                            content = content,
-                            onAnswered = { points -> award(points) }
-                        )
-                    }
-
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(if (wantsVisualizer) 12.dp else 24.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -381,7 +408,7 @@ private fun MultiplicationTableZeroGameContent(
                         }
                     }
 
-                    Spacer(Modifier.height(48.dp))
+                    Spacer(Modifier.height(if (wantsVisualizer) 8.dp else 48.dp))
                 }
             }
 
