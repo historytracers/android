@@ -157,7 +157,7 @@
 - Each entry is a button that navigates directly to that screen. It must **not** mark the section completed on tap — completion is written only by the lesson's own genuine terminal condition or conclusion screen. Its color switches from `ButtonYellow` to `ButtonYellowDark` when that section is completed, exactly like internal buttons.
 - Each entry's `sectionId` must be a real section key recorded via `mark[Hub]SectionCompleted(...)` and must also be present in the corresponding `<hub>SectionIds` list on the main screen (`IndexScreen.kt`).
 - **Whenever a new screen is added to the app, update the list:** insert the new screen at the top and drop the oldest, so the screen always shows exactly the 5 most recent screens.
-- Current list (latest first): `weeks_of_life` (Weeks of Life), `multiplying_with_flowers` (Multiplying with Flowers), `my_body_multiplication_table` (My Body, as a Multiplication Table), `first_square_number` (The First Square Number), `multiplying_with_groups` (Multiplying with Groups (0 to 3)).
+- Current list (latest first): `multiplying_with_groups_level2` (Multiplying with Groups (4 to 7)), `weeks_of_life` (Weeks of Life), `multiplying_with_flowers` (Multiplying with Flowers), `my_body_multiplication_table` (My Body, as a Multiplication Table), `first_square_number` (The First Square Number).
 
 ## New Main-Screen Buttons (Sun Badge)
 

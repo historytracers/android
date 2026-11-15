@@ -36,7 +36,7 @@ import com.historytracers.app.ui.features.multiplicationTableFirstSquareNumberSc
 import com.historytracers.app.ui.features.multiplicationTableMyBodyScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage
 import com.historytracers.app.ui.features.multiplicationTableWeeksOfLifeScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplyingWithGroupsRulesScreenStringsForLanguage
+import com.historytracers.app.ui.features.multiplyingWithGroupsLevel2StringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
@@ -120,6 +120,7 @@ fun LatestAdditionScreen(
     onNavigateToMultiplicationTableMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
     onNavigateToWeeksOfLife: () -> Unit = {},
+    onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -136,7 +137,7 @@ fun LatestAdditionScreen(
     val mbss = multiplicationTableMyBodyScreenStringsForLanguage(LocalAppLanguage.current)
     val mwfs = multiplicationTableMultiplyingWithFlowersScreenStringsForLanguage(LocalAppLanguage.current)
     val wls = multiplicationTableWeeksOfLifeScreenStringsForLanguage(LocalAppLanguage.current)
-    val mwg = multiplyingWithGroupsRulesScreenStringsForLanguage(LocalAppLanguage.current)
+    val mwgl2 = multiplyingWithGroupsLevel2StringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -144,6 +145,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "multiplying_with_groups_level2",
+            label = mwgl2.rulesTitle,
+            icon = {
+                Text(
+                    text = "\u00D7 4-7",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "multiplying_with_groups_level2" in completedMultiplicationTable },
+            onNavigate = onNavigateToMultiplyingWithGroupsLevel2
+        ),
         LatestAdditionEntry(
             sectionId = "weeks_of_life",
             label = wls.fullTitle,
@@ -199,20 +214,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "first_square_number" in completedMultiplicationTable },
             onNavigate = onNavigateToMultiplicationTableFirstSquareNumber
-        ),
-        LatestAdditionEntry(
-            sectionId = "multiplying_with_groups",
-            label = mwg.title,
-            icon = {
-                Text(
-                    text = "\u00D7 0-3",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "multiplying_with_groups" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplyingWithGroups
         )
     )
 

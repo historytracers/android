@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MultiplicationTableHubScreen(
+    scrollState: ScrollState = rememberScrollState(),
     onNavigateBack: () -> Unit = {},
     onNavigateToWhatIsIt: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
@@ -47,6 +49,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToMyBody: () -> Unit = {},
     onNavigateToMultiplyingWithFlowers: () -> Unit = {},
     onNavigateToWeeksOfLife: () -> Unit = {},
+    onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -72,6 +75,8 @@ fun MultiplicationTableHubScreen(
     val myBodyDone = "my_body_multiplication_table" in completedMultiplicationTableSections
     val multiplyingWithFlowersDone = "multiplying_with_flowers" in completedMultiplicationTableSections
     val weeksOfLifeDone = "weeks_of_life" in completedMultiplicationTableSections
+    val multiplyingWithGroupsLevel2Done =
+        "multiplying_with_groups_level2" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -100,7 +105,8 @@ fun MultiplicationTableHubScreen(
             "first_square_number",
             "my_body_multiplication_table",
             "multiplying_with_flowers",
-            "weeks_of_life"
+            "weeks_of_life",
+            "multiplying_with_groups_level2"
         )
     }
     val levelGroup2Controller = remember {
@@ -175,7 +181,7 @@ fun MultiplicationTableHubScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -528,6 +534,39 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.weeksOfLife,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Multiplying with Groups (4 to 7)".
+                FilledIconButton(
+                    onClick = onNavigateToMultiplyingWithGroupsLevel2,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.multiplyingWithGroupsLevel2 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (multiplyingWithGroupsLevel2Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u00D7 4, 5\n6, 7",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.multiplyingWithGroupsLevel2,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

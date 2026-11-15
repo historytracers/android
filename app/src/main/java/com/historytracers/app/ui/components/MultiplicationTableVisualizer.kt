@@ -86,6 +86,12 @@ private val VISUALIZER_OBJECT_EMOJIS = listOf(
 )
 
 /**
+ * The same objects used by the multiplication tables, shared with the
+ * "Multiplying with Groups" games so their object selector offers them.
+ */
+val MultiplicationTableObjects: List<String> = VISUALIZER_OBJECT_EMOJIS
+
+/**
  * Whether the screen is tall enough to keep the interactive table and the
  * navigation buttons visible at the same time. On shorter screens (for example
  * in landscape) the visualizing screen falls back to a normally scrolling page.
