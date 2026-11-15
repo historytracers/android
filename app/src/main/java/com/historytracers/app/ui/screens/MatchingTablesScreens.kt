@@ -90,7 +90,8 @@ import kotlin.random.Random
 // shows its result together with groups of characters drawn as rectangles
 // with six characters each, so the picture matches the 6 x Z side of the
 // equality. Levels 1 and 2 practice the table of 2 against the table of 6
-// and levels 3 and 4 the table of 3 against the table of 6.
+// and levels 3 and 4 the table of 3 against the table of 6. Levels 5 and 6
+// extend the products up to 60 (2 x 30 = 6 x 10 and 3 x 20 = 6 x 10).
 private const val SMARTPHONE_GAME_FILE = "3eb7337a-bbb3-4115-8467-e8b8023a9811"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val RULES_ID = "69d7401a-f0a3-4f8b-a555-c5c22b84a495"
@@ -98,7 +99,7 @@ private const val GAME_ID = "09d7f7c3-6ef1-4372-8928-e0a8acec4294"
 
 private const val MATCHING_TABLES_SECTION_ID = "matching_tables"
 
-private const val MAX_LEVEL = 4
+private const val MAX_LEVEL = 6
 // Every rectangle holds six characters, exactly like the 6 x Z side of the
 // equality.
 private const val CHARACTERS_PER_GROUP = 6
@@ -118,23 +119,24 @@ private val GROUP_BOX_BG = Color(0xFFEAF3FB)
 private val GROUP_FEEDBACK = Color(0xFFB45309)
 private val LEVEL_BADGE_BG = Color(0xFFFFB347)
 
-// One equality of a level: factor x other = 6 x six. Levels 1 and 2 relate
+// One equality of a level: factor x other = 6 x six. Levels 1, 2 and 5 relate
 // the table of 2 with the table of 6 (other is the triple of six) and levels
-// 3 and 4 the table of 3 with the table of 6 (other is the double of six).
+// 3, 4 and 6 the table of 3 with the table of 6 (other is the double of six).
 private data class MatchingTablesPair(val factor: Int, val other: Int, val six: Int) {
     val result: Int get() = 6 * six
     val expression: String get() = "$factor \u00D7 $other = 6 \u00D7 $six"
 }
 
-// Levels 1 and 3 cover the first half of the table of 6 (results 6 to 18)
-// and levels 2 and 4 the second half (results 24 to 36).
-private fun levelZPool(level: Int): List<Int> = if (level == 1 || level == 3) {
-    listOf(1, 2, 3)
-} else {
-    listOf(4, 5, 6)
+// Levels 1 and 3 cover the first half of the table of 6 (results 6 to 18),
+// levels 2 and 4 the second half (results 24 to 36) and levels 5 and 6 the
+// extension up to 60 (results 42 to 60).
+private fun levelZPool(level: Int): List<Int> = when (level) {
+    1, 3 -> listOf(1, 2, 3)
+    2, 4 -> listOf(4, 5, 6)
+    else -> listOf(7, 8, 9, 10)
 }
 
-private fun levelFactor(level: Int): Int = if (level == 1 || level == 2) 2 else 3
+private fun levelFactor(level: Int): Int = if (level == 3 || level == 4 || level == 6) 3 else 2
 
 private fun buildPairs(level: Int): List<MatchingTablesPair> {
     val kind = levelFactor(level)
