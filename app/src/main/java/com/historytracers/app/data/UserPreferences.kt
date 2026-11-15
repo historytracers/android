@@ -714,16 +714,23 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
         }
     }
 
-    suspend fun claimLevel(levelId: String, newScore: Int): Boolean {
-        var claimed = false
+    /**
+     * Claims a level flag and awards its bonus atomically: the bonus is added to
+     * the score stored in the same edit block, so a score that changed since the
+     * caller took its snapshot is never overwritten by a stale total. Returns
+     * the committed score, or null when the level had already been claimed.
+     */
+    suspend fun claimLevel(levelId: String, bonus: Int): Int? {
+        var committed: Int? = null
         context.dataStore.edit { preferences ->
             val levelClaims = preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
             if (levelId in levelClaims) return@edit
+            val total = (preferences[SCORE_KEY] ?: 0) + bonus
             preferences[CLAIMED_LEVELS_KEY] = levelClaims + levelId
-            preferences[SCORE_KEY] = newScore
-            claimed = true
+            preferences[SCORE_KEY] = total
+            committed = total
         }
-        return claimed
+        return committed
     }
 
     suspend fun claimReturningLevel(newScore: Int, requiredSections: List<String>): Boolean {

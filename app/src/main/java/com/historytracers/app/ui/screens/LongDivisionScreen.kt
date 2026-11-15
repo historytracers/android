@@ -218,12 +218,12 @@ fun LongDivisionScreen(
         if (claimingLevel || levelId in claimedLevels) return
         claimingLevel = true
         scope.launch {
-            val claimed = withContext(NonCancellable) {
-                preferences.claimLevel(levelId, currentScore + 10)
+            val committed = withContext(NonCancellable) {
+                preferences.claimLevel(levelId, 10)
             }
             claimingLevel = false
-            if (claimed) {
-                onScoreChanged(currentScore + 10)
+            if (committed != null) {
+                onScoreChanged(committed)
             }
         }
     }

@@ -47,10 +47,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.features.multiplicationTableVisualizerStringsForLanguage
 import kotlinx.coroutines.launch
+
+// Line height of the table rows relative to their font size. Used to decide how
+// large the equation text can be before it overflows its row.
+private const val LINE_HEIGHT_FACTOR = 1.25f
 
 private val PANEL_BLUE = Color(0xFFADD8E6)
 private val PANEL_TEXT = Color(0xFF1A2340)
@@ -205,7 +210,15 @@ fun MultiplicationTableVisualizer(
                 // font on short screens.
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                     val rowHeight = maxHeight / 11
-                    val rowFontSize = if (rowHeight < 22.dp) 12.sp else 14.sp
+                    // Text grows with the user's font scale, so the row height
+                    // must be compared with the scaled line height: shrink the
+                    // font instead of clipping the equations when the rows are
+                    // short or the font scale is large.
+                    val fontScale = LocalDensity.current.fontScale
+                    val preferredFontSize = if (rowHeight < 22.dp * fontScale) 12f else 14f
+                    val fittingFontSize = rowHeight.value / (LINE_HEIGHT_FACTOR * fontScale)
+                    val rowFontSize =
+                        minOf(preferredFontSize, fittingFontSize).coerceAtLeast(6f).sp
 
                     Column(modifier = Modifier.fillMaxSize()) {
                         (0..10).forEach { e ->

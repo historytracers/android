@@ -71,6 +71,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.MultiplicationTableObjects
+import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.miscStringsForLanguage
@@ -410,6 +411,10 @@ fun MatchingTables67GameScreen(
         level = if (level >= MAX_LEVEL) 1 else level + 1
     }
 
+    // Short viewports (landscape, split screen) keep a fixed board height and
+    // let the page scroll, instead of squeezing the matching cells to nothing.
+    val compactLayout = !multiplicationTableFitsOnScreen()
+
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
             tonalElevation = 3.dp,
@@ -457,6 +462,13 @@ fun MatchingTables67GameScreen(
                 else -> Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .then(
+                            if (compactLayout) {
+                                Modifier.verticalScroll(rememberScrollState())
+                            } else {
+                                Modifier
+                            }
+                        )
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -552,7 +564,13 @@ fun MatchingTables67GameScreen(
                         onSelect = ::select,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .then(
+                                if (compactLayout) {
+                                    Modifier.height(240.dp)
+                                } else {
+                                    Modifier.weight(1f)
+                                }
+                            )
                     )
 
                     // Fixed message area: feedback or congratulations, so the

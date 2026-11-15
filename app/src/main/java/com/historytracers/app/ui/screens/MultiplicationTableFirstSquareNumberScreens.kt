@@ -247,11 +247,10 @@ private fun MultiplicationTableFirstSquareNumberGameContent(
     val contentList = game?.content ?: emptyList()
     val content = contentList.firstOrNull { it.id == contentId }
 
-    // Screens showing the interactive table use a layout that never
-    // needs the whole page to scroll.
-    val hasVisualizer = showVisualizer &&
-        contentId == VISUALIZING_ID &&
-        multiplicationTableFitsOnScreen()
+    // The interactive table stays composed on every screen size; on short
+    // windows the page scrolls instead, so the fit check only picks the layout.
+    val wantsVisualizer = showVisualizer && contentId == VISUALIZING_ID
+    val fitsOnScreen = multiplicationTableFitsOnScreen()
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
@@ -325,7 +324,7 @@ private fun MultiplicationTableFirstSquareNumberGameContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .then(
-                            if (hasVisualizer) Modifier
+                            if (fitsOnScreen) Modifier
                             else Modifier.verticalScroll(rememberScrollState())
                         )
                         .padding(16.dp),
@@ -338,7 +337,7 @@ private fun MultiplicationTableFirstSquareNumberGameContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .then(
-                                if (hasVisualizer) {
+                                if (fitsOnScreen) {
                                     Modifier
                                         .weight(1f, fill = false)
                                         .verticalScroll(rememberScrollState())
@@ -376,14 +375,14 @@ private fun MultiplicationTableFirstSquareNumberGameContent(
                         }
                     }
 
-                    if (hasVisualizer) {
+                    if (wantsVisualizer) {
                         MultiplicationTableVisualizer(
                             factor = TABLE_OF_FOUR,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
 
-                    Spacer(Modifier.height(if (hasVisualizer) 12.dp else 24.dp))
+                    Spacer(Modifier.height(if (wantsVisualizer) 12.dp else 24.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -438,7 +437,7 @@ private fun MultiplicationTableFirstSquareNumberGameContent(
                         }
                     }
 
-                    Spacer(Modifier.height(if (hasVisualizer) 8.dp else 48.dp))
+                    Spacer(Modifier.height(if (wantsVisualizer) 8.dp else 48.dp))
                 }
             }
 

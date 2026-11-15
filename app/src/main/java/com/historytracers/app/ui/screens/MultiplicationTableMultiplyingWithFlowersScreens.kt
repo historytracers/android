@@ -280,13 +280,11 @@ private fun MultiplicationTableMultiplyingWithFlowersGameContent(
     // clipping the content.
     val fitsOnScreen = multiplicationTableFitsOnScreen()
 
-    val initialScore = remember { currentScore }
-    var totalAwarded by remember { mutableIntStateOf(0) }
-
     fun award(points: Int) {
         if (points <= 0) return
-        totalAwarded += points
-        onScoreChanged(initialScore + totalAwarded)
+        // Award on top of the latest shared score instead of the snapshot taken
+        // when the screen opened, so a score raised meanwhile is never overwritten.
+        onScoreChanged(currentScore + points)
     }
 
     // Visit-local arrival guard: switching the app language reloads the content

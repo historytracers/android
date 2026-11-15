@@ -36,6 +36,9 @@ import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 
+// Points awarded the first time a "Next Level" flag is claimed.
+private const val LEVEL_CLAIM_BONUS = 10
+
 @Composable
 fun MultiplicationTableHubScreen(
     scrollState: ScrollState = rememberScrollState(),
@@ -131,9 +134,10 @@ fun MultiplicationTableHubScreen(
     fun claimLevel(levelId: String) {
         scope.launch {
             // Transactional + idempotent: only the first claim wins, so rapid
-            // taps can never award the bonus twice.
-            if (preferences.claimLevel(levelId, currentScore + 10)) {
-                onScoreChanged(currentScore + 10)
+            // taps can never award the bonus twice. The bonus is added to the
+            // stored score inside the same write, so a newer score is kept.
+            preferences.claimLevel(levelId, LEVEL_CLAIM_BONUS)?.let { total ->
+                onScoreChanged(total)
             }
         }
     }

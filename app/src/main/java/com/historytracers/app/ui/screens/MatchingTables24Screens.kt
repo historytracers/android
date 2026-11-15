@@ -71,6 +71,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.MultiplicationTableObjects
+import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.miscStringsForLanguage
@@ -78,6 +79,8 @@ import com.historytracers.app.ui.features.matchingTables24StringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameContent
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -390,9 +393,13 @@ fun MatchingTables24GameScreen(
                 if (!sectionMarked) {
                     sectionMarked = true
                     scope.launch {
-                        preferences.markMultiplicationTableSectionCompleted(
-                            MATCHING_TABLES_24_SECTION_ID
-                        )
+                        // Finish the write even if the screen leaves composition
+                        // right after the last pair.
+                        withContext(NonCancellable) {
+                            preferences.markMultiplicationTableSectionCompleted(
+                                MATCHING_TABLES_24_SECTION_ID
+                            )
+                        }
                     }
                 }
             }
@@ -409,6 +416,10 @@ fun MatchingTables24GameScreen(
     fun nextLevel() {
         level = if (level >= MAX_LEVEL) 1 else level + 1
     }
+
+    // Short viewports (landscape, split screen) keep a fixed board height and
+    // let the page scroll, instead of squeezing the matching cells to nothing.
+    val compactLayout = !multiplicationTableFitsOnScreen()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -457,6 +468,13 @@ fun MatchingTables24GameScreen(
                 else -> Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .then(
+                            if (compactLayout) {
+                                Modifier.verticalScroll(rememberScrollState())
+                            } else {
+                                Modifier
+                            }
+                        )
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -552,7 +570,13 @@ fun MatchingTables24GameScreen(
                         onSelect = ::select,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .then(
+                                if (compactLayout) {
+                                    Modifier.height(240.dp)
+                                } else {
+                                    Modifier.weight(1f)
+                                }
+                            )
                     )
 
                     // Fixed message area: feedback or congratulations, so the

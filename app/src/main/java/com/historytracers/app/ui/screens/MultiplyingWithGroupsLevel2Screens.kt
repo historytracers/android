@@ -66,10 +66,13 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.MultiplicationTableObjects
+import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.features.multiplyingWithGroupsLevel2StringsForLanguage
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -205,13 +208,11 @@ fun MultiplyingWithGroupsLevel2GameScreen(
     var feedback by remember { mutableStateOf("") }
     var sectionMarked by remember { mutableStateOf(false) }
 
-    val initialScore = remember { currentScore }
-    var totalAwarded by remember { mutableIntStateOf(0) }
-
     fun award(points: Int) {
         if (points <= 0) return
-        totalAwarded += points
-        onScoreChanged(initialScore + totalAwarded)
+        // Award on top of the latest shared score instead of the snapshot taken
+        // when the screen opened, so a score raised meanwhile is never overwritten.
+        onScoreChanged(currentScore + points)
     }
 
     fun buildExercise() {
@@ -269,9 +270,14 @@ fun MultiplyingWithGroupsLevel2GameScreen(
                 if (!sectionMarked) {
                     sectionMarked = true
                     scope.launch {
-                        preferences.markMultiplicationTableSectionCompleted(
-                            MULTIPLYING_WITH_GROUPS_LEVEL2_SECTION_ID
-                        )
+                        // Finish the write even if the screen leaves composition
+                        // right after the last pair (e.g. the user taps the hub
+                        // button immediately), so the section is never lost.
+                        withContext(NonCancellable) {
+                            preferences.markMultiplicationTableSectionCompleted(
+                                MULTIPLYING_WITH_GROUPS_LEVEL2_SECTION_ID
+                            )
+                        }
                     }
                 }
             }
@@ -289,6 +295,10 @@ fun MultiplyingWithGroupsLevel2GameScreen(
     fun nextLevel() {
         level = if (level >= MAX_LEVEL) 1 else level + 1
     }
+
+    // Short viewports (landscape, split screen) keep a fixed board height and
+    // let the page scroll, instead of squeezing the matching cells to nothing.
+    val compactLayout = !multiplicationTableFitsOnScreen()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -320,6 +330,13 @@ fun MultiplyingWithGroupsLevel2GameScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .then(
+                        if (compactLayout) {
+                            Modifier.verticalScroll(rememberScrollState())
+                        } else {
+                            Modifier
+                        }
+                    )
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -410,7 +427,13 @@ fun MultiplyingWithGroupsLevel2GameScreen(
                     onSelect = ::select,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .then(
+                            if (compactLayout) {
+                                Modifier.height(240.dp)
+                            } else {
+                                Modifier.weight(1f)
+                            }
+                        )
                 )
 
                 // Fixed message area: feedback or congratulations, so the

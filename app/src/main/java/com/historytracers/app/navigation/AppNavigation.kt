@@ -10918,7 +10918,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersIntroduction.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersThinking.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -10933,7 +10933,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersFlowers.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersTimesTwo.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -10948,7 +10948,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersThinking.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersTimesThree.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -10963,7 +10963,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersTimesTwo.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersVisualizing.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -10978,7 +10978,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersTimesThree.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersRule.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -10993,7 +10993,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersVisualizing.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersReadingRule.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11008,7 +11008,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersRule.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableMultiplyingWithFlowersConclusion.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11023,7 +11023,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMultiplyingWithFlowersReadingRule.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11058,7 +11058,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMatchingTablesRules.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11093,7 +11093,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMatchingTables67Rules.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11128,7 +11128,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableMatchingTables24Rules.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11163,7 +11163,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableWeeksOfLifeIntroduction.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableWeeksOfLifeVisualizing.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11178,7 +11178,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableWeeksOfLifeWeeks.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableWeeksOfLifeRule.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11193,7 +11193,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableWeeksOfLifeVisualizing.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableWeeksOfLifeFromSix.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11208,7 +11208,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableWeeksOfLifeRule.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableWeeksOfLifeReadingRule.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11223,7 +11223,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableWeeksOfLifeFromSix.route) },
                             onNavigateNext = { navController.navigate(Screen.MultiplicationTableWeeksOfLifeConclusion.route) { launchSingleTop = true } },
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore }
@@ -11238,7 +11238,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplicationTableWeeksOfLifeReadingRule.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11271,7 +11271,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplyingWithGroupsRules.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11304,7 +11304,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            onNavigatePrev = { navController.popBackStack() },
+                            onNavigatePrev = { navController.popOrNavigateTo(Screen.MultiplyingWithGroupsLevel2Rules.route) },
                             onNavigateToMultiplicationTableHub = {
                                 navController.popBackToOrigin(
                                     Screen.LatestAddition.route,
@@ -11572,5 +11572,17 @@ private fun NavController.popBackToOrigin(vararg origins: String, fallback: Stri
     navigate(fallback) {
         popUpTo(0) { inclusive = true }
         launchSingleTop = true
+    }
+}
+
+/**
+ * Goes back to [route] when it is already on the back stack, and opens it
+ * otherwise. The fallback matters when the screen is the restored start
+ * destination (the app resumes on the last visited route): the stack is empty
+ * there, so a plain popBackStack() would leave the Previous button doing nothing.
+ */
+private fun NavController.popOrNavigateTo(route: String) {
+    if (!popBackStack(route, false)) {
+        navigate(route) { launchSingleTop = true }
     }
 }
