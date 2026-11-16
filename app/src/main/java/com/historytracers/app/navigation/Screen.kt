@@ -585,6 +585,12 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableMatchingTables24Game :
         Screen("multiplication_table_matching_tables_24_game")
 
+    data object MultiplicationTableMatchingTables248Rules :
+        Screen("multiplication_table_matching_tables_248_rules")
+
+    data object MultiplicationTableMatchingTables248Game :
+        Screen("multiplication_table_matching_tables_248_game")
+
     data object MultiplicationTableWeeksOfLifeIntroduction :
         Screen("multiplication_table_weeks_of_life_introduction")
 
@@ -605,6 +611,24 @@ sealed class Screen(val route: String) {
 
     data object MultiplicationTableWeeksOfLifeConclusion :
         Screen("multiplication_table_weeks_of_life_conclusion")
+
+    data object MyFirstCubeIntroduction : Screen("my_first_cube_introduction")
+
+    data object MyFirstCubePolygon : Screen("my_first_cube_polygon")
+
+    data object MyFirstCubeOctagon : Screen("my_first_cube_octagon")
+
+    data object MyFirstCubeVisualizing : Screen("my_first_cube_visualizing")
+
+    data object MyFirstCubeRule : Screen("my_first_cube_rule")
+
+    data object MyFirstCubeFromTwo : Screen("my_first_cube_from_two")
+
+    data object MyFirstCubeFromFour : Screen("my_first_cube_from_four")
+
+    data object MyFirstCubeReadingRule : Screen("my_first_cube_reading_rule")
+
+    data object MyFirstCubeConclusion : Screen("my_first_cube_conclusion")
 
     data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
 

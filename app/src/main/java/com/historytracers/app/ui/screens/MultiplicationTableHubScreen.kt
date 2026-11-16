@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -56,6 +57,8 @@ fun MultiplicationTableHubScreen(
     onNavigateToMatchingTables24: () -> Unit = {},
     onNavigateToWeeksOfLife: () -> Unit = {},
     onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
+    onNavigateToMyFirstCube: () -> Unit = {},
+    onNavigateToMatchingTables248: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -86,6 +89,8 @@ fun MultiplicationTableHubScreen(
     val weeksOfLifeDone = "weeks_of_life" in completedMultiplicationTableSections
     val multiplyingWithGroupsLevel2Done =
         "multiplying_with_groups_level2" in completedMultiplicationTableSections
+    val myFirstCubeDone = "my_first_cube" in completedMultiplicationTableSections
+    val matchingTables248Done = "matching_tables_2_4_8" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -718,6 +723,71 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "My First Cube" (multiplication table of eight).
+                FilledIconButton(
+                    onClick = onNavigateToMyFirstCube,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.myFirstCube },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (myFirstCubeDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "8",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.myFirstCube,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Matching the Tables of 2, 4 and 8" (8 × N = 2 × 2 × 2 × N = 4 × 2 × N).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables248,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables2And4And8 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTables248Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "2 \u00D7 2 \u00D7 2 \u00D7 N =\n4 \u00D7 2 \u00D7 N =\n8 \u00D7 N",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables2And4And8,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
