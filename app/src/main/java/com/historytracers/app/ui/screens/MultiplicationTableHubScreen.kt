@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -953,6 +954,68 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = s.common.nextLevel,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Practicing Multiplication by One-Digit Numbers": the product
+                // 2 x 9 written in the long-multiplication layout (first factor,
+                // then the one-digit factor under a bar).
+                FilledIconButton(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics {
+                            contentDescription = hss.practicingMultiplicationByOneDigitNumbers
+                        },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "2",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = OnButtonYellow
+                        )
+                        Column(
+                            modifier = Modifier.width(IntrinsicSize.Max),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "\u00D7 9",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = OnButtonYellow
+                            )
+                            // Bar under the one-digit factor, like the line a
+                            // child draws before writing the product.
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 1.dp)
+                                    .fillMaxWidth()
+                                    .height(2.dp)
+                                    .background(OnButtonYellow)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.practicingMultiplicationByOneDigitNumbers,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
