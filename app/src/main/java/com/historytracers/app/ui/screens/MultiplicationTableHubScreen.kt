@@ -63,6 +63,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToTheLast: () -> Unit = {},
     onNavigateToMatchingTables39: () -> Unit = {},
     onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
+    onNavigateToPracticingMultiplicationByOneDigitNumbers: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -99,6 +100,8 @@ fun MultiplicationTableHubScreen(
     val matchingTables39Done = "matching_tables_3_9" in completedMultiplicationTableSections
     val completeTheMultiplicationTableDone =
         "complete_the_multiplication_table" in completedMultiplicationTableSections
+    val practicingMultiplicationDone =
+        "practicing_multiplication_by_one_digit_numbers" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -967,7 +970,7 @@ fun MultiplicationTableHubScreen(
                 // 2 x 9 written in the long-multiplication layout (first factor,
                 // then the one-digit factor under a bar).
                 FilledIconButton(
-                    onClick = { /* TODO */ },
+                    onClick = onNavigateToPracticingMultiplicationByOneDigitNumbers,
                     modifier = Modifier
                         .size(96.dp)
                         .semantics {
@@ -975,7 +978,11 @@ fun MultiplicationTableHubScreen(
                         },
                     shape = CircleShape,
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = ButtonYellow,
+                        containerColor = if (practicingMultiplicationDone) {
+                            ButtonYellowDark
+                        } else {
+                            ButtonYellow
+                        },
                         contentColor = OnButtonYellow
                     )
                 ) {

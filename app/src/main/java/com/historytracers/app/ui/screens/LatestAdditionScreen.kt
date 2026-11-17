@@ -34,6 +34,7 @@ import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matchingTables248StringsForLanguage
 import com.historytracers.app.ui.features.matchingTables39StringsForLanguage
+import com.historytracers.app.ui.features.practicingMultiplicationByOneDigitNumbersStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.myFirstCubeScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
@@ -129,6 +130,7 @@ fun LatestAdditionScreen(
     onNavigateToTheLast: () -> Unit = {},
     onNavigateToMatchingTables39: () -> Unit = {},
     onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
+    onNavigateToPracticingMultiplicationByOneDigitNumbers: () -> Unit = {},
     onNavigateToMyFirstCube: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -141,11 +143,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val mfcs = myFirstCubeScreenStringsForLanguage(LocalAppLanguage.current)
     val mts248 = matchingTables248StringsForLanguage(LocalAppLanguage.current)
     val tls = theLastScreenStringsForLanguage(LocalAppLanguage.current)
     val mts39 = matchingTables39StringsForLanguage(LocalAppLanguage.current)
     val cts = completeTheMultiplicationTableStringsForLanguage(LocalAppLanguage.current)
+    val pms = practicingMultiplicationByOneDigitNumbersStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -153,6 +155,22 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_multiplication_by_one_digit_numbers",
+            label = pms.rulesTitle,
+            icon = {
+                Text(
+                    text = "2\n\u00D7 9",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = {
+                "practicing_multiplication_by_one_digit_numbers" in completedMultiplicationTable
+            },
+            onNavigate = onNavigateToPracticingMultiplicationByOneDigitNumbers
+        ),
         LatestAdditionEntry(
             sectionId = "complete_the_multiplication_table",
             label = cts.rulesTitle,
@@ -208,20 +226,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "matching_tables_2_4_8" in completedMultiplicationTable },
             onNavigate = onNavigateToMatchingTables248
-        ),
-        LatestAdditionEntry(
-            sectionId = "my_first_cube",
-            label = mfcs.fullTitle,
-            icon = {
-                Text(
-                    text = "8",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "my_first_cube" in completedMultiplicationTable },
-            onNavigate = onNavigateToMyFirstCube
         )
     )
 
