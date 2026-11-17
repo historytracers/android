@@ -41,6 +41,8 @@ import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.features.theLastScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 
 private const val SMARTPHONE_GAME_FILE = "cdfda275-6943-4364-aadc-8b1cc8b6818a"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -59,14 +61,14 @@ private const val SECTION_ID = "the_last"
 
 @Composable
 fun TheLastIntroductionScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
     TheLastGameContent(
         contentId = INTRODUCTION_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigateNext = onNavigateNext
@@ -75,7 +77,7 @@ fun TheLastIntroductionScreen(
 
 @Composable
 fun TheLastNonagonScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -83,7 +85,7 @@ fun TheLastNonagonScreen(
 ) {
     TheLastGameContent(
         contentId = NONAGON_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -93,7 +95,7 @@ fun TheLastNonagonScreen(
 
 @Composable
 fun TheLastVisualizingScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -101,7 +103,7 @@ fun TheLastVisualizingScreen(
 ) {
     TheLastGameContent(
         contentId = VISUALIZING_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -112,7 +114,7 @@ fun TheLastVisualizingScreen(
 
 @Composable
 fun TheLastRuleScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -120,7 +122,7 @@ fun TheLastRuleScreen(
 ) {
     TheLastGameContent(
         contentId = A_RULE_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -130,7 +132,7 @@ fun TheLastRuleScreen(
 
 @Composable
 fun TheLastFromThreeScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -138,7 +140,7 @@ fun TheLastFromThreeScreen(
 ) {
     TheLastGameContent(
         contentId = FROM_THREE_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -148,7 +150,7 @@ fun TheLastFromThreeScreen(
 
 @Composable
 fun TheLastReadingRuleScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -156,7 +158,7 @@ fun TheLastReadingRuleScreen(
 ) {
     TheLastGameContent(
         contentId = READING_THE_RULE_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -166,7 +168,7 @@ fun TheLastReadingRuleScreen(
 
 @Composable
 fun TheLastConclusionScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -174,7 +176,7 @@ fun TheLastConclusionScreen(
 ) {
     TheLastGameContent(
         contentId = CONCLUSION_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -198,7 +200,7 @@ private fun sourceUrl(page: String): String =
 @Composable
 private fun TheLastGameContent(
     contentId: String,
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
@@ -239,9 +241,9 @@ private fun TheLastGameContent(
 
     fun award(points: Int) {
         if (points <= 0) return
-        // Award on top of the latest shared score instead of the snapshot taken
-        // when the screen opened, so a score raised meanwhile is never overwritten.
-        onScoreChanged(currentScore + points)
+        // Read the shared score at execution time instead of the composition-time
+        // snapshot, so a score raised meanwhile is never overwritten.
+        onScoreChanged(currentScoreReader() + points)
     }
 
     // Visit-local arrival guard: switching the app language reloads the content
@@ -253,10 +255,14 @@ private fun TheLastGameContent(
         if (node != null && node.id !in arrivalAwarded) {
             arrivalAwarded.add(node.id)
             award(node.score)
-            preferences.markArrivalAwarded(node.id)
-            if (onNavigateToMultiplicationTableHub != null) {
-                preferences.markMultiplicationTableSectionCompleted(SECTION_ID)
-                preferences.recordLessonCompletion()
+            // Finish the persistence writes even if the screen leaves
+            // composition right after arriving.
+            withContext(NonCancellable) {
+                preferences.markArrivalAwarded(node.id)
+                if (onNavigateToMultiplicationTableHub != null) {
+                    preferences.markMultiplicationTableSectionCompleted(SECTION_ID)
+                    preferences.recordLessonCompletion()
+                }
             }
         }
     }

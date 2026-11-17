@@ -41,6 +41,8 @@ import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.app.ui.features.myFirstCubeScreenStringsForLanguage
 import com.historytracers.common.HTSource
 import com.historytracers.common.SMGameFile
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 
 private const val SMARTPHONE_GAME_FILE = "feaab8d5-d0d4-4bfb-91fd-fe8b1fd700e2"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
@@ -61,14 +63,14 @@ private const val SECTION_ID = "my_first_cube"
 
 @Composable
 fun MyFirstCubeIntroductionScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigateNext: () -> Unit = {}
 ) {
     MyFirstCubeGameContent(
         contentId = INTRODUCTION_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigateNext = onNavigateNext
@@ -77,7 +79,7 @@ fun MyFirstCubeIntroductionScreen(
 
 @Composable
 fun MyFirstCubePolygonScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -85,7 +87,7 @@ fun MyFirstCubePolygonScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = POLYGON_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -95,7 +97,7 @@ fun MyFirstCubePolygonScreen(
 
 @Composable
 fun MyFirstCubeOctagonScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -103,7 +105,7 @@ fun MyFirstCubeOctagonScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = OCTAGON_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -113,7 +115,7 @@ fun MyFirstCubeOctagonScreen(
 
 @Composable
 fun MyFirstCubeVisualizingScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -121,7 +123,7 @@ fun MyFirstCubeVisualizingScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = VISUALIZING_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -132,7 +134,7 @@ fun MyFirstCubeVisualizingScreen(
 
 @Composable
 fun MyFirstCubeRuleScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -140,7 +142,7 @@ fun MyFirstCubeRuleScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = A_RULE_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -150,7 +152,7 @@ fun MyFirstCubeRuleScreen(
 
 @Composable
 fun MyFirstCubeFromTwoScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -158,7 +160,7 @@ fun MyFirstCubeFromTwoScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = FROM_TWO_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -168,7 +170,7 @@ fun MyFirstCubeFromTwoScreen(
 
 @Composable
 fun MyFirstCubeFromFourScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -176,7 +178,7 @@ fun MyFirstCubeFromFourScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = FROM_FOUR_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -186,7 +188,7 @@ fun MyFirstCubeFromFourScreen(
 
 @Composable
 fun MyFirstCubeReadingRuleScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -194,7 +196,7 @@ fun MyFirstCubeReadingRuleScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = READING_THE_RULE_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -204,7 +206,7 @@ fun MyFirstCubeReadingRuleScreen(
 
 @Composable
 fun MyFirstCubeConclusionScreen(
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: () -> Unit = {},
@@ -212,7 +214,7 @@ fun MyFirstCubeConclusionScreen(
 ) {
     MyFirstCubeGameContent(
         contentId = CONCLUSION_ID,
-        currentScore = currentScore,
+        currentScoreReader = currentScoreReader,
         onScoreChanged = onScoreChanged,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
@@ -236,7 +238,7 @@ private fun sourceUrl(page: String): String =
 @Composable
 private fun MyFirstCubeGameContent(
     contentId: String,
-    currentScore: Int = 0,
+    currentScoreReader: () -> Int = { 0 },
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onNavigatePrev: (() -> Unit)? = null,
@@ -277,9 +279,9 @@ private fun MyFirstCubeGameContent(
 
     fun award(points: Int) {
         if (points <= 0) return
-        // Award on top of the latest shared score instead of the snapshot taken
-        // when the screen opened, so a score raised meanwhile is never overwritten.
-        onScoreChanged(currentScore + points)
+        // Read the shared score at execution time instead of the composition-time
+        // snapshot, so a score raised meanwhile is never overwritten.
+        onScoreChanged(currentScoreReader() + points)
     }
 
     // Visit-local arrival guard: switching the app language reloads the content
@@ -291,10 +293,14 @@ private fun MyFirstCubeGameContent(
         if (node != null && node.id !in arrivalAwarded) {
             arrivalAwarded.add(node.id)
             award(node.score)
-            preferences.markArrivalAwarded(node.id)
-            if (onNavigateToMultiplicationTableHub != null) {
-                preferences.markMultiplicationTableSectionCompleted(SECTION_ID)
-                preferences.recordLessonCompletion()
+            // Finish the persistence writes even if the screen leaves
+            // composition right after arriving.
+            withContext(NonCancellable) {
+                preferences.markArrivalAwarded(node.id)
+                if (onNavigateToMultiplicationTableHub != null) {
+                    preferences.markMultiplicationTableSectionCompleted(SECTION_ID)
+                    preferences.recordLessonCompletion()
+                }
             }
         }
     }

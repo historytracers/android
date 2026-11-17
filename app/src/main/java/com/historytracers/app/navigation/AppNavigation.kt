@@ -11248,7 +11248,7 @@ fun AppNavigation() {
                                 )
                             },
                             onNavigateNext = { navController.navigate(Screen.TheLastNonagon.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11263,7 +11263,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.TheLastIntroduction.route) },
                             onNavigateNext = { navController.navigate(Screen.TheLastVisualizing.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11278,7 +11278,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.TheLastNonagon.route) },
                             onNavigateNext = { navController.navigate(Screen.TheLastRule.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11293,7 +11293,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.TheLastVisualizing.route) },
                             onNavigateNext = { navController.navigate(Screen.TheLastFromThree.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11308,7 +11308,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.TheLastRule.route) },
                             onNavigateNext = { navController.navigate(Screen.TheLastReadingRule.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11323,7 +11323,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.TheLastFromThree.route) },
                             onNavigateNext = { navController.navigate(Screen.TheLastConclusion.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11344,7 +11344,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11468,7 +11468,7 @@ fun AppNavigation() {
                                 )
                             },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubePolygon.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11483,7 +11483,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubeIntroduction.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeOctagon.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11498,7 +11498,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubePolygon.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeVisualizing.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11513,7 +11513,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubeOctagon.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeRule.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11528,7 +11528,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubeVisualizing.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeFromTwo.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11543,7 +11543,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubeRule.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeFromFour.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11558,7 +11558,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubeFromTwo.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeReadingRule.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11573,7 +11573,7 @@ fun AppNavigation() {
                             },
                             onNavigatePrev = { navController.popOrNavigateTo(Screen.MyFirstCubeFromFour.route) },
                             onNavigateNext = { navController.navigate(Screen.MyFirstCubeConclusion.route) { launchSingleTop = true } },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }
@@ -11594,7 +11594,7 @@ fun AppNavigation() {
                                     fallback = Screen.MultiplicationTableHub.route
                                 )
                             },
-                            currentScore = counter,
+                            currentScoreReader = { counter },
                             onScoreChanged = { newScore -> counter = newScore }
                         )
                     }

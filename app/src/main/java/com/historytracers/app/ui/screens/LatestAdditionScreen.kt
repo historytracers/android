@@ -185,8 +185,8 @@ fun LatestAdditionScreen(
             label = mts248.rulesTitle,
             icon = {
                 Text(
-                    text = "2\u00D72\u00D72\n=8\u00D7N",
-                    fontSize = 13.sp,
+                    text = "2\u00D72\u00D72\u00D7N\n=4\u00D72\u00D7N\n=8\u00D7N",
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )

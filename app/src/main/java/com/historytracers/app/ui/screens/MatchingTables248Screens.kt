@@ -74,6 +74,7 @@ import com.historytracers.app.ui.components.MultiplicationTableObjects
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.safeOpenUri
+import com.historytracers.app.ui.features.matchingTables248GameScreenStringsForLanguage
 import com.historytracers.app.ui.features.matchingTables248StringsForLanguage
 import com.historytracers.app.ui.features.miscStringsForLanguage
 import com.historytracers.common.HTSource
@@ -292,7 +293,7 @@ fun MatchingTables248GameScreen(
 ) {
     val s = LocalUiStrings.current
     val mcs = miscStringsForLanguage(LocalAppLanguage.current)
-    val xs = matchingTables248StringsForLanguage(LocalAppLanguage.current)
+    val xs = matchingTables248GameScreenStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
@@ -685,7 +686,7 @@ private fun MatchingTables248Board(
     onSelect: (String, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val xs = matchingTables248StringsForLanguage(LocalAppLanguage.current)
+    val xs = matchingTables248GameScreenStringsForLanguage(LocalAppLanguage.current)
 
     Row(
         modifier = modifier.fillMaxSize(),
