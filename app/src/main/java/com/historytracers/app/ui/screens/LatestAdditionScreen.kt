@@ -31,15 +31,15 @@ import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLang
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.matchingTablesStringsForLanguage
 import com.historytracers.app.ui.features.matchingTables24StringsForLanguage
-import com.historytracers.app.ui.features.matchingTables67StringsForLanguage
+import com.historytracers.app.ui.features.matchingTables248StringsForLanguage
+import com.historytracers.app.ui.features.matchingTables39StringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplicationTableWeeksOfLifeScreenStringsForLanguage
-import com.historytracers.app.ui.features.multiplyingWithGroupsLevel2StringsForLanguage
+import com.historytracers.app.ui.features.myFirstCubeScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
+import com.historytracers.app.ui.features.theLastScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -124,7 +124,11 @@ fun LatestAdditionScreen(
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToMatchingTables: () -> Unit = {},
     onNavigateToMatchingTables67: () -> Unit = {},
-    onNavigateToMatchingTables24: () -> Unit = {}
+    onNavigateToMatchingTables24: () -> Unit = {},
+    onNavigateToMatchingTables248: () -> Unit = {},
+    onNavigateToTheLast: () -> Unit = {},
+    onNavigateToMatchingTables39: () -> Unit = {},
+    onNavigateToMyFirstCube: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = latestAdditionScreenStringsForLanguage(LocalAppLanguage.current)
@@ -136,11 +140,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val wls = multiplicationTableWeeksOfLifeScreenStringsForLanguage(LocalAppLanguage.current)
-    val mwgl2 = multiplyingWithGroupsLevel2StringsForLanguage(LocalAppLanguage.current)
-    val mts = matchingTablesStringsForLanguage(LocalAppLanguage.current)
-    val mts67 = matchingTables67StringsForLanguage(LocalAppLanguage.current)
+    val mfcs = myFirstCubeScreenStringsForLanguage(LocalAppLanguage.current)
     val mts24 = matchingTables24StringsForLanguage(LocalAppLanguage.current)
+    val mts248 = matchingTables248StringsForLanguage(LocalAppLanguage.current)
+    val tls = theLastScreenStringsForLanguage(LocalAppLanguage.current)
+    val mts39 = matchingTables39StringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -148,6 +152,62 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "matching_tables_3_9",
+            label = mts39.rulesTitle,
+            icon = {
+                Text(
+                    text = "3\u00D73\u00D7N\n=9\u00D7N",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "matching_tables_3_9" in completedMultiplicationTable },
+            onNavigate = onNavigateToMatchingTables39
+        ),
+        LatestAdditionEntry(
+            sectionId = "the_last",
+            label = tls.fullTitle,
+            icon = {
+                Text(
+                    text = "9",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "the_last" in completedMultiplicationTable },
+            onNavigate = onNavigateToTheLast
+        ),
+        LatestAdditionEntry(
+            sectionId = "matching_tables_2_4_8",
+            label = mts248.rulesTitle,
+            icon = {
+                Text(
+                    text = "2\u00D72\u00D72\u00D7N\n=4\u00D72\u00D7N\n=8\u00D7N",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "matching_tables_2_4_8" in completedMultiplicationTable },
+            onNavigate = onNavigateToMatchingTables248
+        ),
+        LatestAdditionEntry(
+            sectionId = "my_first_cube",
+            label = mfcs.fullTitle,
+            icon = {
+                Text(
+                    text = "8",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "my_first_cube" in completedMultiplicationTable },
+            onNavigate = onNavigateToMyFirstCube
+        ),
         LatestAdditionEntry(
             sectionId = "matching_tables_2_4",
             label = mts24.rulesTitle,
@@ -161,62 +221,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "matching_tables_2_4" in completedMultiplicationTable },
             onNavigate = onNavigateToMatchingTables24
-        ),
-        LatestAdditionEntry(
-            sectionId = "matching_tables_6_7",
-            label = mts67.rulesTitle,
-            icon = {
-                Text(
-                    text = "6\u00D7N+N\n=7\u00D7N",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "matching_tables_6_7" in completedMultiplicationTable },
-            onNavigate = onNavigateToMatchingTables67
-        ),
-        LatestAdditionEntry(
-            sectionId = "matching_tables",
-            label = mts.rulesTitle,
-            icon = {
-                Text(
-                    text = "2\u00D73\n=3\u00D72",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "matching_tables" in completedMultiplicationTable },
-            onNavigate = onNavigateToMatchingTables
-        ),
-        LatestAdditionEntry(
-            sectionId = "multiplying_with_groups_level2",
-            label = mwgl2.rulesTitle,
-            icon = {
-                Text(
-                    text = "\u00D7 4-7",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "multiplying_with_groups_level2" in completedMultiplicationTable },
-            onNavigate = onNavigateToMultiplyingWithGroupsLevel2
-        ),
-        LatestAdditionEntry(
-            sectionId = "weeks_of_life",
-            label = wls.fullTitle,
-            icon = {
-                Text(
-                    text = "7",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "weeks_of_life" in completedMultiplicationTable },
-            onNavigate = onNavigateToWeeksOfLife
         )
     )
 

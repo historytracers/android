@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.components
 
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -90,6 +91,13 @@ fun HtmlRenderer(html: String, modifier: Modifier = Modifier, scaleSvgText: Bool
                 settings.allowFileAccess = false
                 settings.allowContentAccess = false
                 settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                // The hardware-accelerated WebView layer is drawn through a GL
+                // functor; when the screen holding the WebView is replaced (for
+                // example leaving a figure screen) the RenderThread can crash
+                // with a SIGSEGV in libhwui while drawing that stale functor.
+                // This content is static HTML/SVG, so software rendering avoids
+                // the crash without any visible loss.
+                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
             }
         },
         update = { webView ->
@@ -103,6 +111,10 @@ fun HtmlRenderer(html: String, modifier: Modifier = Modifier, scaleSvgText: Bool
                     null
                 )
             }
+        },
+        onRelease = { webView ->
+            webView.stopLoading()
+            webView.destroy()
         },
         modifier = modifier
             .fillMaxWidth()

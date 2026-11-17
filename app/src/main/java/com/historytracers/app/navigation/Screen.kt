@@ -585,6 +585,32 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableMatchingTables24Game :
         Screen("multiplication_table_matching_tables_24_game")
 
+    data object MultiplicationTableMatchingTables248Rules :
+        Screen("multiplication_table_matching_tables_248_rules")
+
+    data object MultiplicationTableMatchingTables248Game :
+        Screen("multiplication_table_matching_tables_248_game")
+
+    data object MultiplicationTableMatchingTables39Rules :
+        Screen("multiplication_table_matching_tables_39_rules")
+
+    data object MultiplicationTableMatchingTables39Game :
+        Screen("multiplication_table_matching_tables_39_game")
+
+    data object TheLastIntroduction : Screen("the_last_introduction")
+
+    data object TheLastNonagon : Screen("the_last_nonagon")
+
+    data object TheLastVisualizing : Screen("the_last_visualizing")
+
+    data object TheLastRule : Screen("the_last_rule")
+
+    data object TheLastFromThree : Screen("the_last_from_three")
+
+    data object TheLastReadingRule : Screen("the_last_reading_rule")
+
+    data object TheLastConclusion : Screen("the_last_conclusion")
+
     data object MultiplicationTableWeeksOfLifeIntroduction :
         Screen("multiplication_table_weeks_of_life_introduction")
 
@@ -605,6 +631,24 @@ sealed class Screen(val route: String) {
 
     data object MultiplicationTableWeeksOfLifeConclusion :
         Screen("multiplication_table_weeks_of_life_conclusion")
+
+    data object MyFirstCubeIntroduction : Screen("my_first_cube_introduction")
+
+    data object MyFirstCubePolygon : Screen("my_first_cube_polygon")
+
+    data object MyFirstCubeOctagon : Screen("my_first_cube_octagon")
+
+    data object MyFirstCubeVisualizing : Screen("my_first_cube_visualizing")
+
+    data object MyFirstCubeRule : Screen("my_first_cube_rule")
+
+    data object MyFirstCubeFromTwo : Screen("my_first_cube_from_two")
+
+    data object MyFirstCubeFromFour : Screen("my_first_cube_from_four")
+
+    data object MyFirstCubeReadingRule : Screen("my_first_cube_reading_rule")
+
+    data object MyFirstCubeConclusion : Screen("my_first_cube_conclusion")
 
     data object MultiplyingWithGroupsRules : Screen("multiplying_with_groups_rules")
 
