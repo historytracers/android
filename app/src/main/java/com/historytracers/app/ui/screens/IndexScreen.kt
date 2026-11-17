@@ -114,7 +114,8 @@ private val multiplicationTableSectionIds = listOf(
     "multiplying_with_groups", "first_square_number", "matching_tables_2_4",
     "my_body_multiplication_table", "multiplying_with_flowers", "matching_tables",
     "weeks_of_life", "matching_tables_6_7", "multiplying_with_groups_level2", "my_first_cube",
-    "matching_tables_2_4_8", "the_last", "matching_tables_3_9"
+    "matching_tables_2_4_8", "the_last", "matching_tables_3_9",
+    "complete_the_multiplication_table"
 )
 
 // Hubs flagged as "new" (sun badge in the top-right corner until first accessed).

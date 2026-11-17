@@ -61,6 +61,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToMatchingTables248: () -> Unit = {},
     onNavigateToTheLast: () -> Unit = {},
     onNavigateToMatchingTables39: () -> Unit = {},
+    onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -95,6 +96,8 @@ fun MultiplicationTableHubScreen(
     val matchingTables248Done = "matching_tables_2_4_8" in completedMultiplicationTableSections
     val theLastDone = "the_last" in completedMultiplicationTableSections
     val matchingTables39Done = "matching_tables_3_9" in completedMultiplicationTableSections
+    val completeTheMultiplicationTableDone =
+        "complete_the_multiplication_table" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -857,6 +860,42 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.matchingTables3And9,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Complete the Multiplication Table".
+                FilledIconButton(
+                    onClick = onNavigateToCompleteTheMultiplicationTable,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.completeTheMultiplicationTable },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (completeTheMultiplicationTableDone) {
+                            ButtonYellowDark
+                        } else {
+                            ButtonYellow
+                        },
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "\u00D7",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.completeTheMultiplicationTable,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

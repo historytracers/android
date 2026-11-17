@@ -28,10 +28,10 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.completeTheMultiplicationTableStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.matchingTables24StringsForLanguage
 import com.historytracers.app.ui.features.matchingTables248StringsForLanguage
 import com.historytracers.app.ui.features.matchingTables39StringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
@@ -128,6 +128,7 @@ fun LatestAdditionScreen(
     onNavigateToMatchingTables248: () -> Unit = {},
     onNavigateToTheLast: () -> Unit = {},
     onNavigateToMatchingTables39: () -> Unit = {},
+    onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
     onNavigateToMyFirstCube: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -141,10 +142,10 @@ fun LatestAdditionScreen(
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
     val mfcs = myFirstCubeScreenStringsForLanguage(LocalAppLanguage.current)
-    val mts24 = matchingTables24StringsForLanguage(LocalAppLanguage.current)
     val mts248 = matchingTables248StringsForLanguage(LocalAppLanguage.current)
     val tls = theLastScreenStringsForLanguage(LocalAppLanguage.current)
     val mts39 = matchingTables39StringsForLanguage(LocalAppLanguage.current)
+    val cts = completeTheMultiplicationTableStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -152,6 +153,20 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "complete_the_multiplication_table",
+            label = cts.rulesTitle,
+            icon = {
+                Text(
+                    text = "\u00D7",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "complete_the_multiplication_table" in completedMultiplicationTable },
+            onNavigate = onNavigateToCompleteTheMultiplicationTable
+        ),
         LatestAdditionEntry(
             sectionId = "matching_tables_3_9",
             label = mts39.rulesTitle,
@@ -207,20 +222,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "my_first_cube" in completedMultiplicationTable },
             onNavigate = onNavigateToMyFirstCube
-        ),
-        LatestAdditionEntry(
-            sectionId = "matching_tables_2_4",
-            label = mts24.rulesTitle,
-            icon = {
-                Text(
-                    text = "2\u00D72\u00D7N\n=4\u00D7N",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "matching_tables_2_4" in completedMultiplicationTable },
-            onNavigate = onNavigateToMatchingTables24
         )
     )
 
