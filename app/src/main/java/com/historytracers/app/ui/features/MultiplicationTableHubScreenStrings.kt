@@ -20,6 +20,8 @@ data class MultiplicationTableHubScreenStrings(
     val weeksOfLife: String,
     val myFirstCube: String,
     val matchingTables2And4And8: String,
+    val theLast: String,
+    val matchingTables3And9: String,
 )
 
 val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -39,6 +41,8 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     weeksOfLife = "Weeks of Life",
     myFirstCube = "My First Cube",
     matchingTables2And4And8 = "Matching the Tables of 2, 4 and 8",
+    theLast = "The Last",
+    matchingTables3And9 = "Matching the Tables of 3 and 9",
 )
 
 val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -58,6 +62,8 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     weeksOfLife = "Semanas da Vida",
     myFirstCube = "Meu Primeiro Cubo",
     matchingTables2And4And8 = "Combinando as Tabuadas de 2, 4 e 8",
+    theLast = "O Último",
+    matchingTables3And9 = "Combinando as Tabuadas de 3 e 9",
 )
 
 val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -77,6 +83,8 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     weeksOfLife = "Semanas de la Vida",
     myFirstCube = "Mi Primer Cubo",
     matchingTables2And4And8 = "Combinando las Tablas de 2, 4 y 8",
+    theLast = "El Último",
+    matchingTables3And9 = "Combinando las Tablas de 3 y 9",
 )
 
 val LocalMultiplicationTableHubScreenStrings = staticCompositionLocalOf { EnMultiplicationTableHubScreenStrings }

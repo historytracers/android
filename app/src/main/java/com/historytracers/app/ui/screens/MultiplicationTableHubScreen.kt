@@ -59,6 +59,8 @@ fun MultiplicationTableHubScreen(
     onNavigateToMultiplyingWithGroupsLevel2: () -> Unit = {},
     onNavigateToMyFirstCube: () -> Unit = {},
     onNavigateToMatchingTables248: () -> Unit = {},
+    onNavigateToTheLast: () -> Unit = {},
+    onNavigateToMatchingTables39: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -91,6 +93,8 @@ fun MultiplicationTableHubScreen(
         "multiplying_with_groups_level2" in completedMultiplicationTableSections
     val myFirstCubeDone = "my_first_cube" in completedMultiplicationTableSections
     val matchingTables248Done = "matching_tables_2_4_8" in completedMultiplicationTableSections
+    val theLastDone = "the_last" in completedMultiplicationTableSections
+    val matchingTables39Done = "matching_tables_3_9" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -788,6 +792,71 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.matchingTables2And4And8,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "The Last" (multiplication table of nine).
+                FilledIconButton(
+                    onClick = onNavigateToTheLast,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.theLast },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (theLastDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "9",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.theLast,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Matching the Tables of 3 and 9" (9 × N = 3 × 3 × N).
+                FilledIconButton(
+                    onClick = onNavigateToMatchingTables39,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = hss.matchingTables3And9 },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (matchingTables39Done) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Text(
+                        text = "3 \u00D7 3 \u00D7 N =\n9 \u00D7 N",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.matchingTables3And9,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
