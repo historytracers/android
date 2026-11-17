@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -546,32 +547,64 @@ fun PracticingMultiplicationByOneDigitNumbersGameScreen(
 
                     Spacer(Modifier.height(4.dp))
 
-                    MultBoard(
-                        top = run {
-                            val last = digits - 1
-                            var top = last
-                            if (column == last) {
-                                val carryOut = when {
-                                    answered -> carries[last] ?: 0
-                                    started -> (digit * groups) / 10
-                                    else -> 0
-                                }
-                                if (carryOut > 0) top = last + 1
-                            }
-                            top
-                        },
-                        digits = digits,
-                        multiplicand = multiplicand,
-                        multiplier = multiplier,
-                        column = column,
-                        carries = carries,
-                        results = results,
-                        painted = digit * groups,
-                        started = started,
-                        answered = answered
-                    )
+                    // The multiplication stays centered on the screen, and the
+                    // buttons that repeat or remove one group of squares sit right
+                    // beside it (an equal spacer on the left keeps the board
+                    // centered).
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(Modifier.width(56.dp))
 
-                    Spacer(Modifier.height(6.dp))
+                        MultBoard(
+                            top = run {
+                                val last = digits - 1
+                                var top = last
+                                if (column == last) {
+                                    val carryOut = when {
+                                        answered -> carries[last] ?: 0
+                                        started -> (digit * groups) / 10
+                                        else -> 0
+                                    }
+                                    if (carryOut > 0) top = last + 1
+                                }
+                                top
+                            },
+                            digits = digits,
+                            multiplicand = multiplicand,
+                            multiplier = multiplier,
+                            column = column,
+                            carries = carries,
+                            results = results,
+                            painted = digit * groups,
+                            started = started,
+                            answered = answered
+                        )
+
+                        Spacer(Modifier.width(8.dp))
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            RepeatButton(
+                                up = true,
+                                enabled = !answered,
+                                description = xs.repeatGroup,
+                                onClick = { change(1) }
+                            )
+                            RepeatButton(
+                                up = false,
+                                enabled = !answered,
+                                description = xs.removeGroup,
+                                onClick = { change(-1) }
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.height(4.dp))
 
                     MultSquaresPanel(
                         digit = digit,
@@ -624,35 +657,18 @@ fun PracticingMultiplicationByOneDigitNumbersGameScreen(
                         }
                     }
 
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RepeatButton(
-                            up = true,
-                            enabled = !answered,
-                            description = xs.repeatGroup,
-                            onClick = { change(1) }
-                        )
-                        RepeatButton(
-                            up = false,
-                            enabled = !answered,
-                            description = xs.removeGroup,
-                            onClick = { change(-1) }
-                        )
-                        if (answered) {
-                            FilledTonalButton(
-                                onClick = { next() },
-                                colors = ButtonDefaults.filledTonalButtonColors(
-                                    containerColor = Color(0xFF4CAF50),
-                                    contentColor = Color.White
-                                )
-                            ) {
-                                Text(
-                                    if (column >= digits - 1) xs.newProblem else xs.nextColumn,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
+                    if (answered) {
+                        FilledTonalButton(
+                            onClick = { next() },
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                if (column >= digits - 1) xs.newProblem else xs.nextColumn,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
 
@@ -791,10 +807,11 @@ private fun MultBoard(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
+        // The block takes the width of its widest row, so the result line spans
+        // exactly the multiplication and the whole board can be centered.
+        Column(modifier = Modifier.width(IntrinsicSize.Max)) {
             // Carry out of a column is written above the next order.
             BoardRow(top = top, column = column, cellWidth = cellWidth, op = null) { carryFor(it) }
             BoardRow(top = top, column = column, cellWidth = cellWidth, op = null) { multiplicandFor(it) }
