@@ -53,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -109,6 +108,11 @@ private val TEN_GROUP_BORDER = Color(0xFFC0392B)
 private val ACTIVE_CELL_BG = Color(0xFFADD8E6)
 private val INPUT_BG = Color(0xFFEAF3FB)
 private val INPUT_BORDER = Color(0xFF2C5F8A)
+
+// The input background is always pale, so the typed digits need a fixed dark
+// colour instead of the theme-dependent onSurface (light in a dark theme).
+private val INPUT_TEXT = Color(0xFF1A2733)
+
 private val ORDER_CHIP_BG = Color(0xFFF4F4F4)
 private val ORDER_CHIP_BORDER = Color(0xFFBBBBBB)
 private val ORDER_CHIP_TEXT = Color(0xFF555555)
@@ -457,10 +461,10 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
         }
     }
 
-    // The page scrolls on small screens, where the board, the squares and the
-    // messages cannot all fit at once.
-    val compactLayout = !multiplicationTableFitsOnScreenHeight()
-
+    // The game area below is the flexible part of the page: it scrolls when its
+    // content (board, squares and messages) grows with the number of digits, the
+    // carried value or the font scale, and the next step and the navigation row
+    // stay pinned underneath, so nothing is ever lost to a short window.
     val top = run {
         val last = digits - 1
         if (column == last && ((!answered && carryNeeded) || (answered && (carries[last] ?: 0) > 0))) {
@@ -513,133 +517,134 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 else -> Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (compactLayout) {
-                                Modifier.verticalScroll(rememberScrollState())
-                            } else {
-                                Modifier
-                            }
-                        )
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // The introduction keeps a bounded height so the board, the
-                    // squares and the messages always keep their space.
-                    val intro: @Composable () -> Unit = {
-                        content.text?.forEach { text ->
-                            if (text == null) return@forEach
-                            MarkdownText(text = text.text ?: "")
+                    // The game area is the flexible part of the page: it scrolls
+                    // only when its content (which grows with the number of
+                    // digits, the carried value and the font scale) is taller
+                    // than the space the navigation row leaves. Nothing is ever
+                    // clipped, and the row stays reachable at every height.
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // The introduction is part of the scrolling game area, so
+                        // the board, the squares and the messages keep their
+                        // natural size.
+                        val intro: @Composable () -> Unit = {
+                            content.text?.forEach { text ->
+                                if (text == null) return@forEach
+                                MarkdownText(text = text.text ?: "")
+                            }
                         }
-                    }
-                    if (compactLayout) {
                         intro()
-                    } else {
+
+                        Spacer(Modifier.height(4.dp))
+
+                        TypedLevelRow(level = level, digits = digits, activeColumn = column)
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = xs.question.format(typedOrderName(column, xs), digit, multiplier),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+
+                        if (incoming > 0) {
+                            Text(
+                                text = xs.incomingNote.format(incoming, digit, multiplier),
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.height(4.dp))
+
+                        TypedBoard(
+                            top = top,
+                            digits = digits,
+                            multiplicand = multiplicand,
+                            multiplier = multiplier,
+                            column = column,
+                            carries = carries,
+                            results = results,
+                            pending = !answered,
+                            carryNeeded = carryNeeded,
+                            digitText = digitText,
+                            carryText = carryText,
+                            onDigitChange = { raw ->
+                                val clean = raw.filter { it.isDigit() }.take(1)
+                                digitText = clean
+                                evaluate(clean, carryText)
+                            },
+                            onCarryChange = { raw ->
+                                val clean = raw.filter { it.isDigit() }.take(1)
+                                carryText = clean
+                                evaluate(digitText, clean)
+                            }
+                        )
+
+                        Spacer(Modifier.height(6.dp))
+
+                        TypedSquaresPanel(
+                            digit = digit,
+                            multiplier = multiplier,
+                            incoming = incoming,
+                            written = written,
+                            carryNeeded = carryNeeded,
+                            answered = answered,
+                            order = typedOrderName(column, xs),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Message area: a tip for a wrong value, or the
+                        // congratulation with the explanation of the column.
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(max = 80.dp)
-                                .verticalScroll(rememberScrollState())
+                                .heightIn(max = 116.dp)
+                                .verticalScroll(rememberScrollState()),
+                            contentAlignment = Alignment.TopCenter
                         ) {
-                            Column { intro() }
+                            if (feedback.isNotEmpty()) {
+                                Row(verticalAlignment = Alignment.Top) {
+                                    if (medalShown) {
+                                        Text(text = xs.medal, fontSize = 22.sp)
+                                        Spacer(Modifier.width(6.dp))
+                                    }
+                                    Text(
+                                        text = feedback,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (medalShown || answered) {
+                                            Color(0xFF2E7D32)
+                                        } else {
+                                            Color(0xFFB45309)
+                                        },
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier.weight(1f, fill = false)
+                                    )
+                                }
+                            }
                         }
+
                     }
-
-                    Spacer(Modifier.height(4.dp))
-
-                    TypedLevelRow(level = level, digits = digits, activeColumn = column)
-
-                    Spacer(Modifier.height(4.dp))
-
-                    Text(
-                        text = xs.question.format(typedOrderName(column, xs), digit, multiplier),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-
-                    if (incoming > 0) {
-                        Text(
-                            text = xs.incomingNote.format(incoming, digit, multiplier),
-                            style = MaterialTheme.typography.bodySmall,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-
-                    Spacer(Modifier.height(4.dp))
-
-                    TypedBoard(
-                        top = top,
-                        digits = digits,
-                        multiplicand = multiplicand,
-                        multiplier = multiplier,
-                        column = column,
-                        carries = carries,
-                        results = results,
-                        pending = !answered,
-                        carryNeeded = carryNeeded,
-                        digitText = digitText,
-                        carryText = carryText,
-                        onDigitChange = { raw ->
-                            val clean = raw.filter { it.isDigit() }.take(1)
-                            digitText = clean
-                            evaluate(clean, carryText)
-                        },
-                        onCarryChange = { raw ->
-                            val clean = raw.filter { it.isDigit() }.take(1)
-                            carryText = clean
-                            evaluate(digitText, clean)
-                        }
-                    )
 
                     Spacer(Modifier.height(6.dp))
 
-                    TypedSquaresPanel(
-                        digit = digit,
-                        multiplier = multiplier,
-                        incoming = incoming,
-                        written = written,
-                        carryNeeded = carryNeeded,
-                        answered = answered,
-                        order = typedOrderName(column, xs),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Message area: a tip for a wrong value, or the
-                    // congratulation with the explanation of the column.
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 116.dp)
-                            .verticalScroll(rememberScrollState()),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        if (feedback.isNotEmpty()) {
-                            Row(verticalAlignment = Alignment.Top) {
-                                if (medalShown) {
-                                    Text(text = xs.medal, fontSize = 22.sp)
-                                    Spacer(Modifier.width(6.dp))
-                                }
-                                Text(
-                                    text = feedback,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (medalShown || answered) {
-                                        Color(0xFF2E7D32)
-                                    } else {
-                                        Color(0xFFB45309)
-                                    },
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier.weight(1f, fill = false)
-                                )
-                            }
-                        }
-                    }
-
+                    // The next step is pinned below the scrolling game area,
+                    // together with the navigation row, so it stays visible even
+                    // when the column message is long.
                     if (answered) {
                         FilledTonalButton(
                             onClick = {
@@ -661,19 +666,14 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         }
+                        Spacer(Modifier.height(6.dp))
                     }
 
-                    // The navigation buttons stay at the bottom of the page,
-                    // away from the game itself.
-                    if (compactLayout) {
-                        Spacer(Modifier.height(12.dp))
-                    } else {
-                        Spacer(Modifier.weight(1f))
-                    }
-
-                    Spacer(Modifier.height(6.dp))
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+                    ) {
                         FilledTonalButton(
                             onClick = onNavigatePrev,
                             colors = ButtonDefaults.filledTonalButtonColors(
@@ -712,17 +712,6 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
             }
         }
     }
-}
-
-/**
- * Whether the game fits without scrolling. The board, the squares and the
- * messages together need more height than the plain multiplication screen, so
- * small phones fall back to a normally scrolling page.
- */
-@Composable
-private fun multiplicationTableFitsOnScreenHeight(): Boolean {
-    val height = LocalConfiguration.current.screenHeightDp
-    return height >= 700
 }
 
 /**
@@ -926,7 +915,7 @@ private fun CellInput(
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
+            color = INPUT_TEXT
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         modifier = Modifier

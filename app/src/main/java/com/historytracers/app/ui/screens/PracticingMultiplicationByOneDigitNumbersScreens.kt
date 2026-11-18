@@ -53,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.contentDescription
@@ -71,7 +70,6 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ScreenAudioButton
-import com.historytracers.app.ui.components.multiplicationTableFitsOnScreen
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.PracticingMultiplicationByOneDigitNumbersStrings
 import com.historytracers.app.ui.features.miscStringsForLanguage
@@ -402,11 +400,10 @@ fun PracticingMultiplicationByOneDigitNumbersGameScreen(
     // is solved as soon as every group has been repeated.
     fun change(delta: Int) {
         if (answered) return
-        if (!started) {
-            started = true
-            if (groups == multiplier) resolve()
-            return
-        }
+        // The first click both starts the column and applies its delta: a
+        // multiplier of zero still resolves on that same click, because the
+        // group count is already equal to it.
+        started = true
         groups = (groups + delta).coerceIn(0, multiplier)
         if (groups == multiplier) resolve()
     }
@@ -430,11 +427,6 @@ fun PracticingMultiplicationByOneDigitNumbersGameScreen(
             preferences.markMultiplicationTableSectionCompleted(PRACTICING_MULTIPLICATION_SECTION_ID)
         }
     }
-
-    val compactLayout = !multiplicationTableFitsOnScreen()
-    val introMaxHeight = (LocalConfiguration.current.screenHeightDp * 0.16f)
-        .dp
-        .coerceIn(60.dp, 120.dp)
 
     Column(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -479,184 +471,176 @@ fun PracticingMultiplicationByOneDigitNumbersGameScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 else -> Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(
-                            if (compactLayout) {
-                                Modifier.verticalScroll(rememberScrollState())
-                            } else {
-                                Modifier
-                            }
-                        )
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // The introduction keeps a bounded height so the board, the
-                    // squares and the buttons always keep their space.
-                    val intro: @Composable () -> Unit = {
-                        content.text?.forEach { text ->
-                            if (text == null) return@forEach
-                            MarkdownText(text = text.text ?: "")
+                    // The game area is the flexible part of the page: it scrolls
+                    // only when its content (which grows with the number of
+                    // digits, the squares and the font scale) is taller than the
+                    // space the navigation row leaves. Nothing is ever clipped,
+                    // and the row stays reachable at every height.
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // The introduction is part of the scrolling page, so the
+                        // board, the squares and the buttons keep their natural size.
+                        val intro: @Composable () -> Unit = {
+                            content.text?.forEach { text ->
+                                if (text == null) return@forEach
+                                MarkdownText(text = text.text ?: "")
+                            }
                         }
-                    }
-                    if (compactLayout) {
                         intro()
-                    } else {
+
+                        Spacer(Modifier.height(4.dp))
+
+                        MultLevelRow(
+                            level = level,
+                            digits = digits,
+                            activeColumn = column
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = xs.question.format(
+                                orderName(column, xs),
+                                digit,
+                                multiplier
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+
+                        if (incoming > 0) {
+                            Text(
+                                text = xs.incomingNote.format(incoming),
+                                style = MaterialTheme.typography.bodySmall,
+                                fontStyle = FontStyle.Italic,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.height(4.dp))
+
+                        // The multiplication stays centered on the screen, and the
+                        // buttons that repeat or remove one group of squares sit right
+                        // beside it (an equal spacer on the left keeps the board
+                        // centered).
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Spacer(Modifier.width(56.dp))
+
+                            MultBoard(
+                                top = run {
+                                    val last = digits - 1
+                                    var top = last
+                                    if (column == last) {
+                                        val carryOut = when {
+                                            answered -> carries[last] ?: 0
+                                            started -> (digit * groups) / 10
+                                            else -> 0
+                                        }
+                                        if (carryOut > 0) top = last + 1
+                                    }
+                                    top
+                                },
+                                digits = digits,
+                                multiplicand = multiplicand,
+                                multiplier = multiplier,
+                                column = column,
+                                carries = carries,
+                                results = results,
+                                painted = digit * groups,
+                                started = started,
+                                answered = answered
+                            )
+
+                            Spacer(Modifier.width(8.dp))
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                RepeatButton(
+                                    up = true,
+                                    enabled = !answered,
+                                    description = xs.repeatGroup,
+                                    onClick = { change(1) }
+                                )
+                                RepeatButton(
+                                    up = false,
+                                    enabled = !answered,
+                                    description = xs.removeGroup,
+                                    onClick = { change(-1) }
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(4.dp))
+
+                        MultSquaresPanel(
+                            digit = digit,
+                            multiplier = multiplier,
+                            groups = groups,
+                            incoming = incoming,
+                            answered = answered,
+                            order = orderName(column, xs),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Fixed message area: the column message (and the medal at
+                        // the end), so the buttons keep their place.
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(max = introMaxHeight)
-                                .verticalScroll(rememberScrollState())
+                                .heightIn(max = 62.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Column { intro() }
-                        }
-                    }
-
-                    Spacer(Modifier.height(4.dp))
-
-                    MultLevelRow(
-                        level = level,
-                        digits = digits,
-                        activeColumn = column
-                    )
-
-                    Spacer(Modifier.height(4.dp))
-
-                    Text(
-                        text = xs.question.format(
-                            orderName(column, xs),
-                            digit,
-                            multiplier
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-
-                    if (incoming > 0) {
-                        Text(
-                            text = xs.incomingNote.format(incoming),
-                            style = MaterialTheme.typography.bodySmall,
-                            fontStyle = FontStyle.Italic,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-
-                    Spacer(Modifier.height(4.dp))
-
-                    // The multiplication stays centered on the screen, and the
-                    // buttons that repeat or remove one group of squares sit right
-                    // beside it (an equal spacer on the left keeps the board
-                    // centered).
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Spacer(Modifier.width(56.dp))
-
-                        MultBoard(
-                            top = run {
-                                val last = digits - 1
-                                var top = last
-                                if (column == last) {
-                                    val carryOut = when {
-                                        answered -> carries[last] ?: 0
-                                        started -> (digit * groups) / 10
-                                        else -> 0
-                                    }
-                                    if (carryOut > 0) top = last + 1
+                            if (multiplicationComplete) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text = xs.medal, fontSize = 24.sp)
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(
+                                        text = feedback,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF2E7D32),
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier.weight(1f, fill = false)
+                                    )
                                 }
-                                top
-                            },
-                            digits = digits,
-                            multiplicand = multiplicand,
-                            multiplier = multiplier,
-                            column = column,
-                            carries = carries,
-                            results = results,
-                            painted = digit * groups,
-                            started = started,
-                            answered = answered
-                        )
-
-                        Spacer(Modifier.width(8.dp))
-
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            RepeatButton(
-                                up = true,
-                                enabled = !answered,
-                                description = xs.repeatGroup,
-                                onClick = { change(1) }
-                            )
-                            RepeatButton(
-                                up = false,
-                                enabled = !answered,
-                                description = xs.removeGroup,
-                                onClick = { change(-1) }
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(4.dp))
-
-                    MultSquaresPanel(
-                        digit = digit,
-                        multiplier = multiplier,
-                        groups = groups,
-                        incoming = incoming,
-                        answered = answered,
-                        order = orderName(column, xs),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .then(
-                                if (compactLayout) {
-                                    Modifier.height(190.dp)
-                                } else {
-                                    Modifier.weight(1f)
-                                }
-                            )
-                    )
-
-                    // Fixed message area: the column message (and the medal at
-                    // the end), so the buttons keep their place.
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 62.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (multiplicationComplete) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = xs.medal, fontSize = 24.sp)
-                                Spacer(Modifier.width(8.dp))
+                            } else if (feedback.isNotEmpty()) {
                                 Text(
                                     text = feedback,
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF2E7D32),
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier.weight(1f, fill = false)
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
                                 )
                             }
-                        } else if (feedback.isNotEmpty()) {
-                            Text(
-                                text = feedback,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2E7D32),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
                         }
+
                     }
 
+                    Spacer(Modifier.height(6.dp))
+
+                    // The next step is pinned below the scrolling game area,
+                    // together with the navigation row, so it stays visible even
+                    // when the column message is long.
                     if (answered) {
                         FilledTonalButton(
                             onClick = { next() },
@@ -670,11 +654,14 @@ fun PracticingMultiplicationByOneDigitNumbersGameScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         }
+                        Spacer(Modifier.height(6.dp))
                     }
 
-                    Spacer(Modifier.height(6.dp))
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+                    ) {
                         FilledTonalButton(
                             onClick = onNavigatePrev,
                             colors = ButtonDefaults.filledTonalButtonColors(
