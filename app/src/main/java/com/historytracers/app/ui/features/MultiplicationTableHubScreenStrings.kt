@@ -24,6 +24,7 @@ data class MultiplicationTableHubScreenStrings(
     val matchingTables3And9: String,
     val completeTheMultiplicationTable: String,
     val practicingMultiplicationByOneDigitNumbers: String,
+    val practicingMultiplicationWithTypedValues: String,
 )
 
 val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -47,6 +48,7 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     matchingTables3And9 = "Matching the Tables of 3 and 9",
     completeTheMultiplicationTable = "Complete the Multiplication Table",
     practicingMultiplicationByOneDigitNumbers = "Practicing Multiplication by One-Digit Numbers",
+    practicingMultiplicationWithTypedValues = "Practicing Multiplication with Typed Values",
 )
 
 val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -70,6 +72,7 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     matchingTables3And9 = "Combinando as Tabuadas de 3 e 9",
     completeTheMultiplicationTable = "Complete a Tabela de Multiplicação",
     practicingMultiplicationByOneDigitNumbers = "Praticando Multiplicação por Números de Um Dígito",
+    practicingMultiplicationWithTypedValues = "Praticando Multiplicação com Valores Digitados",
 )
 
 val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -93,6 +96,7 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     matchingTables3And9 = "Combinando las Tablas de 3 y 9",
     completeTheMultiplicationTable = "Completa la Tabla de Multiplicar",
     practicingMultiplicationByOneDigitNumbers = "Practicando la Multiplicación por Números de Una Cifra",
+    practicingMultiplicationWithTypedValues = "Practicando la Multiplicación con Valores Escritos",
 )
 
 val LocalMultiplicationTableHubScreenStrings = staticCompositionLocalOf { EnMultiplicationTableHubScreenStrings }

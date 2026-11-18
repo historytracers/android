@@ -3,9 +3,11 @@ package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -1023,6 +1025,85 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.practicingMultiplicationByOneDigitNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // "Practicing Multiplication with Typed Values": 4 x 4 written
+                // in the long-multiplication layout, with two empty boxes below
+                // the bar where the product digits are typed.
+                FilledIconButton(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics {
+                            contentDescription = hss.practicingMultiplicationWithTypedValues
+                        },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "4",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = OnButtonYellow
+                        )
+                        Column(
+                            modifier = Modifier.width(IntrinsicSize.Max),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Text(
+                                text = "\u00D7 4",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = OnButtonYellow
+                            )
+                            // Bar under the one-digit factor, like the line a
+                            // child draws before writing the product.
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 1.dp)
+                                    .fillMaxWidth()
+                                    .height(2.dp)
+                                    .background(OnButtonYellow)
+                            )
+                            // One box per digit of the product (4 x 4 = 16).
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                modifier = Modifier.padding(top = 2.dp)
+                            ) {
+                                repeat(2) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(width = 15.dp, height = 13.dp)
+                                            .border(
+                                                width = 1.5.dp,
+                                                color = OnButtonYellow,
+                                                shape = RoundedCornerShape(2.dp)
+                                            )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.practicingMultiplicationWithTypedValues,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
