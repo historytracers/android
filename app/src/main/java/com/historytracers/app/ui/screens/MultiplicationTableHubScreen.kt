@@ -67,6 +67,7 @@ fun MultiplicationTableHubScreen(
     onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
     onNavigateToPracticingMultiplicationByOneDigitNumbers: () -> Unit = {},
     onNavigateToTypedValues: () -> Unit = {},
+    onNavigateToChosenNumbers: () -> Unit = {},
     onNavigateToMultiplyingWithGroups: () -> Unit = {},
     onNavigateToCongratulation: () -> Unit = {},
     currentScore: Int = 0,
@@ -107,6 +108,8 @@ fun MultiplicationTableHubScreen(
         "practicing_multiplication_by_one_digit_numbers" in completedMultiplicationTableSections
     val typedValuesDone =
         "practicing_multiplication_with_typed_values" in completedMultiplicationTableSections
+    val chosenNumbersDone =
+        "practicing_multiplication_with_chosen_numbers" in completedMultiplicationTableSections
 
     // One "Next Level" flag button covering every class in this hub.
     val levelGroupSections = remember {
@@ -168,6 +171,23 @@ fun MultiplicationTableHubScreen(
         levelGroup3Controller.syncFromPersisted(completedMultiplicationTableSections)
     }
     val nextLevel3Unlocked = levelGroup3Sections.all { it in completedMultiplicationTableSections }
+
+    // Fourth "Next Level" group: every class after the third flag button, up to
+    // this new flag.
+    val levelGroup4Sections = remember {
+        listOf(
+            "practicing_multiplication_by_one_digit_numbers",
+            "practicing_multiplication_with_typed_values",
+            "practicing_multiplication_with_chosen_numbers"
+        )
+    }
+    val levelGroup4Controller = remember {
+        LevelGroupController(levelGroup4Sections, completedMultiplicationTableSections)
+    }
+    LaunchedEffect(completedMultiplicationTableSections) {
+        levelGroup4Controller.syncFromPersisted(completedMultiplicationTableSections)
+    }
+    val nextLevel4Unlocked = levelGroup4Sections.all { it in completedMultiplicationTableSections }
 
     val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
 
@@ -1107,6 +1127,122 @@ fun MultiplicationTableHubScreen(
 
                 Text(
                     text = hss.practicingMultiplicationWithTypedValues,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // Next class: "? x ?" in the long-multiplication layout, with
+                // two empty boxes below the bar where the values are typed.
+                FilledIconButton(
+                    onClick = onNavigateToChosenNumbers,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics {
+                            contentDescription = hss.practicingMultiplicationWithChosenNumbers
+                        },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (chosenNumbersDone) ButtonYellowDark else ButtonYellow,
+                        contentColor = OnButtonYellow
+                    )
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "?",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = OnButtonYellow
+                        )
+                        Column(
+                            modifier = Modifier.width(IntrinsicSize.Max),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Text(
+                                text = "\u00D7 ?",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = OnButtonYellow
+                            )
+                            // Bar under the one-digit factor, like the line a
+                            // child draws before writing the product.
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 1.dp)
+                                    .fillMaxWidth()
+                                    .height(2.dp)
+                                    .background(OnButtonYellow)
+                            )
+                            // Boxes where the values of the product are typed.
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                modifier = Modifier.padding(top = 2.dp)
+                            ) {
+                                repeat(2) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(width = 15.dp, height = 13.dp)
+                                            .border(
+                                                width = 1.5.dp,
+                                                color = OnButtonYellow,
+                                                shape = RoundedCornerShape(2.dp)
+                                            )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = hss.practicingMultiplicationWithChosenNumbers,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(48.dp))
+
+                // Fourth "Next Level" flag button: unlocks when every class
+                // between the previous flag and this one is completed.
+                FilledIconButton(
+                    onClick = {
+                        claimLevel("multiplication_table_group4")
+                        onNavigateToCongratulation()
+                    },
+                    enabled = nextLevel4Unlocked,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = s.common.nextLevel },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("multiplication_table_group4" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

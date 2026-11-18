@@ -25,6 +25,7 @@ data class MultiplicationTableHubScreenStrings(
     val completeTheMultiplicationTable: String,
     val practicingMultiplicationByOneDigitNumbers: String,
     val practicingMultiplicationWithTypedValues: String,
+    val practicingMultiplicationWithChosenNumbers: String,
 )
 
 val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -49,6 +50,7 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     completeTheMultiplicationTable = "Complete the Multiplication Table",
     practicingMultiplicationByOneDigitNumbers = "Practicing Multiplication by One-Digit Numbers",
     practicingMultiplicationWithTypedValues = "Practicing Multiplication with Typed Values",
+    practicingMultiplicationWithChosenNumbers = "Practicing Multiplication with Chosen Numbers",
 )
 
 val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -73,6 +75,7 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     completeTheMultiplicationTable = "Complete a Tabela de Multiplicação",
     practicingMultiplicationByOneDigitNumbers = "Praticando Multiplicação por Números de Um Dígito",
     practicingMultiplicationWithTypedValues = "Praticando Multiplicação com Valores Digitados",
+    practicingMultiplicationWithChosenNumbers = "Praticando Multiplicação com Números Escolhidos",
 )
 
 val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -97,6 +100,7 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     completeTheMultiplicationTable = "Completa la Tabla de Multiplicar",
     practicingMultiplicationByOneDigitNumbers = "Practicando la Multiplicación por Números de Una Cifra",
     practicingMultiplicationWithTypedValues = "Practicando la Multiplicación con Valores Escritos",
+    practicingMultiplicationWithChosenNumbers = "Practicando la Multiplicación con Números Elegidos",
 )
 
 val LocalMultiplicationTableHubScreenStrings = staticCompositionLocalOf { EnMultiplicationTableHubScreenStrings }

@@ -34,13 +34,13 @@ import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
 import com.historytracers.app.ui.features.matchingTables39StringsForLanguage
 import com.historytracers.app.ui.features.practicingMultiplicationByOneDigitNumbersStringsForLanguage
+import com.historytracers.app.ui.features.practicingMultiplicationWithChosenNumbersStringsForLanguage
 import com.historytracers.app.ui.features.practicingMultiplicationWithTypedValuesStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.myFirstCubeScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.app.ui.features.theLastScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -132,6 +132,7 @@ fun LatestAdditionScreen(
     onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
     onNavigateToPracticingMultiplicationByOneDigitNumbers: () -> Unit = {},
     onNavigateToTypedValues: () -> Unit = {},
+    onNavigateToChosenNumbers: () -> Unit = {},
     onNavigateToMyFirstCube: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -144,11 +145,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val tls = theLastScreenStringsForLanguage(LocalAppLanguage.current)
     val mts39 = matchingTables39StringsForLanguage(LocalAppLanguage.current)
     val cts = completeTheMultiplicationTableStringsForLanguage(LocalAppLanguage.current)
     val pms = practicingMultiplicationByOneDigitNumbersStringsForLanguage(LocalAppLanguage.current)
     val tvs = practicingMultiplicationWithTypedValuesStringsForLanguage(LocalAppLanguage.current)
+    val cns = practicingMultiplicationWithChosenNumbersStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -156,6 +157,22 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_multiplication_with_chosen_numbers",
+            label = cns.rulesTitle,
+            icon = {
+                Text(
+                    text = "?\n\u00D7 ?",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = {
+                "practicing_multiplication_with_chosen_numbers" in completedMultiplicationTable
+            },
+            onNavigate = onNavigateToChosenNumbers
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_multiplication_with_typed_values",
             label = tvs.rulesTitle,
@@ -215,20 +232,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "matching_tables_3_9" in completedMultiplicationTable },
             onNavigate = onNavigateToMatchingTables39
-        ),
-        LatestAdditionEntry(
-            sectionId = "the_last",
-            label = tls.fullTitle,
-            icon = {
-                Text(
-                    text = "9",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "the_last" in completedMultiplicationTable },
-            onNavigate = onNavigateToTheLast
         )
     )
 

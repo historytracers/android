@@ -122,14 +122,14 @@ private fun levelName(level: Int, xs: PracticingMultiplicationWithTypedValuesStr
         else -> xs.levelThreeDigits
     }
 
-private fun orderName(order: Int, xs: PracticingMultiplicationWithTypedValuesStrings): String =
+internal fun typedOrderName(order: Int, xs: PracticingMultiplicationWithTypedValuesStrings): String =
     when (order) {
         0 -> xs.units
         1 -> xs.tens
         else -> xs.hundreds
     }
 
-private fun digitAt(value: Int, order: Int): Int {
+internal fun typedDigitAt(value: Int, order: Int): Int {
     var v = value
     repeat(order) { v /= 10 }
     return v % 10
@@ -329,7 +329,7 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
     var medalShown by remember { mutableStateOf(false) }
 
     val digits = level + 1
-    val digit = digitAt(multiplicand, column)
+    val digit = typedDigitAt(multiplicand, column)
     val product = digit * multiplier
     val total = product + incoming
     val carryNeeded = total >= 10
@@ -387,7 +387,7 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
         if (answered) return
         answered = true
         val carryOut = total / 10
-        val order = orderName(column, xs)
+        val order = typedOrderName(column, xs)
         carries = carries + (column to carryOut)
         results = results + (column to (total % 10))
         lastCarry = carryOut
@@ -424,7 +424,7 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
         val correctCarry = total / 10
         val digitOk = newDigit.isNotEmpty() && digitValue == correctDigit
         val carryOk = !carryNeeded || (newCarry.isNotEmpty() && carryValue == correctCarry)
-        val order = orderName(column, xs)
+        val order = typedOrderName(column, xs)
 
         if (newDigit.isNotEmpty() && !digitOk) {
             feedback = when {
@@ -553,7 +553,7 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = xs.question.format(orderName(column, xs), digit, multiplier),
+                        text = xs.question.format(typedOrderName(column, xs), digit, multiplier),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -605,7 +605,7 @@ fun PracticingMultiplicationWithTypedValuesGameScreen(
                         written = written,
                         carryNeeded = carryNeeded,
                         answered = answered,
-                        order = orderName(column, xs),
+                        order = typedOrderName(column, xs),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -731,7 +731,7 @@ private fun multiplicationTableFitsOnScreenHeight(): Boolean {
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TypedLevelRow(
+internal fun TypedLevelRow(
     level: Int,
     digits: Int,
     activeColumn: Int
@@ -767,7 +767,7 @@ private fun TypedLevelRow(
                 )
             ) {
                 Text(
-                    text = orderName(order, xs),
+                    text = typedOrderName(order, xs),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
                     color = if (active) Color.White else ORDER_CHIP_TEXT,
@@ -785,7 +785,7 @@ private fun TypedLevelRow(
  * are written by hand.
  */
 @Composable
-private fun TypedBoard(
+internal fun TypedBoard(
     top: Int,
     digits: Int,
     multiplicand: Int,
@@ -823,7 +823,7 @@ private fun TypedBoard(
             }
             // Number being multiplied.
             BoardRow(top = top, column = column, cellWidth = cellWidth, op = null) { order ->
-                if (order <= digits - 1) CellText("${digitAt(multiplicand, order)}")
+                if (order <= digits - 1) CellText("${typedDigitAt(multiplicand, order)}")
             }
             // One-digit multiplier, with the multiplication sign in its column.
             BoardRow(top = top, column = column, cellWidth = cellWidth, op = "\u00D7") { order ->
@@ -953,7 +953,7 @@ private fun CellInput(
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TypedSquaresPanel(
+internal fun TypedSquaresPanel(
     digit: Int,
     multiplier: Int,
     incoming: Int,
@@ -1085,7 +1085,7 @@ private fun TypedSquareGroup(
 }
 
 @Composable
-private fun TypedValuesSourcesMenu(
+internal fun TypedValuesSourcesMenu(
     sources: List<HTSource>,
     modifier: Modifier = Modifier
 ) {

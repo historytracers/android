@@ -615,6 +615,12 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableTypedValuesGame :
         Screen("multiplication_table_typed_values_game")
 
+    data object MultiplicationTableChosenNumbersRules :
+        Screen("multiplication_table_chosen_numbers_rules")
+
+    data object MultiplicationTableChosenNumbersGame :
+        Screen("multiplication_table_chosen_numbers_game")
+
     data object TheLastIntroduction : Screen("the_last_introduction")
 
     data object TheLastNonagon : Screen("the_last_nonagon")
