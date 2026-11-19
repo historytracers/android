@@ -22,6 +22,10 @@ data class MultiplicationTableHubScreenStrings(
     val matchingTables2And4And8: String,
     val theLast: String,
     val matchingTables3And9: String,
+    val completeTheMultiplicationTable: String,
+    val practicingMultiplicationByOneDigitNumbers: String,
+    val practicingMultiplicationWithTypedValues: String,
+    val practicingMultiplicationWithChosenNumbers: String,
 )
 
 val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -43,6 +47,10 @@ val EnMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     matchingTables2And4And8 = "Matching the Tables of 2, 4 and 8",
     theLast = "The Last",
     matchingTables3And9 = "Matching the Tables of 3 and 9",
+    completeTheMultiplicationTable = "Complete the Multiplication Table",
+    practicingMultiplicationByOneDigitNumbers = "Practicing Multiplication by One-Digit Numbers",
+    practicingMultiplicationWithTypedValues = "Practicing Multiplication with Typed Values",
+    practicingMultiplicationWithChosenNumbers = "Practicing Multiplication with Chosen Numbers",
 )
 
 val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -64,6 +72,10 @@ val PtMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     matchingTables2And4And8 = "Combinando as Tabuadas de 2, 4 e 8",
     theLast = "O Último",
     matchingTables3And9 = "Combinando as Tabuadas de 3 e 9",
+    completeTheMultiplicationTable = "Complete a Tabela de Multiplicação",
+    practicingMultiplicationByOneDigitNumbers = "Praticando Multiplicação por Números de Um Dígito",
+    practicingMultiplicationWithTypedValues = "Praticando Multiplicação com Valores Digitados",
+    practicingMultiplicationWithChosenNumbers = "Praticando Multiplicação com Números Escolhidos",
 )
 
 val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
@@ -85,6 +97,10 @@ val EsMultiplicationTableHubScreenStrings = MultiplicationTableHubScreenStrings(
     matchingTables2And4And8 = "Combinando las Tablas de 2, 4 y 8",
     theLast = "El Último",
     matchingTables3And9 = "Combinando las Tablas de 3 y 9",
+    completeTheMultiplicationTable = "Completa la Tabla de Multiplicar",
+    practicingMultiplicationByOneDigitNumbers = "Practicando la Multiplicación por Números de Una Cifra",
+    practicingMultiplicationWithTypedValues = "Practicando la Multiplicación con Valores Escritos",
+    practicingMultiplicationWithChosenNumbers = "Practicando la Multiplicación con Números Elegidos",
 )
 
 val LocalMultiplicationTableHubScreenStrings = staticCompositionLocalOf { EnMultiplicationTableHubScreenStrings }

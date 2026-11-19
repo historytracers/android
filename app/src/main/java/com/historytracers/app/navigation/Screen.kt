@@ -597,6 +597,30 @@ sealed class Screen(val route: String) {
     data object MultiplicationTableMatchingTables39Game :
         Screen("multiplication_table_matching_tables_39_game")
 
+    data object MultiplicationTableCompleteRules :
+        Screen("multiplication_table_complete_rules")
+
+    data object MultiplicationTableCompleteGame :
+        Screen("multiplication_table_complete_game")
+
+    data object MultiplicationTablePracticingOneDigitRules :
+        Screen("multiplication_table_practicing_one_digit_rules")
+
+    data object MultiplicationTablePracticingOneDigitGame :
+        Screen("multiplication_table_practicing_one_digit_game")
+
+    data object MultiplicationTableTypedValuesRules :
+        Screen("multiplication_table_typed_values_rules")
+
+    data object MultiplicationTableTypedValuesGame :
+        Screen("multiplication_table_typed_values_game")
+
+    data object MultiplicationTableChosenNumbersRules :
+        Screen("multiplication_table_chosen_numbers_rules")
+
+    data object MultiplicationTableChosenNumbersGame :
+        Screen("multiplication_table_chosen_numbers_game")
+
     data object TheLastIntroduction : Screen("the_last_introduction")
 
     data object TheLastNonagon : Screen("the_last_nonagon")

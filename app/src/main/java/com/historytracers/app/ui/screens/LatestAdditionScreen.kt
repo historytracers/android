@@ -28,18 +28,19 @@ import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.carryingInAdditionScreenStringsForLanguage
+import com.historytracers.app.ui.features.completeTheMultiplicationTableStringsForLanguage
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.matchingTables24StringsForLanguage
-import com.historytracers.app.ui.features.matchingTables248StringsForLanguage
 import com.historytracers.app.ui.features.matchingTables39StringsForLanguage
+import com.historytracers.app.ui.features.practicingMultiplicationByOneDigitNumbersStringsForLanguage
+import com.historytracers.app.ui.features.practicingMultiplicationWithChosenNumbersStringsForLanguage
+import com.historytracers.app.ui.features.practicingMultiplicationWithTypedValuesStringsForLanguage
 import com.historytracers.app.ui.features.matterAndEnergyScreenStringsForLanguage
 import com.historytracers.app.ui.features.myFirstCubeScreenStringsForLanguage
 import com.historytracers.app.ui.features.runningAmongNumbersScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharedOriginScreenStringsForLanguage
 import com.historytracers.app.ui.features.sharingWithWhomScreenStringsForLanguage
-import com.historytracers.app.ui.features.theLastScreenStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -128,6 +129,10 @@ fun LatestAdditionScreen(
     onNavigateToMatchingTables248: () -> Unit = {},
     onNavigateToTheLast: () -> Unit = {},
     onNavigateToMatchingTables39: () -> Unit = {},
+    onNavigateToCompleteTheMultiplicationTable: () -> Unit = {},
+    onNavigateToPracticingMultiplicationByOneDigitNumbers: () -> Unit = {},
+    onNavigateToTypedValues: () -> Unit = {},
+    onNavigateToChosenNumbers: () -> Unit = {},
     onNavigateToMyFirstCube: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
@@ -140,11 +145,11 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val mfcs = myFirstCubeScreenStringsForLanguage(LocalAppLanguage.current)
-    val mts24 = matchingTables24StringsForLanguage(LocalAppLanguage.current)
-    val mts248 = matchingTables248StringsForLanguage(LocalAppLanguage.current)
-    val tls = theLastScreenStringsForLanguage(LocalAppLanguage.current)
     val mts39 = matchingTables39StringsForLanguage(LocalAppLanguage.current)
+    val cts = completeTheMultiplicationTableStringsForLanguage(LocalAppLanguage.current)
+    val pms = practicingMultiplicationByOneDigitNumbersStringsForLanguage(LocalAppLanguage.current)
+    val tvs = practicingMultiplicationWithTypedValuesStringsForLanguage(LocalAppLanguage.current)
+    val cns = practicingMultiplicationWithChosenNumbersStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
@@ -152,6 +157,68 @@ fun LatestAdditionScreen(
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "practicing_multiplication_with_chosen_numbers",
+            label = cns.rulesTitle,
+            icon = {
+                Text(
+                    text = "?\n\u00D7 ?",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = {
+                "practicing_multiplication_with_chosen_numbers" in completedMultiplicationTable
+            },
+            onNavigate = onNavigateToChosenNumbers
+        ),
+        LatestAdditionEntry(
+            sectionId = "practicing_multiplication_with_typed_values",
+            label = tvs.rulesTitle,
+            icon = {
+                Text(
+                    text = "4\n\u00D7 4",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = {
+                "practicing_multiplication_with_typed_values" in completedMultiplicationTable
+            },
+            onNavigate = onNavigateToTypedValues
+        ),
+        LatestAdditionEntry(
+            sectionId = "practicing_multiplication_by_one_digit_numbers",
+            label = pms.rulesTitle,
+            icon = {
+                Text(
+                    text = "2\n\u00D7 9",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = {
+                "practicing_multiplication_by_one_digit_numbers" in completedMultiplicationTable
+            },
+            onNavigate = onNavigateToPracticingMultiplicationByOneDigitNumbers
+        ),
+        LatestAdditionEntry(
+            sectionId = "complete_the_multiplication_table",
+            label = cts.rulesTitle,
+            icon = {
+                Text(
+                    text = "\u00D7",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "complete_the_multiplication_table" in completedMultiplicationTable },
+            onNavigate = onNavigateToCompleteTheMultiplicationTable
+        ),
         LatestAdditionEntry(
             sectionId = "matching_tables_3_9",
             label = mts39.rulesTitle,
@@ -165,62 +232,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "matching_tables_3_9" in completedMultiplicationTable },
             onNavigate = onNavigateToMatchingTables39
-        ),
-        LatestAdditionEntry(
-            sectionId = "the_last",
-            label = tls.fullTitle,
-            icon = {
-                Text(
-                    text = "9",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "the_last" in completedMultiplicationTable },
-            onNavigate = onNavigateToTheLast
-        ),
-        LatestAdditionEntry(
-            sectionId = "matching_tables_2_4_8",
-            label = mts248.rulesTitle,
-            icon = {
-                Text(
-                    text = "2\u00D72\u00D72\u00D7N\n=4\u00D72\u00D7N\n=8\u00D7N",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "matching_tables_2_4_8" in completedMultiplicationTable },
-            onNavigate = onNavigateToMatchingTables248
-        ),
-        LatestAdditionEntry(
-            sectionId = "my_first_cube",
-            label = mfcs.fullTitle,
-            icon = {
-                Text(
-                    text = "8",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "my_first_cube" in completedMultiplicationTable },
-            onNavigate = onNavigateToMyFirstCube
-        ),
-        LatestAdditionEntry(
-            sectionId = "matching_tables_2_4",
-            label = mts24.rulesTitle,
-            icon = {
-                Text(
-                    text = "2\u00D72\u00D7N\n=4\u00D7N",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "matching_tables_2_4" in completedMultiplicationTable },
-            onNavigate = onNavigateToMatchingTables24
         )
     )
 
