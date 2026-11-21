@@ -343,10 +343,12 @@ private fun HowDoILearnGameContent(
                     text = xs.title,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
-                ScreenAudioButton(
-                    lessonId = SMARTPHONE_GAME_FILE,
-                    contentId = contentId
-                )
+                if (contentId != CHART_CONTENT_ID) {
+                    ScreenAudioButton(
+                        lessonId = SMARTPHONE_GAME_FILE,
+                        contentId = contentId
+                    )
+                }
             }
         }
 
