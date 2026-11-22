@@ -214,6 +214,12 @@
   - streams the audio with `MediaPlayer`, toggles play/stop, shows `s.common.audioErrorMessage` on failure, and releases the player when the screen is disposed.
 - The strings `audio`, `audioOfflineMessage`, and `audioErrorMessage` live in `AppCommonStrings` with translations in `UiStrings.kt`. Reuse them; do not add per-screen audio strings.
 - Kotlin-only screens that have no lesson/content UUID pair cannot have an associated `UUID_UUID_LANG.ogg` file and are out of scope.
+- **Next Level screens:** every screen that shows a "Next Level" button must also show the shared Next Level narration button in its top bar. Reuse the single shared smartphone source for all levels; never create a per-level smartphone JSON or audio file:
+  - Lesson UUID: `4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13`
+  - Content UUID: `b7c2e4f1-6a90-4d38-8f52-3e1a9c7d6b24`
+  - Add `ScreenAudioButton(lessonId = NEXT_LEVEL_AUDIO_LESSON_ID, contentId = NEXT_LEVEL_AUDIO_CONTENT_ID)` to the top bar. Both constants are defined in `CongratulationScreen.kt`.
+  - The shared `CongratulationScreen` already renders this button. New Next Level screens must either navigate to that shared screen or add the same audio button to their own top bar.
+  - The narration source is the shared smartphone screen at `common/src/smartphone/{en-US,es-ES,pt-BR}/4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13.json`. Update all three language files only when the Next Level narration text changes, then regenerate the audio.
 - **Whenever a new lesson group is created, verify the audio button on every screen in all three languages** — switch the app language and confirm the URL uses `en-US`, `pt-BR`, and `es-ES` respectively.
 
 ## Porting a JS Abacus App to Android

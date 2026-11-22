@@ -14,7 +14,11 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
+
+private const val NEXT_LEVEL_AUDIO_LESSON_ID = "4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13"
+private const val NEXT_LEVEL_AUDIO_CONTENT_ID = "b7c2e4f1-6a90-4d38-8f52-3e1a9c7d6b24"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +45,11 @@ fun CongratulationScreen(
                 }
                 AutoSizeTitleText(
                     text = hts.congratulationTitle,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = NEXT_LEVEL_AUDIO_LESSON_ID,
+                    contentId = NEXT_LEVEL_AUDIO_CONTENT_ID
                 )
             }
         }
