@@ -205,7 +205,6 @@ private val chartColors = listOf(
 
 @Composable
 private fun MultipleIntelligencesChart(
-    labels: List<String>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -219,8 +218,8 @@ private fun MultipleIntelligencesChart(
         ) {
             val radius = size.minDimension / 2f
             val center = this.center
-            val sliceAngle = 360f / labels.size
-            labels.forEachIndexed { index, _ ->
+            val sliceAngle = 360f / chartColors.size
+            chartColors.indices.forEach { index ->
                 drawArc(
                     color = chartColors[index],
                     startAngle = -90f + index * sliceAngle,
@@ -231,7 +230,7 @@ private fun MultipleIntelligencesChart(
                 )
             }
             val separatorWidth = 2.dp.toPx()
-            labels.indices.forEach { index ->
+            chartColors.indices.forEach { index ->
                 val radians = (-90f + index * sliceAngle) * PI / 180f
                 drawLine(
                     color = Color.White,
@@ -249,9 +248,18 @@ private fun MultipleIntelligencesChart(
                 style = Stroke(width = separatorWidth)
             )
         }
+    }
+}
 
-        Spacer(Modifier.height(16.dp))
-
+@Composable
+private fun MultipleIntelligencesLegend(
+    labels: List<String>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         labels.forEachIndexed { index, label ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -260,7 +268,7 @@ private fun MultipleIntelligencesChart(
                 Box(
                     modifier = Modifier
                         .size(14.dp)
-                        .background(chartColors[index], CircleShape)
+                        .background(chartColors[index % chartColors.size], CircleShape)
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
@@ -343,12 +351,10 @@ private fun HowDoILearnGameContent(
                     text = xs.title,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
-                if (contentId != CHART_CONTENT_ID) {
-                    ScreenAudioButton(
-                        lessonId = SMARTPHONE_GAME_FILE,
-                        contentId = contentId
-                    )
-                }
+                ScreenAudioButton(
+                    lessonId = SMARTPHONE_GAME_FILE,
+                    contentId = contentId
+                )
             }
         }
 
@@ -376,9 +382,24 @@ private fun HowDoILearnGameContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (contentId == CHART_CONTENT_ID) {
+                        val chartTexts = content.text.orEmpty()
+                        chartTexts.take(1).forEach { text ->
+                            if (text.format?.contains("markdown") == true) {
+                                MarkdownText(text = text.text ?: "")
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
                         MultipleIntelligencesChart(
-                            labels = xs.chartLabels,
                             modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        val labels = chartTexts.drop(1)
+                            .flatMap { text -> text.text?.lines().orEmpty() }
+                            .map { it.removePrefix("- ").trim() }
+                            .filter { it.isNotEmpty() }
+                        MultipleIntelligencesLegend(
+                            labels = labels,
+                            modifier = Modifier.padding(top = 8.dp)
                         )
                     } else {
                         content.text?.forEach { text ->

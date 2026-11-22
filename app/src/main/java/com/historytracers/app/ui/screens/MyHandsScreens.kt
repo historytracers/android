@@ -375,17 +375,6 @@ private fun MyHandsGameContent(
                         Spacer(Modifier.height(8.dp))
                     }
 
-                    if (content.id == "f49e35e5-c3aa-49da-8fba-7c8d3c0e6204") {
-                        xs.fingerNameLabels.forEach { label ->
-                            Text(
-                                text = label,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.padding(vertical = 2.dp)
-                            )
-                        }
-                    }
-
                     if (content.answer != null) {
                         AnswerSection(
                             content = content,

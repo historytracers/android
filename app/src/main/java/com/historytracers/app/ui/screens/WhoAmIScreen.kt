@@ -2,6 +2,7 @@
 package com.historytracers.app.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -48,6 +49,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun WhoAmIScreen(
+    scrollState: ScrollState = rememberScrollState(),
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
     onNavigateBack: () -> Unit = {},
@@ -146,7 +148,7 @@ fun WhoAmIScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

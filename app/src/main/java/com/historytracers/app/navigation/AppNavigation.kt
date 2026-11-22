@@ -934,6 +934,7 @@ fun AppNavigation() {
     val roadToSomewhereScrollState = remember { ScrollState(0) }
     val whereAreWeFromScrollState = remember { ScrollState(0) }
     val multiplicationTableScrollState = remember { ScrollState(0) }
+    val whoAmIScrollState = remember { ScrollState(0) }
 
     // For each hub, read the saved offset and apply it to the ScrollState before
     // starting the collector that persists later changes. Starting the collector
@@ -985,6 +986,12 @@ fun AppNavigation() {
         if (saved > 0) multiplicationTableScrollState.scrollTo(saved)
         snapshotFlow { multiplicationTableScrollState.value }
             .collect { preferences.setMultiplicationTableScroll(it) }
+    }
+    LaunchedEffect(Unit) {
+        val saved = preferences.whoAmIScroll.first()
+        if (saved > 0) whoAmIScrollState.scrollTo(saved)
+        snapshotFlow { whoAmIScrollState.value }
+            .collect { preferences.setWhoAmIScroll(it) }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -1820,6 +1827,7 @@ fun AppNavigation() {
                     }
                     composable(Screen.WhoAmI.route) {
                         WhoAmIScreen(
+                            scrollState = whoAmIScrollState,
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
