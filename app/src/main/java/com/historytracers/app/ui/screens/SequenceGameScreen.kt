@@ -27,13 +27,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.sequenceGameScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -41,6 +46,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.historytracers.app.ui.components.safeOpenUri
+
+private const val SEQUENCE_GAME_FILE = "32cf89a4-e1ba-48e4-8c53-f55ab6cc7d84"
 
 private fun generateRound(previousMissingIndex: Int): Pair<List<Int>, Int> {
     val start = Random.nextInt(0, 8)
@@ -60,9 +67,30 @@ fun SequenceGameScreen(
     val s = LocalUiStrings.current
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = sequenceGameScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
+    val repo = remember { ContentRepository(context) }
     val scope = rememberCoroutineScope()
+
+    var contentText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$SEQUENCE_GAME_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data.content?.firstOrNull()
+                contentText = content?.text
+                    ?.firstOrNull { it.format?.contains("markdown") == true }
+                    ?.text
+                contentId = content?.id
+            }
+            else -> {
+                contentText = null
+                contentId = null
+            }
+        }
+    }
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
@@ -122,141 +150,68 @@ fun SequenceGameScreen(
                     }
                     AutoSizeTitleText(
                         text = hts.sequenceGame,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = SEQUENCE_GAME_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Spacer(Modifier.height(8.dp))
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val fontScale = LocalDensity.current.fontScale
+                // Below ~480 dp the board leaves no usable room for the intro, so
+                // fall back to a normally scrolling page (AGENTS.md: short windows).
+                val compact = maxHeight < 480.dp || fontScale > 1.3f
 
-                Text(
-                    text = xs.instruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
-                )
-
-                Spacer(Modifier.height(24.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    for (i in 0..2) {
-                        val isMissing = i == missingIndex
-                        Box(
+                if (compact) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(top = 8.dp, bottom = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        SequenceGameIntro(contentText = contentText)
+                        Spacer(Modifier.height(16.dp))
+                        SequenceGameBoard(
+                            sequence = sequence,
+                            missingIndex = missingIndex,
+                            guess = guess,
+                            completed = completed,
+                            onAdjustGuess = { adjustGuess(it) },
+                            onNewGame = { startNewGame() }
+                        )
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Column(
                             modifier = Modifier
-                                .size(88.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(
-                                    if (isMissing) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
-                                )
-                                .border(
-                                    width = if (isMissing) 3.dp else 1.dp,
-                                    color = if (isMissing) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                    shape = RoundedCornerShape(16.dp)
-                                ),
-                            contentAlignment = Alignment.Center
+                                .fillMaxWidth()
+                                .weight(1f, fill = false)
+                                .verticalScroll(rememberScrollState())
+                                .padding(vertical = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = if (isMissing) (guess?.toString() ?: "?") else "${sequence[i]}",
-                                style = MaterialTheme.typography.displayLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = if (isMissing) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                            )
+                            SequenceGameIntro(contentText = contentText)
                         }
+                        SequenceGameBoard(
+                            sequence = sequence,
+                            missingIndex = missingIndex,
+                            guess = guess,
+                            completed = completed,
+                            onAdjustGuess = { adjustGuess(it) },
+                            onNewGame = { startNewGame() }
+                        )
+                        Spacer(Modifier.height(16.dp))
                     }
                 }
-
-                Spacer(Modifier.height(16.dp))
-
-                Text(
-                    text = "${s.common.number} ${guess?.toString() ?: "?"}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FilledIconButton(
-                        onClick = { adjustGuess(-1) },
-                        enabled = !completed && (guess == null || (guess ?: 0) > 0),
-                        modifier = Modifier.size(64.dp),
-                        shape = CircleShape,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowDown,
-                            contentDescription = xs.downArrow,
-                            modifier = Modifier.size(36.dp)
-                        )
-                    }
-                    FilledIconButton(
-                        onClick = { adjustGuess(1) },
-                        enabled = !completed && (guess == null || (guess ?: 9) < 9),
-                        modifier = Modifier.size(64.dp),
-                        shape = CircleShape,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = ButtonYellow,
-                            contentColor = OnButtonYellow
-                        )
-                    ) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowUp,
-                            contentDescription = xs.upArrow,
-                            modifier = Modifier.size(36.dp)
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                FilledTonalButton(
-                    onClick = { startNewGame() },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = ButtonYellow,
-                        contentColor = OnButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = xs.newGame,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                if (completed) {
-                    Text(
-                        text = xs.completionMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(24.dp))
             }
         }
 
@@ -323,6 +278,161 @@ fun SequenceGameScreen(
                     }
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+private fun SequenceGameIntro(
+    contentText: String?,
+    modifier: Modifier = Modifier
+) {
+    val xs = sequenceGameScreenStringsForLanguage(LocalAppLanguage.current)
+    val intro = contentText
+    if (intro != null) {
+        MarkdownText(
+            text = intro,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        )
+    } else {
+        Text(
+            text = xs.instruction,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun SequenceGameBoard(
+    sequence: List<Int>,
+    missingIndex: Int,
+    guess: Int?,
+    completed: Boolean,
+    onAdjustGuess: (Int) -> Unit,
+    onNewGame: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val s = LocalUiStrings.current
+    val xs = sequenceGameScreenStringsForLanguage(LocalAppLanguage.current)
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            for (i in 0..2) {
+                val isMissing = i == missingIndex
+                Box(
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            if (isMissing) ButtonYellow else MaterialTheme.colorScheme.surfaceVariant
+                        )
+                        .border(
+                            width = if (isMissing) 3.dp else 1.dp,
+                            color = if (isMissing) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(16.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (isMissing) (guess?.toString() ?: "?") else "${sequence[i]}",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isMissing) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "${s.common.number} ${guess?.toString() ?: "?"}",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilledIconButton(
+                onClick = { onAdjustGuess(-1) },
+                enabled = !completed && (guess == null || (guess ?: 0) > 0),
+                modifier = Modifier.size(64.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    Icons.Filled.KeyboardArrowDown,
+                    contentDescription = xs.downArrow,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+            FilledIconButton(
+                onClick = { onAdjustGuess(1) },
+                enabled = !completed && (guess == null || (guess ?: 9) < 9),
+                modifier = Modifier.size(64.dp),
+                shape = CircleShape,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = ButtonYellow,
+                    contentColor = OnButtonYellow
+                )
+            ) {
+                Icon(
+                    Icons.Filled.KeyboardArrowUp,
+                    contentDescription = xs.upArrow,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        FilledTonalButton(
+            onClick = onNewGame,
+            shape = RoundedCornerShape(24.dp),
+            colors = ButtonDefaults.filledTonalButtonColors(
+                containerColor = ButtonYellow,
+                contentColor = OnButtonYellow
+            )
+        ) {
+            Text(
+                text = xs.newGame,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        if (completed) {
+            Text(
+                text = xs.completionMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+            )
         }
     }
 }

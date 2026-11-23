@@ -47,6 +47,7 @@ import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ResponsiveImage
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -58,6 +59,10 @@ private const val MAX_BONE_MARKS = 20
 private const val MAX_BONE_LEVELS = 4
 private const val LEBOMBO_BONE_IMAGE_URL = "file:///android_asset/ResearchGate/Figura-9-Hueso-de-Lebombo.png"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=7d2fd4de-5c10-4811-957c-8233bc8d21de"
+private const val BONE_LESSON_FILE = "0cc640f4-d3ce-4045-a725-f5f021478aee"
+private const val BONE_INTRO_CONTENT_ID = "f34a3844-258b-493c-b473-30a6c8ec4084"
+private const val BONE_GAME_CONTENT_ID = "fe3f48ce-81bb-44d9-a509-df960dc0f3bb"
+private const val BONE_PRACTICE_CONTENT_ID = "032a8b5c-22d1-41c2-9cbe-0e30fbb8d716"
 private const val GONZALEZ_REDONDO_2010_URL = "https://doi.org/10.4321/S0211-95362010000100007"
 private const val GONZALEZ_REDONDO_2024_URL = "https://www.youtube.com/watch?v=RFui5Z52pUY"
 private const val BARRIGA_2020_URL = "https://play.google.com/store/books/details/Tsik_Los_n%C3%BAmeros_y_la_numerolog%C3%ADa_entre_los_mayas?id=eKr7DwAAQBAJ&hl=az&gl=US&pli=1"
@@ -96,7 +101,12 @@ fun CountingWithBonesIntroScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            BoneTopBar(title = xs.title, onNavigateBack = onNavigateBack, backDescription = s.common.back)
+            BoneTopBar(
+                title = xs.title,
+                contentId = BONE_INTRO_CONTENT_ID,
+                onNavigateBack = onNavigateBack,
+                backDescription = s.common.back
+            )
 
             Column(
                 modifier = Modifier
@@ -189,7 +199,13 @@ fun CountingWithBonesGameScreen(
     val won = target > 0 && marks == target
 
     Column(modifier = Modifier.fillMaxSize()) {
-        BoneTopBar(title = xs.title, onNavigateBack = onNavigateBack, backDescription = s.common.back)
+        BoneTopBar(
+            title = xs.title,
+            contentId = BONE_GAME_CONTENT_ID,
+            onNavigateBack = onNavigateBack,
+            backDescription = s.common.back,
+            showNextLevelAudio = won
+        )
 
         Column(
             modifier = Modifier
@@ -391,7 +407,12 @@ fun CountingWithBonesPracticeScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        BoneTopBar(title = xs.title, onNavigateBack = onNavigateBack, backDescription = s.common.back)
+        BoneTopBar(
+            title = xs.title,
+            contentId = BONE_PRACTICE_CONTENT_ID,
+            onNavigateBack = onNavigateBack,
+            backDescription = s.common.back
+        )
 
         Column(
             modifier = Modifier
@@ -444,7 +465,13 @@ fun CountingWithBonesPracticeScreen(
 }
 
 @Composable
-private fun BoneTopBar(title: String, onNavigateBack: () -> Unit, backDescription: String) {
+private fun BoneTopBar(
+    title: String,
+    contentId: String,
+    onNavigateBack: () -> Unit,
+    backDescription: String,
+    showNextLevelAudio: Boolean = false
+) {
     Surface(
         tonalElevation = 3.dp,
         modifier = Modifier.fillMaxWidth()
@@ -461,8 +488,19 @@ private fun BoneTopBar(title: String, onNavigateBack: () -> Unit, backDescriptio
             }
             AutoSizeTitleText(
                 text = title,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp).weight(1f)
             )
+            ScreenAudioButton(
+                lessonId = BONE_LESSON_FILE,
+                contentId = contentId
+            )
+            if (showNextLevelAudio) {
+                // Same shared narration used by every screen with a "Next Level" button.
+                ScreenAudioButton(
+                    lessonId = NEXT_LEVEL_AUDIO_LESSON_ID,
+                    contentId = NEXT_LEVEL_AUDIO_CONTENT_ID
+                )
+            }
         }
     }
 }

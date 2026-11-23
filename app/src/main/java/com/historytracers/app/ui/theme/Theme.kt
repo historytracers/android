@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package com.historytracers.app.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Gold60,
-    secondary = Brown60,
-    background = DarkBackground
-)
-
+// The original History Tracers software always draws on a white background, so the
+// app keeps the light colour scheme even when the device is in dark mode.
 private val LightColorScheme = lightColorScheme(
     primary = Brown40,
     secondary = Brown60,
@@ -21,11 +15,10 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun HistoryTracersTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )

@@ -21,13 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.sequenceGameOrdersScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -35,6 +40,8 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlin.random.Random
 import kotlinx.coroutines.launch
 import com.historytracers.app.ui.components.safeOpenUri
+
+private const val ORDERS_GAME_FILE = "8759e6e6-dfe2-4267-9ae2-e9cc009b17b9"
 
 private val allOrderNumbers = listOf(
     1L, 10L, 100L, 1000L, 10000L, 100000L,
@@ -86,9 +93,10 @@ private fun OrderItemButton(
     }
     FilledTonalButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.heightIn(min = 40.dp),
         enabled = !matched,
         shape = RoundedCornerShape(16.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
         colors = ButtonDefaults.filledTonalButtonColors(
             containerColor = container,
             contentColor = content,
@@ -98,7 +106,7 @@ private fun OrderItemButton(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold
         )
     }
@@ -117,6 +125,26 @@ fun SequenceGameOrdersScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
+
+    val repo = remember { ContentRepository(context) }
+    var contentText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$ORDERS_GAME_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data.content?.firstOrNull()
+                contentText = content?.text
+                    ?.firstOrNull { it.format?.contains("markdown") == true }
+                    ?.text
+                contentId = content?.id
+            }
+            else -> {
+                contentText = null
+                contentId = null
+            }
+        }
+    }
 
     val allOrderNames = listOf(
         xs.units, xs.tens, xs.hundreds, xs.thousands, xs.tenThousands, xs.hundredThousands,
@@ -238,102 +266,76 @@ fun SequenceGameOrdersScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = ORDERS_GAME_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Spacer(Modifier.height(8.dp))
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val fontScale = LocalDensity.current.fontScale
+                // Below ~480 dp the board leaves no usable room for the intro, so
+                // fall back to a normally scrolling page (AGENTS.md: short windows).
+                val compact = maxHeight < 480.dp || fontScale > 1.3f
 
-                Text(
-                    text = xs.instruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
-                )
-
-                Spacer(Modifier.height(24.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        leftItems.forEach { item ->
-                            OrderItemButton(
-                                text = item.text,
-                                selected = selectedLeftId == item.id,
-                                matched = item.id in matchedIds,
-                                onClick = { onLeftTap(item) },
-                                modifier = Modifier.width(140.dp)
-                            )
-                        }
+                if (compact) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(top = 8.dp, bottom = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        OrdersGameIntro(contentText = contentText)
+                        Spacer(Modifier.height(12.dp))
+                        OrdersGameBoard(
+                            leftItems = leftItems,
+                            rightItems = rightItems,
+                            matchedIds = matchedIds,
+                            selectedLeftId = selectedLeftId,
+                            selectedRightId = selectedRightId,
+                            completed = completed,
+                            feedbackMessage = feedbackMessage,
+                            onLeftTap = { onLeftTap(it) },
+                            onRightTap = { onRightTap(it) },
+                            onNewGame = { newGame() }
+                        )
                     }
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        rightItems.forEach { item ->
-                            OrderItemButton(
-                                text = item.text,
-                                selected = selectedRightId == item.id,
-                                matched = item.id in matchedIds,
-                                onClick = { onRightTap(item) },
-                                modifier = Modifier.width(220.dp)
-                            )
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f, fill = false)
+                                .verticalScroll(rememberScrollState())
+                                .padding(vertical = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            OrdersGameIntro(contentText = contentText)
                         }
+                        OrdersGameBoard(
+                            leftItems = leftItems,
+                            rightItems = rightItems,
+                            matchedIds = matchedIds,
+                            selectedLeftId = selectedLeftId,
+                            selectedRightId = selectedRightId,
+                            completed = completed,
+                            feedbackMessage = feedbackMessage,
+                            onLeftTap = { onLeftTap(it) },
+                            onRightTap = { onRightTap(it) },
+                            onNewGame = { newGame() }
+                        )
+                        Spacer(Modifier.height(12.dp))
                     }
                 }
-
-                if (feedbackMessage != null) {
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = feedbackMessage!!,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                FilledTonalButton(
-                    onClick = { newGame() },
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = ButtonYellow,
-                        contentColor = OnButtonYellow
-                    )
-                ) {
-                    Text(
-                        text = xs.newGame,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                if (completed) {
-                    Text(
-                        text = xs.completionMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                    )
-                }
-
-                Spacer(Modifier.height(24.dp))
             }
         }
 
@@ -400,6 +402,134 @@ fun SequenceGameOrdersScreen(
                     }
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+private fun OrdersGameIntro(
+    contentText: String?,
+    modifier: Modifier = Modifier
+) {
+    val xs = sequenceGameOrdersScreenStringsForLanguage(LocalAppLanguage.current)
+    val intro = contentText
+    if (intro != null) {
+        MarkdownText(
+            text = intro,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        )
+    } else {
+        Text(
+            text = xs.instruction,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun OrdersGameBoard(
+    leftItems: List<OrderLeftItem>,
+    rightItems: List<OrderRightItem>,
+    matchedIds: Set<Int>,
+    selectedLeftId: Int?,
+    selectedRightId: Int?,
+    completed: Boolean,
+    feedbackMessage: String?,
+    onLeftTap: (OrderLeftItem) -> Unit,
+    onRightTap: (OrderRightItem) -> Unit,
+    onNewGame: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val xs = sequenceGameOrdersScreenStringsForLanguage(LocalAppLanguage.current)
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(
+                modifier = Modifier.weight(2f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                leftItems.forEach { item ->
+                    OrderItemButton(
+                        text = item.text,
+                        selected = selectedLeftId == item.id,
+                        matched = item.id in matchedIds,
+                        onClick = { onLeftTap(item) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.weight(3f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                rightItems.forEach { item ->
+                    OrderItemButton(
+                        text = item.text,
+                        selected = selectedRightId == item.id,
+                        matched = item.id in matchedIds,
+                        onClick = { onRightTap(item) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
+
+        if (feedbackMessage != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = feedbackMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        FilledTonalButton(
+            onClick = onNewGame,
+            shape = RoundedCornerShape(24.dp),
+            colors = ButtonDefaults.filledTonalButtonColors(
+                containerColor = ButtonYellow,
+                contentColor = OnButtonYellow
+            )
+        ) {
+            Text(
+                text = xs.newGame,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        if (completed) {
+            Text(
+                text = xs.completionMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2E7D32),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+            )
         }
     }
 }
