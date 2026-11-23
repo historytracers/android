@@ -17,8 +17,12 @@ import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 
-private const val NEXT_LEVEL_AUDIO_LESSON_ID = "4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13"
-private const val NEXT_LEVEL_AUDIO_CONTENT_ID = "b7c2e4f1-6a90-4d38-8f52-3e1a9c7d6b24"
+/**
+ * Shared narration played on every screen that offers a "Next Level" button.
+ * Public so any such screen can reuse it instead of creating its own audio.
+ */
+const val NEXT_LEVEL_AUDIO_LESSON_ID = "4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13"
+const val NEXT_LEVEL_AUDIO_CONTENT_ID = "b7c2e4f1-6a90-4d38-8f52-3e1a9c7d6b24"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -203,7 +203,8 @@ fun CountingWithBonesGameScreen(
             title = xs.title,
             contentId = BONE_GAME_CONTENT_ID,
             onNavigateBack = onNavigateBack,
-            backDescription = s.common.back
+            backDescription = s.common.back,
+            showNextLevelAudio = won
         )
 
         Column(
@@ -468,7 +469,8 @@ private fun BoneTopBar(
     title: String,
     contentId: String,
     onNavigateBack: () -> Unit,
-    backDescription: String
+    backDescription: String,
+    showNextLevelAudio: Boolean = false
 ) {
     Surface(
         tonalElevation = 3.dp,
@@ -492,6 +494,13 @@ private fun BoneTopBar(
                 lessonId = BONE_LESSON_FILE,
                 contentId = contentId
             )
+            if (showNextLevelAudio) {
+                // Same shared narration used by every screen with a "Next Level" button.
+                ScreenAudioButton(
+                    lessonId = NEXT_LEVEL_AUDIO_LESSON_ID,
+                    contentId = NEXT_LEVEL_AUDIO_CONTENT_ID
+                )
+            }
         }
     }
 }

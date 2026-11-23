@@ -279,7 +279,9 @@ fun SequenceGameOrdersScreen(
 
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val fontScale = LocalDensity.current.fontScale
-                val compact = maxHeight < 400.dp || fontScale > 1.3f
+                // Below ~480 dp the board leaves no usable room for the intro, so
+                // fall back to a normally scrolling page (AGENTS.md: short windows).
+                val compact = maxHeight < 480.dp || fontScale > 1.3f
 
                 if (compact) {
                     Column(

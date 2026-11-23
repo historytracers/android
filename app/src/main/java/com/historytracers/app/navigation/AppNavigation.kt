@@ -681,6 +681,7 @@ import com.historytracers.app.notification.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -990,12 +991,29 @@ fun AppNavigation() {
     LaunchedEffect(Unit) {
         val saved = preferences.whoAmIScroll.first()
         if (saved > 0) whoAmIScrollState.scrollTo(saved)
+        // Persist once scrolling pauses instead of on every pixel change. The
+        // latest offset is still flushed when the hub is left (see below).
         snapshotFlow { whoAmIScrollState.value }
-            .collect { preferences.setWhoAmIScroll(it) }
+            .distinctUntilChanged()
+            .collectLatest { offset ->
+                delay(300)
+                preferences.setWhoAmIScroll(offset)
+            }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    // Flush the latest WhoAmI hub offset when the screen leaves, so a scroll that
+    // ended inside the debounce window above is still saved.
+    var wasOnWhoAmI by remember { mutableStateOf(false) }
+    LaunchedEffect(currentRoute) {
+        val onWhoAmI = currentRoute == Screen.WhoAmI.route
+        if (wasOnWhoAmI && !onWhoAmI) {
+            preferences.setWhoAmIScroll(whoAmIScrollState.value)
+        }
+        wasOnWhoAmI = onWhoAmI
+    }
 
     LaunchedEffect(currentRoute) {
         val route = currentRoute

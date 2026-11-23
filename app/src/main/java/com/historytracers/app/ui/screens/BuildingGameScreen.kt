@@ -191,7 +191,9 @@ fun BuildingGameScreen(
 
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                 val fontScale = LocalDensity.current.fontScale
-                val compact = maxHeight < 400.dp || fontScale > 1.3f
+                // Below ~480 dp the grid leaves no usable room for the intro, so
+                // fall back to a normally scrolling page (AGENTS.md: short windows).
+                val compact = maxHeight < 480.dp || fontScale > 1.3f
                 // Keep the 10x10 grid, the level and the buttons on screen while
                 // leaving room for the text on top, even on short phones.
                 val gridMaxWidth = if (compact) 10000.dp else maxHeight * 0.55f
