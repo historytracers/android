@@ -745,19 +745,20 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
         return committed
     }
 
-    suspend fun claimReturningLevel(newScore: Int, requiredSections: List<String>): Boolean {
-        var claimed = false
+    suspend fun claimReturningLevel(bonus: Int, requiredSections: List<String>): Int? {
+        var total: Int? = null
         context.dataStore.edit { preferences ->
             val completed = preferences[RETURNING_SECTIONS_KEY] ?: emptySet()
             if (!requiredSections.all { it in completed }) return@edit
             val levelClaims = preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
             if ("returning" in levelClaims) return@edit
+            val newTotal = (preferences[SCORE_KEY] ?: 0) + bonus
             preferences[CLAIMED_LEVELS_KEY] = levelClaims + "returning"
-            preferences[SCORE_KEY] = newScore
+            preferences[SCORE_KEY] = newTotal
             applyLessonCompletionStreak(preferences)
-            claimed = true
+            total = newTotal
         }
-        return claimed
+        return total
     }
 
     val seenNewHubs: Flow<Set<String>> = context.dataStore.data.map { preferences ->

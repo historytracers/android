@@ -86,13 +86,18 @@ fun WhoAmIScreen(
         if (claiming) return
         if ("who_am_i" in claimedLevels) return
         claiming = true
-        onScoreChanged(currentScore + 10)
         scope.launch {
-            withContext(NonCancellable) {
-                preferences.recordLessonCompletion()
-                preferences.markLevelClaimed("who_am_i")
+            val committed = withContext(NonCancellable) {
+                val total = preferences.claimLevel("who_am_i", 10)
+                if (total != null) {
+                    preferences.recordLessonCompletion()
+                }
+                total
             }
             claiming = false
+            if (committed != null) {
+                onScoreChanged(committed)
+            }
         }
     }
 

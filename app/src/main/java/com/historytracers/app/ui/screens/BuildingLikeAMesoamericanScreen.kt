@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,11 +30,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.buildingLikeAMesoamericanScreenStringsForLanguage
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
 import kotlinx.coroutines.launch
@@ -42,6 +48,8 @@ import kotlin.random.Random
 private const val MAX_LEVEL = 2
 private const val ROWS = 5
 private const val COLUMNS = 4
+private const val BUILDING_LIKE_A_MESOAMERICAN_FILE = "61a2fe15-fbba-4c7d-8e5e-9d05a07080fe"
+private const val BUILDING_LIKE_A_MESOAMERICAN_CONTENT_ID = "59f14c5b-92e2-4a08-9380-88e0eb942f20"
 
 private fun hiddenPositionsFor(level: Int): Set<Int> {
     val hidden = mutableSetOf<Int>()
@@ -99,13 +107,155 @@ private fun MayaGameNumber(value: Int, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuildingLikeAMesoamericanScreen(
-    onNavigateBack: () -> Unit = {},
+fun BuildingLikeAMesoamericanIntroScreen(
     currentScore: Int = 0,
-    onScoreChanged: (Int) -> Unit = {}
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = buildingLikeAMesoamericanScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
+    val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+    var contentScore by remember { mutableIntStateOf(0) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var arrivalHandled by remember { mutableStateOf(false) }
+    val initialScore = remember { currentScore }
+
+    LaunchedEffect(language) {
+        loading = true
+        error = null
+        instructionText = null
+        contentId = null
+        contentScore = 0
+        when (val result = repo.loadAndParse("$language/$BUILDING_LIKE_A_MESOAMERICAN_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == BUILDING_LIKE_A_MESOAMERICAN_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+                contentScore = content?.score ?: 0
+            }
+            is ContentResult.Error -> error = result.message
+            else -> error = s.common.unsupportedContentType
+        }
+        loading = false
+    }
+
+    LaunchedEffect(contentId) {
+        if (contentId != null && !arrivalHandled) {
+            arrivalHandled = true
+            if (contentScore > 0) {
+                onScoreChanged(initialScore + contentScore)
+            }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                }
+                AutoSizeTitleText(
+                    text = xs.title,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = BUILDING_LIKE_A_MESOAMERICAN_FILE,
+                        contentId = id
+                    )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                error != null -> Text(
+                    text = "${s.common.error}: $error",
+                    modifier = Modifier.padding(16.dp)
+                )
+                else -> Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val text = instructionText
+                    if (text != null) {
+                        MarkdownText(
+                            text = text,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = xs.instruction,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    FilledTonalButton(
+                        onClick = onNavigateNext,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = s.common.next,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BuildingLikeAMesoamericanScreen(
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateToAnotherWayToCount: (() -> Unit)? = null
+) {
+    val s = LocalUiStrings.current
+    val xs = buildingLikeAMesoamericanScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -185,7 +335,7 @@ fun BuildingLikeAMesoamericanScreen(
                 }
                 AutoSizeTitleText(
                     text = xs.title,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
             }
         }
@@ -198,14 +348,6 @@ fun BuildingLikeAMesoamericanScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(Modifier.height(8.dp))
-
-            Text(
-                text = xs.instruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
-            )
 
             Text(
                 text = "${s.common.levelPrefix}$level",
@@ -323,6 +465,22 @@ fun BuildingLikeAMesoamericanScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                 )
+            }
+
+            if (onNavigateToAnotherWayToCount != null) {
+                Spacer(Modifier.height(16.dp))
+                FilledTonalButton(
+                    onClick = onNavigateToAnotherWayToCount,
+                    colors = ButtonDefaults.filledTonalButtonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = hts.anotherWayToCount,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(Modifier.height(24.dp))

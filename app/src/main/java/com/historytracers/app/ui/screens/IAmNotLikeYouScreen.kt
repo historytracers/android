@@ -75,14 +75,19 @@ fun IAmNotLikeYouScreen(
         if (claiming) return
         if ("i_am_not_like_you" in claimedLevels) return
         claiming = true
-        onScoreChanged(currentScore + 10)
         scope.launch {
-            withContext(NonCancellable) {
-                preferences.recordLessonCompletion()
-                preferences.markLevelClaimed("i_am_not_like_you")
+            val committed = withContext(NonCancellable) {
+                val total = preferences.claimLevel("i_am_not_like_you", 10)
+                if (total != null) {
+                    preferences.recordLessonCompletion()
+                }
+                total
             }
             claiming = false
-            onNavigateToCongratulation()
+            if (committed != null) {
+                onScoreChanged(committed)
+                onNavigateToCongratulation()
+            }
         }
     }
 

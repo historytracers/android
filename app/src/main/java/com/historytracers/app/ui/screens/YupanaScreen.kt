@@ -35,7 +35,9 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun YupanaScreen(
@@ -88,10 +90,20 @@ fun YupanaScreen(
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
+    var claimingLevel by remember { mutableStateOf(false) }
+
     fun claimLevel(levelId: String) {
-        if (levelId in claimedLevels) return
-        onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed(levelId) }
+        if (claimingLevel || levelId in claimedLevels) return
+        claimingLevel = true
+        scope.launch {
+            val committed = withContext(NonCancellable) {
+                preferences.claimLevel(levelId, 10)
+            }
+            claimingLevel = false
+            if (committed != null) {
+                onScoreChanged(committed)
+            }
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

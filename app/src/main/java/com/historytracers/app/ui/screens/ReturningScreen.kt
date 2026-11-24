@@ -89,11 +89,11 @@ fun ReturningScreen(
         claiming = true
         scope.launch {
             val claimed = withContext(NonCancellable) {
-                preferences.claimReturningLevel(currentScore + 10, RETURNING_SECTION_IDS)
+                preferences.claimReturningLevel(10, RETURNING_SECTION_IDS)
             }
             claiming = false
-            if (claimed) {
-                onScoreChanged(currentScore + 10)
+            if (claimed != null) {
+                onScoreChanged(claimed)
                 onNavigateToCongratulation()
             }
         }

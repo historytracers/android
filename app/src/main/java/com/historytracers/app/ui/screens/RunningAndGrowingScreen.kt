@@ -81,11 +81,13 @@ fun RunningAndGrowingScreen(
         claimingLevel = true
         scope.launch {
             try {
-                withContext(NonCancellable) {
-                    preferences.markLevelClaimed("running_and_growing")
+                val committed = withContext(NonCancellable) {
+                    preferences.claimLevel("running_and_growing", 10)
                 }
-                onScoreChanged(currentScore + 10)
-                onNavigateToCongratulation()
+                if (committed != null) {
+                    onScoreChanged(committed)
+                    onNavigateToCongratulation()
+                }
             } finally {
                 claimingLevel = false
             }

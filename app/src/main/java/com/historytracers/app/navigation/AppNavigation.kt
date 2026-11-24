@@ -253,7 +253,9 @@ import com.historytracers.app.ui.screens.WalkingBackwardsFromAnotherBeginningScr
 import com.historytracers.app.ui.screens.WalkingBackwardsThinkingScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsSignalScreen
 import com.historytracers.app.ui.screens.WalkingBackwardsConclusionScreen
+import com.historytracers.app.ui.screens.BuildingLikeAMesoamericanIntroScreen
 import com.historytracers.app.ui.screens.BuildingLikeAMesoamericanScreen
+import com.historytracers.app.ui.screens.BuildingLikeEtruscanRomansIntroScreen
 import com.historytracers.app.ui.screens.BuildingLikeEtruscanRomansScreen
 import com.historytracers.app.ui.screens.HundredsAndThousandsAppendScreen
 import com.historytracers.app.ui.screens.HundredsAndThousandsConclusionScreen
@@ -765,7 +767,8 @@ fun AppNavigation() {
            Screen.SunTzuSubtractionCommander.route,
            Screen.SunTzuSubtractionMethod.route,
            Screen.SunTzuSubtractionPractice.route,
-           Screen.BuildingLikeAMesoamerican.route, Screen.BuildingLikeEtruscanRomans.route,
+           Screen.BuildingLikeAMesoamericanIntro.route, Screen.BuildingLikeAMesoamerican.route,
+           Screen.BuildingLikeEtruscanRomansIntro.route, Screen.BuildingLikeEtruscanRomans.route,
            Screen.MesoamericanOrdersIntro.route, Screen.MesoamericanOrdersFirstValue.route,
            Screen.MesoamericanOrdersLastValue.route, Screen.MesoamericanOrdersAncientCalendar.route,
            Screen.MesoamericanOrdersDifferent.route, Screen.MesoamericanOrdersNextOrders.route,
@@ -2677,12 +2680,12 @@ fun AppNavigation() {
                             onNavigateToPracticingWithQuipus = { navController.navigate(Screen.PracticingWithQuipus.route) { launchSingleTop = true } },
                             onNavigateToMesoamericanSymbols = { navController.navigate(Screen.MesoamericanSymbolsIntro.route) { launchSingleTop = true } },
                             onNavigateToOvercomingLimits = { navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true } },
-                            onNavigateToBuildingLikeAMesoamerican = { navController.navigate(Screen.BuildingLikeAMesoamerican.route) { launchSingleTop = true } },
+                            onNavigateToBuildingLikeAMesoamerican = { navController.navigate(Screen.BuildingLikeAMesoamericanIntro.route) { launchSingleTop = true } },
                             onNavigateToMesoamericanOrder = { navController.navigate(Screen.MesoamericanOrdersIntro.route) { launchSingleTop = true } },
                             onNavigateToTextOrNumber = { navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true } },
                             onNavigateToTheMissingNumbers = { navController.navigate(Screen.MissingNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToIPreferThis = { navController.navigate(Screen.IPreferThisIntro.route) { launchSingleTop = true } },
-                            onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
+                            onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomansIntro.route) { launchSingleTop = true } },
                             onNavigateToTensAndHundreds = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
                             onNavigateToRepresentYou = { navController.navigate(Screen.IRepresentYou.route) { launchSingleTop = true } },
@@ -2697,14 +2700,47 @@ fun AppNavigation() {
                             onNavigateToLargeNumbersWriting = { navController.navigate(Screen.LargeNumbersWritingIntro.route) }
                         )
                     }
-                    composable(Screen.BuildingLikeAMesoamerican.route) {
-                        BuildingLikeAMesoamericanScreen(
+                    composable(Screen.BuildingLikeAMesoamericanIntro.route) {
+                        BuildingLikeAMesoamericanIntroScreen(
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack()) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.BuildingLikeAMesoamerican.route) { launchSingleTop = true }
+                            }
+                        )
+                    }
+                    composable(Screen.BuildingLikeAMesoamerican.route) {
+                        BuildingLikeAMesoamericanScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack(Screen.BuildingLikeAMesoamericanIntro.route, false)) {
+                                    navController.navigate(Screen.BuildingLikeAMesoamericanIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToAnotherWayToCount = {
+                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            }
+                        )
+                    }
+                    composable(Screen.BuildingLikeEtruscanRomansIntro.route) {
+                        BuildingLikeEtruscanRomansIntroScreen(
+                            currentScore = counter,
+                            onScoreChanged = { newScore -> counter = newScore },
+                            onNavigateBack = {
+                                if (!navController.popBackStack()) {
+                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateNext = {
+                                navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true }
                             }
                         )
                     }
@@ -2713,6 +2749,11 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
+                                if (!navController.popBackStack(Screen.BuildingLikeEtruscanRomansIntro.route, false)) {
+                                    navController.navigate(Screen.BuildingLikeEtruscanRomansIntro.route) { launchSingleTop = true }
+                                }
+                            },
+                            onNavigateToAnotherWayToCount = {
                                 if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
                                     navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
                                 }
@@ -10086,12 +10127,12 @@ fun AppNavigation() {
                             onNavigateToQuipuOnTheYupana = { navController.navigate(Screen.QuipuOnTheYupanaIntro.route) { launchSingleTop = true } },
                             onNavigateToMesoamericanSymbols = { navController.navigate(Screen.MesoamericanSymbolsIntro.route) { launchSingleTop = true } },
                             onNavigateToOvercomingLimits = { navController.navigate(Screen.OvercomingLimitsIntro.route) { launchSingleTop = true } },
-                            onNavigateToBuildingLikeAMesoamerican = { navController.navigate(Screen.BuildingLikeAMesoamerican.route) { launchSingleTop = true } },
+                            onNavigateToBuildingLikeAMesoamerican = { navController.navigate(Screen.BuildingLikeAMesoamericanIntro.route) { launchSingleTop = true } },
                             onNavigateToMesoamericanOrders = { navController.navigate(Screen.MesoamericanOrdersIntro.route) { launchSingleTop = true } },
                             onNavigateToTextOrNumber = { navController.navigate(Screen.TextOrNumberIntro.route) { launchSingleTop = true } },
                             onNavigateToTheMissingNumbers = { navController.navigate(Screen.MissingNumbersIntro.route) { launchSingleTop = true } },
                             onNavigateToIPreferThis = { navController.navigate(Screen.IPreferThisIntro.route) { launchSingleTop = true } },
-                            onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomans.route) { launchSingleTop = true } },
+                            onNavigateToBuildingLikeEtruscanRomans = { navController.navigate(Screen.BuildingLikeEtruscanRomansIntro.route) { launchSingleTop = true } },
                             onNavigateToEtruscanRomanTens = { navController.navigate(Screen.EtruscanRomanTensIntro.route) { launchSingleTop = true } },
                             onNavigateToHundredsAndThousands = { navController.navigate(Screen.HundredsAndThousandsIntro.route) { launchSingleTop = true } },
                             onNavigateToCalculi = { navController.navigate(Screen.Calculi.route) { launchSingleTop = true } },
