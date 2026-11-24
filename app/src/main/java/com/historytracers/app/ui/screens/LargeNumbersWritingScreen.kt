@@ -9,9 +9,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
@@ -28,10 +31,14 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.mwStringsForLanguage
@@ -48,6 +55,8 @@ private const val SOROBAN_UPPER = 1
 private const val SOROBAN_LOWER = 4
 private const val SUANPAN_UPPER = 2
 private const val SUANPAN_LOWER = 5
+private const val LARGE_NUMBERS_WRITING_FILE = "ad1d299d-9917-4fb6-b53a-dcad6da3b578"
+private const val LARGE_NUMBERS_WRITING_CONTENT_ID = "844670df-0f83-4ab0-826e-4e30889e03d1"
 
 private data class LnColumnState(val upper: Int = 0, val lower: Int = 0) {
     val value: Int get() = (upper * 5 + lower).coerceIn(0, 9)
@@ -72,10 +81,150 @@ private fun getLevelRange(level: Int): LongRange {
 }
 
 @Composable
+fun LargeNumbersWritingIntroScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
+) {
+    val s = LocalUiStrings.current
+    val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
+    val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+    var contentScore by remember { mutableIntStateOf(0) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var arrivalHandled by remember { mutableStateOf(false) }
+    val initialScore = remember { currentScore }
+
+    LaunchedEffect(language) {
+        loading = true
+        error = null
+        instructionText = null
+        contentId = null
+        contentScore = 0
+        when (val result = repo.loadAndParse("$language/$LARGE_NUMBERS_WRITING_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == LARGE_NUMBERS_WRITING_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+                contentScore = content?.score ?: 0
+            }
+            is ContentResult.Error -> error = result.message
+            else -> error = s.common.unsupportedContentType
+        }
+        loading = false
+    }
+
+    LaunchedEffect(contentId) {
+        if (contentId != null && !arrivalHandled) {
+            arrivalHandled = true
+            if (contentScore > 0) {
+                onScoreChanged(initialScore + contentScore)
+            }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                }
+                AutoSizeTitleText(
+                    text = aws.writingLargeNumbers,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = LARGE_NUMBERS_WRITING_FILE,
+                        contentId = id
+                    )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                error != null -> Text(
+                    text = "${s.common.error}: $error",
+                    modifier = Modifier.padding(16.dp)
+                )
+                else -> Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val text = instructionText
+                    if (text != null) {
+                        MarkdownText(
+                            text = text,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = aws.largeNumbersWritingInstruction,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    FilledTonalButton(
+                        onClick = onNavigateNext,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = s.common.next,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun LargeNumbersWritingScreen(
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
-    onScoreChanged: (Int) -> Unit = {}
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateToAnotherWayToCount: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
@@ -149,7 +298,7 @@ fun LargeNumbersWritingScreen(
                     }
                     AutoSizeTitleText(
                         text = aws.writingLargeNumbers,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
                 }
             }
@@ -160,16 +309,6 @@ fun LargeNumbersWritingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-            Spacer(Modifier.height(12.dp))
-
-            Text(
-                text = aws.largeNumbersWritingInstruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 8.dp)
-            )
-
             Spacer(Modifier.height(12.dp))
 
             Column(
@@ -578,6 +717,22 @@ fun LargeNumbersWritingScreen(
                             fontWeight = FontWeight.Bold,
                             color = if (isFeedbackPositive) Color(0xFF2E7D32) else Color(0xFFC62828),
                             modifier = Modifier.padding(horizontal = 32.dp)
+                        )
+                    }
+                }
+
+                if (onNavigateToAnotherWayToCount != null) {
+                    Spacer(Modifier.height(16.dp))
+                    FilledTonalButton(
+                        onClick = onNavigateToAnotherWayToCount,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = hts.anotherWayToCount,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }

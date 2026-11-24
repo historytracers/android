@@ -32,10 +32,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.gson.Gson
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.PracticingWithQuipusScreenStrings
 import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -46,6 +50,7 @@ import com.historytracers.app.ui.components.safeOpenUri
 
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val QUIPU_LESSON_UUID = "7aec6487-c20c-490d-a9af-21e0b8bcc7f7"
+private const val PRACTICING_WITH_QUIPUS_FILE = "d59f534a-928a-4c46-8e15-5d4fb0745514"
 private const val PRACTICE_AWARD_ID = "practicing_with_quipus_complete"
 
 private const val STRING_WIDTH_DP = 84
@@ -172,8 +177,27 @@ fun PracticingWithQuipusScreen(
 ) {
     val s = LocalUiStrings.current
     val xs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var firstContentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$PRACTICING_WITH_QUIPUS_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content?.firstOrNull()
+                instructionText = content?.text?.firstOrNull()?.text
+                firstContentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                firstContentId = null
+            }
+        }
+    }
 
     var levelIndex by remember { mutableIntStateOf(0) }
     var states by remember { mutableStateOf(generateStates(QUIPU_LEVELS[0])) }
@@ -323,8 +347,14 @@ fun PracticingWithQuipusScreen(
                 }
                 AutoSizeTitleText(
                     text = xs.title,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
+                firstContentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = PRACTICING_WITH_QUIPUS_FILE,
+                        contentId = id
+                    )
+                }
             }
         }
 
@@ -336,12 +366,17 @@ fun PracticingWithQuipusScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = xs.instruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(text = instruction)
+                } else {
+                    Text(
+                        text = xs.instruction,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
                 Spacer(Modifier.height(8.dp))
 

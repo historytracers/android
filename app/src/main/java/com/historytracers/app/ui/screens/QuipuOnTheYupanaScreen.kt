@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
@@ -32,13 +33,18 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.drawYupanaBackground
 import com.historytracers.app.ui.components.drawYupanaFrame
 import com.historytracers.app.ui.components.drawYupanaRow
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.quipuOnTheYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -51,6 +57,8 @@ private val COL_VALUES = intArrayOf(5, 3, 2, 1)
 private val LEVEL_POSITIONS = intArrayOf(1, 2, 3)
 private val LEVEL_MIN = intArrayOf(1, 10, 100)
 private val LEVEL_MAX = intArrayOf(9, 99, 999)
+private const val QUIPU_ON_THE_YUPANA_FILE = "e483f23a-9bfb-4d0e-a446-775166fb4be9"
+private const val QUIPU_ON_THE_YUPANA_INTRO_CONTENT_ID = "e570c29b-f5da-4c77-83da-4107e5632e94"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=0b6ac947-9ec3-4406-a329-54ca128b5e90"
 
 private fun pow10(exp: Int): Int = when (exp) {
@@ -67,13 +75,161 @@ private fun randomTarget(level: Int): Int =
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuipuOnTheYupanaScreen(
+fun QuipuOnTheYupanaIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
+    val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+    var contentScore by remember { mutableIntStateOf(0) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var arrivalHandled by remember { mutableStateOf(false) }
+    val initialScore = remember { currentScore }
+
+    LaunchedEffect(language) {
+        loading = true
+        error = null
+        instructionText = null
+        contentId = null
+        contentScore = 0
+        when (val result = repo.loadAndParse("$language/$QUIPU_ON_THE_YUPANA_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == QUIPU_ON_THE_YUPANA_INTRO_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+                contentScore = content?.score ?: 0
+            }
+            is ContentResult.Error -> error = result.message
+            else -> error = s.common.unsupportedContentType
+        }
+        loading = false
+    }
+
+    LaunchedEffect(contentId) {
+        if (contentId != null && !arrivalHandled) {
+            arrivalHandled = true
+            if (contentScore > 0) {
+                onScoreChanged(initialScore + contentScore)
+            }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                }
+                AutoSizeTitleText(
+                    text = xs.title,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = QUIPU_ON_THE_YUPANA_FILE,
+                        contentId = id
+                    )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                error != null -> Text(
+                    text = "${s.common.error}: $error",
+                    modifier = Modifier.padding(16.dp)
+                )
+                else -> Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val text = instructionText
+                    if (text != null) {
+                        MarkdownText(
+                            text = text,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = xs.intro,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = xs.instructions,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    FilledTonalButton(
+                        onClick = onNavigateNext,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = s.common.next,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuipuOnTheYupanaScreen(
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigateToAnotherWayToCount: (() -> Unit)? = null
+) {
+    val s = LocalUiStrings.current
+    val xs = quipuOnTheYupanaScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val preferences = remember { UserPreferences(context) }
@@ -254,6 +410,22 @@ fun QuipuOnTheYupanaScreen(
                         )
                     ) {
                         Text(xs.nextLevel, fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                if (onNavigateToAnotherWayToCount != null) {
+                    Spacer(Modifier.height(16.dp))
+                    FilledTonalButton(
+                        onClick = onNavigateToAnotherWayToCount,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = hts.anotherWayToCount,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 

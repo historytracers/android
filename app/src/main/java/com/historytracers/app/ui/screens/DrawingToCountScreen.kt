@@ -29,9 +29,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.buildHandPath
 import com.historytracers.app.ui.components.drawHandNumbers
 import com.historytracers.app.ui.components.drawOneHand
@@ -45,6 +49,9 @@ import com.historytracers.app.ui.theme.OnButtonYellow
 import com.historytracers.app.ui.theme.parseHexColor
 import kotlinx.coroutines.launch
 import com.historytracers.app.ui.components.safeOpenUri
+
+private const val HANDS_ON_YUPANA_FILE = "8cd2f9e6-6c86-44d5-8de6-9d86bcb93bfa"
+private const val DRAWING_TO_COUNT_CONTENT_ID = "e4e8f0a4-a108-4234-ba05-f2d3265ddb94"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,11 +67,31 @@ fun DrawingToCountScreen(
     val xs = drawingToCountScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
     var counter by remember { mutableIntStateOf(0) }
     var nineReached by remember { mutableStateOf(false) }
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$HANDS_ON_YUPANA_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == DRAWING_TO_COUNT_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
+
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showDhavitPremSubmenu by remember { mutableStateOf(false) }
@@ -92,6 +119,14 @@ fun DrawingToCountScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                     }
+                },
+                actions = {
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = HANDS_ON_YUPANA_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             )
         }
@@ -116,13 +151,21 @@ fun DrawingToCountScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Text(
-                    text = xs.drawingToCountDescription,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = instruction,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                } else {
+                    Text(
+                        text = xs.drawingToCountDescription,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
 
                 val leftFingers = counter / 5
                 val rightFingers = counter % 5

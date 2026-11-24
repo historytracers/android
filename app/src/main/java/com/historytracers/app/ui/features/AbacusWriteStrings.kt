@@ -50,7 +50,7 @@ val PtAbacusWriteStrings = AbacusWriteStrings(
     sorobanMode = "Soroban (1\u00D74)",
     suanpanMode = "Suanpan (2\u00D75)",
     schyoty = "\u0441\u0447\u0451\u0442\u044B",
-    writingToSchyoty = "Writing to \"Schyoty\"",
+    writingToSchyoty = "Escrevendo para \"Schyoty\"",
     schyotyWritingInstruction = "No Schyoty (\u0441\u0447\u0451\u0442\u044B), todas as contas t\u00eam o mesmo valor. Quando todas as contas est\u00e3o \u00e0 direita, o valor \u00e9 zero. Mova as contas para a esquerda para representar n\u00fameros. As contas 5 e 6 (da esquerda) s\u00e3o cinzas. O Schyoty tem 9 linhas, cada uma representando uma casa decimal, com as unidades na parte inferior e ordens superiores acima.",
 )
 
@@ -67,7 +67,7 @@ val EsAbacusWriteStrings = AbacusWriteStrings(
     sorobanMode = "Soroban (1\u00D74)",
     suanpanMode = "Suanpan (2\u00D75)",
     schyoty = "\u0441\u0447\u0451\u0442\u044B",
-    writingToSchyoty = "Writing to \"Schyoty\"",
+    writingToSchyoty = "Escribiendo en \"Schyoty\"",
     schyotyWritingInstruction = "En Schyoty (\u0441\u0447\u0451\u0442\u044B), todas las cuentas tienen el mismo valor. Cuando todas las cuentas est\u00e1n a la derecha, el valor es cero. Mueve las cuentas hacia la izquierda para representar n\u00fameros. Las cuentas 5 y 6 (desde la izquierda) son grises. El Schyoty tiene 9 filas, cada una representa un lugar decimal, con las unidades en la parte inferior y los \u00f3rdenes superiores arriba.",
 )
 
