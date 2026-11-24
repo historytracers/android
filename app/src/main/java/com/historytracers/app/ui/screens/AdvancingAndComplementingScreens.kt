@@ -32,6 +32,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.advancingAndComplementingScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.components.safeOpenUri
@@ -39,6 +40,14 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val AC_WEB_CLASS_URL = "https://www.historytracers.org/index.html?page=class_content&arg=cabc9843-35ef-4e4f-92fd-17eda864b55e"
 private const val AC_FIRST_TERM = 6
 private const val AC_COMPLEMENT = 4
+private const val ADVANCING_FILE = "67ecd84c-ba75-440b-9cae-01894124df38"
+private const val ADVANCING_INTRO_CONTENT_ID = "6298da03-29e6-4d13-9a5e-8791b934e67e"
+private const val ADVANCING_COMPLEMENT_CONTENT_ID = "a0599aa8-c642-4f1b-976a-df63dd3ea019"
+private const val ADVANCING_OURSELVES_CONTENT_ID = "e2405750-4b2b-4df0-acff-87e00671cd12"
+private const val ADVANCING_LIMIT_CONTENT_ID = "eb0d4184-7d66-44e2-9742-e7c88c4780ee"
+private const val ADVANCING_EXERCISING_CONTENT_ID = "1c35a845-e170-4a66-9be9-59f3a3cefa33"
+private const val ADVANCING_THINKING_CONTENT_ID = "5cd14439-1ac6-4010-9b8b-56d16c976006"
+private const val ADVANCING_CONCLUSION_CONTENT_ID = "abcee086-fa78-4d5b-aea5-18a0f7b37186"
 private val AC_GREEN = Color(0xFF4CAF50)
 private val AC_TEXT_GREEN = Color(0xFF2E7D32)
 
@@ -53,7 +62,9 @@ fun AdvancingAndComplementingIntroScreen(
     AcFrame(
         title = xs.introTitle,
         onNavigateBack = onNavigateBack,
-        onNavigateNext = onNavigateNext
+        onNavigateNext = onNavigateNext,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_INTRO_CONTENT_ID
     ) {
         AcBody(xs.introBody)
     }
@@ -70,7 +81,9 @@ fun AdvancingAndComplementingComplementScreen(
         title = xs.complementTitle,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateNext = onNavigateNext
+        onNavigateNext = onNavigateNext,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_COMPLEMENT_CONTENT_ID
     ) {
         AcBody(xs.complementBody)
     }
@@ -87,7 +100,9 @@ fun AdvancingAndComplementingOurselvesScreen(
         title = xs.ourselvesTitle,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateNext = onNavigateNext
+        onNavigateNext = onNavigateNext,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_OURSELVES_CONTENT_ID
     ) {
         AcBody(xs.ourselvesBody)
         Spacer(Modifier.height(8.dp))
@@ -106,7 +121,9 @@ fun AdvancingAndComplementingLimitScreen(
         title = xs.limitTitle,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateNext = onNavigateNext
+        onNavigateNext = onNavigateNext,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_LIMIT_CONTENT_ID
     ) {
         AcBody(xs.limitBody)
         Spacer(Modifier.height(12.dp))
@@ -147,7 +164,9 @@ fun AdvancingAndComplementingExercisingScreen(
         title = xs.exercisingTitle,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateNext = onNavigateNext
+        onNavigateNext = onNavigateNext,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_EXERCISING_CONTENT_ID
     ) {
         AcBody(xs.exercisingBody)
         AcBody(xs.exercisingInstruction, emphasis = true)
@@ -231,7 +250,9 @@ fun AdvancingAndComplementingThinkingScreen(
         title = xs.thinkingTitle,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateNext = onNavigateNext
+        onNavigateNext = onNavigateNext,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_THINKING_CONTENT_ID
     ) {
         AcQuestion(xs.thinkingQuestion)
 
@@ -311,7 +332,9 @@ fun AdvancingAndComplementingConclusionScreen(
         title = xs.conclusionTitle,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
-        onNavigateToRoadToSomewhere = onNavigateToRoadToSomewhere
+        onNavigateToRoadToSomewhere = onNavigateToRoadToSomewhere,
+        audioLessonId = ADVANCING_FILE,
+        audioContentId = ADVANCING_CONCLUSION_CONTENT_ID
     ) {
         AcBody(xs.conclusionBody)
     }
@@ -326,6 +349,8 @@ private fun AcFrame(
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
     onNavigateToRoadToSomewhere: (() -> Unit)? = null,
+    audioLessonId: String? = null,
+    audioContentId: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val s = LocalUiStrings.current
@@ -352,8 +377,14 @@ private fun AcFrame(
                     }
                     AutoSizeTitleText(
                         text = title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    if (audioLessonId != null && audioContentId != null) {
+                        ScreenAudioButton(
+                            lessonId = audioLessonId,
+                            contentId = audioContentId
+                        )
+                    }
                 }
             }
 

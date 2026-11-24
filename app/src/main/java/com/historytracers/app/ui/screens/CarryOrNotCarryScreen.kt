@@ -25,10 +25,14 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import kotlinx.coroutines.launch
@@ -36,6 +40,13 @@ import kotlin.random.Random
 import com.historytracers.app.ui.components.safeOpenUri
 
 private const val CARRY_MAX_LEVEL = 3
+private const val CARRY_OR_NOT_CARRY_FILE = "6212e7fd-eada-4a62-a268-5530b3369542"
+private const val CARRY_OR_NOT_CARRY_GAME_CONTENT_ID = "febbc229-8bf0-4e7f-8936-28d21b1a2267"
+
+private fun stripCarryTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 
 private data class CarryNumbers(val first: Int, val addend: Int)
 
@@ -71,9 +82,29 @@ fun CarryOrNotCarryScreen(
     val s = LocalUiStrings.current
     val xs = carryOrNotCarryScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$CARRY_OR_NOT_CARRY_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == CARRY_OR_NOT_CARRY_GAME_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     var level by remember { mutableIntStateOf(0) }
     var column by remember { mutableIntStateOf(0) }
@@ -196,8 +227,14 @@ fun CarryOrNotCarryScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = CARRY_OR_NOT_CARRY_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
@@ -208,6 +245,15 @@ fun CarryOrNotCarryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(Modifier.height(12.dp))
+
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = stripCarryTitle(instruction),
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
 
                 Text(
                     text = xs.levelTemplate.format(level + 1),
