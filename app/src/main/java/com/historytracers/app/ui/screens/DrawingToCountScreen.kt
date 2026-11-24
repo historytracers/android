@@ -143,14 +143,6 @@ fun DrawingToCountScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = ys.handsOnYupana,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
                 val instruction = instructionText
                 if (instruction != null) {
                     MarkdownText(

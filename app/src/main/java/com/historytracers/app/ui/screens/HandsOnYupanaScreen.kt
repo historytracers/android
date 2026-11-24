@@ -42,6 +42,11 @@ import com.historytracers.app.ui.components.safeOpenUri
 
 private const val HANDS_ON_YUPANA_FILE = "8cd2f9e6-6c86-44d5-8de6-9d86bcb93bfa"
 private const val HANDS_ON_YUPANA_CONTENT_ID = "608cbcf1-69e2-4a78-bd30-0353d08ffe61"
+
+private fun stripLeadingMarkdownTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=ea01ab6c-26af-4c7a-ba06-5c1731c83d4d"
 
@@ -128,7 +133,7 @@ fun HandsOnYupanaScreen(
                 val instruction = instructionText
                 if (instruction != null) {
                     MarkdownText(
-                        text = instruction,
+                        text = stripLeadingMarkdownTitle(instruction),
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
                 } else {

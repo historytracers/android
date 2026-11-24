@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +43,7 @@ import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
 import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.PracticingWithQuipusScreenStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.practicingWithQuipusScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.OnButtonYellow
@@ -51,7 +54,13 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val QUIPU_LESSON_UUID = "7aec6487-c20c-490d-a9af-21e0b8bcc7f7"
 private const val PRACTICING_WITH_QUIPUS_FILE = "d59f534a-928a-4c46-8e15-5d4fb0745514"
+private const val PRACTICING_WITH_QUIPUS_CONTENT_ID = "c4305281-d35a-45d8-b5cb-62d41cacb665"
 private const val PRACTICE_AWARD_ID = "practicing_with_quipus_complete"
+
+private fun stripLeadingMarkdownTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 
 private const val STRING_WIDTH_DP = 84
 private const val ORDER_HEIGHT_DP = 120
@@ -169,35 +178,157 @@ private fun restoreQuipuStates(saved: QuipuSavedState): List<QuipuStringState> {
 }
 
 @Composable
-fun PracticingWithQuipusScreen(
-    onNavigateBack: () -> Unit = {},
+fun PracticingWithQuipusIntroScreen(
     currentScore: Int = 0,
     onScoreChanged: (Int) -> Unit = {},
-    restoreStep: Boolean = false
+    onNavigateBack: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
     val language = LocalAppLanguage.current
     val context = LocalContext.current
     val repo = remember { ContentRepository(context) }
-    val preferences = remember { UserPreferences(context) }
 
     var instructionText by remember { mutableStateOf<String?>(null) }
-    var firstContentId by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+    var contentScore by remember { mutableIntStateOf(0) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var arrivalHandled by remember { mutableStateOf(false) }
+    val initialScore = remember { currentScore }
 
     LaunchedEffect(language) {
+        loading = true
+        error = null
+        instructionText = null
+        contentId = null
+        contentScore = 0
         when (val result = repo.loadAndParse("$language/$PRACTICING_WITH_QUIPUS_FILE")) {
             is ContentResult.SMGame -> {
-                val content = result.data?.content?.firstOrNull()
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == PRACTICING_WITH_QUIPUS_CONTENT_ID }
                 instructionText = content?.text?.firstOrNull()?.text
-                firstContentId = content?.id
+                contentId = content?.id
+                contentScore = content?.score ?: 0
             }
-            else -> {
-                instructionText = null
-                firstContentId = null
+            is ContentResult.Error -> error = result.message
+            else -> error = s.common.unsupportedContentType
+        }
+        loading = false
+    }
+
+    LaunchedEffect(contentId) {
+        if (contentId != null && !arrivalHandled) {
+            arrivalHandled = true
+            if (contentScore > 0) {
+                onScoreChanged(initialScore + contentScore)
             }
         }
     }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                }
+                AutoSizeTitleText(
+                    text = xs.title,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = PRACTICING_WITH_QUIPUS_FILE,
+                        contentId = id
+                    )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                error != null -> Text(
+                    text = "${s.common.error}: $error",
+                    modifier = Modifier.padding(16.dp)
+                )
+                else -> Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val text = instructionText
+                    if (text != null) {
+                        MarkdownText(
+                            text = stripLeadingMarkdownTitle(text),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = xs.instruction,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    FilledTonalButton(
+                        onClick = onNavigateNext,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = s.common.next,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PracticingWithQuipusScreen(
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    restoreStep: Boolean = false,
+    onNavigateToAnotherWayToCount: (() -> Unit)? = null
+) {
+    val s = LocalUiStrings.current
+    val xs = practicingWithQuipusScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
 
     var levelIndex by remember { mutableIntStateOf(0) }
     var states by remember { mutableStateOf(generateStates(QUIPU_LEVELS[0])) }
@@ -349,37 +480,25 @@ fun PracticingWithQuipusScreen(
                     text = xs.title,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
-                firstContentId?.let { id ->
-                    ScreenAudioButton(
-                        lessonId = PRACTICING_WITH_QUIPUS_FILE,
-                        contentId = id
-                    )
-                }
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val fontScale = LocalDensity.current.fontScale
+            val compact = maxHeight < 480.dp || fontScale > 1.3f
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                modifier = if (compact) {
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp)
+                } else {
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val instruction = instructionText
-                if (instruction != null) {
-                    MarkdownText(text = instruction)
-                } else {
-                    Text(
-                        text = xs.instruction,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                Spacer(Modifier.height(8.dp))
-
                 Text(
                     text = "${s.common.levelPrefix}${levelIndex + 1}",
                     style = MaterialTheme.typography.titleSmall,
@@ -435,11 +554,39 @@ fun PracticingWithQuipusScreen(
                     }
                 }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(8.dp))
 
-                QuipuBoard(states = states, positions = level.positions, activeIndex = activeIndex, xs = xs)
+                if (compact) {
+                    QuipuBoard(states = states, positions = level.positions, activeIndex = activeIndex, xs = xs)
+                } else {
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val positions = level.positions
+                        val stringsCount = states.size
+                        val hSpacing = if (stringsCount > 2) 10.dp else 16.dp
+                        val orderHeight = ((maxHeight - 80.dp) / positions.toFloat()).coerceIn(48.dp, 110.dp)
+                        val stringWidth = ((maxWidth - hSpacing * (stringsCount + 1)) / stringsCount.toFloat())
+                            .coerceIn(44.dp, 84.dp)
+                        val knotSize = (orderHeight.value / 12f).dp.coerceIn(4.dp, 10.dp)
+                        QuipuBoard(
+                            states = states,
+                            positions = positions,
+                            activeIndex = activeIndex,
+                            xs = xs,
+                            stringWidth = stringWidth,
+                            orderHeight = orderHeight,
+                            knotSize = knotSize,
+                            horizontalSpacing = hSpacing,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(8.dp))
 
                 if (message.isNotEmpty()) {
                     Text(
@@ -504,7 +651,23 @@ fun PracticingWithQuipusScreen(
                     }
                 }
 
-                Spacer(Modifier.height(48.dp))
+                if (onNavigateToAnotherWayToCount != null) {
+                    Spacer(Modifier.height(8.dp))
+                    FilledTonalButton(
+                        onClick = onNavigateToAnotherWayToCount,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = hts.anotherWayToCount,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                if (compact) Spacer(Modifier.height(24.dp))
             }
 
             PracticingWithQuipusSourcesMenu(
@@ -519,11 +682,18 @@ private fun QuipuBoard(
     states: List<QuipuStringState>,
     positions: Int,
     activeIndex: Int,
-    xs: PracticingWithQuipusScreenStrings
+    xs: PracticingWithQuipusScreenStrings,
+    stringWidth: Dp = STRING_WIDTH_DP.dp,
+    orderHeight: Dp = ORDER_HEIGHT_DP.dp,
+    knotSize: Dp = KNOT_SIZE_DP.dp,
+    knotGap: Dp = KNOT_GAP_DP.dp,
+    horizontalSpacing: Dp = 20.dp,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxWidth()
     ) {
         Box(
             modifier = Modifier
@@ -535,7 +705,7 @@ private fun QuipuBoard(
         Spacer(Modifier.height(10.dp))
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
             verticalAlignment = Alignment.Top
         ) {
             states.forEachIndexed { index, state ->
@@ -543,7 +713,7 @@ private fun QuipuBoard(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .width(STRING_WIDTH_DP.dp)
+                        .width(stringWidth)
                         .then(
                             if (isActive) {
                                 Modifier
@@ -556,14 +726,18 @@ private fun QuipuBoard(
                 ) {
                     Text(
                         text = state.target.toString(),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = if (stringWidth < 60.dp) {
+                            MaterialTheme.typography.titleMedium
+                        } else {
+                            MaterialTheme.typography.titleLarge
+                        },
                         fontWeight = FontWeight.Bold,
                         color = if (state.done) DONE_COLOR else MaterialTheme.colorScheme.onSurface
                     )
 
                     Spacer(Modifier.height(6.dp))
 
-                    val cordHeight = (ORDER_HEIGHT_DP * positions).dp
+                    val cordHeight = (orderHeight.value * positions).dp
                     Box(
                         modifier = Modifier.height(cordHeight),
                         contentAlignment = Alignment.TopCenter
@@ -582,6 +756,10 @@ private fun QuipuBoard(
                                     active = isActive && p == state.active,
                                     done = state.knots[p] == state.digits[p],
                                     label = orderName(p, xs),
+                                    orderHeight = orderHeight,
+                                    stringWidth = stringWidth,
+                                    knotSize = knotSize,
+                                    knotGap = knotGap,
                                 )
                             }
                         }
@@ -598,21 +776,25 @@ private fun QuipuOrder(
     active: Boolean,
     done: Boolean,
     label: String,
+    orderHeight: Dp,
+    stringWidth: Dp,
+    knotSize: Dp,
+    knotGap: Dp,
 ) {
     Box(
         modifier = Modifier
-            .height(ORDER_HEIGHT_DP.dp)
-            .width(STRING_WIDTH_DP.dp),
+            .height(orderHeight)
+            .width(stringWidth),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(KNOT_GAP_DP.dp)
+            verticalArrangement = Arrangement.spacedBy(knotGap)
         ) {
             repeat(knots) {
                 Box(
                     modifier = Modifier
-                        .size(KNOT_SIZE_DP.dp)
+                        .size(knotSize)
                         .background(KNOT_COLOR, CircleShape)
                 )
             }
@@ -620,7 +802,7 @@ private fun QuipuOrder(
 
         Text(
             text = label,
-            fontSize = 9.sp,
+            fontSize = if (orderHeight < 70.dp) 7.sp else 9.sp,
             color = when {
                 active -> ACTIVE_COLOR
                 done -> DONE_COLOR
@@ -628,7 +810,7 @@ private fun QuipuOrder(
             },
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .width(30.dp),
+                .width(if (stringWidth < 60.dp) 20.dp else 30.dp),
             textAlign = TextAlign.Start
         )
     }

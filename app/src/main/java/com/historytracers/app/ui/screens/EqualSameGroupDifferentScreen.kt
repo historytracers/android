@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.*
@@ -36,11 +37,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.equalSameGroupDifferentScreenStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -53,6 +57,13 @@ import com.historytracers.app.ui.components.safeOpenUri
 
 private const val TOTAL_LEVELS = 7
 private const val QUESTIONS_PER_LEVEL = 3
+private const val EQUAL_SAME_GROUP_FILE = "efa51ad9-1093-490f-be3b-90055ceb4024"
+private const val EQUAL_SAME_GROUP_CONTENT_ID = "4aaa94e6-1118-44e4-9189-08871a3b83b3"
+
+private fun stripLeadingMarkdownTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 
 private val compColors = listOf(
     Color(0xFF66cc90),
@@ -300,13 +311,153 @@ private fun MayaNumber(value: Int, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EqualSameGroupDifferentScreen(
-    onNavigateBack: () -> Unit = {},
+fun EqualSameGroupDifferentIntroScreen(
     currentScore: Int = 0,
-    onScoreChanged: (Int) -> Unit = {}
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
+    onNavigateNext: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val xs = equalSameGroupDifferentScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
+    val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+    var contentScore by remember { mutableIntStateOf(0) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    var arrivalHandled by remember { mutableStateOf(false) }
+    val initialScore = remember { currentScore }
+
+    LaunchedEffect(language) {
+        loading = true
+        error = null
+        instructionText = null
+        contentId = null
+        contentScore = 0
+        when (val result = repo.loadAndParse("$language/$EQUAL_SAME_GROUP_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == EQUAL_SAME_GROUP_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+                contentScore = content?.score ?: 0
+            }
+            is ContentResult.Error -> error = result.message
+            else -> error = s.common.unsupportedContentType
+        }
+        loading = false
+    }
+
+    LaunchedEffect(contentId) {
+        if (contentId != null && !arrivalHandled) {
+            arrivalHandled = true
+            if (contentScore > 0) {
+                onScoreChanged(initialScore + contentScore)
+            }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            tonalElevation = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                }
+                AutoSizeTitleText(
+                    text = xs.title,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = EQUAL_SAME_GROUP_FILE,
+                        contentId = id
+                    )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                error != null -> Text(
+                    text = "${s.common.error}: $error",
+                    modifier = Modifier.padding(16.dp)
+                )
+                else -> Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val text = instructionText
+                    if (text != null) {
+                        MarkdownText(
+                            text = stripLeadingMarkdownTitle(text),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        MarkdownText(
+                            text = xs.instruction,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    FilledTonalButton(
+                        onClick = onNavigateNext,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = s.common.next,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EqualSameGroupDifferentScreen(
+    onNavigateBack: () -> Unit = {},
+    currentScore: Int = 0,
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateToIAmNotLikeYou: (() -> Unit)? = null
+) {
+    val s = LocalUiStrings.current
+    val xs = equalSameGroupDifferentScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
@@ -410,7 +561,7 @@ fun EqualSameGroupDifferentScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
                 }
             }
@@ -423,15 +574,6 @@ fun EqualSameGroupDifferentScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(Modifier.height(8.dp))
-
-                MarkdownText(
-                    text = xs.instruction,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                )
-
-                Spacer(Modifier.height(16.dp))
 
                 Text(
                     text = xs.levelProgressFormat.format(s.common.level, level, xs.levelNames[level - 1]),
@@ -590,19 +732,6 @@ fun EqualSameGroupDifferentScreen(
                         }
                     }
 
-                    if (gameFinished) {
-                        FilledTonalButton(
-                            onClick = { onNavigateBack() },
-                            shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = ButtonYellow,
-                                contentColor = OnButtonYellow
-                            )
-                        ) {
-                            Text(xs.backToHub, fontWeight = FontWeight.Bold)
-                        }
-                    }
-
                     FilledTonalButton(
                         onClick = { loadLevel(level) },
                         shape = RoundedCornerShape(24.dp),
@@ -612,6 +741,22 @@ fun EqualSameGroupDifferentScreen(
                         )
                     ) {
                         Text(xs.restart, fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                if (onNavigateToIAmNotLikeYou != null) {
+                    Spacer(Modifier.height(8.dp))
+                    FilledTonalButton(
+                        onClick = onNavigateToIAmNotLikeYou,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = hts.iAmNotLikeYou,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 

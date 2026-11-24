@@ -27,11 +27,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.RepresentYouScreenStrings
+import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.representYouScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -43,8 +48,15 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val MAX_LEVEL = 4
 private const val PAIR_COUNT = 5
 private const val SECTION_ID = "i_represent_you"
+private const val REPRESENT_YOU_FILE = "b3ab8e5e-9e99-4e16-8e14-0d0969e4b858"
+private const val REPRESENT_YOU_CONTENT_ID = "36aa5abd-929e-406f-8d1a-fd0de2cd59f0"
 private const val ORIGINAL_TEXT_URL =
     "https://www.historytracers.org/index.html?page=class_content&arg=07666919-8290-4aee-a9fd-af148508f754"
+
+private fun stripLeadingMarkdownTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 
 private val romanValues = listOf(
     1000 to "M", 900 to "CM", 500 to "D", 400 to "CD",
@@ -377,13 +389,35 @@ private fun RepresentItemButton(
 fun RepresentYouScreen(
     onNavigateBack: () -> Unit = {},
     currentScore: Int = 0,
-    onScoreChanged: (Int) -> Unit = {}
+    onScoreChanged: (Int) -> Unit = {},
+    onNavigateToAnotherWayToCount: (() -> Unit)? = null
 ) {
     val s = LocalUiStrings.current
     val xs = representYouScreenStringsForLanguage(LocalAppLanguage.current)
+    val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$REPRESENT_YOU_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == REPRESENT_YOU_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
@@ -498,8 +532,14 @@ fun RepresentYouScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = REPRESENT_YOU_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
@@ -512,13 +552,21 @@ fun RepresentYouScreen(
             ) {
                 Spacer(Modifier.height(8.dp))
 
-                Text(
-                    text = xs.instruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = stripLeadingMarkdownTitle(instruction),
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+                    )
+                } else {
+                    Text(
+                        text = xs.instruction,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+                    )
+                }
 
                 Spacer(Modifier.height(12.dp))
 
@@ -669,6 +717,22 @@ fun RepresentYouScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
                     )
+                }
+
+                if (levelCompleted && level == MAX_LEVEL && onNavigateToAnotherWayToCount != null) {
+                    Spacer(Modifier.height(8.dp))
+                    FilledTonalButton(
+                        onClick = onNavigateToAnotherWayToCount,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = hts.anotherWayToCount,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(24.dp))

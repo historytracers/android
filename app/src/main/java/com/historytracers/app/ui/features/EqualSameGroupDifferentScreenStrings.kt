@@ -40,7 +40,7 @@ val EnEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
     levelNames = listOf(
         "Numbers from 0 to 9",
         "Numbers from 10 to 1,000,000",
-        "Maya Numbers",
+        "Mesoamerican Numbers",
         "Numbers, Circles and Squares",
         "Numbers, Circles and Squares",
         "Numbers, Circles and Squares",
@@ -68,7 +68,7 @@ val PtEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
     levelNames = listOf(
         "N\u00fameros de 0 a 9",
         "N\u00fameros de 10 a 1.000.000",
-        "N\u00fameros maias",
+        "N\u00fameros mesoamericanos",
         "N\u00fameros, c\u00edrculos e quadrados",
         "N\u00fameros, c\u00edrculos e quadrados",
         "N\u00fameros, c\u00edrculos e quadrados",
@@ -96,7 +96,7 @@ val EsEqualSameGroupDifferentScreenStrings = EqualSameGroupDifferentScreenString
     levelNames = listOf(
         "N\u00fameros del 0 al 9",
         "N\u00fameros del 10 al 1.000.000",
-        "N\u00fameros mayas",
+        "N\u00fameros mesoamericanos",
         "N\u00fameros, c\u00edrculos y cuadrados",
         "N\u00fameros, c\u00edrculos y cuadrados",
         "N\u00fameros, c\u00edrculos y cuadrados",

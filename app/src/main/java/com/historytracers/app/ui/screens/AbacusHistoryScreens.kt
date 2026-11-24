@@ -70,6 +70,8 @@ private const val THINKING_ID = "ad646132-7831-49ba-b512-2518d2b3654d"
 private const val SIMILARITIES_ID = "0132b702-2976-47c3-8f08-d219c4a77c48"
 private const val SCHYOTY_ID = "98eb71ca-3dff-4495-a5a1-50dd40cc1b11"
 private const val CALCULI_ID = "d1d2ec7a-36d2-4590-b3d8-0e6467e04cd3"
+private const val CALCULI_LESSON_FILE = "974f47d0-cba4-4684-8f4c-ef1864968ece"
+private const val CALCULI_LESSON_CONTENT_ID = "5f6ddc35-296c-4b56-af5a-65708a11b7af"
 private const val CONCLUSION_ID = "46a3664d-3f9e-4026-a8aa-0d5f7ebb4b81"
 
 private const val MARKER_SUANPAN = "abacus-suanpan"
@@ -82,6 +84,11 @@ internal val calculiPlaces = listOf(100000L, 10000L, 1000L, 100L, 10L, 1L)
 
 private const val CALCULI_MIN_LEVEL = 1
 private const val CALCULI_MAX_LEVEL = 5
+
+private fun stripCalculiTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 
 private fun calculiLevelRange(level: Int): LongRange = when (level) {
     1 -> 1L..9L
@@ -300,6 +307,26 @@ fun CalculiScreen(
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
 
+    val language = LocalAppLanguage.current
+    val repo = remember { ContentRepository(context) }
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$CALCULI_LESSON_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == CALCULI_LESSON_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
+
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
 
@@ -373,10 +400,12 @@ fun CalculiScreen(
                         text = xs.title,
                         modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
-                    ScreenAudioButton(
-                        lessonId = SMARTPHONE_GAME_FILE,
-                        contentId = CALCULI_ID
-                    )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = CALCULI_LESSON_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
@@ -388,21 +417,29 @@ fun CalculiScreen(
             ) {
                 Spacer(Modifier.height(8.dp))
 
-                Text(
-                    text = xs.instruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = stripCalculiTitle(instruction),
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+                    )
+                } else {
+                    Text(
+                        text = xs.instruction,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp)
+                    )
 
-                Text(
-                    text = xs.beadValues,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
+                    Text(
+                        text = xs.beadValues,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
+                }
 
                 Spacer(Modifier.height(8.dp))
 
