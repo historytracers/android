@@ -2726,7 +2726,9 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.BuildingLikeAMesoamericanIntro.route, false)) {
-                                    navController.navigate(Screen.BuildingLikeAMesoamericanIntro.route) { launchSingleTop = true }
+                                    if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                        navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                    }
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
@@ -2756,7 +2758,9 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.BuildingLikeEtruscanRomansIntro.route, false)) {
-                                    navController.navigate(Screen.BuildingLikeEtruscanRomansIntro.route) { launchSingleTop = true }
+                                    if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                        navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                    }
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
@@ -3731,7 +3735,9 @@ fun AppNavigation() {
                             restoreStep = navController.previousBackStackEntry == null,
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.PracticingWithQuipusIntro.route, false)) {
-                                    navController.navigate(Screen.PracticingWithQuipusIntro.route) { launchSingleTop = true }
+                                    if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                        navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                    }
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
@@ -8799,7 +8805,9 @@ fun AppNavigation() {
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
                                 if (!navController.popBackStack(Screen.QuipuOnTheYupanaIntro.route, false)) {
-                                    navController.navigate(Screen.QuipuOnTheYupanaIntro.route) { launchSingleTop = true }
+                                    if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                        navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                    }
                                 }
                             },
                             onNavigateToAnotherWayToCount = {
@@ -9532,8 +9540,10 @@ fun AppNavigation() {
                             currentScore = counter,
                             onScoreChanged = { newScore -> counter = newScore },
                             onNavigateBack = {
-                                if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
-                                    navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                if (!navController.popBackStack(Screen.Abacus.route, false)) {
+                                    if (!navController.popBackStack(Screen.AnotherWayToCount.route, false)) {
+                                        navController.navigate(Screen.AnotherWayToCount.route) { launchSingleTop = true }
+                                    }
                                 }
                             },
                             onNavigateNext = {

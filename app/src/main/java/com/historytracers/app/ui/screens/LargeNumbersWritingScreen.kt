@@ -99,7 +99,7 @@ fun LargeNumbersWritingIntroScreen(
     var error by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(true) }
     var arrivalHandled by remember { mutableStateOf(false) }
-    val initialScore = remember { currentScore }
+    val latestCurrentScore by rememberUpdatedState(currentScore)
 
     LaunchedEffect(language) {
         loading = true
@@ -125,7 +125,7 @@ fun LargeNumbersWritingIntroScreen(
         if (contentId != null && !arrivalHandled) {
             arrivalHandled = true
             if (contentScore > 0) {
-                onScoreChanged(initialScore + contentScore)
+                onScoreChanged(latestCurrentScore + contentScore)
             }
         }
     }
@@ -173,25 +173,32 @@ fun LargeNumbersWritingIntroScreen(
                 else -> Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val text = instructionText
-                    if (text != null) {
-                        MarkdownText(
-                            text = text,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        Text(
-                            text = aws.largeNumbersWritingInstruction,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        val text = instructionText
+                        if (text != null) {
+                            MarkdownText(
+                                text = text,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        } else {
+                            Text(
+                                text = aws.largeNumbersWritingInstruction,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
 
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(12.dp))
 
                     FilledTonalButton(
                         onClick = onNavigateNext,
@@ -212,7 +219,7 @@ fun LargeNumbersWritingIntroScreen(
                         )
                     }
 
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }

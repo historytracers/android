@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
@@ -68,7 +69,14 @@ fun MeasuringScreen(
         "measuring_one_direction",
         "measuring_two_directions",
     )
-    val allMeasuringSectionsDone = measuringSectionIds.all { it in completedMeasuring }
+    val measuringGroupController = remember {
+        LevelGroupController(measuringSectionIds, completedMeasuring)
+    }
+    LaunchedEffect(completedMeasuring) {
+        measuringGroupController.syncFromPersisted(completedMeasuring)
+    }
+    val measuringGroupCompleted by measuringGroupController.completed.collectAsState()
+    val allMeasuringSectionsDone = measuringSectionIds.all { it in measuringGroupCompleted }
     val biggerOrSmallerDone = "bigger_or_smaller" in completedMeasuring
     val greaterOrSmallerGameDone = "greater_or_smaller_game" in completedMeasuring
     val measuringOneDirectionDone = "measuring_one_direction" in completedMeasuring

@@ -71,21 +71,19 @@ fun IAmNotLikeYouScreen(
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
+    val latestCurrentScore by rememberUpdatedState(currentScore)
+
     fun claimLevel() {
         if (claiming) return
         if ("i_am_not_like_you" in claimedLevels) return
         claiming = true
         scope.launch {
             val committed = withContext(NonCancellable) {
-                val total = preferences.claimLevel("i_am_not_like_you", 10)
-                if (total != null) {
-                    preferences.recordLessonCompletion()
-                }
-                total
+                preferences.claimLevel("i_am_not_like_you", 10, recordCompletion = true)
             }
             claiming = false
             if (committed != null) {
-                onScoreChanged(committed)
+                onScoreChanged(maxOf(committed, latestCurrentScore))
                 onNavigateToCongratulation()
             }
         }
