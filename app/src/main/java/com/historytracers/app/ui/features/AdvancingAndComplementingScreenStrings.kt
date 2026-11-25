@@ -4,6 +4,7 @@ package com.historytracers.app.ui.features
 import androidx.compose.runtime.staticCompositionLocalOf
 
 data class AdvancingAndComplementingScreenStrings(
+    val title: String,
     val introTitle: String,
     val introBody: String,
     val complementTitle: String,
@@ -29,6 +30,7 @@ data class AdvancingAndComplementingScreenStrings(
 )
 
 val EnAdvancingAndComplementingScreenStrings = AdvancingAndComplementingScreenStrings(
+    title = "Advancing and Complementing",
     introTitle = "Introduction",
     introBody = "In previous classes, we learned that we cannot write a number greater than 9 in a single position. When this happens, we need to use a new order — a new family number — to hold the number.\n\nIn this class, we will look at the same idea from another angle: through the complement and the limits of a position.",
     complementTitle = "Complement of 10",
@@ -54,6 +56,7 @@ val EnAdvancingAndComplementingScreenStrings = AdvancingAndComplementingScreenSt
 )
 
 val PtAdvancingAndComplementingScreenStrings = AdvancingAndComplementingScreenStrings(
+    title = "Avançando e Complementando",
     introTitle = "Introdução",
     introBody = "Nas aulas anteriores, aprendemos que não podemos escrever um número maior que 9 em uma única posição. Quando isso acontece, precisamos usar uma nova ordem — um novo número da família — para guardar o número.\n\nNesta aula, vamos olhar para essa mesma ideia por outro ângulo: por meio do complemento e dos limites de uma posição.",
     complementTitle = "Complemento de 10",
@@ -79,6 +82,7 @@ val PtAdvancingAndComplementingScreenStrings = AdvancingAndComplementingScreenSt
 )
 
 val EsAdvancingAndComplementingScreenStrings = AdvancingAndComplementingScreenStrings(
+    title = "Avanzando y Complementando",
     introTitle = "Introducción",
     introBody = "En las clases anteriores, aprendimos que no podemos escribir un número mayor que 9 en una sola posición. Cuando esto ocurre, necesitamos usar un nuevo orden — un nuevo número de familia — para guardar el número.\n\nEn esta clase, veremos esa misma idea desde otro ángulo: a través del complemento y de los límites de una posición.",
     complementTitle = "Complemento de 10",
