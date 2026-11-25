@@ -20,7 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.carryOrNotCarryScreenStringsForLanguage
+
+private const val CARRY_OR_NOT_CARRY_FILE = "6212e7fd-eada-4a62-a268-5530b3369542"
+private const val CARRY_OR_NOT_CARRY_INTRO_CONTENT_ID = "6d4a14a2-eb1a-46a4-958c-454b035066ec"
 
 @Composable
 fun CarryOrNotCarryIntroScreen(
@@ -53,7 +57,11 @@ fun CarryOrNotCarryIntroScreen(
                 }
                 AutoSizeTitleText(
                     text = xs.title,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = CARRY_OR_NOT_CARRY_FILE,
+                    contentId = CARRY_OR_NOT_CARRY_INTRO_CONTENT_ID
                 )
             }
         }

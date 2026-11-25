@@ -32,10 +32,14 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.PlayingWithAxiomsScreenStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.playingWithAxiomsScreenStringsForLanguage
@@ -50,6 +54,13 @@ private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html
 
 private const val TOTAL_ROUNDS = 3
 private const val TOTAL_LEVELS = 3
+private const val AXIOMS_FILE = "1a9da967-36cd-423f-b9ea-1e7fdce0c038"
+private const val AXIOMS_CONTENT_ID = "4c38955f-4273-4f6c-b895-bf0a62cae066"
+
+private fun stripLeadingMarkdownTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 
 private sealed class AxiomToken {
     data class Value(val v: Int) : AxiomToken()
@@ -67,8 +78,28 @@ fun PlayingWithAxiomsGameScreen(
     val s = LocalUiStrings.current
     val xs = playingWithAxiomsScreenStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$AXIOMS_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == AXIOMS_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     var level by remember { mutableIntStateOf(1) }
     var round by remember { mutableIntStateOf(0) }
@@ -210,8 +241,14 @@ fun PlayingWithAxiomsGameScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = AXIOMS_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
@@ -223,13 +260,21 @@ fun PlayingWithAxiomsGameScreen(
             ) {
                 Spacer(Modifier.height(4.dp))
 
-                Text(
-                    text = xs.explanation,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp)
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = stripLeadingMarkdownTitle(instruction),
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                } else {
+                    Text(
+                        text = xs.explanation,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                }
 
                 Spacer(Modifier.height(8.dp))
 
@@ -361,7 +406,7 @@ fun PlayingWithAxiomsGameScreen(
                         )
                     ) {
                         Text(
-                            text = if (round >= TOTAL_ROUNDS) s.common.nextLevel else s.common.nextStep,
+                            text = if (round >= TOTAL_ROUNDS) s.common.nextLevel else s.common.nextExercise,
                             fontWeight = FontWeight.Bold
                         )
                     }

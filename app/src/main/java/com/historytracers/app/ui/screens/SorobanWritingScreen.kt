@@ -29,8 +29,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import kotlinx.coroutines.launch
 import androidx.compose.ui.unit.dp
 import com.historytracers.app.ui.LocalAppLanguage
@@ -48,6 +52,8 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val COLUMNS = 9
 private const val UPPER_MAX = 1
 private const val LOWER_MAX = 4
+private const val SOROBAN_WRITING_FILE = "f057f236-a569-4095-b1d1-e34bd1f2392e"
+private const val SOROBAN_WRITING_CONTENT_ID = "831e51e8-c05e-48fa-a76c-1e28a42394fc"
 
 private data class ColumnState(val upper: Boolean = false, val lower: Int = 0) {
     val value: Int get() = (if (upper) 5 else 0) + lower
@@ -71,16 +77,35 @@ fun SorobanWritingScreen(
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = sorobanWritingScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val state = remember { mutableStateOf(List(COLUMNS) { ColumnState() }) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
     val currentValue = SorobanValue(state.value)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showTomokoSubmenu by remember { mutableStateOf(false) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$SOROBAN_WRITING_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == SOROBAN_WRITING_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -100,8 +125,14 @@ fun SorobanWritingScreen(
                 }
                 AutoSizeTitleText(
                     text = aws.writingToSoroban,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = SOROBAN_WRITING_FILE,
+                        contentId = id
+                    )
+                }
             }
         }
 
@@ -115,12 +146,20 @@ fun SorobanWritingScreen(
         ) {
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                text = xs.sorobanWritingInstruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
-            )
+            val instruction = instructionText
+            if (instruction != null) {
+                MarkdownText(
+                    text = instruction,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
+                )
+            } else {
+                Text(
+                    text = xs.sorobanWritingInstruction,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
+                )
+            }
 
             Spacer(Modifier.height(12.dp))
 
@@ -326,32 +365,28 @@ fun SorobanWritingScreen(
                 )
             }
 
+            if (showCongrats.value) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2E7D32),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = s.common.resetHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF2E7D32),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
             }
-        }
-    }
-
-    if (showCongrats.value) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 80.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF2E7D32),
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = s.common.resetHint,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF2E7D32),
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
         }
     }
 

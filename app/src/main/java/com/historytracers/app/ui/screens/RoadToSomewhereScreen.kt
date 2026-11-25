@@ -43,7 +43,9 @@ import com.historytracers.app.ui.theme.ButtonYellowDark
 import com.historytracers.app.ui.theme.FlagBlueDark
 import com.historytracers.app.ui.theme.FlagBlueLight
 import com.historytracers.app.ui.theme.OnButtonYellow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private fun parseSvgPathToAndroidPath(svgD: String): Path {
     val path = Path()
@@ -304,10 +306,20 @@ fun RoadToSomewhereScreen(
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
+    var claimingLevel by remember { mutableStateOf(false) }
+
     fun claimRoadToSomewhereLevel() {
-        if ("road_to_somewhere" in claimedLevels) return
-        onScoreChanged(currentScore + 10)
-        scope.launch { preferences.markLevelClaimed("road_to_somewhere") }
+        if (claimingLevel || "road_to_somewhere" in claimedLevels) return
+        claimingLevel = true
+        scope.launch {
+            val committed = withContext(NonCancellable) {
+                preferences.claimLevel("road_to_somewhere", 10)
+            }
+            claimingLevel = false
+            if (committed != null) {
+                onScoreChanged(committed)
+            }
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

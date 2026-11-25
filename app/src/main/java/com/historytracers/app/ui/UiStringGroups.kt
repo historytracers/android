@@ -24,7 +24,7 @@ data class AppCommonStrings(
     val unsupportedContentType: String,
     val levelPrefix: String, val valuePrefix: String,
     val stepPrefix: String, val newExercise: String,
-    val nextStep: String, val number: String, val auto: String, val stop: String,
+    val nextStep: String, val nextExercise: String, val number: String, val auto: String, val stop: String,
     val complete: String,
     val sources: String,
     val originalText: String,

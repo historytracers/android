@@ -30,10 +30,14 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.schyotyWritingScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -46,6 +50,8 @@ import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ROWS = 9
 private const val BEADS_PER_ROW = 10
+private const val SCHYOTY_WRITING_FILE = "709bba96-80e1-4983-ab97-6a37d1efa2ee"
+private const val SCHYOTY_WRITING_CONTENT_ID = "17ecb7d5-a726-4d73-8b6a-4b5a46781a51"
 
 @Composable
 fun SchyotyWritingScreen(
@@ -56,16 +62,35 @@ fun SchyotyWritingScreen(
     val s = LocalUiStrings.current
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val xs = schyotyWritingScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     var value by remember { mutableStateOf(0L) }
     var exerciseKey by remember { mutableIntStateOf(0) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showJessicaSubmenu by remember { mutableStateOf(false) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$SCHYOTY_WRITING_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == SCHYOTY_WRITING_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     fun newExercise() {
         exerciseKey++
@@ -92,8 +117,14 @@ fun SchyotyWritingScreen(
                     }
                     AutoSizeTitleText(
                         text = aws.writingToSchyoty,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
                     )
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = SCHYOTY_WRITING_FILE,
+                            contentId = id
+                        )
+                    }
                 }
             }
 
@@ -105,12 +136,20 @@ fun SchyotyWritingScreen(
             ) {
                 Spacer(Modifier.height(8.dp))
 
-                Text(
-                    text = xs.schyotyWritingInstruction,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = instruction,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
+                } else {
+                    Text(
+                        text = xs.schyotyWritingInstruction,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
+                    )
+                }
 
                 SchyotyAbacus(
                     frozen = showCongrats.value,

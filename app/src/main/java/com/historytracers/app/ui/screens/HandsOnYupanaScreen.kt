@@ -29,13 +29,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.resolveImageSource
 import com.historytracers.app.ui.features.handsOnYupanaScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.components.safeOpenUri
 
+private const val HANDS_ON_YUPANA_FILE = "8cd2f9e6-6c86-44d5-8de6-9d86bcb93bfa"
+private const val HANDS_ON_YUPANA_CONTENT_ID = "608cbcf1-69e2-4a78-bd30-0353d08ffe61"
+
+private fun stripLeadingMarkdownTitle(text: String): String {
+    if (!text.startsWith("#### ")) return text
+    return text.substringAfter('\n', "").trimStart()
+}
 private const val IMAGE_URL = "https://www.historytracers.org/images/Mapswire/mapswire-continent_sa-printable-map-south-america-lambert-az-hemi-271_Tawantsuyu.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=ea01ab6c-26af-4c7a-ba06-5c1731c83d4d"
 
@@ -48,7 +59,27 @@ fun HandsOnYupanaScreen(
     val s = LocalUiStrings.current
     val xs = handsOnYupanaScreenStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
+
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$HANDS_ON_YUPANA_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == HANDS_ON_YUPANA_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
@@ -63,6 +94,14 @@ fun HandsOnYupanaScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                    }
+                },
+                actions = {
+                    contentId?.let { id ->
+                        ScreenAudioButton(
+                            lessonId = HANDS_ON_YUPANA_FILE,
+                            contentId = id
+                        )
                     }
                 }
             )
@@ -91,12 +130,20 @@ fun HandsOnYupanaScreen(
                         .padding(bottom = 8.dp)
                 )
 
-                Text(
-                    text = xs.handsOnYupanaDescription,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 24.dp)
-                )
+                val instruction = instructionText
+                if (instruction != null) {
+                    MarkdownText(
+                        text = stripLeadingMarkdownTitle(instruction),
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+                } else {
+                    Text(
+                        text = xs.handsOnYupanaDescription,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+                }
 
                 if (imageFailed) {
                     Card(

@@ -729,10 +729,12 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
     /**
      * Claims a level flag and awards its bonus atomically: the bonus is added to
      * the score stored in the same edit block, so a score that changed since the
-     * caller took its snapshot is never overwritten by a stale total. Returns
-     * the committed score, or null when the level had already been claimed.
+     * caller took its snapshot is never overwritten by a stale total. When
+     * [recordCompletion] is true, the lesson-completion streak is written in the
+     * same edit so the score and streak commit or fail together. Returns the
+     * committed score, or null when the level had already been claimed.
      */
-    suspend fun claimLevel(levelId: String, bonus: Int): Int? {
+    suspend fun claimLevel(levelId: String, bonus: Int, recordCompletion: Boolean = false): Int? {
         var committed: Int? = null
         context.dataStore.edit { preferences ->
             val levelClaims = preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
@@ -740,24 +742,28 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
             val total = (preferences[SCORE_KEY] ?: 0) + bonus
             preferences[CLAIMED_LEVELS_KEY] = levelClaims + levelId
             preferences[SCORE_KEY] = total
+            if (recordCompletion) {
+                applyLessonCompletionStreak(preferences)
+            }
             committed = total
         }
         return committed
     }
 
-    suspend fun claimReturningLevel(newScore: Int, requiredSections: List<String>): Boolean {
-        var claimed = false
+    suspend fun claimReturningLevel(bonus: Int, requiredSections: List<String>): Int? {
+        var total: Int? = null
         context.dataStore.edit { preferences ->
             val completed = preferences[RETURNING_SECTIONS_KEY] ?: emptySet()
             if (!requiredSections.all { it in completed }) return@edit
             val levelClaims = preferences[CLAIMED_LEVELS_KEY] ?: emptySet()
             if ("returning" in levelClaims) return@edit
+            val newTotal = (preferences[SCORE_KEY] ?: 0) + bonus
             preferences[CLAIMED_LEVELS_KEY] = levelClaims + "returning"
-            preferences[SCORE_KEY] = newScore
+            preferences[SCORE_KEY] = newTotal
             applyLessonCompletionStreak(preferences)
-            claimed = true
+            total = newTotal
         }
-        return claimed
+        return total
     }
 
     val seenNewHubs: Flow<Set<String>> = context.dataStore.data.map { preferences ->

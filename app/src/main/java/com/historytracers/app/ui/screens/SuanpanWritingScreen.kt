@@ -30,10 +30,14 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.historytracers.app.data.ContentRepository
+import com.historytracers.app.data.ContentResult
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.MarkdownText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.abacusWriteStringsForLanguage
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.suanpanWritingScreenStringsForLanguage
@@ -48,6 +52,8 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val COLUMNS = 9
 private const val UPPER_MAX = 2
 private const val LOWER_MAX = 5
+private const val SUANPAN_WRITING_FILE = "cdaba2da-f79f-4807-98f1-31f746f0f3e6"
+private const val SUANPAN_WRITING_CONTENT_ID = "9853cf4a-5da3-4ff8-b908-eaa61e441686"
 
 private data class SuanpanColumnState(val upper: Int = 0, val lower: Int = 0) {
     val value: Int get() = upper * 5 + lower
@@ -71,16 +77,35 @@ fun SuanpanWritingScreen(
     val aws = abacusWriteStringsForLanguage(LocalAppLanguage.current)
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val xs = suanpanWritingScreenStringsForLanguage(LocalAppLanguage.current)
+    val language = LocalAppLanguage.current
     val state = remember { mutableStateOf<List<SuanpanColumnState>>(List(COLUMNS) { SuanpanColumnState() }) }
     val targetValue = remember { mutableStateOf(Random.nextInt(1, 10)) }
     val showCongrats = remember { mutableStateOf(false) }
     val currentValue = SuanpanValue(state.value)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val repo = remember { ContentRepository(context) }
     val preferences = remember { UserPreferences(context) }
+    var instructionText by remember { mutableStateOf<String?>(null) }
+    var contentId by remember { mutableStateOf<String?>(null) }
     var showSourcesMenu by remember { mutableStateOf(false) }
     var showMainTextSubmenu by remember { mutableStateOf(false) }
     var showAPalSubmenu by remember { mutableStateOf(false) }
+
+    LaunchedEffect(language) {
+        when (val result = repo.loadAndParse("$language/$SUANPAN_WRITING_FILE")) {
+            is ContentResult.SMGame -> {
+                val content = result.data?.content
+                    ?.firstOrNull { it.id == SUANPAN_WRITING_CONTENT_ID }
+                instructionText = content?.text?.firstOrNull()?.text
+                contentId = content?.id
+            }
+            else -> {
+                instructionText = null
+                contentId = null
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -100,8 +125,14 @@ fun SuanpanWritingScreen(
                 }
                 AutoSizeTitleText(
                     text = aws.writingToSuanpan,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
+                contentId?.let { id ->
+                    ScreenAudioButton(
+                        lessonId = SUANPAN_WRITING_FILE,
+                        contentId = id
+                    )
+                }
             }
         }
 
@@ -115,12 +146,20 @@ fun SuanpanWritingScreen(
         ) {
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                text = xs.suanpanWritingInstruction,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
-            )
+            val instruction = instructionText
+            if (instruction != null) {
+                MarkdownText(
+                    text = instruction,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
+                )
+            } else {
+                Text(
+                    text = xs.suanpanWritingInstruction,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).offset(y = (-100).dp)
+                )
+            }
 
             Spacer(Modifier.height(12.dp))
 
@@ -326,32 +365,28 @@ fun SuanpanWritingScreen(
                 )
             }
 
+            if (showCongrats.value) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2E7D32),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = s.common.resetHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF2E7D32),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
             }
-        }
-    }
-
-    if (showCongrats.value) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 80.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ${hts.congratulationTitle} \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF2E7D32),
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = s.common.resetHint,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF2E7D32),
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
         }
     }
 
