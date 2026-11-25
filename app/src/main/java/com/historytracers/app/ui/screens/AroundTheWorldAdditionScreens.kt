@@ -526,6 +526,7 @@ private fun AtwAdditionContent(
 
     val initialScore = remember { currentScore }
     var totalAwarded by remember { mutableIntStateOf(0) }
+    var arrivalHandled by remember(contentId) { mutableStateOf(false) }
 
     fun award(points: Int) {
         if (points <= 0) return
@@ -534,9 +535,16 @@ private fun AtwAdditionContent(
     }
 
     LaunchedEffect(content) {
-        if (content != null && onNavigateToHome != null) {
-            preferences.recordLessonCompletion()
-            preferences.markAroundTheWorldAdditionSectionCompleted(ATW_ADD_SECTION_ID)
+        val node = content
+        if (node != null) {
+            if (!arrivalHandled) {
+                arrivalHandled = true
+                award(node.score)
+            }
+            if (onNavigateToHome != null) {
+                preferences.recordLessonCompletion()
+                preferences.markAroundTheWorldAdditionSectionCompleted(ATW_ADD_SECTION_ID)
+            }
         }
     }
 

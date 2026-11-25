@@ -40,6 +40,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionTypedScreenStringsForLanguage
@@ -48,6 +49,9 @@ import kotlin.random.Random
 private const val TYPED_ORIGINAL_TEXT_URL =
     "https://www.historytracers.org/index.html?page=class_content&arg=18ca9e1f-b936-447a-9bab-798159cefbb9"
 private const val TYPED_ADD_DIGITS = 3
+private const val TYPED_FILE = "c0aba267-9676-46fb-b785-ac8b4be2aad9"
+private const val TYPED_INTRO_CONTENT_ID = "0067074d-d153-4f0c-b413-5d4f090538a2"
+private const val TYPED_GAME_CONTENT_ID = "21379031-753b-4ee8-af0b-af3e85070524"
 
 private val TypedGreen = Color(0xFF4CAF50)
 private val TypedGreenDark = Color(0xFF2E7D32)
@@ -189,7 +193,11 @@ fun PracticingAdditionTypedIntroScreen(
                 }
                 AutoSizeTitleText(
                     text = xs.introTitle,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                )
+                ScreenAudioButton(
+                    lessonId = TYPED_FILE,
+                    contentId = TYPED_INTRO_CONTENT_ID
                 )
             }
         }
@@ -671,7 +679,11 @@ fun PracticingAdditionTypedGameScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = TYPED_FILE,
+                        contentId = TYPED_GAME_CONTENT_ID
                     )
                 }
             }
