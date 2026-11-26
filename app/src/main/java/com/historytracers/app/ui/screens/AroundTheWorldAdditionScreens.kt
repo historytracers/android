@@ -524,14 +524,12 @@ private fun AtwAdditionContent(
 
     val content = game?.content?.firstOrNull { it.id == contentId }
 
-    val initialScore = remember { currentScore }
-    var totalAwarded by remember { mutableIntStateOf(0) }
+    val latestScore by rememberUpdatedState(currentScore)
     var arrivalHandled by remember(contentId) { mutableStateOf(false) }
 
     fun award(points: Int) {
         if (points <= 0) return
-        totalAwarded += points
-        onScoreChanged(initialScore + totalAwarded)
+        onScoreChanged(latestScore + points)
     }
 
     LaunchedEffect(content) {
