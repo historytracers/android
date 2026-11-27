@@ -324,10 +324,8 @@ private fun MultiplicationTableMultiplyingWithFlowersGameContent(
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(
-                    // Per-screen narration is not published for this class
-                    // yet, so the button plays the class-level audio.
                     lessonId = SMARTPHONE_GAME_FILE,
-                    contentId = null
+                    contentId = contentId
                 )
             }
         }
