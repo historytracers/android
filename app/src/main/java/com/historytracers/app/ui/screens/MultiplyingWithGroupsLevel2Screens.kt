@@ -87,6 +87,11 @@ private const val MULTIPLYING_WITH_GROUPS_LEVEL2_SECTION_ID = "multiplying_with_
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val ORIGINAL_CLASS_FILE = "0f7102a6-c17d-494e-8e98-c4ab178116fd"
 
+// Each screen has its own content UUID so the audio follows the standard
+// `{lessonUuid}_{contentUuid}_{language}.ogg` pattern.
+private const val RULES_CONTENT_ID = "9a7df831-a592-42d8-bf1c-15a9899b05a2"
+private const val GAME_CONTENT_ID = "a9577a5c-87df-42c4-8e85-a0f7724d0c97"
+
 private const val MAX_LEVEL = 4
 private const val MAX_MULTIPLIER = 10
 private const val RANDOM_OBJECT = -1
@@ -136,7 +141,7 @@ fun MultiplyingWithGroupsLevel2RulesScreen(
                 )
                 ScreenAudioButton(
                     lessonId = ORIGINAL_CLASS_FILE,
-                    contentId = null
+                    contentId = RULES_CONTENT_ID
                 )
             }
         }
@@ -321,7 +326,7 @@ fun MultiplyingWithGroupsLevel2GameScreen(
                 )
                 ScreenAudioButton(
                     lessonId = ORIGINAL_CLASS_FILE,
-                    contentId = null
+                    contentId = GAME_CONTENT_ID
                 )
             }
         }
