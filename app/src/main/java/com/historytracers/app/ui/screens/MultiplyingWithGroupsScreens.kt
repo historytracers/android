@@ -82,10 +82,12 @@ private const val MULTIPLYING_WITH_GROUPS_SECTION_ID = "multiplying_with_groups"
 private const val HISTORYTRACERS_ORIGIN = "https://www.historytracers.org/"
 private const val ORIGINAL_CLASS_FILE = "f641941e-55f0-40dd-a05f-81392b23cacd"
 
-// The class publishes one narration per content section, so each screen asks
-// for its own section audio instead of replaying the class-wide narration.
-private const val RULES_CONTENT_ID = "SECTION_rules"
-private const val GAME_CONTENT_ID = "SECTION_game"
+// The class publishes one narration per content section. Each screen has its
+// own content UUID so the audio follows the standard
+// `{lessonUuid}_{contentUuid}_{language}.ogg` pattern instead of replaying the
+// class-wide narration.
+private const val RULES_CONTENT_ID = "b93fad4a-9ecc-4b16-a1ed-3acbf9a4d264"
+private const val GAME_CONTENT_ID = "2fcf8e4c-ea19-49e3-af95-2d1f86caf9bd"
 
 private const val MAX_LEVEL = 3
 private const val MAX_MULTIPLIER = 10
