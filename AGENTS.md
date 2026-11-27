@@ -213,13 +213,24 @@
   - checks connectivity and shows `s.common.audioOfflineMessage` when offline;
   - streams the audio with `MediaPlayer`, toggles play/stop, shows `s.common.audioErrorMessage` on failure, and releases the player when the screen is disposed.
 - The strings `audio`, `audioOfflineMessage`, and `audioErrorMessage` live in `AppCommonStrings` with translations in `UiStrings.kt`. Reuse them; do not add per-screen audio strings.
-- Kotlin-only screens that have no lesson/content UUID pair cannot have an associated `UUID_UUID_LANG.ogg` file and are out of scope.
+- Kotlin-only screens with no lesson/content UUID pair (for example a pure UI screen that has no narration) are out of scope and must not show an audio button.
+- **Per-screen narration for Kotlin-ported lessons — never leave `contentId = null` on a multi-screen group.**
+  - Audio is produced by the content software from `common/src/smartphone/{en-US,pt-BR,es-ES}/<lessonUuid>.json`. **Never hand-create, copy, edit or regenerate the generated `audios/{lessonUuid}_{contentUuid}_{lang}.txt` or `.ogg` files.** The agent's job is to create/update the smartphone JSON and wire the screen to its content UUID; the publisher/TTS software generates the audio.
+  - A Kotlin screen group ported from a web class often plays one class-wide narration on every screen because each `ScreenAudioButton` passes `contentId = null`. For any group with 2+ screens that is a bug: each screen must play its own content narration.
+  - Fix procedure:
+    1. Check whether `common/src/smartphone/{en-US,pt-BR,es-ES}/<lessonUuid>.json` exists.
+    2. If it is missing, create it in all three locales with `"type": "sm_game"`, `"sources": ["<lessonUuid>"]`, and one `content` entry per Android screen. Give each entry a real UUID `id`, link the entries with `next`/`prev`, and put in `text` exactly the text the screen shows (title heading followed by the body) in that language. Use the matching `historytracers/lang/{lang}/<lessonUuid>.json` class file as the wording reference, but keep the text identical to the Android screen's strings.
+    3. If the JSON already exists, reuse its `content[].id` values. Do not create a second JSON or new UUIDs.
+    4. Add one constant per content UUID in the screen file (for example `RULES_ID`, `GAME_ID`) and pass it to `ScreenAudioButton(lessonId = <lessonUuid>, contentId = <contentId>)` on the matching screen.
+    5. Never use class section ids (`SECTION_rules`, `SECTION_game`, …) as `contentId`: they are not UUIDs and do not follow the `UUID_UUID_LANG` pattern.
+  - **The audio must be compatible with the screen:** the JSON `text` must match what the screen renders (same title, body and language), and when a screen's text changes the JSON must be updated in all three locales. This prevents the narration from describing missing or different content.
+  - The smartphone JSONs live in the `common` submodule, which the audio software reads. When working locally, keep the `common/src/smartphone` copies used by the app, the website and the common build in sync.
 - **Next Level screens:** every screen that shows a "Next Level" button must also show the shared Next Level narration button in its top bar. Reuse the single shared smartphone source for all levels; never create a per-level smartphone JSON or audio file:
   - Lesson UUID: `4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13`
   - Content UUID: `b7c2e4f1-6a90-4d38-8f52-3e1a9c7d6b24`
   - Add `ScreenAudioButton(lessonId = NEXT_LEVEL_AUDIO_LESSON_ID, contentId = NEXT_LEVEL_AUDIO_CONTENT_ID)` to the top bar. Both constants are defined as public top-level constants in `CongratulationScreen.kt`, so any screen can reuse them; never redeclare the UUIDs elsewhere.
   - The shared `CongratulationScreen` already renders this button. New Next Level screens must either navigate to that shared screen or add the same audio button to their own top bar.
-  - The narration source is the shared smartphone screen at `common/src/smartphone/{en-US,es-ES,pt-BR}/4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13.json`. Update all three language files only when the Next Level narration text changes, then regenerate the audio.
+  - The narration source is the shared smartphone screen at `common/src/smartphone/{en-US,es-ES,pt-BR}/4d9e6b2a-1f3c-4c7e-9a51-8b6f2d0e7a13.json`. Update all three language files only when the Next Level narration text changes; the audio software regenerates the narration from the JSON — never generate or copy the audio files manually.
 - **Whenever a new lesson group is created, verify the audio button on every screen in all three languages** — switch the app language and confirm the URL uses `en-US`, `pt-BR`, and `es-ES` respectively.
 
 ## Porting a JS Abacus App to Android

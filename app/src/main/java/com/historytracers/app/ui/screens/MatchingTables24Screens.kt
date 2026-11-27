@@ -209,10 +209,8 @@ fun MatchingTables24RulesScreen(
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(
-                    // Per-screen narration is not published for this class
-                    // yet, so the button plays the class-level audio.
                     lessonId = SMARTPHONE_GAME_FILE,
-                    contentId = null
+                    contentId = RULES_ID
                 )
             }
         }
@@ -441,10 +439,8 @@ fun MatchingTables24GameScreen(
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 ScreenAudioButton(
-                    // Per-screen narration is not published for this class
-                    // yet, so the button plays the class-level audio.
                     lessonId = SMARTPHONE_GAME_FILE,
-                    contentId = null
+                    contentId = GAME_ID
                 )
             }
         }
