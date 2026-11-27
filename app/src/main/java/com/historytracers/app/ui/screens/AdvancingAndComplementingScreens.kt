@@ -60,12 +60,13 @@ fun AdvancingAndComplementingIntroScreen(
 ) {
     val xs = advancingAndComplementingScreenStringsForLanguage(LocalAppLanguage.current)
     AcFrame(
-        title = xs.introTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigateNext = onNavigateNext,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_INTRO_CONTENT_ID
     ) {
+        AcHeading(xs.introTitle)
         AcBody(xs.introBody)
     }
 }
@@ -78,13 +79,14 @@ fun AdvancingAndComplementingComplementScreen(
 ) {
     val xs = advancingAndComplementingScreenStringsForLanguage(LocalAppLanguage.current)
     AcFrame(
-        title = xs.complementTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateNext = onNavigateNext,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_COMPLEMENT_CONTENT_ID
     ) {
+        AcHeading(xs.complementTitle)
         AcBody(xs.complementBody)
     }
 }
@@ -97,13 +99,14 @@ fun AdvancingAndComplementingOurselvesScreen(
 ) {
     val xs = advancingAndComplementingScreenStringsForLanguage(LocalAppLanguage.current)
     AcFrame(
-        title = xs.ourselvesTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateNext = onNavigateNext,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_OURSELVES_CONTENT_ID
     ) {
+        AcHeading(xs.ourselvesTitle)
         AcBody(xs.ourselvesBody)
         Spacer(Modifier.height(8.dp))
         CalculationOne(caption = xs.calculationCaption)
@@ -118,13 +121,14 @@ fun AdvancingAndComplementingLimitScreen(
 ) {
     val xs = advancingAndComplementingScreenStringsForLanguage(LocalAppLanguage.current)
     AcFrame(
-        title = xs.limitTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateNext = onNavigateNext,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_LIMIT_CONTENT_ID
     ) {
+        AcHeading(xs.limitTitle)
         AcBody(xs.limitBody)
         Spacer(Modifier.height(12.dp))
         FigureOne()
@@ -161,13 +165,14 @@ fun AdvancingAndComplementingExercisingScreen(
     }
 
     AcFrame(
-        title = xs.exercisingTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateNext = onNavigateNext,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_EXERCISING_CONTENT_ID
     ) {
+        AcHeading(xs.exercisingTitle)
         AcBody(xs.exercisingBody)
         AcBody(xs.exercisingInstruction, emphasis = true)
 
@@ -247,13 +252,14 @@ fun AdvancingAndComplementingThinkingScreen(
     var selected by remember { mutableStateOf<String?>(null) }
 
     AcFrame(
-        title = xs.thinkingTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateNext = onNavigateNext,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_THINKING_CONTENT_ID
     ) {
+        AcHeading(xs.thinkingTitle)
         AcQuestion(xs.thinkingQuestion)
 
         Spacer(Modifier.height(16.dp))
@@ -329,13 +335,14 @@ fun AdvancingAndComplementingConclusionScreen(
     }
 
     AcFrame(
-        title = xs.conclusionTitle,
+        title = xs.title,
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateToRoadToSomewhere = onNavigateToRoadToSomewhere,
         audioLessonId = ADVANCING_FILE,
         audioContentId = ADVANCING_CONCLUSION_CONTENT_ID
     ) {
+        AcHeading(xs.conclusionTitle)
         AcBody(xs.conclusionBody)
     }
 }
@@ -527,6 +534,19 @@ private fun AcFrame(
             }
         }
     }
+}
+
+@Composable
+private fun ColumnScope.AcHeading(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 6.dp)
+    )
 }
 
 @Composable

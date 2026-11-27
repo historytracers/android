@@ -35,6 +35,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.TheResultIsScreenStrings
 import com.historytracers.app.ui.features.theResultIsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
@@ -44,6 +45,8 @@ import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=71a07afa-964d-4e43-93c1-b2e0ed330acb"
 private const val SECTION_ID = "the_result_is"
+private const val THE_RESULT_IS_FILE = "2fac1d3f-bf9f-4452-ab69-703a546a39f9"
+private const val THE_RESULT_IS_CONTENT_ID = "d174f895-ca42-41cb-9cc1-f6c295cc72d5"
 
 private val CardBg = Color(0xFFFDF6E3)
 private val NumCellBg = Color(0xFFFFF8E1)
@@ -390,7 +393,11 @@ fun TheResultIsScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = THE_RESULT_IS_FILE,
+                        contentId = THE_RESULT_IS_CONTENT_ID
                     )
                 }
             }

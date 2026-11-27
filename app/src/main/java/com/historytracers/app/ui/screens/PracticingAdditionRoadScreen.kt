@@ -39,6 +39,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionRoadScreenStringsForLanguage
@@ -46,6 +47,9 @@ import kotlin.random.Random
 
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=a4caa9fe-de1e-49c5-92de-50ed9c22a42d"
 private const val ADD_DIGITS = 3
+private const val PRACTICING_ADDITION_FILE = "3b391c11-3bd0-4b46-94d0-577ec7222004"
+private const val PRACTICING_ADDITION_PRACTICE_CONTENT_ID = "64d49993-0542-4cfd-bbe5-9cadd1936c3a"
+private const val PRACTICING_ADDITION_GAME_CONTENT_ID = "0467b1cb-acbf-46bb-8d8b-188b922e2803"
 
 private val AddGreen = Color(0xFF4CAF50)
 private val AddGreenDark = Color(0xFF2E7D32)
@@ -180,6 +184,7 @@ private fun RoadIntroFrame(
     onNavigatePrev: (() -> Unit)? = null,
     onNavigateNext: (() -> Unit)? = null,
     nextLabel: String? = null,
+    audioContentId: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val s = LocalUiStrings.current
@@ -201,8 +206,14 @@ private fun RoadIntroFrame(
                 }
                 AutoSizeTitleText(
                     text = title,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
+                if (audioContentId != null) {
+                    ScreenAudioButton(
+                        lessonId = PRACTICING_ADDITION_FILE,
+                        contentId = audioContentId
+                    )
+                }
             }
         }
 
@@ -333,7 +344,8 @@ fun PracticingAdditionPracticeScreen(
         onNavigateBack = onNavigateBack,
         onNavigatePrev = onNavigatePrev,
         onNavigateNext = onNavigateNext,
-        nextLabel = xs.start
+        nextLabel = xs.start,
+        audioContentId = PRACTICING_ADDITION_PRACTICE_CONTENT_ID
     ) {
         Text(
             text = xs.practiceIntro,
@@ -663,7 +675,11 @@ fun PracticingAdditionRoadScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = PRACTICING_ADDITION_FILE,
+                        contentId = PRACTICING_ADDITION_GAME_CONTENT_ID
                     )
                 }
             }
@@ -674,16 +690,6 @@ fun PracticingAdditionRoadScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(Modifier.height(12.dp))
-
-                Text(
-                    text = xs.gameInstruction,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-
                 Spacer(Modifier.height(12.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

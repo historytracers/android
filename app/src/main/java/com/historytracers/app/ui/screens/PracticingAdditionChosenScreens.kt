@@ -40,6 +40,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.components.safeOpenUri
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.practicingAdditionChosenScreenStringsForLanguage
@@ -48,6 +49,8 @@ private const val CHOSEN_ORIGINAL_TEXT_URL =
     "https://www.historytracers.org/index.html?page=class_content&arg=4d141853-389b-4ee9-87f2-03d8b2e4d5e4"
 private const val CHOSEN_MAX = 99999
 private const val CHOSEN_MAX_DIGITS = 5
+private const val CHOSEN_FILE = "f9728c31-932b-4702-9d88-03741df41db1"
+private const val CHOSEN_CONTENT_ID = "bf05ee31-0a81-4c2e-ba21-02a86fce725d"
 
 private val ChosenGreen = Color(0xFF4CAF50)
 private val ChosenGreenDark = Color(0xFF2E7D32)
@@ -542,7 +545,11 @@ fun PracticingAdditionChosenGameScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = CHOSEN_FILE,
+                        contentId = CHOSEN_CONTENT_ID
                     )
                 }
             }
@@ -554,16 +561,6 @@ fun PracticingAdditionChosenGameScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val current = state
-
-                Spacer(Modifier.height(12.dp))
-
-                Text(
-                    text = xs.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 24.dp)
-                )
 
                 if (current == null) {
                     Spacer(Modifier.height(16.dp))
