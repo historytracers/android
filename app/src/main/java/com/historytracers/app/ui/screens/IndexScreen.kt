@@ -701,7 +701,7 @@ fun IndexScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
                 }
                 AutoSizeTitleText(
-                    text = ss.fundamentals,
+                    text = ss.fundamentalsTagline,
                     modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
                 Box {

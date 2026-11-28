@@ -115,7 +115,7 @@
   - Physics — ⚛️ ⭐ — "The Laws of the Universe"
   - Chemistry — 🧪 — "Matter and Us"
   - Life — 🧬 — "What Is Life?"
-- `Fundamentals` opens `IndexScreen.kt` (route `Screen.Index`), the Fundamentals hub with the class buttons. It keeps the back arrow to the subject home and the Reset Classes menu in its top bar.
+- `Fundamentals` opens `IndexScreen.kt` (route `Screen.Index`), the Fundamentals hub with the class buttons. Its top bar title is the Fundamentals tagline (`ss.fundamentalsTagline`, for example "Everything Has a Unique Language"), not the word "Fundamentals". It keeps the back arrow to the subject home and the Reset Classes menu in its top bar.
 - Physics, Chemistry and Life have no hubs yet; their buttons show the localized "coming soon" snackbar. When a subject hub is added, wire its button in `SubjectsScreen` and remove the snackbar for that subject.
 - The drawer Home item, the post-onboarding destination and the fallback for the saved last route use `Screen.Subjects`; a saved `index` route also opens `Screen.Subjects`.
 - Strings live in `SubjectsScreenStrings.kt` (En/Pt/Es). English taglines use Title Case; Portuguese and Spanish follow their own sentence-case conventions.
