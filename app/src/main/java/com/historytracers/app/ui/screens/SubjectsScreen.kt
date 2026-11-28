@@ -65,7 +65,9 @@ private data class SubjectItem(
 
 @Composable
 fun SubjectsScreen(
-    onNavigateToFundamentals: () -> Unit = {}
+    onNavigateToFundamentals: () -> Unit = {},
+    onNavigateToPhysics: () -> Unit = {},
+    onNavigateToChemistry: () -> Unit = {}
 ) {
     val s = LocalUiStrings.current
     val ss = subjectsScreenStringsForLanguage(LocalAppLanguage.current)
@@ -93,13 +95,13 @@ fun SubjectsScreen(
                     title = ss.physics,
                     tagline = ss.physicsTagline,
                     icons = listOf("\u269B\uFE0F", "\u2B50"),
-                    onClick = { showComingSoon() }
+                    onClick = onNavigateToPhysics
                 ),
                 SubjectItem(
                     title = ss.chemistry,
                     tagline = ss.chemistryTagline,
                     icons = listOf("\uD83E\uDDEA"),
-                    onClick = { showComingSoon() }
+                    onClick = onNavigateToChemistry
                 ),
                 SubjectItem(
                     title = ss.life,

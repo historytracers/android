@@ -116,7 +116,9 @@
   - Chemistry — 🧪 — "Matter and Us"
   - Life — 🧬 — "What Is Life?"
 - `Fundamentals` opens `IndexScreen.kt` (route `Screen.Index`), the Fundamentals hub with the class buttons. Its top bar title is the Fundamentals tagline (`ss.fundamentalsTagline`, for example "Everything Has a Unique Language"), not the word "Fundamentals". It keeps the back arrow to the subject home and the Reset Classes menu in its top bar.
-- Physics, Chemistry and Life have no hubs yet; their buttons show the localized "coming soon" snackbar. When a subject hub is added, wire its button in `SubjectsScreen` and remove the snackbar for that subject.
+- Physics opens `PhysicsScreen.kt` (route `Screen.Physics`), a hub that currently contains only the **From Beginning to Now** placeholder button (universe icon `ic_universe_expansion`). It does not navigate yet: tapping it shows the localized coming-soon snackbar until its screen is created. Keep the back arrow and Reset Classes menu; the button keeps a static `ButtonYellow` color (no completion color until it leads to a real hub).
+- Chemistry opens `ChemistryScreen.kt` (route `Screen.Chemistry`), a hub that currently contains only the **The Matter Decoupling** placeholder button (atom icon `ic_atom`). It does not navigate yet: tapping it shows the localized coming-soon snackbar until its screen is created. Keep the back arrow and Reset Classes menu; the button keeps a static `ButtonYellow` color.
+- Life has no hub yet; its button shows the localized "coming soon" snackbar. When a subject hub is added, wire its button in `SubjectsScreen` and remove the snackbar for that subject.
 - The drawer Home item, the post-onboarding destination and the fallback for the saved last route use `Screen.Subjects`; a saved `index` route also opens `Screen.Subjects`.
 - Strings live in `SubjectsScreenStrings.kt` (En/Pt/Es). English taglines use Title Case; Portuguese and Spanish follow their own sentence-case conventions.
 - The subject home is the main screen for the Reset Classes rule: keep the 3-dot Reset Classes menu and the confirmation dialog on it.
