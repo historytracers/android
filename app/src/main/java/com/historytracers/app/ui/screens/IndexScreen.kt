@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -25,8 +26,10 @@ import com.historytracers.app.R
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
+import com.historytracers.app.ui.components.AutoSizeTitleText
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.miscStringsForLanguage
+import com.historytracers.app.ui.features.subjectsScreenStringsForLanguage
 import com.historytracers.app.ui.features.yupanaSharedStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
@@ -143,6 +146,7 @@ private fun BoxScope.NewHubSunBadge() {
 
 @Composable
 fun IndexScreen(
+    onNavigateBack: () -> Unit = {},
     onNavigateToWhoAmI: () -> Unit = {},
     onNavigateToFirstSteps: () -> Unit = {},
     onNavigateToIAmNotLikeYou: () -> Unit = {},
@@ -164,6 +168,7 @@ fun IndexScreen(
     val hts = hubTitleStringsForLanguage(LocalAppLanguage.current)
     val ms = miscStringsForLanguage(LocalAppLanguage.current)
     val ys = yupanaSharedStringsForLanguage(LocalAppLanguage.current)
+    val ss = subjectsScreenStringsForLanguage(LocalAppLanguage.current)
 
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
@@ -219,13 +224,11 @@ fun IndexScreen(
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 64.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -681,29 +684,47 @@ fun IndexScreen(
             }
         }
 
-        Box(
+        Surface(
+            tonalElevation = 3.dp,
             modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(8.dp)
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
         ) {
-            IconButton(onClick = { showResetMenu = true }) {
-                Icon(
-                    Icons.Default.MoreVert,
-                    contentDescription = s.common.menu,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            DropdownMenu(
-                expanded = showResetMenu,
-                onDismissRequest = { showResetMenu = false }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                DropdownMenuItem(
-                    text = { Text(s.common.resetClasses) },
-                    onClick = {
-                        showResetMenu = false
-                        showResetDialog = true
-                    }
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.common.back)
+                }
+                AutoSizeTitleText(
+                    text = ss.fundamentals,
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
+                Box {
+                    IconButton(onClick = { showResetMenu = true }) {
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = s.common.menu,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showResetMenu,
+                        onDismissRequest = { showResetMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(s.common.resetClasses) },
+                            onClick = {
+                                showResetMenu = false
+                                showResetDialog = true
+                            }
+                        )
+                    }
+                }
             }
         }
     }

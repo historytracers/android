@@ -261,7 +261,7 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
     }
 
     val lastRoute: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[LAST_ROUTE_KEY] ?: "index"
+        preferences[LAST_ROUTE_KEY] ?: "subjects"
     }
 
     suspend fun setLastRoute(route: String) {

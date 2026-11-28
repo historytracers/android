@@ -2,6 +2,7 @@
 package com.historytracers.app.navigation
 
 sealed class Screen(val route: String) {
+    data object Subjects : Screen("subjects")
     data object Index : Screen("index")
     data object WhoAmI : Screen("who_am_i")
     data object Welcome : Screen("welcome")

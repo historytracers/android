@@ -108,9 +108,22 @@
 - In the hub screen: collect the flow, create controllers via `remember { LevelGroupController(sectionIds, completedSections) }`, sync via `LaunchedEffect(completedSections)`, and add `enabled = controller.allCompleted` to the flag button.
 - Each section's `onClick` must call `controller.markCompleted(id)` and `scope.launch { preferences.mark[Screen]SectionCompleted(id) }`.
 
+## Subject Home (Initial Screen)
+
+- The initial screen is `SubjectsScreen.kt` (route `Screen.Subjects`). It shows four circular subject buttons in a 2×2 grid, each with emoji icons inside and a localized tagline below.
+  - Fundamentals — ⭐ 🧬 ➕ — "Everything Has a Unique Language"
+  - Physics — ⚛️ ⭐ — "The Laws of the Universe"
+  - Chemistry — 🧪 — "Matter and Us"
+  - Life — 🧬 — "What Is Life?"
+- `Fundamentals` opens `IndexScreen.kt` (route `Screen.Index`), the Fundamentals hub with the class buttons. It keeps the back arrow to the subject home and the Reset Classes menu in its top bar.
+- Physics, Chemistry and Life have no hubs yet; their buttons show the localized "coming soon" snackbar. When a subject hub is added, wire its button in `SubjectsScreen` and remove the snackbar for that subject.
+- The drawer Home item, the post-onboarding destination and the fallback for the saved last route use `Screen.Subjects`; a saved `index` route also opens `Screen.Subjects`.
+- Strings live in `SubjectsScreenStrings.kt` (En/Pt/Es). English taglines use Title Case; Portuguese and Spanish follow their own sentence-case conventions.
+- The subject home is the main screen for the Reset Classes rule: keep the 3-dot Reset Classes menu and the confirmation dialog on it.
+
 ## Main Screen Hub Completion Colors
 
-- Every main screen (`IndexScreen.kt`) button that opens a hub (First Steps, I Am (Not) Like You, Workout, Abacus, Yupana) must change color when the user finishes all tasks available in that hub — mirroring how internal buttons turn dark when their section is completed.
+- Every `IndexScreen.kt` (Fundamentals) button that opens a hub (First Steps, I Am (Not) Like You, Workout, Abacus, Yupana) must change color when the user finishes all tasks available in that hub — mirroring how internal buttons turn dark when their section is completed.
 - The button switches from `ButtonYellow` (incomplete) to `ButtonYellowDark` (all sections done), keeping `OnButtonYellow` as the content color.
 - Completion is driven by the per-hub section sets already persisted in `UserPreferences` (`first_steps_sections`, `i_am_not_like_you_sections`, `workout_sections`, `abacus_sections`, `yupana_sections`).
 - A hub's `SectionIds` list must match **exactly** the sections whose internal buttons record completion via `mark[Hub]SectionCompleted(...)`. Never include a section that cannot be completed, or the main button would never turn dark.
@@ -137,8 +150,8 @@
 
 ## Reset Classes Menu
 
-- **Every hub screen** (First Steps, I Am (Not) Like You, Workout, Abacus, Yupana, Road to Somewhere, Running and Growing) **and the main screen** (`IndexScreen.kt`) must include a "Reset Classes" menu so users can restart all progress.
-- The menu appears as a 3-dot icon (`Icons.Default.MoreVert`) on the right side of the top app bar (or top-right corner for `IndexScreen`, which has no traditional top bar).
+- **Every hub screen** (First Steps, I Am (Not) Like You, Workout, Abacus, Yupana, Road to Somewhere, Running and Growing) **and the subject home** (`SubjectsScreen.kt`) must include a "Reset Classes" menu so users can restart all progress. `IndexScreen.kt` (the Fundamentals hub) keeps its own menu too.
+- The menu appears as a 3-dot icon (`Icons.Default.MoreVert`) on the right side of the top app bar (or top-right corner for `SubjectsScreen`).
 - Tapping the icon opens a `DropdownMenu` with a single item: "Reset Classes" (`s.common.resetClasses`).
 - Tapping "Reset Classes" opens an `AlertDialog` confirmation with the message `s.common.resetClassesMessage`. The user must confirm (OK) or cancel.
 - On confirmation, call `scope.launch { preferences.resetAllClasses() }` which clears all hub sections, claimed levels, and awarded screens in `UserPreferences`.
