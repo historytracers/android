@@ -49,6 +49,7 @@ fun WhereAreWeFromScreen(
     onNavigateToSharingWithWhom: () -> Unit = {},
     onNavigateToTheSameResult: () -> Unit = {},
     onNavigateToHalfPiece: () -> Unit = {},
+    onNavigateToOddOrEvenClass: () -> Unit = {},
     onNavigateToOddOrEvenGame: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
@@ -318,12 +319,15 @@ fun WhereAreWeFromScreen(
 
                 Spacer(Modifier.height(32.dp))
 
-                Surface(
+                FilledIconButton(
+                    onClick = onNavigateToOddOrEvenClass,
                     modifier = Modifier
                         .size(96.dp)
                         .semantics { contentDescription = xs.oddOrEven },
                     shape = CircleShape,
-                    color = ButtonYellow
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("odd_or_even" in completedSections) ButtonYellowDark else ButtonYellow
+                    )
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),

@@ -36,6 +36,13 @@ data class SettingsScreenStrings(
     val driveSyncUnavailable: String,
     val driveSyncNotSignedIn: String,
     val driveSyncPermissionRequired: String,
+    val multiplicationImageTitle: String,
+    val multiplicationImageDescription: String,
+    val customImage: String,
+    val chooseImage: String,
+    val changeImage: String,
+    val adjustImage: String,
+    val customImageHint: String,
 )
 
 val EnSettingsScreenStrings = SettingsScreenStrings(
@@ -71,6 +78,13 @@ val EnSettingsScreenStrings = SettingsScreenStrings(
     driveSyncUnavailable = "Google Drive sync requires Google Play services.",
     driveSyncNotSignedIn = "Sign in with Google to sync your progress.",
     driveSyncPermissionRequired = "Google Drive access was not granted.",
+    multiplicationImageTitle = "Multiplication Image",
+    multiplicationImageDescription = "Choose the object used in the multiplication tables.",
+    customImage = "My Image",
+    chooseImage = "Choose Image",
+    changeImage = "Change Image",
+    adjustImage = "Adjust Image",
+    customImageHint = "Pinch to zoom and drag the image to choose the visible part.",
 )
 
 val PtSettingsScreenStrings = SettingsScreenStrings(
@@ -106,6 +120,13 @@ val PtSettingsScreenStrings = SettingsScreenStrings(
     driveSyncUnavailable = "A sincroniza\u00e7\u00e3o com o Google Drive requer os servi\u00e7os do Google Play.",
     driveSyncNotSignedIn = "Entre com o Google para sincronizar seu progresso.",
     driveSyncPermissionRequired = "O acesso ao Google Drive n\u00e3o foi concedido.",
+    multiplicationImageTitle = "Imagem da Multiplica\u00e7\u00e3o",
+    multiplicationImageDescription = "Escolha o objeto usado nas tabuadas de multiplica\u00e7\u00e3o.",
+    customImage = "Minha Imagem",
+    chooseImage = "Escolher Imagem",
+    changeImage = "Alterar Imagem",
+    adjustImage = "Ajustar Imagem",
+    customImageHint = "Aproxime com dois dedos e arraste a imagem para escolher a parte vis\u00edvel.",
 )
 
 val EsSettingsScreenStrings = SettingsScreenStrings(
@@ -141,6 +162,13 @@ val EsSettingsScreenStrings = SettingsScreenStrings(
     driveSyncUnavailable = "La sincronizaci\u00f3n con Google Drive requiere los servicios de Google Play.",
     driveSyncNotSignedIn = "Inicia sesi\u00f3n con Google para sincronizar tu progreso.",
     driveSyncPermissionRequired = "No se concedi\u00f3 acceso a Google Drive.",
+    multiplicationImageTitle = "Imagen de la Multiplicaci\u00f3n",
+    multiplicationImageDescription = "Elige el objeto usado en las tablas de multiplicar.",
+    customImage = "Mi Imagen",
+    chooseImage = "Elegir Imagen",
+    changeImage = "Cambiar Imagen",
+    adjustImage = "Ajustar Imagen",
+    customImageHint = "Pellizca para ampliar y arrastra la imagen para elegir la parte visible.",
 )
 
 val LocalSettingsScreenStrings = staticCompositionLocalOf { EnSettingsScreenStrings }

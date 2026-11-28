@@ -32,7 +32,7 @@ import com.historytracers.app.ui.features.completeTheMultiplicationTableStringsF
 import com.historytracers.app.ui.features.countingWithBonesScreenStringsForLanguage
 import com.historytracers.app.ui.features.expandingScreenStringsForLanguage
 import com.historytracers.app.ui.features.latestAdditionScreenStringsForLanguage
-import com.historytracers.app.ui.features.matchingTables39StringsForLanguage
+import com.historytracers.app.ui.features.oddOrEvenClassScreenStringsForLanguage
 import com.historytracers.app.ui.features.practicingMultiplicationByOneDigitNumbersStringsForLanguage
 import com.historytracers.app.ui.features.practicingMultiplicationWithChosenNumbersStringsForLanguage
 import com.historytracers.app.ui.features.practicingMultiplicationWithTypedValuesStringsForLanguage
@@ -105,6 +105,7 @@ fun LatestAdditionScreen(
     onNavigateToCarryOrNotCarry: () -> Unit = {},
     onNavigateToAdvancingAndComplementing: () -> Unit = {},
     onNavigateToOddOrEven: () -> Unit = {},
+    onNavigateToOddOrEvenClass: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
     onNavigateToPracticingAdditionChosen: () -> Unit = {},
@@ -145,18 +146,33 @@ fun LatestAdditionScreen(
     val swws = sharingWithWhomScreenStringsForLanguage(LocalAppLanguage.current)
     val ues = universeExpansionScreenStringsForLanguage(LocalAppLanguage.current)
     val exs = expandingScreenStringsForLanguage(LocalAppLanguage.current)
-    val mts39 = matchingTables39StringsForLanguage(LocalAppLanguage.current)
     val cts = completeTheMultiplicationTableStringsForLanguage(LocalAppLanguage.current)
     val pms = practicingMultiplicationByOneDigitNumbersStringsForLanguage(LocalAppLanguage.current)
     val tvs = practicingMultiplicationWithTypedValuesStringsForLanguage(LocalAppLanguage.current)
     val cns = practicingMultiplicationWithChosenNumbersStringsForLanguage(LocalAppLanguage.current)
+    val ooes = oddOrEvenClassScreenStringsForLanguage(LocalAppLanguage.current)
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedReturning by preferences.completedReturningSections.collectAsState(initial = emptySet())
     val completedLongDivision by preferences.completedLongDivisionSections.collectAsState(initial = emptySet())
     val completedMultiplicationTable by preferences.completedMultiplicationTableSections.collectAsState(initial = emptySet())
+    val completedWhereAreWeFrom by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
 
     val entries = listOf(
+        LatestAdditionEntry(
+            sectionId = "odd_or_even",
+            label = ooes.title,
+            icon = {
+                Text(
+                    text = "20?",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            },
+            isCompleted = { "odd_or_even" in completedWhereAreWeFrom },
+            onNavigate = onNavigateToOddOrEvenClass
+        ),
         LatestAdditionEntry(
             sectionId = "practicing_multiplication_with_chosen_numbers",
             label = cns.rulesTitle,
@@ -218,20 +234,6 @@ fun LatestAdditionScreen(
             },
             isCompleted = { "complete_the_multiplication_table" in completedMultiplicationTable },
             onNavigate = onNavigateToCompleteTheMultiplicationTable
-        ),
-        LatestAdditionEntry(
-            sectionId = "matching_tables_3_9",
-            label = mts39.rulesTitle,
-            icon = {
-                Text(
-                    text = "3\u00D73\u00D7N\n=9\u00D7N",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            },
-            isCompleted = { "matching_tables_3_9" in completedMultiplicationTable },
-            onNavigate = onNavigateToMatchingTables39
         )
     )
 

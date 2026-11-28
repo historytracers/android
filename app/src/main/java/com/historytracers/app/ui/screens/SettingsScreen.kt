@@ -3,12 +3,15 @@ package com.historytracers.app.ui.screens
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -33,16 +36,23 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.historytracers.app.data.DriveSyncError
 import com.historytracers.app.data.DriveSyncManager
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.CustomImageAdjustDialog
+import com.historytracers.app.ui.components.MULTIPLICATION_CUSTOM_OBJECT_INDEX
+import com.historytracers.app.ui.components.MultiplicationTableObjects
+import com.historytracers.app.ui.components.loadMultiplicationBitmap
+import com.historytracers.app.ui.components.saveCustomMultiplicationImage
 import com.historytracers.app.ui.features.HubTitleStrings
 import com.historytracers.app.ui.features.SettingsScreenStrings
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
@@ -50,10 +60,13 @@ import com.historytracers.app.ui.features.settingsScreenStringsForLanguage
 import com.historytracers.app.ui.theme.SkinColorPalette
 import com.historytracers.app.ui.theme.parseHexColor
 import com.historytracers.app.calendar.CalendarType
+import java.io.File
 import java.text.DateFormat
 import java.util.Date
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private fun availableLanguages(hts: HubTitleStrings) = listOf(
     "en-US" to hts.langEnUs,
@@ -283,6 +296,12 @@ fun SettingsScreen(
                     }
                 }
 
+                Spacer(Modifier.height(8.dp))
+                Divider()
+                Spacer(Modifier.height(8.dp))
+
+                MultiplicationImageSection(xs)
+
                 if (onStartLearning == null) {
                     Spacer(Modifier.height(8.dp))
                     Divider()
@@ -313,6 +332,145 @@ fun SettingsScreen(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun MultiplicationImageSection(xs: SettingsScreenStrings) {
+    val context = LocalContext.current
+    val preferences = remember { UserPreferences(context) }
+    val scope = rememberCoroutineScope()
+    val selectedObject by preferences.multiplicationObject.collectAsState(initial = 0)
+    val customPath by preferences.multiplicationCustomImage.collectAsState(initial = "")
+    var pendingBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var showAdjust by remember { mutableStateOf(false) }
+
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            scope.launch {
+                val bitmap = loadMultiplicationBitmap(context, uri)
+                if (bitmap != null) {
+                    pendingBitmap = bitmap
+                    showAdjust = true
+                }
+            }
+        }
+    }
+
+    Text(
+        text = xs.multiplicationImageTitle,
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = xs.multiplicationImageDescription,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        MultiplicationTableObjects.forEachIndexed { index, emoji ->
+            val selected = selectedObject == index
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        if (selected) MaterialTheme.colorScheme.primaryContainer
+                        else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                    .border(
+                        width = 2.dp,
+                        color = if (selected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .clickable {
+                        scope.launch { preferences.setMultiplicationObject(index) }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = emoji, fontSize = 22.sp)
+            }
+        }
+    }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (customPath.isNotBlank()) {
+            val customSelected = selectedObject == MULTIPLICATION_CUSTOM_OBJECT_INDEX
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(
+                        width = 2.dp,
+                        color = if (customSelected) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .clickable {
+                        scope.launch {
+                            preferences.setMultiplicationObject(MULTIPLICATION_CUSTOM_OBJECT_INDEX)
+                        }
+                    }
+            ) {
+                AsyncImage(
+                    model = File(customPath),
+                    contentDescription = xs.customImage,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Text(
+                text = xs.customImage,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f)
+            )
+        } else {
+            Spacer(Modifier.weight(1f))
+        }
+
+        Button(
+            onClick = {
+                picker.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+        ) {
+            Text(if (customPath.isBlank()) xs.chooseImage else xs.changeImage)
+        }
+    }
+
+    val bitmap = pendingBitmap
+    if (showAdjust && bitmap != null) {
+        CustomImageAdjustDialog(
+            bitmap = bitmap,
+            title = xs.adjustImage,
+            hint = xs.customImageHint,
+            onDismiss = {
+                showAdjust = false
+                pendingBitmap = null
+            },
+            onSave = { cropped ->
+                scope.launch {
+                    val path = withContext(Dispatchers.IO) {
+                        saveCustomMultiplicationImage(context, cropped)
+                    }
+                    preferences.setMultiplicationCustomImage(path)
+                    preferences.setMultiplicationObject(MULTIPLICATION_CUSTOM_OBJECT_INDEX)
+                    showAdjust = false
+                    pendingBitmap = null
+                }
+            }
         )
     }
 }

@@ -75,6 +75,7 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
         private val WHO_AM_I_SCROLL_KEY = intPreferencesKey("who_am_i_scroll")
         private val UNIVERSE_EXPANSION_STEP_KEY = intPreferencesKey("universe_expansion_step")
         private val MULTIPLICATION_OBJECT_KEY = intPreferencesKey("multiplication_object")
+        private val MULTIPLICATION_CUSTOM_IMAGE_KEY = stringPreferencesKey("multiplication_custom_image")
         private val QUIPU_PRACTICE_STATE_KEY = stringPreferencesKey("quipu_practice_state")
         private val WORKOUT_SECTIONS_KEY = stringSetPreferencesKey("workout_sections")
         private val FIRST_STEPS_SECTIONS_KEY = stringSetPreferencesKey("first_steps_sections")
@@ -155,7 +156,8 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
         private val STRING_PREFERENCE_NAMES = setOf(
             LANGUAGE_KEY.name, LAST_ROUTE_KEY.name, LAST_COMPLETED_DATE_KEY.name,
             SKIN_COLOR_KEY.name, QUIPU_PRACTICE_STATE_KEY.name, CALENDAR_KEY.name,
-            DRIVE_SYNC_ACCOUNT_KEY.name, DRIVE_SYNC_RESET_ACCOUNT_KEY.name
+            DRIVE_SYNC_ACCOUNT_KEY.name, DRIVE_SYNC_RESET_ACCOUNT_KEY.name,
+            MULTIPLICATION_CUSTOM_IMAGE_KEY.name
         )
         private val STRING_SET_PREFERENCE_NAMES = setOf(
             COMPLETED_DATES_KEY.name, STREAK_DAYS_KEY.name, WORKOUT_SECTIONS_KEY.name,
@@ -789,6 +791,20 @@ private val MULTIPLICATION_TABLE_SCROLL_KEY = intPreferencesKey("multiplication_
     suspend fun setMultiplicationObject(objectIndex: Int) {
         context.dataStore.edit { preferences ->
             preferences[MULTIPLICATION_OBJECT_KEY] = objectIndex
+        }
+    }
+
+    /**
+     * Absolute path of the custom image the user cropped for the multiplication
+     * tables, or an empty string when no custom image was saved yet.
+     */
+    val multiplicationCustomImage: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[MULTIPLICATION_CUSTOM_IMAGE_KEY] ?: ""
+    }
+
+    suspend fun setMultiplicationCustomImage(path: String) {
+        context.dataStore.edit { preferences ->
+            preferences[MULTIPLICATION_CUSTOM_IMAGE_KEY] = path
         }
     }
 

@@ -129,20 +129,21 @@ fun MultiplicationTableVisualizer(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val scope = rememberCoroutineScope()
-    val savedObject by preferences.multiplicationObject.collectAsState(initial = -1)
+    val savedObject by preferences.multiplicationObject.collectAsState(initial = 0)
 
-    var selectedObject by remember { mutableIntStateOf(0) }
+    var selectedEmojiIndex by remember { mutableIntStateOf(0) }
     var selectedMultiplier by remember { mutableStateOf<Int?>(null) }
 
     // Sync the selection with the persisted preference: on first composition it
-    // restores the last chosen object; afterwards it simply mirrors our writes.
+    // restores the last chosen emoji; afterwards it simply mirrors our writes.
     LaunchedEffect(savedObject) {
-        if (savedObject >= 0) selectedObject = savedObject
+        if (savedObject in VISUALIZER_OBJECT_EMOJIS.indices) {
+            selectedEmojiIndex = savedObject
+        }
     }
 
-    val selectedEmoji = VISUALIZER_OBJECT_EMOJIS[
-        selectedObject.coerceIn(0, VISUALIZER_OBJECT_EMOJIS.lastIndex)
-    ]
+    val multiplicationObject = rememberMultiplicationObject()
+    val customObjectSelected = multiplicationObject is MultiplicationObject.CustomImage
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -164,7 +165,7 @@ fun MultiplicationTableVisualizer(
             horizontalArrangement = Arrangement.Center
         ) {
             VISUALIZER_OBJECT_EMOJIS.forEachIndexed { index, emoji ->
-                val selected = selectedObject == index
+                val selected = !customObjectSelected && selectedEmojiIndex == index
                 Box(
                     modifier = Modifier
                         .padding(3.dp)
@@ -181,7 +182,7 @@ fun MultiplicationTableVisualizer(
                             shape = RoundedCornerShape(12.dp)
                         )
                         .clickable {
-                            selectedObject = index
+                            selectedEmojiIndex = index
                             scope.launch { preferences.setMultiplicationObject(index) }
                         },
                     contentAlignment = Alignment.Center
@@ -280,7 +281,7 @@ fun MultiplicationTableVisualizer(
                             .verticalScroll(rememberScrollState())
                     ) {
                         repeat(multiplier) {
-                            MultiplicationGroup(factor, selectedEmoji, emojiSize)
+                            MultiplicationGroup(factor, multiplicationObject, emojiSize)
                         }
                     }
                 }
@@ -291,7 +292,11 @@ fun MultiplicationTableVisualizer(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun MultiplicationGroup(count: Int, emoji: String, emojiSize: TextUnit = 20.sp) {
+private fun MultiplicationGroup(
+    count: Int,
+    objectValue: MultiplicationObject,
+    emojiSize: TextUnit = 20.sp
+) {
     if (count == 0) {
         Box(
             modifier = Modifier
@@ -315,7 +320,7 @@ private fun MultiplicationGroup(count: Int, emoji: String, emojiSize: TextUnit =
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             repeat(count) {
-                Text(text = emoji, fontSize = emojiSize)
+                MultiplicationObjectView(objectValue = objectValue, emojiSize = emojiSize)
             }
         }
     }
@@ -332,13 +337,7 @@ private fun MultiplicationGroup(count: Int, emoji: String, emojiSize: TextUnit =
 fun MultiplicationTableCommonMultiples(
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val preferences = remember { UserPreferences(context) }
-    val savedObject by preferences.multiplicationObject.collectAsState(initial = -1)
-
-    val emoji = VISUALIZER_OBJECT_EMOJIS[
-        savedObject.coerceIn(0, VISUALIZER_OBJECT_EMOJIS.lastIndex)
-    ]
+    val multiplicationObject = rememberMultiplicationObject()
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -356,7 +355,7 @@ fun MultiplicationTableCommonMultiples(
                 Spacer(Modifier.height(4.dp))
 
                 repeat(groups) {
-                    MultiplicationGroup(perGroup, emoji)
+                    MultiplicationGroup(perGroup, multiplicationObject)
                 }
             }
         }
