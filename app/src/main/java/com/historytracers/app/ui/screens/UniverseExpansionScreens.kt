@@ -39,6 +39,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.universeExpansionScreenStringsForLanguage
 import kotlinx.coroutines.flow.first
@@ -48,6 +49,22 @@ import com.historytracers.app.ui.components.safeOpenUri
 private const val UNIVERSE_IMAGE_URL = "https://www.historytracers.org/images/ESA/Planck_history_of_Universe.jpg"
 private const val ORIGINAL_TEXT_URL = "https://www.historytracers.org/index.html?page=class_content&arg=57091b10-84a4-468c-b81a-56bccfa2cd4a"
 private const val UNIVERSE_SOURCE_WIDTH = 5305f
+
+// Smartphone lesson that publishes one narration per step: the seven eras, the
+// reflection question and the conclusion.
+private const val SMARTPHONE_GAME_FILE = "9bc5dcd7-a03a-41c8-9517-2437e9aa5289"
+
+private val AUDIO_CONTENT_IDS = listOf(
+    "7b3c8d70-777d-4311-9ff0-b49d6e3136fa",
+    "ff84681d-e583-4624-a5fc-65ca8f241a7a",
+    "5bd0b0d6-d6f9-4619-94af-3ad7a8030f76",
+    "6897df7b-0cc1-47a4-9c23-5b758b907bab",
+    "ff4bd802-a308-40de-9606-67e074c9e505",
+    "14337605-d4f2-40c9-bb89-1e7a6e8613d0",
+    "5326a200-2fbf-46b0-bade-1c8a2fac6dc6",
+    "4c841296-8872-4d62-8443-2f6992a57c67",
+    "fd03aca4-1609-4f24-92f6-a6d19579f604",
+)
 
 private val universeEraRanges = listOf(
     3000f to 5000f,
@@ -83,6 +100,7 @@ fun UniverseExpansionScreen(
     val questionStep = xs.eraTitles.size
     val conclusionStep = questionStep + 1
     val lastStep = conclusionStep
+    val audioContentId = AUDIO_CONTENT_IDS.getOrNull(step)
     var stateRestored by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -141,7 +159,11 @@ fun UniverseExpansionScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = SMARTPHONE_GAME_FILE,
+                        contentId = audioContentId
                     )
                 }
             }
