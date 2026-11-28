@@ -20,7 +20,7 @@ data class OddOrEvenScreenStrings(
 )
 
 val EnOddOrEvenScreenStrings = OddOrEvenScreenStrings(
-    title = "Odd or Even?",
+    title = "Odd or Even? (The Game)",
     howToPlay = "Look at the number and how its circles are shared between the two sides. Use the buttons to answer: tap Odd if one circle is left over, or tap Even if the circles form complete pairs with nothing left over.",
     numberHeader = "Number",
     shareHeader = "Sharing in pairs",
@@ -36,7 +36,7 @@ val EnOddOrEvenScreenStrings = OddOrEvenScreenStrings(
 )
 
 val PtOddOrEvenScreenStrings = OddOrEvenScreenStrings(
-    title = "\u00cdmpar ou par?",
+    title = "\u00cdmpar ou par? (O Jogo)",
     howToPlay = "Observe o n\u00famero e como os seus c\u00edrculos s\u00e3o repartidos entre os dois lados. Use os bot\u00f5es para responder: toque em \u00cdmpar se sobrar um c\u00edrculo, ou em Par se os c\u00edrculos formarem pares completos sem sobrar nada.",
     numberHeader = "N\u00famero",
     shareHeader = "Compartilhar em pares",
@@ -52,7 +52,7 @@ val PtOddOrEvenScreenStrings = OddOrEvenScreenStrings(
 )
 
 val EsOddOrEvenScreenStrings = OddOrEvenScreenStrings(
-    title = "\u00bfImpar o par?",
+    title = "\u00bfImpar o par? (El Juego)",
     howToPlay = "Observa el n\u00famero y c\u00f3mo se reparten sus c\u00edrculos entre los dos lados. Usa los botones para responder: toca Impar si sobra un c\u00edrculo, o Par si los c\u00edrculos forman pares completos sin que sobre nada.",
     numberHeader = "N\u00famero",
     shareHeader = "Compartir en pares",

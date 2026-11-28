@@ -2700,6 +2700,7 @@ fun AppNavigation() {
                             onNavigateToOddOrEvenGame = { navController.navigate(Screen.OddOrEvenGame.route) { launchSingleTop = true } },
                             onNavigateToExpanding = { navController.navigate(Screen.ExpandingIntro.route) { launchSingleTop = true } },
                             onNavigateToGroupingThrees = { navController.navigate(Screen.GroupingThrees.route) { launchSingleTop = true } },
+                            onNavigateToCongratulation = { navController.navigate(Screen.Congratulation.route) { launchSingleTop = true } },
                             scrollState = whereAreWeFromScrollState
                         )
                     }

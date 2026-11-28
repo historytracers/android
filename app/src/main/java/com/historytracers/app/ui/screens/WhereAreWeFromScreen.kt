@@ -31,14 +31,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.historytracers.app.R
+import com.historytracers.app.data.LevelGroupController
 import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.whereAreWeFromScreenStringsForLanguage
 import com.historytracers.app.ui.theme.ButtonYellow
 import com.historytracers.app.ui.theme.ButtonYellowDark
+import com.historytracers.app.ui.theme.FlagBlueDark
+import com.historytracers.app.ui.theme.FlagBlueLight
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private val whereAreWeFromAllSectionIds = listOf(
+    "shared_origin", "matter_energy", "everything_together", "sharing_with_whom",
+    "the_same_result", "half_piece", "odd_or_even", "odd_or_even_game",
+    "expanding", "grouping_threes"
+)
 
 @Composable
 fun WhereAreWeFromScreen(
@@ -53,6 +65,7 @@ fun WhereAreWeFromScreen(
     onNavigateToOddOrEvenGame: () -> Unit = {},
     onNavigateToExpanding: () -> Unit = {},
     onNavigateToGroupingThrees: () -> Unit = {},
+    onNavigateToCongratulation: () -> Unit = {},
     scrollState: ScrollState = rememberScrollState()
 ) {
     val s = LocalUiStrings.current
@@ -61,7 +74,29 @@ fun WhereAreWeFromScreen(
     val context = LocalContext.current
     val preferences = remember { UserPreferences(context) }
     val completedSections by preferences.completedWhereAreWeFromSections.collectAsState(initial = emptySet())
+    val claimedLevels by preferences.claimedLevels.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
+
+    val nextLevelController = remember {
+        LevelGroupController(whereAreWeFromAllSectionIds, completedSections)
+    }
+    LaunchedEffect(completedSections) {
+        nextLevelController.syncFromPersisted(completedSections)
+    }
+    val nextLevelCompleted by nextLevelController.completed.collectAsState()
+    val allSectionsCompleted = whereAreWeFromAllSectionIds.all { it in nextLevelCompleted }
+
+    var claimingLevel by remember { mutableStateOf(false) }
+    fun claimLevel() {
+        if (claimingLevel || "where_are_we_from" in claimedLevels) return
+        claimingLevel = true
+        scope.launch {
+            withContext(NonCancellable) {
+                preferences.claimLevel("where_are_we_from", 0)
+            }
+            claimingLevel = false
+        }
+    }
 
     var showResetMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -83,9 +118,12 @@ fun WhereAreWeFromScreen(
                 }
                 AutoSizeTitleText(
                     text = xs.title,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
-                Spacer(Modifier.weight(1f))
+                ScreenAudioButton(
+                    lessonId = NEXT_LEVEL_AUDIO_LESSON_ID,
+                    contentId = NEXT_LEVEL_AUDIO_CONTENT_ID
+                )
                 Box {
                     IconButton(onClick = { showResetMenu = true }) {
                         Icon(
@@ -499,6 +537,42 @@ fun WhereAreWeFromScreen(
 
                 Text(
                     text = xs.groupingThrees,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                FilledIconButton(
+                    onClick = {
+                        claimLevel()
+                        onNavigateToCongratulation()
+                    },
+                    enabled = allSectionsCompleted,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .semantics { contentDescription = s.common.nextLevel },
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if ("where_are_we_from" in claimedLevels) FlagBlueDark else FlagBlueLight,
+                        disabledContainerColor = FlagBlueLight
+                    )
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_flag),
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    text = s.common.nextLevel,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

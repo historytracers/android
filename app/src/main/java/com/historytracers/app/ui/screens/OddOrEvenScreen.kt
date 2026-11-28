@@ -32,6 +32,7 @@ import com.historytracers.app.data.UserPreferences
 import com.historytracers.app.ui.LocalAppLanguage
 import com.historytracers.app.ui.LocalUiStrings
 import com.historytracers.app.ui.components.AutoSizeTitleText
+import com.historytracers.app.ui.components.ScreenAudioButton
 import com.historytracers.app.ui.features.hubTitleStringsForLanguage
 import com.historytracers.app.ui.features.oddOrEvenScreenStringsForLanguage
 import kotlinx.coroutines.launch
@@ -39,6 +40,8 @@ import kotlin.random.Random
 import com.historytracers.app.ui.components.safeOpenUri
 
 private const val ODD_OR_EVEN_SECTION_ID = "odd_or_even_game"
+private const val ODD_OR_EVEN_GAME_AUDIO_LESSON = "76bd6ca8-d4d2-4969-92cf-eef8001a4f79"
+private const val ODD_OR_EVEN_GAME_AUDIO_CONTENT = "67757c49-1bed-4c06-a25e-484c037f91c1"
 private const val ODD_OR_EVEN_MAX_NUMBER = 20
 
 // Ports the "Odd or even? (Game)" web game (8dfdd5e0): a number between 0 and 20
@@ -129,7 +132,11 @@ fun OddOrEvenScreen(
                     }
                     AutoSizeTitleText(
                         text = xs.title,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp).weight(1f)
+                    )
+                    ScreenAudioButton(
+                        lessonId = ODD_OR_EVEN_GAME_AUDIO_LESSON,
+                        contentId = ODD_OR_EVEN_GAME_AUDIO_CONTENT
                     )
                 }
             }
